@@ -1,0 +1,16 @@
+Subject: A new event has been added to the calendar
+
+Dear {USERNAME},
+
+The event "{EVENT_SUBJECT}" has been added in the calendar.
+
+To view the calendar please visit the following link:
+{U_CALENDAR}
+
+To view the event please visit the following link:
+{U_EVENT}
+
+If you no longer wish to recieve emails about new calendar events click here:
+{U_UNWATCH_CALENDAR}
+
+{EMAIL_SIG}

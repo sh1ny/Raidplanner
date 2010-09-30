@@ -1,0 +1,33 @@
+<div class="post bg2" id="preview">
+	<div class="inner"><span class="corners-top"><span></span></span>
+	<div class="postbody">
+		<h3>{L_PREVIEW}: <!-- IF PREVIEW_EVENT_COLOR --><span style="color:#{PREVIEW_EVENT_COLOR}"><!-- ENDIF -->
+		<!-- IF PREVIEW_EVENT_IMAGE --><img src="{PREVIEW_EVENT_IMAGE}"> <!-- ENDIF -->
+		<!-- IF PREVIEW_ETYPE_DISPLAY_NAME -->{PREVIEW_ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{PREVIEW_SUBJECT}
+		<!-- IF PREVIEW_EVENT_COLOR --></span><!-- ENDIF --></h3><br />
+
+	<div class="panel bg3">
+		<fieldset class="fields1">
+    <!-- IF ALL_DAY -->
+      <h5>{L_ALL_DAY}: {PREVIEW_START_DATE}</h5>
+    <!-- ELSE -->
+      <h5>{L_FROM_TIME}: {PREVIEW_START_DATE}<br />
+      {L_TO_TIME}: {PREVIEW_END_DATE}</h5>
+    <!-- ENDIF -->
+		</fieldset>
+	</div>
+		<div class="content">{PREVIEW_MESSAGE}</div><br />
+		<div class="content">{L_INVITE_INFO} {PREVIEW_INVITED}</div><br />&nbsp;<br />
+		<div class="content">{L_EVENT_CREATED_BY} {PREVIEW_POSTER}</div>
+
+		<!-- IF U_ACP -->
+
+		<!-- IF PREVIEW_TRACK_RSVPS --><div class="content">{L_TRACK_RSVPS_ON}<br><!-- IF PREVIEW_ALLOW_GUESTS -->{L_ALLOW_GUESTS_ON}<!-- ELSE -->{L_ALLOW_GUESTS_OFF}<!-- ENDIF --></div>
+		<!-- ELSE --><div class="content">{L_TRACK_RSVPS_OFF}</div>
+		<!-- ENDIF -->
+
+		<!-- ENDIF -->
+	</div>
+	<span class="corners-bottom"><span></span></span></div>
+</div>
+<hr />

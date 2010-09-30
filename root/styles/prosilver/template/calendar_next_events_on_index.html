@@ -1,0 +1,29 @@
+	<!-- IF .events -->
+		<div class="forabg">
+			<div class="inner"><span class="corners-top"><span></span></span>
+			<ul class="topiclist">
+				<li class="header">
+					<dl class="icon">
+						<dt>{L_UPCOMING_EVENTS}</dt>
+						<dd style="width:16%">{L_INVITE_INFO}</dd>
+						<dd style="width:16%">{L_EVENT_CREATED_BY}</dd>
+					</dl>
+				</li>
+			</ul>
+			<ul class="topiclist forums">
+			<!-- BEGIN events -->
+				<li class="row">
+					<dl class="icon"<!-- IF events.IMAGE --> style="background-image: url({events.IMAGE}); background-repeat: no-repeat;"<!-- ENDIF -->>
+						<dt><a href="{events.EVENT_URL}" title="<!-- IF events.ETYPE_DISPLAY_NAME -->{events.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{events.FULL_SUBJECT}">
+							<span style="<!-- IF events.COLOR -->color:#{events.COLOR};<!-- ENDIF --> font-weight: bold;">
+								<!-- IF events.ETYPE_DISPLAY_NAME -->{events.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{events.SUBJECT}</span><br /><!-- IF events.ALL_DAY -->{L_ALL_DAY} {events.START_TIME}<!-- ELSE -->{events.START_TIME} {L_TO_TIME} {events.END_TIME}<!-- ENDIF --></a>
+						</dt>
+						<dd style="width:16%; padding-left:5px;" class="lastpost">{events.INVITED}</dd>
+						<dd style="width:16%; padding-left:5px;" class="lastpost">{events.POSTER}</dd>
+					</dl>
+				</li>
+			<!-- END events -->
+			</ul>
+			<span class="corners-bottom"><span></span></span></div>
+		</div>
+	<!-- ENDIF -->

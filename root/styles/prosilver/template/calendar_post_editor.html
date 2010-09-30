@@ -1,0 +1,383 @@
+<script type="text/javascript">
+  function toggle_all_day_event()
+  {
+    if( document.postform.calAllDay.checked )
+    {
+      document.postform.calMEnd.disabled=true;
+      document.postform.calDEnd.disabled=true;
+      document.postform.calYEnd.disabled=true;
+      document.postform.calHr.disabled=true;
+      document.postform.calMn.disabled=true;
+      document.postform.calHrEnd.disabled=true;
+      document.postform.calMnEnd.disabled=true;
+    }
+    else
+    {
+      document.postform.calMEnd.disabled=false;
+      document.postform.calDEnd.disabled=false;
+      document.postform.calYEnd.disabled=false;
+      document.postform.calHr.disabled=false;
+      document.postform.calMn.disabled=false;
+      document.postform.calHrEnd.disabled=false;
+      document.postform.calMnEnd.disabled=false;
+    }
+  }
+  function update_group_id_state()
+  {
+      if( document.getElementById('calELevel').value == 1 )
+      {
+          document.getElementById('calGroupId[]').disabled=false;
+      }
+      else
+      {
+          document.getElementById('calGroupId[]').disabled=true;
+      }
+  }
+
+
+  <!-- IF S_TRACK_RSVPS -->
+    <!-- IF S_ALLOW_GUESTS -->
+	  function update_allow_guest_state()
+	  {
+		  if( document.postform.calTrackRsvps.checked )
+		  {
+			  document.getElementById('calAllowGuests').disabled=false;
+		  }
+		  else
+		  {
+			  document.getElementById('calAllowGuests').disabled=true;
+		  }
+	  }
+    <!-- ENDIF -->
+  <!-- ENDIF -->
+  <!-- IF S_RECURRING_OPTS -->
+  function update_recurr_state()
+  {
+      if( document.postform.calIsRecurr.checked )
+      {
+          document.getElementById('calRFrqT').disabled=false;
+          document.getElementById('calRFrq').disabled=false;
+          document.getElementById('calRDEnd').disabled=false;
+          document.getElementById('calRMEnd').disabled=false;
+          document.getElementById('calRYEnd').disabled=false;
+      }
+      else
+      {
+          document.getElementById('calRFrqT').disabled=true;
+          document.getElementById('calRFrq').disabled=true;
+          document.getElementById('calRDEnd').disabled=true;
+          document.getElementById('calRMEnd').disabled=true;
+          document.getElementById('calRYEnd').disabled=true;
+      }
+  }
+	<!-- IF S_UPDATE_RECURRING_OPTIONS -->
+
+	  var number_strings = new Array();
+	  number_strings[0] = "Nth";
+	  number_strings[1] = "1st";
+	  number_strings[2] = "2nd";
+	  number_strings[3] = "3rd";
+	  number_strings[4] = "4th";
+	  number_strings[5] = "5th";
+	  number_strings[6] = "6th";
+	  number_strings[7] = "7th";
+	  number_strings[8] = "8th";
+	  number_strings[9] = "9th";
+	  number_strings[10] = "10th";
+	  number_strings[11] = "11th";
+	  number_strings[12] = "12th";
+	  number_strings[13] = "13th";
+	  number_strings[14] = "14th";
+	  number_strings[15] = "15th";
+	  number_strings[16] = "16th";
+	  number_strings[17] = "17th";
+	  number_strings[18] = "18th";
+	  number_strings[19] = "19th";
+	  number_strings[20] = "20th";
+	  number_strings[21] = "21st";
+	  number_strings[22] = "22nd";
+	  number_strings[23] = "23th";
+	  number_strings[24] = "24th";
+	  number_strings[25] = "25th";
+	  number_strings[26] = "26th";
+	  number_strings[27] = "27th";
+	  number_strings[28] = "28th";
+	  number_strings[29] = "29th";
+	  number_strings[30] = "30th";
+	  number_strings[31] = "31st";
+
+	  var month_strings = new Array();
+	  month_strings[0] = "";
+	  month_strings[1] = "January";
+	  month_strings[2] = "February";
+	  month_strings[3] = "March";
+	  month_strings[4] = "April";
+	  month_strings[5] = "May";
+	  month_strings[6] = "June";
+	  month_strings[7] = "July";
+	  month_strings[8] = "August";
+	  month_strings[9] = "September";
+	  month_strings[10] = "October";
+	  month_strings[11] = "November";
+	  month_strings[12] = "December";
+
+	  var weekday_strings = new Array();
+	  weekday_strings[0] = "Sunday";
+	  weekday_strings[1] = "Monday";
+	  weekday_strings[2] = "Tuesday";
+	  weekday_strings[3] = "Wednesday";
+	  weekday_strings[4] = "Thursday";
+	  weekday_strings[5] = "Friday";
+	  weekday_strings[6] = "Saturday";
+
+	  var recurr_event_type_strings = new Array();
+	  recurr_event_type_strings[0] = "";
+	  recurr_event_type_strings[1] = "{L_RECURRING_EVENT_CASE_1}";
+	  recurr_event_type_strings[2] = "{L_RECURRING_EVENT_CASE_2}";
+	  recurr_event_type_strings[3] = "{L_RECURRING_EVENT_CASE_3}";
+	  recurr_event_type_strings[4] = "{L_RECURRING_EVENT_CASE_4}";
+	  recurr_event_type_strings[5] = "{L_RECURRING_EVENT_CASE_5}";
+	  recurr_event_type_strings[6] = "{L_RECURRING_EVENT_CASE_6}";
+	  recurr_event_type_strings[7] = "{L_RECURRING_EVENT_CASE_7}";
+	  recurr_event_type_strings[8] = "{L_RECURRING_EVENT_CASE_8}";
+	  recurr_event_type_strings[9] = "{L_RECURRING_EVENT_CASE_9}";
+	  recurr_event_type_strings[10] = "{L_RECURRING_EVENT_CASE_10}";
+	  recurr_event_type_strings[11] = "{L_RECURRING_EVENT_CASE_11}";
+	  recurr_event_type_strings[12] = "{L_RECURRING_EVENT_CASE_12}";
+
+	  function update_recurring_options()
+	  {
+			var selDate = new Date();
+			selDate.setDate( document.getElementById('calD').value );
+			selDate.setMonth( (document.getElementById('calM').value - 1) );
+			selDate.setFullYear( document.getElementById('calY').value );
+
+			var sel_day_string = number_strings[ document.getElementById('calD').value ];
+			var sel_month_string = month_strings[ document.getElementById('calM').value ];
+			var y_string = document.getElementById('calRFrq').value;
+			var freq_type = document.getElementById('calRFrqT');
+
+			/* update this later */
+			var sel_week_day_string = weekday_strings[ selDate.getDay() ];
+			var sel_week = 0;
+			var sel_week_from_end = 0;
+			var sel_week_of_full_weeks = 0;
+			var sel_week_of_full_weeks_from_end = 0;
+
+			var sel_week_string = number_strings[sel_week];
+			var sel_week_from_end_string = number_strings[sel_week_from_end];
+			var sel_week_of_full_weeks_string = number_strings[sel_week_of_full_weeks];
+			var sel_week_of_full_weeks_from_end_string = number_strings[sel_week_of_full_weeks_from_end];
+
+			var temp_recurr_event_type_strings = new Array();
+			var rtypeInx = 0;
+			for( rtypeInx = 0; rtypeInx < 13; rtypeInx++ )
+			{
+				temp_recurr_event_type_strings[rtypeInx] = recurr_event_type_strings[rtypeInx];
+			}
+			temp_recurr_event_type_strings[1] = temp_recurr_event_type_strings[1].replace(/\[Xth\]/g, sel_day_string);
+			temp_recurr_event_type_strings[1] = temp_recurr_event_type_strings[1].replace(/\[Month Name\]/g, sel_month_string);
+			temp_recurr_event_type_strings[1] = temp_recurr_event_type_strings[1].replace(/\[Y\]/g, y_string);
+
+			temp_recurr_event_type_strings[2] = temp_recurr_event_type_strings[2].replace(/\[Xth\]/g, sel_week_string);
+			temp_recurr_event_type_strings[2] = temp_recurr_event_type_strings[2].replace(/\[Weekday Name\]/g, sel_week_day_string);
+			temp_recurr_event_type_strings[2] = temp_recurr_event_type_strings[2].replace(/\[Month Name\]/g, sel_month_string);
+			temp_recurr_event_type_strings[2] = temp_recurr_event_type_strings[2].replace(/\[Y\]/g, y_string);
+
+			temp_recurr_event_type_strings[3] = temp_recurr_event_type_strings[3].replace(/\[Xth\]/g, sel_week_of_full_weeks_string);
+			temp_recurr_event_type_strings[3] = temp_recurr_event_type_strings[3].replace(/\[Weekday Name\]/g, sel_week_day_string);
+			temp_recurr_event_type_strings[3] = temp_recurr_event_type_strings[3].replace(/\[Month Name\]/g, sel_month_string);
+			temp_recurr_event_type_strings[3] = temp_recurr_event_type_strings[3].replace(/\[Y\]/g, y_string);
+
+			temp_recurr_event_type_strings[4] = temp_recurr_event_type_strings[4].replace(/\[Xth\]/g, sel_week_from_end_string);
+			temp_recurr_event_type_strings[4] = temp_recurr_event_type_strings[4].replace(/\[Weekday Name\]/g, sel_week_day_string);
+			temp_recurr_event_type_strings[4] = temp_recurr_event_type_strings[4].replace(/\[Month Name\]/g, sel_month_string);
+			temp_recurr_event_type_strings[4] = temp_recurr_event_type_strings[4].replace(/\[Y\]/g, y_string);
+
+			temp_recurr_event_type_strings[5] = temp_recurr_event_type_strings[5].replace(/\[Xth\]/g, sel_week_of_full_weeks_from_end_string);
+			temp_recurr_event_type_strings[5] = temp_recurr_event_type_strings[5].replace(/\[Weekday Name\]/g, sel_week_day_string);
+			temp_recurr_event_type_strings[5] = temp_recurr_event_type_strings[5].replace(/\[Month Name\]/g, sel_month_string);
+			temp_recurr_event_type_strings[5] = temp_recurr_event_type_strings[5].replace(/\[Y\]/g, y_string);
+
+			temp_recurr_event_type_strings[6] = temp_recurr_event_type_strings[6].replace(/\[Xth\]/g, sel_day_string);
+			temp_recurr_event_type_strings[6] = temp_recurr_event_type_strings[6].replace(/\[Y\]/g, y_string);
+
+			temp_recurr_event_type_strings[7] = temp_recurr_event_type_strings[7].replace(/\[Xth\]/g, sel_week_string);
+			temp_recurr_event_type_strings[7] = temp_recurr_event_type_strings[7].replace(/\[Weekday Name\]/g, sel_week_day_string);
+			temp_recurr_event_type_strings[7] = temp_recurr_event_type_strings[7].replace(/\[Y\]/g, y_string);
+
+			temp_recurr_event_type_strings[8] = temp_recurr_event_type_strings[8].replace(/\[Xth\]/g, sel_week_of_full_weeks_string);
+			temp_recurr_event_type_strings[8] = temp_recurr_event_type_strings[8].replace(/\[Weekday Name\]/g, sel_week_day_string);
+			temp_recurr_event_type_strings[8] = temp_recurr_event_type_strings[8].replace(/\[Y\]/g, y_string);
+
+			temp_recurr_event_type_strings[9] = temp_recurr_event_type_strings[9].replace(/\[Xth\]/g, sel_week_from_end_string);
+			temp_recurr_event_type_strings[9] = temp_recurr_event_type_strings[9].replace(/\[Weekday Name\]/g, sel_week_day_string);
+			temp_recurr_event_type_strings[9] = temp_recurr_event_type_strings[9].replace(/\[Y\]/g, y_string);
+
+			temp_recurr_event_type_strings[10] = temp_recurr_event_type_strings[10].replace(/\[Xth\]/g, sel_week_of_full_weeks_from_end_string);
+			temp_recurr_event_type_strings[10] = temp_recurr_event_type_strings[10].replace(/\[Weekday Name\]/g, sel_week_day_string);
+			temp_recurr_event_type_strings[10] = temp_recurr_event_type_strings[10].replace(/\[Y\]/g, y_string);
+
+			temp_recurr_event_type_strings[11] = temp_recurr_event_type_strings[11].replace(/\[Weekday Name\]/g, sel_week_day_string);
+			temp_recurr_event_type_strings[11] = temp_recurr_event_type_strings[11].replace(/\[Y\]/g, y_string);
+
+			temp_recurr_event_type_strings[12] = temp_recurr_event_type_strings[12].replace(/\[Y\]/g, y_string);
+
+			for( rtypeInx = 1; rtypeInx < 13; rtypeInx++ )
+			{
+				freq_type.options[rtypeInx-1].innerHTML = temp_recurr_event_type_strings[rtypeInx];
+			}
+	  }
+	<!-- ELSE -->
+	function update_recurring_options()
+	{
+		/* do nothing here */
+	}
+	<!-- ENDIF -->
+	function update_recurring_end_date_opts( currVal )
+	{
+		var endD = document.getElementById('calRDEnd');
+		var endM = document.getElementById('calRMEnd');
+		var endY = document.getElementById('calRYEnd');
+		if( currVal == 0 )
+		{
+			endD.value = 0;
+			endM.value = 0;
+			endY.value = 0;
+		}
+		else
+		{
+			if( endD.value == 0 )
+			{
+				endD.options[1].selected = true;
+			}
+			if( endM.value == 0 )
+			{
+				endM.options[1].selected = true;
+			}
+			if( endY.value == 0 )
+			{
+				endY.options[1].selected = true;
+			}
+		}
+	}
+  <!-- ENDIF -->
+
+  </script>
+
+  <fieldset class="fields1">
+	<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+
+	<!-- IF S_DELETE_ALLOWED -->
+	<dl>
+		<dt><label for="delete">{L_DELETE_POST}:</label></dt>
+		<dd><label for="delete"><input type="checkbox" name="delete" id="delete" /> {L_DELETE_POST_WARN}</label></dd>
+	</dl>
+	<!-- ENDIF -->
+	<!-- IF S_POST_ACTION -->
+	<dl style="clear: left;">
+		<dt><label for="subject">{L_SUBJECT}:</label></dt>
+		<dd><input type="text" name="subject" id="subject" size="45" maxlength="60" tabindex="2" value="{SUBJECT}" class="inputbox autowidth" /></dd>
+	</dl>
+
+	<!-- IF S_DATE_TIME_OPTS -->
+	<dl style="clear: left;">
+		<dt><label for="calM">{L_START_DATE}:</label></dt>
+		<dd>{MONTH_SEL} {DAY_SEL} {YEAR_SEL}</dd>
+	</dl>
+	<dl style="clear: left;">
+		<dt><label for="calHr">{L_START_TIME}:</label></dt>
+		<dd>{START_HOUR_SEL} {START_MIN_SEL}</dd>
+	</dl>
+	<dl style="clear: left;">
+		<dt><label>{L_ALL_DAY}:</label></dt>
+		<dd>{ALL_DAY_CHECK}</dd>
+	</dl>
+	<dl style="clear: left;">
+		<dt><label for="calMEnd">{L_END_DATE}:</label></dt>
+		<dd>{END_MONTH_SEL} {END_DAY_SEL} {END_YEAR_SEL}</dd>
+	</dl>
+	<dl style="clear: left;">
+		<dt><label for="calHrEnd">{L_END_TIME}:</label></dt>
+		<dd>{END_HOUR_SEL} {END_MIN_SEL}</dd>
+	</dl>
+		<!-- IF S_RECURRING_OPTS -->
+		<dl style="clear: left;">
+			<dt><label>{L_RECURRING_EVENT}:</label></dt>
+			<dd>{RECURRING_EVENT_CHECK}</dd>
+		</dl>
+		<dl style="clear: left;">
+			<dt><label for="calRType">{L_RECURRING_EVENT_TYPE}</label><br />{L_RECURRING_EVENT_TYPE_EXPLAIN}</dt>
+			<dd>{RECURRING_EVENT_TYPE_SEL}</dd>
+		</dl>
+		<dl style="clear: left;">
+			<dt><label for="calRFreq">{L_RECURRING_EVENT_FREQ}</label><br />{L_RECURRING_EVENT_FREQ_EXPLAIN}</dt>
+			<dd>{RECURRING_EVENT_FREQ_IN}</dd>
+		</dl>
+		<dl style="clear: left;">
+			<dt><label for="calMEnd">{L_END_RECURRING_EVENT_DATE}</label></dt>
+			<dd>{END_RECURR_MONTH_SEL} {END_RECURR_DAY_SEL} {END_RECURR_YEAR_SEL}</dd>
+		</dl>
+		<!-- ENDIF -->
+	<!-- ELSE -->
+	<input type="hidden" name="calEditAll" id="calEditAll" value="1">
+	<!-- ENDIF -->
+	<dl style="clear: left;">
+		<dt><label for="calEType">{L_EVENT_TYPE}:</label></dt>
+		<dd>{EVENT_TYPE_SEL}</dd>
+	</dl>
+	<dl style="clear: left;">
+		<dt><label for="calELevel">{L_EVENT_ACCESS_LEVEL}:</label></dt>
+		<dd>{EVENT_ACCESS_LEVEL_SEL}</dd>
+	</dl>
+	<dl style="clear: left;">
+		<dt><label for="calGroupId">{L_EVENT_GROUP}:</label></dt>
+		<dd>{EVENT_GROUP_SEL}</dd>
+	</dl>
+	<!-- IF S_TRACK_RSVPS -->
+	<dl style="clear: left;">
+		<dt><label>{L_TRACK_RSVPS}:</label></dt>
+		<dd>{TRACK_RSVP_CHECK}</dd>
+	</dl>
+		<!-- IF S_ALLOW_GUESTS -->
+		<dl style="clear: left;">
+			<dt><label>{L_ALLOW_GUESTS}:</label></dt>
+			<dd>{ALLOW_GUEST_CHECK}</dd>
+		</dl>
+		<!-- ELSE -->{ALLOW_GUEST_CHECK_HIDDEN}
+		<!-- ENDIF -->
+	<!-- ELSE -->{TRACK_RSVP_CHECK_HIDDEN}{ALLOW_GUEST_CHECK_HIDDEN}
+	<!-- ENDIF -->
+	<!-- ENDIF -->
+
+	<!-- INCLUDE calendar_post_buttons.html -->
+
+	<div id="smiley-box">
+		<!-- IF S_SMILIES_ALLOWED and .smiley -->
+			<strong>{L_SMILIES}</strong><br />
+			<!-- BEGIN smiley -->
+				<a href="#" onclick="insert_text('{smiley.A_SMILEY_CODE}', true); return false;"><img src="{smiley.SMILEY_IMG}" width="{smiley.SMILEY_WIDTH}" height="{smiley.SMILEY_HEIGHT}" alt="{smiley.SMILEY_CODE}" title="{smiley.SMILEY_DESC}" /></a>
+			<!-- END smiley -->
+		<!-- ENDIF -->
+		<!-- IF S_SHOW_SMILEY_LINK and S_SMILIES_ALLOWED-->
+			<br /><a href="{U_MORE_SMILIES}" onclick="window.open('{U_MORE_SMILIES}', '_phpbbsmilies', 'HEIGHT=350,resizable=yes,scrollbars=yes,WIDTH=300'); return false;">{L_MORE_SMILIES}</a>
+		<!-- ENDIF -->
+
+		<!-- IF BBCODE_STATUS -->
+		<!-- IF .smiley --><hr /><!-- ENDIF -->
+		{BBCODE_STATUS}<br />
+		<!-- IF S_BBCODE_ALLOWED -->
+			{IMG_STATUS}<br />
+			{FLASH_STATUS}<br />
+			{URL_STATUS}<br />
+			{SMILIES_STATUS}
+		<!-- ENDIF -->
+		<!-- ENDIF -->
+	</div>
+
+	<div id="message-box">
+		<textarea name="message" id="message" rows="15" cols="76" tabindex="3" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" class="inputbox">{MESSAGE}</textarea>
+	</div>
+</fieldset>
+
+

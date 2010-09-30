@@ -1,0 +1,13 @@
+Subject: An event has been updated in the calendar
+
+Dear {USERNAME},
+
+The event "{EVENT_SUBJECT}" has been updated in the calendar.
+
+To view this event please visit the following link:
+{U_EVENT}
+
+If you no longer wish to recieve emails about this event click here:
+{U_UNWATCH_EVENT}
+
+{EMAIL_SIG}

@@ -1,0 +1,119 @@
+<!-- INCLUDE overall_header.html -->
+
+<script type="text/javascript">
+		/**
+		* Activate/Deactivate move types
+		*/
+		function update_action_status()
+		{
+			if( document.calsettings.disp_week.checked )
+			{
+				document.calsettings.disp_next_events.disabled = true;
+			}
+			else
+			{
+				document.calsettings.disp_next_events.disabled = false;
+			}
+		}
+	</script>
+
+	<a href="{U_BACK}" style="float: {S_CONTENT_FLOW_END};">&laquo; {L_BACK}</a>
+
+	<h1>{L_ACP_CALENDAR_SETTINGS}</h1>
+
+	<p>{L_CALENDAR_SETTINGS_EXPLAIN}</p>
+
+	<!-- IF S_ERROR -->
+		<div class="errorbox">
+			<h3>{L_WARNING}</h3>
+			<p>{ERROR_MSG}</p>
+		</div>
+	<!-- ENDIF -->
+
+	<form id="calsettings" name="calsettings" method="post" action="{U_ACTION}">
+
+	<fieldset>
+		<legend>{L_SETTINGS}</legend>
+	<dl>
+		<dt><label>{L_FIRST_DAY}:</label><br />{L_FIRST_DAY_EXPLAIN}</dt>
+		<dd><select name="first_day" id="first_day">
+		  <option value="0" {SEL_SUNDAY}>{L_SUNDAY}</option>
+		  <option value="1" {SEL_MONDAY}>{L_MONDAY}</option>
+		  <option value="2" {SEL_TUESDAY}>{L_TUESDAY}</option>
+		  <option value="3" {SEL_WEDNESDAY}>{L_WEDNESDAY}</option>
+		  <option value="4" {SEL_THURSDAY}>{L_THURSDAY}</option>
+		  <option value="5" {SEL_FRIDAY}>{L_FRIDAY}</option>
+		  <option value="6" {SEL_SATURDAY}>{L_SATURDAY}</option>
+		  </select>
+		</dd>
+	</dl>
+		<dl>
+			<dt><label>{L_DISPLAY_FIRST_WEEK}:</label><br />{L_DISPLAY_FIRST_WEEK_EXPLAIN}</dt>
+			<dd><input type="checkbox" id="disp_week" name="disp_week" value="1" {DISP_WEEK_CHECKED} onclick="update_action_status()" /></dd>
+		</dl>
+		<dl>
+			<dt><label>{L_DISPLAY_NEXT_EVENTS}:</label><br />{L_DISPLAY_NEXT_EVENTS_EXPLAIN}</dt>
+			<dd><input type="text" name="disp_next_events" id="disp_next_events" value="{DISP_NEXT_EVENTS}" {DISP_NEXT_EVENTS_DISABLED} /></dd>
+		</dl>
+		<dl>
+			<dt><label>{L_DISPLAY_12_OR_24_HOURS}:</label><br />{L_DISPLAY_12_OR_24_HOURS_EXPLAIN}</dt>
+			<dd><select name="hour_mode" id="hour_mode">
+			  <option value="12" {SEL_12_HOURS}>{L_12_HOURS}</option>
+			  <option value="24" {SEL_24_HOURS}>{L_24_HOURS}</option>
+			  </select>
+		</dd>
+		</dl>
+		<dl>
+			<dt><label>{L_DISPLAY_TRUNCATED_SUBJECT}:</label><br />{L_DISPLAY_TRUNCATED_SUBJECT_EXPLAIN}</dt>
+			<dd><input type="text" name="disp_trunc" id="disp_trunc" value="{DISP_TRUNCATED}" /></dd>
+		</dl>
+		<dl>
+			<dt><label>{L_DISPLAY_HIDDEN_GROUPS}:</label><br />{L_DISPLAY_HIDDEN_GROUPS_EXPLAIN}</dt>
+			<dd><input type="checkbox" id="disp_hidden_groups" name="disp_hidden_groups" value="1" {DISP_HIDDEN_GROUPS_CHECKED} /></dd>
+		</dl>
+		<dl>
+			<dt><label>{L_DISPLAY_EVENTS_ONLY_1_DAY}:</label><br />{L_DISPLAY_EVENTS_ONLY_1_DAY_EXPLAIN}</dt>
+			<dd><input type="checkbox" id="disp_events_1_day" name="disp_events_1_day" value="1" {DISP_EVENTS_1_DAY_CHECKED} /></dd>
+		</dl>
+		<dl>
+			<dt><label>{L_TIME_FORMAT}:</label><br />{L_TIME_FORMAT_EXPLAIN}</dt>
+			<dd><input type="text" name="time_format" id="time_format" value="{TIME_FORMAT}"/></dd>
+		</dl>
+		<dl>
+			<dt><label>{L_DATE_FORMAT}:</label><br />{L_DATE_FORMAT_EXPLAIN}</dt>
+			<dd><input type="text" name="date_format" id="date_format" value="{DATE_FORMAT}"/></dd>
+		</dl>
+		<dl>
+			<dt><label>{L_DATE_TIME_FORMAT}:</label><br />{L_DATE_TIME_FORMAT_EXPLAIN}</dt>
+			<dd><input type="text" name="date_time_format" id="date_time_format" value="{DATE_TIME_FORMAT}"/></dd>
+		</dl>
+		<dl>
+			<dt><label>{L_AUTO_PRUNE_EVENT_FREQUENCY}:</label><br />{L_AUTO_PRUNE_EVENT_FREQUENCY_EXPLAIN}</dt>
+			<dd><input type="text" name="prune_freq" id="prune_freq" value="{PRUNE_FREQ}" /></dd>
+		</dl>
+		<dl>
+			<dt><label>{L_AUTO_PRUNE_EVENT_LIMIT}:</label><br />{L_AUTO_PRUNE_EVENT_LIMIT_EXPLAIN}</dt>
+			<dd><input type="text" name="prune_limit" id="prune_limit" value="{PRUNE_LIMIT}" /></dd>
+		</dl>
+		<dl>
+			<dt><label>{L_AUTO_POPULATE_EVENT_FREQUENCY}:</label><br />{L_AUTO_POPULATE_EVENT_FREQUENCY_EXPLAIN}</dt>
+			<dd><input type="text" name="populate_freq" id="populate_freq" value="{POPULATE_FREQ}" /></dd>
+		</dl>
+		<dl>
+			<dt><label>{L_AUTO_POPULATE_EVENT_LIMIT}:</label><br />{L_AUTO_POPULATE_EVENT_LIMIT_EXPLAIN}</dt>
+			<dd><input type="text" name="populate_limit" id="populate_limit" value="{POPULATE_LIMIT}" /></dd>
+		</dl>
+		<dl>
+			<dt><label>{L_CLICK_PLUS_HOUR}:</label><br />{L_CLICK_PLUS_HOUR_EXPLAIN}</dt>
+			<dd><a href="{U_PLUS_HOUR}">{L_PLUS_HOUR}</a><br>
+			<a href="{U_MINUS_HOUR}">{L_MINUS_HOUR}</a></dd>
+		</dl>
+	<p class="quick">
+		<input class="button1" type="submit" name="update" value="{L_SUBMIT}" />
+	</p>
+	{S_FORM_TOKEN}
+	</fieldset>
+	</form>
+
+
+<!-- INCLUDE overall_footer.html -->
