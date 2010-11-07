@@ -32,10 +32,11 @@ class acp_raidplanner_info
 	{
 		return array(
 			'filename'	=> 'acp_raidplanner',
-			'title'		=> 'ACP_RPLAN_MAINPAGE',
+			'title'		=> 'ACP_RAIDPLANNER',
 			'version'	=> '0.0.1',
 			'modes'		=> array(
-				'config'	=> array('title' => 'RP_CONFIG',  'display' => 1, 'auth' => 'acl_a_raid_config', 'cat' => array('ACP_CAT_RPLAN')),
+				'rp_settings'	=> array('title' => 'ACP_RAIDPLANNER',  'display' => true, 
+									'auth' => 'acl_a_raid_config', 'cat' => array('ACP_CAT_RAIDPLANNER')),
 		),
 		);
 	}

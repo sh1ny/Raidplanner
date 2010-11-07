@@ -25,8 +25,8 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'ACP_CAT_RPLAN' 		=> 'Raidplanner',
-	'ACP_RPLAN_MAINPAGE'  	=> 'Settings', 	
+	'ACP_RAIDPLANNER' 		=> 'Raidplanner',
+	'ACP_RAIDPLANNER_SETTINGS'  	=> 'Settings', 	
 ));
 
 ?>

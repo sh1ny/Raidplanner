@@ -1,0 +1,212 @@
+<!-- INCLUDE overall_header.html -->
+<!--
+ RaidTracker ACP html
+ @package bbDkp.acp
+ @copyright (c) 2009 bbDkp <http://code.google.com/p/bbdkp/>
+ @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ @version $Id$
+//-->
+<h1>{L_RTSETTINGS}</h1>
+<p>{L_RTSETTINGS_EXPLAIN}</p>
+
+<style type="text/css" >
+fieldset 
+{
+	background :transparent url(../images/bg_tabs_alt2.gif) no-repeat scroll 100% -35px; 
+	/*border-color:#D7D7D7 #CCCCCC #CCCCCC #D7D7D7;*/
+	border-style:solid;
+	border-width:0	px;
+	margin:15px 0;
+	padding:10px;
+	position:relative;
+}
+fieldset dt {
+	width: 55%;
+	text-align: left;
+	border: none;
+	border-right: 1px solid #CCCCCC;
+	padding-top: 3px;
+}
+
+fieldset dd {
+	margin: 0 0 0 55%;
+	padding: 0 0 0 5px;
+	border: none;
+	border-left: 1px solid #CCCCCC;
+	vertical-align: top;
+	font-size: 1.00em;
+}
+
+</style>
+
+<fieldset>
+	<div id="advanced00">
+		<div class="permissions-category">
+		<ul>
+		<li class="permissions-preset-never activetab">
+		<a href="{U_MANAGE_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RT_ADMINMENU_SETTINGS}</span></a></li>	
+		<li class="permissions-preset-yes">
+		<a href="{U_EVENT_TRIGGER}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RT_ADMINMENU_EVENT_TRIGGERS}</span></a></li>	
+		<li class="permissions-preset-yes">
+		<a href="{U_ADDOWNRAIDS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RT_ADMINMENU_OWN_RAIDS}</span></a></li>	
+		<li class="permissions-preset-yes">
+		<a href="{U_RAIDNOTETRIGGERS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RT_ADMINMENU_RAID_NOTE_TRIGGERS}</span></a></li>	
+		<li class="permissions-preset-yes">
+		<a href="{U_ALIASES}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RT_ALIASES}</span></a></li>	
+		<li class="permissions-preset-yes">
+		<a href="{U_ADDITEMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RT_ADMINMENU_ADD_ITEMS}</span></a></li>	
+		<li class="permissions-preset-yes">
+		<a href="{U_IGNOREITEM}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RT_ADMINMENU_IGNORE_ITEMS}</span></a></li>	
+		</ul>
+	</div>
+			
+<div class="permissions-panel" id="options001">
+<span class="corners-top"><span></span></span>
+
+<form method="post" action="{F_CONFIG}" name="post">
+		
+<div class="tablewrap">
+
+
+ <fieldset>
+			  <legend>{L_RT_STEP1_PAGETITLE}</legend>
+
+
+<!--  not used atm
+<dl>
+<dt>  
+  	<label for="event_trigger">{L_RT_EVENT_TRIGGER}:</label>
+  	{L_RT_EVENT_TRIGGER_EXPLAIN}
+  	</dt>
+  	<dd>
+	    <input name="event_trigger" type="checkbox" id="event_trigger" value="Y" {EVENT_TRIGGER} />
+    </dd>
+</dl> 
+
+-->
+
+
+	<dl><dt> 
+      <label for="min_item_quality">{L_RT_MIN_QUALITY}:</label>
+      <br />{L_RT_MIN_QUALITY_EXPLAIN}
+      </dt>
+      <dd>
+      <select name="min_item_quality" class="input" id="min_item_quality">
+        <!-- BEGIN quality_row -->
+        <option value="{quality_row.VALUE}"{quality_row.SELECTED}>{quality_row.OPTION}</option>
+        <!-- END quality_row -->
+      </select>
+	  </dd>
+
+</dl> 		  
+
+<dl><dt>    
+  <label for="replacealtnames">{L_RT_ALTREPLACE}:</label>
+  <br />{L_RT_ALTREPLACE_EXPLAIN}</dt><dd>
+  <input name="replacealtnames" type="checkbox" id="create_start_raid" value="Y" {REPLACEALTS} />
+  </dd>
+ </dl> 
+
+
+<dl><dt>   
+   <label for="default_dkp">{L_RT_DEFAULT_DKP}:</label>
+    <br />{L_RT_DEFAULT_DKP_EXPLAIN}
+   </dt><dd>
+     <input type="text" name="default_dkp" id="default_dkp" size="10" maxlength="3" value="{DEFAULT_DKP}" class="input" />
+      {FV_DEFAULT_DKP}
+   </dd>
+</dl> 
+
+
+
+<dl><dt>    
+    <label for="attendance_filter">{L_RT_ATTENDANCE_FILTER}:</label>
+    <br />{L_RT_ATTENDANCE_FILTER_EXPLAIN}
+    </dt><dd>
+    <select name="attendance_filter" class="input" id="attendance_filter">
+        <!-- BEGIN attendance_row -->
+        <option value="{attendance_row.VALUE}"{attendance_row.SELECTED}>{attendance_row.OPTION}</option>
+        <!-- END attendance_row -->
+		</select>
+		</dd>
+</dl> 
+
+
+
+<dl><dt>   
+    <label for="ignored_looter">{L_RT_IGNORED_LOOTER}:</label>
+     <br />{L_RT_IGNORED_LOOTER_EXPLAIN}
+    </dt><dd>
+    <input type="text" name="ignored_looter" id="ignored_looter" size="20" maxlength="30" value="{IGNORED_LOOTER}" class="input" />
+    </dd>
+</dl> 
+
+
+
+</fieldset>
+			
+			
+			
+			
+			
+ <fieldset>
+			  <legend>{L_RT_STEP2_PAGETITLE}</legend>
+			  
+
+<dl><dt>  
+     <label for="add_loot_dkp">{L_RT_ADD_LOOT_DKP}:</label>
+     <br />{L_RT_ADD_LOOT_DKP_EXPLAIN}
+     </dt>
+     <dd>
+     <input name="add_loot_dkp" type="checkbox" id="add_loot_dkp" value="Y" {ADD_LOOT_DKP}  />
+ 		 </dd>
+</dl> 
+
+
+<dl><dt>   
+	<label for="starting_dkp">{L_RT_STARTING_DKP}:</label>
+    <br />{L_RT_STARTING_DKP_EXPLAIN}
+	</dt><dd>
+  <input type="text" name="starting_dkp" id="starting_dkp" size="10" maxlength="10" value="{STARTING_DKP}" class="input" />
+  {FV_STARTING_DKP}
+  </dd>
+  <dd></dd>
+</dl> 
+
+<dl><dt>   
+	<label for="starting_dkp">{L_RT_DKPHOUR}:</label>
+    <br />{L_RT_DKPHOUR_EXPLAIN}
+	</dt><dd>
+  <input type="text" name="dkphour" id="dkphour" size="10" maxlength="10" value="{DKPHOUR}" class="input" />
+  </dd>
+  <dd></dd>
+</dl> 
+
+<dl>
+    <dt><label>{L_RT_BOSSRAID}</label><br />{L_RT_BOSSRAID_EXPLAIN}</dt>
+    <dd>
+    	<input type="radio" name="bossraid" value="1"{BOSSRAID_YES_CHECKED} >&nbsp;{L_RT_BOSSRAID_YES}&nbsp;
+    	<input type="radio" name="bossraid" value="0"{BOSSRAID_NO_CHECKED}>&nbsp;{L_RT_BOSSRAID_NO}
+     </dd>
+</dl>
+
+
+
+</fieldset>  
+
+
+<fieldset class="quick">
+    <input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+    <input type="reset" name="reset" value="{L_RESET}" class="button2" />
+</fieldset>
+
+
+</form>
+
+<span class="corners-bottom"><span></span></span>
+</div>
+
+</fieldset>
+
+
+<!-- INCLUDE dkp/overall_footer.html -->

@@ -50,12 +50,12 @@ $mod_name = 'Raidplanner';
 * The name of the config variable which will hold the currently installed version
 * You do not need to set this yourself, UMIL will handle setting and updating the version itself.
 */
-$version_config_name = 'bbdkp_plugin_rp_version';
+$version_config_name = 'bbdkp_raidplanner';
 
 /*
 * The language file which will be included when installing
 */
-$language_file = 'mods/raidplanner_lang';
+$language_file = 'mods/raidplanner';
 
 /*
 * Optionally we may specify our own logo image to show in the upper corner instead of the default logo.
@@ -87,15 +87,6 @@ $versions = array(
     
     '0.0.1'    => array(
 
-		'module_add' => array(
-            array('acp', 0, 'ACP_CAT_RPLAN'),
-            array('acp', 'ACP_CAT_RPLAN', 'ACP_RPLAN_MAINPAGE'),
-            array('acp', 'ACP_RPLAN_MAINPAGE', array(
-           		 'module_basename' => 'raidplanner',
-            	 'modes'           => array('rp_settings') ,
-        		),
-        	 )), 
-     	
       	// raid permission
 	   'permission_add' => array(
             /* admin */
@@ -303,10 +294,20 @@ $versions = array(
 
 			/* end user pemissions */ 
 
-						
-			
         ),
-
+        
+		'module_add' => array(
+            array('acp', 0, 'ACP_CAT_RAIDPLANNER'),
+            
+            array('acp', 'ACP_CAT_RAIDPLANNER', 'ACP_RAIDPLANNER'),
+            
+            array('acp', 'ACP_RAIDPLANNER', array(
+           		 'module_basename' => 'raidplanner',
+            	 'modes'           => array('rp_settings') ,
+        		),
+        	 )), 
+     	
+        	 
         'custom' => array('bbdkp_caches'),
         
         ),

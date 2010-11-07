@@ -25,12 +25,12 @@ class acp_raidplanner
 	{
 		global $db, $user, $auth, $template, $sid, $cache;
 		global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
-		$user->add_lang ( array ('mods/raidplanner_lang' ));
+		$user->add_lang ( array ('mods/raidplanner' ));
         switch ($mode) 
 		{
 			case 'rp_settings' :
     				$this->tpl_name = 'dkp/acp_' . $mode;
-					$this->page_title = $user->lang ['ACP_RPLAN_MAINPAGE'];
+					$this->page_title = $user->lang ['ACP_RAIDPLANNER_SETTINGS'];
 				break;
 		}
 	}
