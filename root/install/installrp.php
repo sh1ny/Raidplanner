@@ -126,37 +126,35 @@ $versions = array(
 			
 			/* moderator pemissions */
 			// allows editing other peoples events
-			array('ROLE_ADMIN_FULL', 'm_calendar_edit_other_users_events'),
-			array('ROLE_ADMIN_FORUM', 'm_calendar_edit_other_users_events'),
-			array('ROLE_ADMIN_STANDARD', 'm_calendar_edit_other_users_events'),
-			array('ROLE_ADMIN_USERGROUP', 'm_calendar_edit_other_users_events'),
-			array('ROLE_MOD_FULL', 'm_calendar_edit_other_users_events'),
-			array('ROLE_MOD_QUEUE', 'm_calendar_edit_other_users_events'),
-			array('ROLE_MOD_SIMPLE', 'm_calendar_edit_other_users_events'),
-			array('ROLE_MOD_STANDARD', 'm_calendar_edit_other_users_events'),
+			array('ROLE_ADMIN_FULL', 'm_raidplanner_edit_other_users_events'),
+			array('ROLE_ADMIN_FORUM', 'm_raidplanner_edit_other_users_events'),
+			array('ROLE_ADMIN_STANDARD', 'm_raidplanner_edit_other_users_events'),
+			array('ROLE_ADMIN_USERGROUP', 'm_raidplanner_edit_other_users_events'),
+			array('ROLE_MOD_FULL', 'm_raidplanner_edit_other_users_events'),
+			array('ROLE_MOD_QUEUE', 'm_raidplanner_edit_other_users_events'),
+			array('ROLE_MOD_SIMPLE', 'm_raidplanner_edit_other_users_events'),
+			array('ROLE_MOD_STANDARD', 'm_raidplanner_edit_other_users_events'),
 				
 			
 			// allows deleting other peoples events
-			array('ROLE_ADMIN_FULL', 'm_calendar_delete_other_users_events'),
-			array('ROLE_ADMIN_FORUM', 'm_calendar_delete_other_users_events'),
-			array('ROLE_ADMIN_STANDARD', 'm_calendar_delete_other_users_events'),
-			array('ROLE_ADMIN_USERGROUP', 'm_calendar_delete_other_users_events'),
-			array('ROLE_MOD_FULL', 'm_calendar_delete_other_users_events'),
-			array('ROLE_MOD_QUEUE', 'm_calendar_delete_other_users_events'),
-			array('ROLE_MOD_SIMPLE', 'm_calendar_delete_other_users_events'),
-			array('ROLE_MOD_STANDARD', 'm_calendar_delete_other_users_events'),
+			array('ROLE_ADMIN_FULL', 'm_raidplanner_delete_other_users_events'),
+			array('ROLE_ADMIN_FORUM', 'm_raidplanner_delete_other_users_events'),
+			array('ROLE_ADMIN_STANDARD', 'm_raidplanner_delete_other_users_events'),
+			array('ROLE_ADMIN_USERGROUP', 'm_raidplanner_delete_other_users_events'),
+			array('ROLE_MOD_FULL', 'm_raidplanner_delete_other_users_events'),
+			array('ROLE_MOD_QUEUE', 'm_raidplanner_delete_other_users_events'),
+			array('ROLE_MOD_SIMPLE', 'm_raidplanner_delete_other_users_events'),
+			array('ROLE_MOD_STANDARD', 'm_raidplanner_delete_other_users_events'),
 							
-			
-			
 			// allows editing other peoples rsvp
-			array('ROLE_ADMIN_FULL', 'm_calendar_edit_other_users_rsvps'),
-			array('ROLE_ADMIN_FORUM', 'm_calendar_edit_other_users_rsvps'),
-			array('ROLE_ADMIN_STANDARD', 'm_calendar_edit_other_users_rsvps'),
-			array('ROLE_ADMIN_USERGROUP', 'm_calendar_edit_other_users_rsvps'),
-			array('ROLE_MOD_FULL', 'm_calendar_edit_other_users_rsvps'),
-			array('ROLE_MOD_QUEUE', 'm_calendar_edit_other_users_rsvps'),
-			array('ROLE_MOD_SIMPLE', 'm_calendar_edit_other_users_rsvps'),
-			array('ROLE_MOD_STANDARD', 'm_calendar_edit_other_users_rsvps'),			
+			array('ROLE_ADMIN_FULL', 'm_raidplanner_edit_other_users_rsvps'),
+			array('ROLE_ADMIN_FORUM', 'm_raidplanner_edit_other_users_rsvps'),
+			array('ROLE_ADMIN_STANDARD', 'm_raidplanner_edit_other_users_rsvps'),
+			array('ROLE_ADMIN_USERGROUP', 'm_raidplanner_edit_other_users_rsvps'),
+			array('ROLE_MOD_FULL', 'm_raidplanner_edit_other_users_rsvps'),
+			array('ROLE_MOD_QUEUE', 'm_raidplanner_edit_other_users_rsvps'),
+			array('ROLE_MOD_SIMPLE', 'm_raidplanner_edit_other_users_rsvps'),
+			array('ROLE_MOD_STANDARD', 'm_raidplanner_edit_other_users_rsvps'),			
 			
 			
 			/*user permissions */
