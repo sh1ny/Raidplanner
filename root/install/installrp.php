@@ -55,7 +55,7 @@ $version_config_name = 'bbdkp_plugin_rp_version';
 /*
 * The language file which will be included when installing
 */
-$language_file = 'mods/dkp_rplanner';
+$language_file = 'mods/raidplanner_lang';
 
 /*
 * Optionally we may specify our own logo image to show in the upper corner instead of the default logo.
@@ -70,7 +70,6 @@ $language_file = 'mods/dkp_rplanner';
 $options = array(
 );
 
-
 /*
 * The array of versions and actions within each.
 * You do not need to order it a specific way (it will be sorted automatically), however, you must enter every version, even if no actions are done for it.
@@ -78,48 +77,244 @@ $options = array(
 * You must use correct version numbering.  Unless you know exactly what you can use, only use X.X.X (replacing X with an integer).
 * The version numbering must otherwise be compatible with the version_compare function - http://php.net/manual/en/function.version-compare.php
 */
-$bbdkp_table_prefix = "bbeqdkp_";
 
 /***************************************************************
  * 
- * Welcome to the bbtips installer
+ * Welcome to the raidplanner installer
  * 
 ****************************************************************/
-
 $versions = array(
     
     '0.0.1'    => array(
 
-     // Lets add global config settings
-	'config_add' => array(
+		'module_add' => array(
+            array('acp', 0, 'ACP_CAT_RPLAN'),
+            array('acp', 'ACP_CAT_RPLAN', 'ACP_RPLAN_MAINPAGE'),
+            array('acp', 'ACP_RPLAN_MAINPAGE', array(
+           		 'module_basename' => 'raidplanner',
+            	 'modes'           => array('rp_settings') ,
+        		),
+        	 )), 
+     	
+      	// raid permission
+	   'permission_add' => array(
+            /* admin */
+        	 array('a_raid_config', true),
+			/* mod */
+            array('m_calendar_edit_other_users_events', true),
+            array('m_calendar_delete_other_users_events', true),
+            array('m_calendar_edit_other_users_rsvps', true),
+            /* user */
+            array('u_raidplanner_view_headcount', true),
+            array('u_u_raidplanner_view_events', true),
+            array('u_raidplanner_view_detailed_rsvps', true),
+            array('u_raidplanner_create_events', true),
+            array('u_raidplanner_create_public_events', true),
+            array('u_raidplanner_create_group_events', true),
+            array('u_raidplanner_create_private_events', true),
+            array('u_raidplanner_track_rsvps', true),
+            array('u_raidplanner_allow_guests', true),
+            array('u_raidplanner_create_recurring_events', true),
+            array('u_raidplanner_edit_events', true),
+            array('u_raidplanner_delete_events', true),
+      	),
+      	
+		  // Assign default permissions 
+        'permission_set' => array(
+      	
+			//may configure raidplanner
+			array('ROLE_ADMIN_FULL', 'a_raid_config'),
+			array('ROLE_ADMIN_FORUM', 'a_raid_config'),
+			array('ROLE_ADMIN_STANDARD', 'a_raid_config'),
+			array('ROLE_ADMIN_USERGROUP', 'a_raid_config'),
+			array('ROLE_MOD_FULL', 'a_raid_config'),
+			array('ROLE_MOD_QUEUE', 'a_raid_config'),
+			array('ROLE_MOD_SIMPLE', 'a_raid_config'),
+			array('ROLE_MOD_STANDARD', 'a_raid_config'),
+			
+			
+			/* moderator pemissions */
+			// allows editing other peoples events
+			array('ROLE_ADMIN_FULL', 'm_calendar_edit_other_users_events'),
+			array('ROLE_ADMIN_FORUM', 'm_calendar_edit_other_users_events'),
+			array('ROLE_ADMIN_STANDARD', 'm_calendar_edit_other_users_events'),
+			array('ROLE_ADMIN_USERGROUP', 'm_calendar_edit_other_users_events'),
+			array('ROLE_MOD_FULL', 'm_calendar_edit_other_users_events'),
+			array('ROLE_MOD_QUEUE', 'm_calendar_edit_other_users_events'),
+			array('ROLE_MOD_SIMPLE', 'm_calendar_edit_other_users_events'),
+			array('ROLE_MOD_STANDARD', 'm_calendar_edit_other_users_events'),
+				
+			
+			// allows deleting other peoples events
+			array('ROLE_ADMIN_FULL', 'm_calendar_delete_other_users_events'),
+			array('ROLE_ADMIN_FORUM', 'm_calendar_delete_other_users_events'),
+			array('ROLE_ADMIN_STANDARD', 'm_calendar_delete_other_users_events'),
+			array('ROLE_ADMIN_USERGROUP', 'm_calendar_delete_other_users_events'),
+			array('ROLE_MOD_FULL', 'm_calendar_delete_other_users_events'),
+			array('ROLE_MOD_QUEUE', 'm_calendar_delete_other_users_events'),
+			array('ROLE_MOD_SIMPLE', 'm_calendar_delete_other_users_events'),
+			array('ROLE_MOD_STANDARD', 'm_calendar_delete_other_users_events'),
+							
+			
+			
+			// allows editing other peoples rsvp
+			array('ROLE_ADMIN_FULL', 'm_calendar_edit_other_users_rsvps'),
+			array('ROLE_ADMIN_FORUM', 'm_calendar_edit_other_users_rsvps'),
+			array('ROLE_ADMIN_STANDARD', 'm_calendar_edit_other_users_rsvps'),
+			array('ROLE_ADMIN_USERGROUP', 'm_calendar_edit_other_users_rsvps'),
+			array('ROLE_MOD_FULL', 'm_calendar_edit_other_users_rsvps'),
+			array('ROLE_MOD_QUEUE', 'm_calendar_edit_other_users_rsvps'),
+			array('ROLE_MOD_SIMPLE', 'm_calendar_edit_other_users_rsvps'),
+			array('ROLE_MOD_STANDARD', 'm_calendar_edit_other_users_rsvps'),			
+			
+			
+			/*user permissions */
+			// view raid participation		
+            array('ROLE_ADMIN_FULL', 'u_raidplanner_view_headcount'),
+			array('ROLE_ADMIN_FORUM', 'u_raidplanner_view_headcount'),
+			array('ROLE_ADMIN_STANDARD', 'u_raidplanner_view_headcount'),
+			array('ROLE_ADMIN_USERGROUP', 'u_raidplanner_view_headcount'),
+			array('ROLE_MOD_FULL', 'u_raidplanner_view_headcount'),
+			array('ROLE_MOD_QUEUE', 'u_raidplanner_view_headcount'),
+			array('ROLE_MOD_SIMPLE', 'u_raidplanner_view_headcount'),
+			array('ROLE_MOD_STANDARD', 'u_raidplanner_view_headcount'),
+			array('ROLE_USER_FULL', 'u_raidplanner_view_headcount'),
+			
+			// allows viewing raids
+			array('ROLE_ADMIN_FULL', 'u_u_raidplanner_view_events'),
+			array('ROLE_ADMIN_FORUM', 'u_u_raidplanner_view_events'),
+			array('ROLE_ADMIN_STANDARD', 'u_u_raidplanner_view_events'),
+			array('ROLE_ADMIN_USERGROUP', 'u_u_raidplanner_view_events'),
+			array('ROLE_MOD_FULL', 'u_u_raidplanner_view_events'),
+			array('ROLE_MOD_QUEUE', 'u_u_raidplanner_view_events'),
+			array('ROLE_MOD_SIMPLE', 'u_u_raidplanner_view_events'),
+			array('ROLE_MOD_STANDARD', 'u_u_raidplanner_view_events'),
+			array('ROLE_USER_FULL', 'u_u_raidplanner_view_events'),
+			
+			// allows viewing who rsvp back
+			array('ROLE_ADMIN_FULL', 'u_raidplanner_view_detailed_rsvps'),
+			array('ROLE_ADMIN_FORUM', 'u_raidplanner_view_detailed_rsvps'),
+			array('ROLE_ADMIN_STANDARD', 'u_raidplanner_view_detailed_rsvps'),
+			array('ROLE_ADMIN_USERGROUP', 'u_raidplanner_view_detailed_rsvps'),
+			array('ROLE_MOD_FULL', 'u_raidplanner_view_detailed_rsvps'),
+			array('ROLE_MOD_QUEUE', 'u_raidplanner_view_detailed_rsvps'),
+			array('ROLE_MOD_SIMPLE', 'u_raidplanner_view_detailed_rsvps'),
+			array('ROLE_MOD_STANDARD', 'u_raidplanner_view_detailed_rsvps'),
+			array('ROLE_USER_FULL', 'u_raidplanner_view_detailed_rsvps'),
+			
+			// allows creating raids
+			array('ROLE_ADMIN_FULL', 'u_raidplanner_create_events'),
+			array('ROLE_ADMIN_FORUM', 'u_raidplanner_create_events'),
+			array('ROLE_ADMIN_STANDARD', 'u_raidplanner_create_events'),
+			array('ROLE_ADMIN_USERGROUP', 'u_raidplanner_create_events'),
+			array('ROLE_MOD_FULL', 'u_raidplanner_create_events'),
+			array('ROLE_MOD_QUEUE', 'u_raidplanner_create_events'),
+			array('ROLE_MOD_SIMPLE', 'u_raidplanner_create_events'),
+			array('ROLE_MOD_STANDARD', 'u_raidplanner_create_events'),
+			array('ROLE_USER_FULL', 'u_raidplanner_create_events'),	
+					
+			// allows public events where every member can subscribe 
+			array('ROLE_ADMIN_FULL', 'u_raidplanner_create_public_events'),
+			array('ROLE_ADMIN_FORUM', 'u_raidplanner_create_public_events'),
+			array('ROLE_ADMIN_STANDARD', 'u_raidplanner_create_public_events'),
+			array('ROLE_ADMIN_USERGROUP', 'u_raidplanner_create_public_events'),
+			array('ROLE_MOD_FULL', 'u_raidplanner_create_public_events'),
+			array('ROLE_MOD_QUEUE', 'u_raidplanner_create_public_events'),
+			array('ROLE_MOD_SIMPLE', 'u_raidplanner_create_public_events'),
+			array('ROLE_MOD_STANDARD', 'u_raidplanner_create_public_events'),
+				
+			
+			// allows group events where only usergroups can subscribe
+			array('ROLE_ADMIN_FULL', 'u_raidplanner_create_group_events'),
+			array('ROLE_ADMIN_FORUM', 'u_raidplanner_create_group_events'),
+			array('ROLE_ADMIN_STANDARD', 'u_raidplanner_create_group_events'),
+			array('ROLE_ADMIN_USERGROUP', 'u_raidplanner_create_group_events'),
+			array('ROLE_MOD_FULL', 'u_raidplanner_create_group_events'),
+			array('ROLE_MOD_QUEUE', 'u_raidplanner_create_group_events'),
+			array('ROLE_MOD_SIMPLE', 'u_raidplanner_create_group_events'),
+			array('ROLE_MOD_STANDARD', 'u_raidplanner_create_group_events'),
+			
+			
+			// allows private events - only for you - eg hairdresser
+			array('ROLE_ADMIN_FULL', 'u_raidplanner_create_private_events'),
+			array('ROLE_ADMIN_FORUM', 'u_raidplanner_create_private_events'),
+			array('ROLE_ADMIN_STANDARD', 'u_raidplanner_create_private_events'),
+			array('ROLE_ADMIN_USERGROUP', 'u_raidplanner_create_private_events'),
+			array('ROLE_MOD_FULL', 'u_raidplanner_create_private_events'),
+			array('ROLE_MOD_QUEUE', 'u_raidplanner_create_private_events'),
+			array('ROLE_MOD_SIMPLE', 'u_raidplanner_create_private_events'),
+			array('ROLE_MOD_STANDARD', 'u_raidplanner_create_private_events'),
+			array('ROLE_USER_FULL', 'u_raidplanner_create_private_events'),				
+			
+			// means that every member *must* say yes or no whether to attend on next login
+			array('ROLE_ADMIN_FULL', 'u_raidplanner_track_rsvps'),
+			array('ROLE_ADMIN_FORUM', 'u_raidplanner_track_rsvps'),
+			array('ROLE_ADMIN_STANDARD', 'u_raidplanner_track_rsvps'),
+			array('ROLE_ADMIN_USERGROUP', 'u_raidplanner_track_rsvps'),
+			array('ROLE_MOD_FULL', 'u_raidplanner_track_rsvps'),
+			array('ROLE_MOD_QUEUE', 'u_raidplanner_track_rsvps'),
+			array('ROLE_MOD_SIMPLE', 'u_raidplanner_track_rsvps'),
+			array('ROLE_MOD_STANDARD', 'u_raidplanner_track_rsvps'),
+								
 
-		// source site
-		array('rp_first_day_of_week', '0', true),
-		array('rp_index_display_week', '0', true),		
-		array('rp_index_display_next_events', '5', true),
-		array('rp_hour_mode', '12', true),
-		array('rp_display_truncated_name', '0', true),
-		array('rp_prune_frequency', '0', true),
-		array('rp_last_prune', '0', true),
-		array('rp_prune_limit', '2592000', true),
-		array('rp_display_hidden_groups', '0', true),
-		array('rp_time_format', 'h:i a', true),
-		array('rp_date_format', 'M d, Y', true),
-		array('rp_date_time_format', 'M d, Y h:i a', true),
-		array('rp_disp_events_only_on_start', '0', true),
-		array('rp_populate_frequency', '86400', true),
-		array('rp_last_populate', '0', true),
-		array('rp_populate_limit', '2592000', true),		
+			// means that you can create a raid with non guild members
+			array('ROLE_ADMIN_FULL', 'u_raidplanner_allow_guests'),
+			array('ROLE_ADMIN_FORUM', 'u_raidplanner_allow_guests'),
+			array('ROLE_ADMIN_STANDARD', 'u_raidplanner_allow_guests'),
+			array('ROLE_ADMIN_USERGROUP', 'u_raidplanner_allow_guests'),
+			array('ROLE_MOD_FULL', 'u_raidplanner_allow_guests'),
+			array('ROLE_MOD_QUEUE', 'u_raidplanner_allow_guests'),
+			array('ROLE_MOD_SIMPLE', 'u_raidplanner_allow_guests'),
+			array('ROLE_MOD_STANDARD', 'u_raidplanner_allow_guests'),
+							
 
-	),
+			// can create events that recur
+			array('ROLE_ADMIN_FULL', 'u_raidplanner_create_recurring_events'),
+			array('ROLE_ADMIN_FORUM', 'u_raidplanner_create_recurring_events'),
+			array('ROLE_ADMIN_STANDARD', 'u_raidplanner_create_recurring_events'),
+			array('ROLE_ADMIN_USERGROUP', 'u_raidplanner_create_recurring_events'),
+			array('ROLE_MOD_FULL', 'u_raidplanner_create_recurring_events'),
+			array('ROLE_MOD_QUEUE', 'u_raidplanner_create_recurring_events'),
+			array('ROLE_MOD_SIMPLE', 'u_raidplanner_create_recurring_events'),
+			array('ROLE_MOD_STANDARD', 'u_raidplanner_create_recurring_events'),
+							
+			
+			// allows editing raids
+			array('ROLE_ADMIN_FULL', 'u_raidplanner_edit_events'),
+			array('ROLE_ADMIN_FORUM', 'u_raidplanner_edit_events'),
+			array('ROLE_ADMIN_STANDARD', 'u_raidplanner_edit_events'),
+			array('ROLE_ADMIN_USERGROUP', 'u_raidplanner_edit_events'),
+			array('ROLE_MOD_FULL', 'u_raidplanner_edit_events'),
+			array('ROLE_MOD_QUEUE', 'u_raidplanner_edit_events'),
+			array('ROLE_MOD_SIMPLE', 'u_raidplanner_edit_events'),
+			array('ROLE_MOD_STANDARD', 'u_raidplanner_edit_events'),
+				
+					
+			// allows deleting your own events
+			array('ROLE_ADMIN_FULL', 'u_raidplanner_delete_events'),
+			array('ROLE_ADMIN_FORUM', 'u_raidplanner_delete_events'),
+			array('ROLE_ADMIN_STANDARD', 'u_raidplanner_delete_events'),
+			array('ROLE_ADMIN_USERGROUP', 'u_raidplanner_delete_events'),
+			array('ROLE_MOD_FULL', 'u_raidplanner_delete_events'),
+			array('ROLE_MOD_QUEUE', 'u_raidplanner_delete_events'),
+			array('ROLE_MOD_SIMPLE', 'u_raidplanner_delete_events'),
+			array('ROLE_MOD_STANDARD', 'u_raidplanner_delete_events'),
+			array('ROLE_USER_FULL', 'u_raidplanner_delete_events'),	
 
-     ),
+			/* end user pemissions */ 
+
+						
+			
+        ),
+
+        'custom' => array('bbdkp_caches'),
+        
+        ),
      
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
-
 
 /**************************************
  *  

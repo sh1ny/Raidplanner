@@ -8,14 +8,9 @@ within the MOD. No support will be given for MODs not found within the MODs Data
 <mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
   <header>
     <license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
-    <title lang="en-gb">bbDkp RaidPlanner plugin</title>
-    <description lang="en-gb">
-    bbDkp Raidplanner Plugin installer
-    Dependency : bbDkp must be installed before
-</description>
-    <author-notes lang="en-gb">
-    Based on phpbb Calendar by alightner (E.Ford) and phpRaider (K.Spraggs)
-    we hope you get everything working. further developement requests, support questions are welcome at www.bbdkp.com</author-notes>
+    <title lang="en-gb">RaidPlanner 0.0.1</title>
+    <description lang="en-gb">Raidplanner Installer</description>
+    <author-notes lang="en-gb"></author-notes>
     <author-group>
       <author>
         <realname>Sajaki</realname>
@@ -35,7 +30,7 @@ within the MOD. No support will be given for MODs not found within the MODs Data
     </installation>
 <history>
 <entry>
-<date>2009-05-25</date>
+<date>2010-12-01</date>
 <rev-version>0.0.1</rev-version>
 <changelog lang="en">
 <change>first code</change>
@@ -45,12 +40,15 @@ within the MOD. No support will be given for MODs not found within the MODs Data
     <meta name="generator" content="Phpbb.ModTeam.Tools (c#)" />
   </header>
   <action-group>
-    
-<php-installer><![CDATA[install/index.php]]></php-installer>    
+    		<copy>
+			<file from="root/*.*" to="*.*"/>
+		</copy>
+		
+<php-installer><![CDATA[install/installrp.php]]></php-installer>    
     <diy-instructions lang="en">
 Run database installer
 ----------------------
-Browse to install/index.php and run and the Raidplanner table installer
+Browse to install/installrp.php and run and the Raidplanner table installer
     </diy-instructions>
   </action-group>
 </mod>
