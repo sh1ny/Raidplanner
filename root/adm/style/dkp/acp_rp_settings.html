@@ -58,9 +58,11 @@ fieldset dd {
 	<div id="advanced00">
 		<div class="permissions-category">
 		<ul>
-			<li class="permissions-preset-never activetab">
-			<a href="{U_MANAGE_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_SETTINGS}</span></a></li>	
-
+			<li class="permissions-preset-yes activetab">
+			<a href="{U_MANAGE_SETTINGS}"><span class="tabbg"><span class="colour"></span>{L_SETTINGS}</span></a></li>	
+			<li class="permissions">
+				<a href="{U_MANAGE_ETYPES}"><span class="tabbg"><span class="colour"></span>{L_MANAGE_ETYPES}</span></a>
+			</li>
 
 		</ul>
 	</div>
@@ -73,13 +75,13 @@ fieldset dd {
 	<dl>
 		<dt><label>{L_FIRST_DAY}:</label><br />{L_FIRST_DAY_EXPLAIN}</dt>
 		<dd><select name="first_day" id="first_day">
-		  <option value="0" {SEL_SUNDAY}>{L_SUNDAY}</option>
-		  <option value="1" {SEL_MONDAY}>{L_MONDAY}</option>
-		  <option value="2" {SEL_TUESDAY}>{L_TUESDAY}</option>
-		  <option value="3" {SEL_WEDNESDAY}>{L_WEDNESDAY}</option>
-		  <option value="4" {SEL_THURSDAY}>{L_THURSDAY}</option>
-		  <option value="5" {SEL_FRIDAY}>{L_FRIDAY}</option>
-		  <option value="6" {SEL_SATURDAY}>{L_SATURDAY}</option>
+		  <option value="0" {SEL_MONDAY}>{L_MONDAY}</option>
+		  <option value="1" {SEL_TUESDAY}>{L_TUESDAY}</option>
+		  <option value="2" {SEL_WEDNESDAY}>{L_WEDNESDAY}</option>
+		  <option value="3" {SEL_THURSDAY}>{L_THURSDAY}</option>
+		  <option value="4" {SEL_FRIDAY}>{L_FRIDAY}</option>
+		  <option value="5" {SEL_SATURDAY}>{L_SATURDAY}</option>
+		  <option value="6" {SEL_SUNDAY}>{L_SUNDAY}</option>
 		  </select>
 		</dd>
 	</dl>
@@ -148,12 +150,15 @@ fieldset dd {
 </fieldset>
 			
 <fieldset class="quick">
-    <input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+    <input type="submit" name="updrp_settings" value="{L_SUBMIT}" class="button1" />
     <input type="reset" name="reset" value="{L_RESET}" class="button2" />
-
 </fieldset>
 {S_FORM_TOKEN}
+</div>
 </form>
+
+
+
 <span class="corners-bottom"><span></span></span>
 </div>
 

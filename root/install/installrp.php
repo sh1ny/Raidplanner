@@ -301,7 +301,7 @@ $versions = array(
             
             array('acp', 'ACP_RAIDPLANNER', array(
            		 'module_basename' => 'raidplanner',
-            	 'modes'           => array('rp_settings') ,
+            	 'modes'           => array('rp_settings', 'rp_eventsettings') ,
         		),
         	 )), 
      
@@ -311,14 +311,15 @@ $versions = array(
 			array('rp_first_day_of_week', 0, true),
 			array('rp_index_display_week', 0, true),
 			array('rp_index_display_next_events', 5),
-			array('rp_hour_mode', 12),
+			array('rp_hour_mode', 24),
 			array('rp_display_truncated_name', 0, true),
 			array('rp_prune_frequency', 0, true),
 			array('rp_last_prune', 0, true),
 			array('rp_prune_limit', 2592000, true),
 			array('rp_display_hidden_groups', 0, true),
+			array('rp_time_format', 'H:i', true),
 			array('rp_date_format', 'M d, Y', true),
-			array('rp_date_time_format', 'M d, Y h:i a', true),
+			array('rp_date_time_format', 'M d, Y H:i', true),
 			array('rp_disp_events_only_on_start', 0, true),
 			array('rp_populate_frequency', 86400, true),
 			array('rp_last_populate', 0, true),
@@ -330,12 +331,12 @@ $versions = array(
 			
 			array( 'phpbb_rp_event_types', array(
 			            'COLUMNS'			=> array(
-					   'etype_id' 		=> array('INT:8', NULL, 'auto_increment' ),
-                       'etype_index'	=> array('INT:8', 0),
+					   'etype_id' 			=> array('INT:8', NULL, 'auto_increment' ),
+                       'etype_index'		=> array('INT:8', 0),
 		  			   'etype_full_name' 	=> array('VCHAR_UNI:255', ''),
 		  			   'etype_display_name' => array('VCHAR_UNI:255', 0),
-					   'etype_color'   	=> array('VCHAR:8', 0),
-					   'etype_image'   	=> array('VCHAR:255', ''),
+					   'etype_color'   		=> array('VCHAR:8', 0),
+					   'etype_image'   		=> array('VCHAR:255', ''),
 					),
                     'PRIMARY_KEY'	=> array('etype_id')),
 				),  
@@ -441,7 +442,7 @@ $versions = array(
 						)
 					)),
 					
-			array( 'phpbb_rp_calendar_watch', array(
+			array( 'phpbb_rp_watch', array(
                     'COLUMNS'			=> array(
 		  			   'user_id' 			=> array('INT:8', 0),
 		  			   'notify_status' 		=> array('BOOL', 0),
@@ -453,7 +454,7 @@ $versions = array(
 					)),
 		),
 
-        'custom' => array('bbdkp_caches'),
+        'custom' => array('purgecaches'),
         
         ),
      
@@ -467,7 +468,7 @@ include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
  * global function for clearing cache
  * 
  */
-function bbdkp_caches($action, $version)
+function purgecaches($action, $version)
 {
     global $db, $table_prefix, $umil, $bbdkp_table_prefix;
     

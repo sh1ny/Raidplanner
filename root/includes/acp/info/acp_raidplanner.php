@@ -35,8 +35,13 @@ class acp_raidplanner_info
 			'title'		=> 'ACP_RAIDPLANNER',
 			'version'	=> '0.0.1',
 			'modes'		=> array(
-				'rp_settings'	=> array('title' => 'ACP_RAIDPLANNER',  'display' => true, 
+				'rp_settings'		=> array('title' => 'ACP_RAIDPLANNER_SETTINGS',  'display' => true, 
 									'auth' => 'acl_a_raid_config', 'cat' => array('ACP_CAT_RAIDPLANNER')),
+				'rp_eventsettings'	=> array('title' => 'ACP_RAIDPLANNER_EVENTSETTINGS',  'display' => false, 
+									'auth' => 'acl_a_raid_config', 'cat' => array('ACP_CAT_RAIDPLANNER')),
+		
+		
+		
 		),
 		);
 	}

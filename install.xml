@@ -51,7 +51,7 @@ within the MOD. No support will be given for MODs not found within the MODs Data
 				<comment lang="de"><![CDATA[Zufügung Raidplanner im common.php]]></comment>
 				<find><![CDATA[require($phpbb_root_path . 'includes/constants.' . $phpEx);]]></find>
 				<action type="after-add"><![CDATA[// Raidplanner
-require($phpbb_root_path .  'includes/bbdkp/constants_rp.' . $phpEx);
+require($phpbb_root_path .  'includes/bbdkp/raidplanner/constants_rp.' . $phpEx);
 ]]></action>
 			</edit>
 		</open>
