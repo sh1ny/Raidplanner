@@ -40,9 +40,21 @@ within the MOD. No support will be given for MODs not found within the MODs Data
     <meta name="generator" content="Phpbb.ModTeam.Tools (c#)" />
   </header>
   <action-group>
-    		<copy>
+    	<copy>
 			<file from="root/*.*" to="*.*"/>
 		</copy>
+		
+		<open src="common.php">
+			<edit>
+				<comment lang="en"><![CDATA[adding required classfiles for Raidplanner in common.php.]]></comment>
+				<comment lang="fr"><![CDATA[Ajout des classes requises Raidplanner dans common.php]]></comment>
+				<comment lang="de"><![CDATA[Zufügung Raidplanner im common.php]]></comment>
+				<find><![CDATA[require($phpbb_root_path . 'includes/constants.' . $phpEx);]]></find>
+				<action type="after-add"><![CDATA[// Raidplanner
+require($phpbb_root_path .  'includes/bbdkp/constants_rp.' . $phpEx);
+]]></action>
+			</edit>
+		</open>
 		
 <php-installer><![CDATA[install/installrp.php]]></php-installer>    
     <diy-instructions lang="en">

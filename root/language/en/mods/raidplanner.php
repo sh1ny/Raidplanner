@@ -29,10 +29,9 @@ $lang = array_merge($lang, array(
     'AUTO_PRUNE_EVENT_FREQUENCY_EXPLAIN'	=> 'How often (in days) should past events be pruned from the calendar?  Note if you select 0, past events will never be auto-pruned, you will have to delete them by hand.',
     'AUTO_PRUNE_EVENT_LIMIT'				=> 'Auto Prune Limits',
     'AUTO_PRUNE_EVENT_LIMIT_EXPLAIN'		=> 'How many days after an event do you want to add the event to the next auto prune\'s delete list?  In other words, do you want all events to remain in the calendar for 0, 30, or 45 days after the event?',
-    'CALENDAR_ETYPE_NAME'					=> 'Event Type Name',
-    'CALENDAR_ETYPE_COLOR'					=> 'Event Type Color',
-    'CALENDAR_ETYPE_ICON'					=> 'Event Type Icon URL',
-    'CALENDAR_SETTINGS_EXPLAIN'				=> 'Adjust the calendar settings here.',
+    'RP_ETYPE_NAME'							=> 'Event Type Name',
+    'RP_ETYPE_COLOR'						=> 'Event Type Color',
+    'RP_ETYPE_ICON'							=> 'Event Type Icon URL',
     'CHANGE_EVENTS_TO'						=> 'Change all events of this type to',
     'CLICK_PLUS_HOUR'						=> 'Move ALL events by one hour.',
     'CLICK_PLUS_HOUR_EXPLAIN'				=> 'Being able to move all events in the calendar +/- one hour helps when you reset the boards daylight savings time setting.  Note clicking on the links to move the events will loose any changes you have made above.  Please submit the form to save your work before moving the events +/- one hour.',
@@ -85,6 +84,10 @@ $lang = array_merge($lang, array(
     'TUESDAY'								=> 'Tuesday',
     'USER_CANNOT_MANAGE_CALENDAR'			=> 'You do not have permission to manage the calendar settings or event types.',
     'WEDNESDAY'								=> 'Wednesday',
+
+
+	'USER_CANNOT_MANAGE_RAIDPLANNER'		=> 'You are not authorised to manage the raidplanner settings', 
+
 
 ));
 

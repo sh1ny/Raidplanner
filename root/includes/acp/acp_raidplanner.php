@@ -26,6 +26,11 @@ class acp_raidplanner
 		global $db, $user, $auth, $template, $sid, $cache;
 		global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
 		$user->add_lang ( array ('mods/raidplanner' ));
+		if (!$auth->acl_get('a_raid_config'))
+		{
+			trigger_error($user->lang['USER_CANNOT_MANAGE_RAIDPLANNER'] );
+		}
+		
         switch ($mode) 
 		{
 			case 'rp_settings' :
