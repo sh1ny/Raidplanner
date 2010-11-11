@@ -304,8 +304,155 @@ $versions = array(
             	 'modes'           => array('rp_settings') ,
         		),
         	 )), 
-     	
+     
         	 
+	      // adding some configs
+		'config_add' => array(
+			array('rp_first_day_of_week', 0, true),
+			array('rp_index_display_week', 0, true),
+			array('rp_index_display_next_events', 5),
+			array('rp_hour_mode', 12),
+			array('rp_display_truncated_name', 0, true),
+			array('rp_prune_frequency', 0, true),
+			array('rp_last_prune', 0, true),
+			array('rp_prune_limit', 2592000, true),
+			array('rp_display_hidden_groups', 0, true),
+			array('rp_date_format', 'M d, Y', true),
+			array('rp_date_time_format', 'M d, Y h:i a', true),
+			array('rp_disp_events_only_on_start', 0, true),
+			array('rp_populate_frequency', 86400, true),
+			array('rp_last_populate', 0, true),
+			array('rp_populate_limit', 2592000, true),
+			),
+        	 
+			//adding some tables
+			'table_add' => array(
+			
+			array( 'phpbb_rp_event_types', array(
+			            'COLUMNS'			=> array(
+					   'etype_id' 		=> array('INT:8', NULL, 'auto_increment' ),
+                       'etype_index'	=> array('INT:8', 0),
+		  			   'etype_full_name' 	=> array('VCHAR_UNI:255', ''),
+		  			   'etype_display_name' => array('VCHAR_UNI:255', 0),
+					   'etype_color'   	=> array('VCHAR:8', 0),
+					   'etype_image'   	=> array('VCHAR:255', ''),
+					),
+                    'PRIMARY_KEY'	=> array('etype_id')),
+				),  
+					
+			array( 'phpbb_rp_events', array(
+                    'COLUMNS'			=> array(
+                       'event_id'			=> array('INT:8', NULL, 'auto_increment' ),
+					   'etype_id' 			=> array('INT:8', 0),
+		  			   'sort_timestamp' 	=> array('BINT', 0),
+		  			   'event_start_time' 	=> array('BINT', 0),
+			 		   'event_end_time' 	=> array('BINT', 0),
+					   'event_all_day'   	=> array('UINT', 0),
+					   'event_day'   		=> array('VCHAR:10', ''),
+					   'event_subject'   	=> array('VCHAR_UNI:255', ''),
+					   'event_body'   		=> array('MTEXT', ''),
+					   'poster_id'		 	=> array('UINT', 0),
+					   'event_access_level' => array('BOOL', 0),
+					   'group_id' 			=> array('UINT', 0),
+					   'group_id_list' 		=> array('VCHAR_UNI:255', ''),
+					   'enable_bbcode' 		=> array('BOOL', 1),
+					   'enable_smilies' 	=> array('BOOL', 1),
+					   'enable_magic_url' 	=> array('BOOL', 1),
+					   'bbcode_bitfield' 	=> array('VCHAR:255', ''),
+					   'bbcode_uid' 		=> array('VCHAR:8', ''),
+					   'track_rsvps' 		=> array('BOOL', 0),
+					   'allow_guests' 		=> array('BOOL', 0),
+					   'rsvp_yes' 			=> array('UINT', 0),
+					   'rsvp_no' 			=> array('UINT', 0),
+					   'rsvp_maybe' 		=> array('UINT', 0),
+					   'recurr_id' 			=> array('UINT', 0),
+					),
+                    'PRIMARY_KEY'	=> array('event_id')), 
+              ),
+              
+			array('phpbb_rp_recurring_events', array(
+			         'COLUMNS'			=> array(
+			           'recurr_id'			=> array('INT:8', NULL, 'auto_increment' ),
+					   'etype_id' 			=> array('INT:8', 0),
+					   'frequency' 			=> array('USINT', 1),
+			 		   'frequency_type' 	=> array('USINT', 0),
+					   'first_occ_time' 	=> array('BINT', 0),
+					   'final_occ_time'   	=> array('BINT', 0),
+					   'event_all_day'   	=> array('USINT', 0),
+					   'event_duration'   	=> array('BINT', 0),
+					   'week_index'   		=> array('USINT', 0),
+					   'first_day_of_week'	=> array('USINT', 0),
+					   'last_calc_time' 	=> array('BINT', 0),
+					   'next_calc_time' 	=> array('BINT', 0),
+					   'event_subject' 		=> array('VCHAR_UNI:255', ''),
+					   'event_body' 		=> array('MTEXT', ''),
+					   'poster_id' 			=> array('UINT', 0),
+					   'poster_timezone' 	=> array('DECIMAL', 0.00),
+					   'poster_dst' 		=> array('BOOL', 0),
+					   'event_access_level' => array('BOOL', 0),
+					   'group_id' 			=> array('UINT', 0),
+					   'group_id_list' 		=> array('VCHAR_UNI:255', ''),
+					   'enable_bbcode' 		=> array('BOOL', 1),
+					   'enable_smilies' 	=> array('BOOL', 1),
+					   'enable_magic_url' 	=> array('BOOL', 1),
+					   'bbcode_bitfield' 	=> array('VCHAR:255', ''),
+					   'bbcode_uid' 		=> array('VCHAR:8', ''),
+					   'track_rsvps' 		=> array('BOOL', 0),
+					   'allow_guests' 		=> array('BOOL', 0),
+					),
+			             'PRIMARY_KEY'	=> array('recurr_id')), 
+			        ),
+                            
+			array( 'phpbb_rp_rsvps', array(
+                    'COLUMNS'			=> array(
+                       'rsvp_id'			=> array('INT:8', NULL, 'auto_increment' ),
+					   'event_id' 			=> array('INT:8', 0),
+		  			   'poster_id' 			=> array('INT:8', 0),
+		  			   'poster_name' 		=> array('VCHAR:255', ''),
+			 		   'poster_colour' 		=> array('VCHAR:6', ''),
+					   'poster_ip'   		=> array('VCHAR:40', ''),
+					   'post_time'   		=> array('TIMESTAMP', 0),
+					   'rsvp_val'   		=> array('BOOL', 0),
+					   'rsvp_count'   		=> array('USINT', 0),
+					   'rsvp_detail'		=> array('MTEXT', ''),
+					   'bbcode_bitfield' 	=> array('VCHAR:255', ''),
+					   'bbcode_uid' 		=> array('VCHAR:8', ''),
+					   'bbcode_options' 	=> array('UINT', 7),
+					),
+                    'PRIMARY_KEY'	=> array('rsvp_id'),
+					 'KEYS'            => array(
+    				     'event_id'   => array('INDEX', 'event_id'),
+				 		 'poster_id'  => array('INDEX', 'poster_id'), 
+						 'eid_post_time' => array('INDEX', array('event_id', 'post_time'))
+						)
+					)),
+			
+			array( 'phpbb_rp_events_watch', array(
+                    'COLUMNS'			=> array(
+					   'event_id' 			=> array('INT:8', 0),
+		  			   'user_id' 			=> array('INT:8', 0),
+		  			   'notify_status' 		=> array('BOOL', 0),
+			 		   'track_replies' 		=> array('BOOL', 0),
+					),
+					 'KEYS'       => array(
+    				     'event_id'     => array('INDEX', 'event_id'),
+				 		 'user_id'  	=> array('INDEX', 'user_id'), 
+						 'notify_stat'  => array('INDEX', 'notify_status'),
+						)
+					)),
+					
+			array( 'phpbb_rp_calendar_watch', array(
+                    'COLUMNS'			=> array(
+		  			   'user_id' 			=> array('INT:8', 0),
+		  			   'notify_status' 		=> array('BOOL', 0),
+					),
+					 'KEYS'       => array(
+				 		 'user_id'  	=> array('INDEX', 'user_id'), 
+						 'notify_stat'  => array('INDEX', 'notify_status'),
+						)
+					)),
+		),
+
         'custom' => array('bbdkp_caches'),
         
         ),
