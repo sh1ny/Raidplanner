@@ -6,7 +6,7 @@
  @license http://opensource.org/licenses/gpl-license.php GNU Public License
  @version $Id$
 //-->
-<h1>{L_ACP_RAIDPLANNER}</h1>
+<h1>{L_ACP_RAIDPLANNER_SETTINGS}</h1>
 <p>{L_ACP_RAIDPLANNER_SETTINGS_EXPLAIN}</p>
 
 <style type="text/css" >
@@ -38,13 +38,28 @@ fieldset dd {
 }
 
 </style>
-
+<script type="text/javascript">
+	/**
+	* Activate/Deactivate move types
+	*/
+	function update_action_status()
+	{
+		if( document.rpsettings.disp_week.checked )
+		{
+			document.rpsettings.disp_next_events.disabled = true;
+		}
+		else
+		{
+			document.rpsettings.disp_next_events.disabled = false;
+		}
+	}
+</script>
 <fieldset>
 	<div id="advanced00">
 		<div class="permissions-category">
 		<ul>
 			<li class="permissions-preset-never activetab">
-			<a href="{U_MANAGE_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RT_ADMINMENU_SETTINGS}</span></a></li>	
+			<a href="{U_MANAGE_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_SETTINGS}</span></a></li>	
 
 
 		</ul>
@@ -52,52 +67,93 @@ fieldset dd {
 <div class="permissions-panel" id="options001">
 <span class="corners-top"><span></span></span>
 
-<form method="post" action="{F_CONFIG}" name="post">
+<form id="rpsettings" name="rpsettings" method="post" action="{U_ACTION}" >
 <div class="tablewrap">
-
-
- <fieldset>
-  <legend>Stuff</legend>
-
-	<dl><dt> 
-      <label for="stuff">{L_RP}:</label>
-      <br />{L_RP_EXPLAIN}
-      </dt>
-      <dd>
-      <select name="stuff" class="input" id="stuff">
-        <!-- BEGIN stuff_row -->
-        <option value="{quality_row.VALUE}"{stuff_row.SELECTED}>{quality_row.OPTION}</option>
-        <!-- END stuff_row -->
-      </select>
-	  </dd>
-</dl> 		  
-
-<dl><dt>    
-  <label for="stuff">{L_RP}:</label>
-  <br />{L_RP_EXPLAIN}</dt><dd>
-  <input name="stuff" type="checkbox" id="stuff" value="Y" {STUFF} />
-  </dd>
- </dl> 
-
-
-<dl><dt>   
-   <label for="stuff">{L_RP}:</label>
-    <br />{L_RP_EXPLAIN}
-   </dt><dd>
-     <input type="text" name="stuff" id="stuff" size="10" maxlength="3" value="{STUFF}" class="input" />
-      {L_RP_EXPLAIN}
-   </dd>
-</dl> 
+<fieldset>
+	<dl>
+		<dt><label>{L_FIRST_DAY}:</label><br />{L_FIRST_DAY_EXPLAIN}</dt>
+		<dd><select name="first_day" id="first_day">
+		  <option value="0" {SEL_SUNDAY}>{L_SUNDAY}</option>
+		  <option value="1" {SEL_MONDAY}>{L_MONDAY}</option>
+		  <option value="2" {SEL_TUESDAY}>{L_TUESDAY}</option>
+		  <option value="3" {SEL_WEDNESDAY}>{L_WEDNESDAY}</option>
+		  <option value="4" {SEL_THURSDAY}>{L_THURSDAY}</option>
+		  <option value="5" {SEL_FRIDAY}>{L_FRIDAY}</option>
+		  <option value="6" {SEL_SATURDAY}>{L_SATURDAY}</option>
+		  </select>
+		</dd>
+	</dl>
+   <dl>
+		<dt><label>{L_DISPLAY_FIRST_WEEK}:</label><br />{L_DISPLAY_FIRST_WEEK_EXPLAIN}</dt>
+		<dd><input type="checkbox" id="disp_week" name="disp_week" value="1" {DISP_WEEK_CHECKED} onclick="update_action_status()" /></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_DISPLAY_NEXT_EVENTS}:</label><br />{L_DISPLAY_NEXT_EVENTS_EXPLAIN}</dt>
+		<dd><input type="text" name="disp_next_events" id="disp_next_events" value="{DISP_NEXT_EVENTS}" {DISP_NEXT_EVENTS_DISABLED} /></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_DISPLAY_12_OR_24_HOURS}:</label><br />{L_DISPLAY_12_OR_24_HOURS_EXPLAIN}</dt>
+		<dd><select name="hour_mode" id="hour_mode">
+		  <option value="12" {SEL_12_HOURS}>{L_12_HOURS}</option>
+		  <option value="24" {SEL_24_HOURS}>{L_24_HOURS}</option>
+		  </select>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label>{L_DISPLAY_TRUNCATED_SUBJECT}:</label><br />{L_DISPLAY_TRUNCATED_SUBJECT_EXPLAIN}</dt>
+		<dd><input type="text" name="disp_trunc" id="disp_trunc" value="{DISP_TRUNCATED}" /></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_DISPLAY_HIDDEN_GROUPS}:</label><br />{L_DISPLAY_HIDDEN_GROUPS_EXPLAIN}</dt>
+		<dd><input type="checkbox" id="disp_hidden_groups" name="disp_hidden_groups" value="1" {DISP_HIDDEN_GROUPS_CHECKED} /></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_DISPLAY_EVENTS_ONLY_1_DAY}:</label><br />{L_DISPLAY_EVENTS_ONLY_1_DAY_EXPLAIN}</dt>
+		<dd><input type="checkbox" id="disp_events_1_day" name="disp_events_1_day" value="1" {DISP_EVENTS_1_DAY_CHECKED} /></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_TIME_FORMAT}:</label><br />{L_TIME_FORMAT_EXPLAIN}</dt>
+		<dd><input type="text" name="time_format" id="time_format" value="{TIME_FORMAT}"/></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_DATE_FORMAT}:</label><br />{L_DATE_FORMAT_EXPLAIN}</dt>
+		<dd><input type="text" name="date_format" id="date_format" value="{DATE_FORMAT}"/></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_DATE_TIME_FORMAT}:</label><br />{L_DATE_TIME_FORMAT_EXPLAIN}</dt>
+		<dd><input type="text" name="date_time_format" id="date_time_format" value="{DATE_TIME_FORMAT}"/></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_AUTO_PRUNE_EVENT_FREQUENCY}:</label><br />{L_AUTO_PRUNE_EVENT_FREQUENCY_EXPLAIN}</dt>
+		<dd><input type="text" name="prune_freq" id="prune_freq" value="{PRUNE_FREQ}" /></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_AUTO_PRUNE_EVENT_LIMIT}:</label><br />{L_AUTO_PRUNE_EVENT_LIMIT_EXPLAIN}</dt>
+		<dd><input type="text" name="prune_limit" id="prune_limit" value="{PRUNE_LIMIT}" /></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_AUTO_POPULATE_EVENT_FREQUENCY}:</label><br />{L_AUTO_POPULATE_EVENT_FREQUENCY_EXPLAIN}</dt>
+		<dd><input type="text" name="populate_freq" id="populate_freq" value="{POPULATE_FREQ}" /></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_AUTO_POPULATE_EVENT_LIMIT}:</label><br />{L_AUTO_POPULATE_EVENT_LIMIT_EXPLAIN}</dt>
+		<dd><input type="text" name="populate_limit" id="populate_limit" value="{POPULATE_LIMIT}" /></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_CLICK_PLUS_HOUR}:</label><br />{L_CLICK_PLUS_HOUR_EXPLAIN}</dt>
+		<dd><a href="{U_PLUS_HOUR}">{L_PLUS_HOUR}</a><br>
+		<a href="{U_MINUS_HOUR}">{L_MINUS_HOUR}</a></dd>
+	</dl>
 
 </fieldset>
 			
 <fieldset class="quick">
     <input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
     <input type="reset" name="reset" value="{L_RESET}" class="button2" />
+
 </fieldset>
-
+{S_FORM_TOKEN}
 </form>
-
 <span class="corners-bottom"><span></span></span>
 </div>
 
