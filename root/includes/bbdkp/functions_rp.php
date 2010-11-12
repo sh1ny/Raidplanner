@@ -49,7 +49,7 @@ function calendar_display_month()
 	$next_link = append_sid("{$phpbb_root_path}calendar.$phpEx", "calM=".$date['next_month']."&amp;calY=".$date['next_year'].$etype_url_opts);
 
 	//find the first day of the week
-	$first_day_of_week = get_calendar_config_value("first_day_of_week", 0);
+	$first_day_of_week = $config['rp_first_day_of_week'];
 	get_weekday_names( $first_day_of_week, $sunday, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday );
 
 	//get the first day of the month
@@ -59,7 +59,7 @@ function calendar_display_month()
 	$number_days = gmdate("t", gmmktime( 0,0,0,$date['month_no'], $date['day'], $date['year']));
 
 	$calendar_header_txt = $user->lang['MONTH_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], $user->lang['datetime'][$date['month']], $date['day'], $date['year'] );
-	$subject_limit = get_calendar_config_value("display_truncated_name", 0);
+	$subject_limit = $config['rp_display_truncated_name'];
 
 	// Is the user able to view ANY events?
 	$user_can_view_events = false;
@@ -71,10 +71,7 @@ function calendar_display_month()
 		$group_options = get_sql_group_options($user->data['user_id']);
 		$etype_options = get_etype_filter();
 	}
-	$disp_events_only_on_start = get_calendar_config_value("disp_events_only_on_start", 0);
-	//we dont display start/end times in month view
-	//$disp_time_format = get_calendar_config_value("time_format", 'h:i a');
-	//$disp_date_time_format = get_calendar_config_value("date_time_format", 'M d, Y h:i a');
+	$disp_events_only_on_start = $config['rp_disp_events_only_on_start'];
 
 
 	$counter = 0;
@@ -172,7 +169,7 @@ function calendar_display_month()
 			if( $disp_events_only_on_start == 0 )
 			{
 
-				$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_TABLE . '
+				$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
 						WHERE ( (event_access_level = 2) OR
 							(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 							(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -184,7 +181,7 @@ function calendar_display_month()
 			else
 			{
 
-				$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_TABLE . '
+				$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
 						WHERE ( (event_access_level = 2) OR
 							(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 							(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -298,7 +295,7 @@ function calendar_display_week( $index_display )
 	//find the first day of the week
 	if( $index_display == 0 && $index_display_var == 0)
 	{
-		$first_day_of_week = get_calendar_config_value("first_day_of_week", 0);
+		$first_day_of_week = $config['rp_first_day_of_week'];
 		$prev_link = append_sid("{$phpbb_root_path}calendar.$phpEx", "view=week&amp;calD=".$date['prev_day']."&amp;calM=".$date['prev_month']."&amp;calY=".$date['prev_year'].$etype_url_opts);
 		$next_link = append_sid("{$phpbb_root_path}calendar.$phpEx", "view=week&amp;calD=".$date['next_day']."&amp;calM=".$date['next_month']."&amp;calY=".$date['next_year'].$etype_url_opts);
 	}
@@ -317,7 +314,7 @@ function calendar_display_week( $index_display )
 
 	$number_days = 7;
 	$calendar_header_txt = $user->lang['WEEK_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], $user->lang['datetime'][$date['month']], $date['day'], $date['year'] );
-	$subject_limit = get_calendar_config_value("display_truncated_name", 0);
+	$subject_limit = $config['rp_display_truncated_name'];
 
 	$counter = 0;
 	$j_start = $date['day'];
@@ -355,9 +352,9 @@ function calendar_display_week( $index_display )
 		$etype_options = get_etype_filter();
 	}
 
-	$disp_events_only_on_start = get_calendar_config_value("disp_events_only_on_start", 0);
-	$disp_time_format = get_calendar_config_value("time_format", 'h:i a');
-	$disp_date_time_format = get_calendar_config_value("date_time_format", 'M d, Y h:i a');
+	$disp_events_only_on_start = $config['rp_disp_events_only_on_start'];
+	$disp_time_format = $config['rp_time_format'];
+	$disp_date_time_format = $config['rp_date_time_format'];
 
 	for ($j = $j_start; $j < $j_start+7; $j++, $counter++)
 	{
@@ -442,7 +439,7 @@ function calendar_display_week( $index_display )
 
 			if( $disp_events_only_on_start == 0 )
 			{
-				$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_TABLE . '
+				$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
 						WHERE ( (event_access_level = 2) OR
 								(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 								(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -454,7 +451,7 @@ function calendar_display_week( $index_display )
 			else
 			{
 
-				$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_TABLE . '
+				$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
 						WHERE ( (event_access_level = 2) OR
 								(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 								(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -556,9 +553,9 @@ function calendar_display_day()
 	$next_link = append_sid("{$phpbb_root_path}calendar.$phpEx", "view=day&amp;calD=".$date['next_day']."&amp;calM=".$date['next_month']."&amp;calY=".$date['next_year'].$etype_url_opts);
 
 	$calendar_header_txt = $user->lang['DAY_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], $user->lang['datetime'][$date['month']], $date['day'], $date['year'] );
-	$subject_limit = get_calendar_config_value("display_truncated_name", 0);
+	$subject_limit = $config['rp_display_truncated_name'];
 
-	$hour_mode = get_calendar_config_value('hour_mode', '12');
+	$hour_mode = $config['rp_hour_mode'];
 	if( $hour_mode == 12 )
 	{
 		for( $i = 0; $i < 24; $i++ )
@@ -591,12 +588,12 @@ function calendar_display_day()
 		}
 	}
 
-	//$disp_events_only_on_start = get_calendar_config_value("disp_events_only_on_start", 0);
+	//$disp_events_only_on_start = $config['rp_disp_events_only_on_start", 0);
 	// the day view is a graphical layout... we probably want to ignore the "display only on start rule" here
 	$disp_events_only_on_start = 0;
 
-	$disp_time_format = get_calendar_config_value("time_format", 'h:i a');
-	$disp_date_time_format = get_calendar_config_value("date_time_format", 'M d, Y h:i a');
+	$disp_time_format = $config['rp_time_format']; 
+	$disp_date_time_format = $config['rp_date_time_format'];
 
     $event_counter = 0;
 	// Is the user able to view ANY events?
@@ -627,7 +624,7 @@ function calendar_display_day()
 		$etype_options = get_etype_filter();
 		if( $disp_events_only_on_start == 0 )
 		{
-			$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_TABLE . '
+			$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
 					WHERE ( (event_access_level = 2) OR
 							(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 							(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -638,7 +635,7 @@ function calendar_display_day()
 		}
 		else
 		{
-			$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_TABLE . '
+			$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
 					WHERE ( (event_access_level = 2) OR
 							(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 							(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -779,7 +776,7 @@ function calendar_display_event()
 	$back_url = append_sid("{$phpbb_root_path}calendar.$phpEx", "calD=".$date['day']."&amp;calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts );
 	if( $event_id > 0 )
 	{
-		$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_TABLE . '
+		$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
 				WHERE event_id = '.$db->sql_escape($event_id);
 		$result = $db->sql_query($sql);
 		$event_data = $db->sql_fetchrow($result);
@@ -814,8 +811,8 @@ function calendar_display_event()
 		}
 
 
-	    $disp_date_format = get_calendar_config_value("date_format", 'M d, Y');
-	    $disp_date_time_format = get_calendar_config_value("date_time_format", 'M d, Y h:i a');
+	    $disp_date_format = $config['rp_date_format'];
+	    $disp_date_time_format = $config['rp_date_time_format'];
 
 		$start_date_txt = $user->format_date($event_data['event_start_time'], $disp_date_time_format, true);
 		$end_date_txt = $user->format_date($event_data['event_end_time'], $disp_date_time_format, true);
@@ -1001,7 +998,7 @@ function calendar_display_event()
 				$rsvp_data['rsvp_detail'] = $new_rsvp_detail;
 				if( $rsvp_id > 0 )
 				{
-					$sql = 'UPDATE ' . CALENDAR_RSVP_TABLE . '
+					$sql = 'UPDATE ' . RP_RSVP_TABLE . '
 						SET ' . $db->sql_build_array('UPDATE', array(
 							'poster_id'			=> (int) $rsvp_data['poster_id'],
 							'poster_name'		=> (string) $rsvp_data['poster_name'],
@@ -1020,7 +1017,7 @@ function calendar_display_event()
 				}
 				else
 				{
-					$sql = 'INSERT INTO ' . CALENDAR_RSVP_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+					$sql = 'INSERT INTO ' . RP_RSVP_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 							'event_id'			=> (int) $rsvp_data['event_id'],
 							'poster_id'			=> (int) $rsvp_data['poster_id'],
 							'poster_name'		=> (string) $rsvp_data['poster_name'],
@@ -1039,7 +1036,7 @@ function calendar_display_event()
 					//$rsvp_id = $db->sql_nextid();
 				}
 				// update the event id's rsvp stats
-					$sql = 'UPDATE ' . CALENDAR_EVENTS_TABLE . '
+					$sql = 'UPDATE ' . RP_EVENTS_TABLE . '
 						SET ' . $db->sql_build_array('UPDATE', array(
 							'rsvp_yes'		=> (int) $new_yes_count,
 							'rsvp_no'		=> (int) $new_no_count,
@@ -1055,7 +1052,7 @@ function calendar_display_event()
 
 
 
-			$sql = 'SELECT * FROM ' . CALENDAR_RSVP_TABLE . '
+			$sql = 'SELECT * FROM ' . RP_RSVP_TABLE . '
 					WHERE event_id = '.$db->sql_escape($event_id). ' ORDER BY rsvp_val ASC';
 			$result = $db->sql_query($sql);
 
@@ -1260,7 +1257,7 @@ function display_next_events( $x )
 	{
 
 		init_calendar_data();
-		$subject_limit = get_calendar_config_value("display_truncated_name", 0);
+		$subject_limit = $config['rp_display_truncated_name'];
 		$group_options = get_sql_group_options($user->data['user_id']);
 		$etype_options = get_etype_filter();
 
@@ -1269,11 +1266,11 @@ function display_next_events( $x )
 		// find all day events that are still taking place
 		$sort_timestamp_cutoff = $start_temp_date - 86400+1;
 
-	    $disp_date_format = get_calendar_config_value("date_format", 'M d, Y');
-	    $disp_date_time_format = get_calendar_config_value("date_time_format", 'M d, Y h:i a');
+	    $disp_date_format = $config['rp_date_format'];
+	    $disp_date_time_format = $config['rp_date_time_format'];
 
 		// don't list events that are more than 1 year in the future
-		$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_TABLE . '
+		$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
 				WHERE ( (event_access_level = 2) OR
 					(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 					(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -1341,7 +1338,7 @@ function display_next_events_for_x_days( $x )
 	{
 
 		init_calendar_data();
-		$subject_limit = get_calendar_config_value("display_truncated_name", 0);
+		$subject_limit = $config['rp_display_truncated_name'];
 		$group_options = get_sql_group_options($user->data['user_id']);
 		$etype_options = get_etype_filter();
 
@@ -1351,11 +1348,11 @@ function display_next_events_for_x_days( $x )
 		// find all day events that are still taking place
 		$sort_timestamp_cutoff = $start_temp_date - 86400+1;
 
-	    $disp_date_format = get_calendar_config_value("date_format", 'M d, Y');
-	    $disp_date_time_format = get_calendar_config_value("date_time_format", 'M d, Y h:i a');
+	    $disp_date_format = $config['rp_date_format'];
+	    $disp_date_time_format = $config['rp_date_time_format'];
 
 		// don't list events that are more than 1 year in the future
-		$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_TABLE . '
+		$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
 				WHERE ( (event_access_level = 2) OR
 					(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 					(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -1423,7 +1420,7 @@ function display_posters_next_events_for_x_days( $x, $user_id )
 	{
 
 		init_calendar_data();
-		$subject_limit = get_calendar_config_value("display_truncated_name", 0);
+		$subject_limit = $config['rp_display_truncated_name'];
 		$group_options = get_sql_group_options($user->data['user_id']);
 		$etype_options = get_etype_filter();
 
@@ -1433,11 +1430,11 @@ function display_posters_next_events_for_x_days( $x, $user_id )
 		// find all day events that are still taking place
 		$sort_timestamp_cutoff = $start_temp_date - 86400+1;
 
-	    $disp_date_format = get_calendar_config_value("date_format", 'M d, Y');
-	    $disp_date_time_format = get_calendar_config_value("date_time_format", 'M d, Y h:i a');
+	    $disp_date_format = $config['rp_date_format'];
+	    $disp_date_time_format = $config['rp_date_time_format'];
 
 		// don't list events that are more than 1 year in the future
-		$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_TABLE . '
+		$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
 				WHERE poster_id = '.$user_id.' AND( (event_access_level = 2) OR
 					(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 					(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -1542,7 +1539,7 @@ function display_users_next_events_for_x_days( $x, $user_id )
 	{
 
 		init_calendar_data();
-		$subject_limit = get_calendar_config_value("display_truncated_name", 0);
+		$subject_limit = $config['rp_display_truncated_name'];
 		$group_options = get_sql_group_options($user->data['user_id']);
 		$temp_find_str = "group_id";
 		$temp_replace_str = "e.group_id";
@@ -1559,11 +1556,11 @@ function display_users_next_events_for_x_days( $x, $user_id )
 		// find all day events that are still taking place
 		$sort_timestamp_cutoff = $start_temp_date - 86400+1;
 
-	    $disp_date_format = get_calendar_config_value("date_format", 'M d, Y');
-	    $disp_date_time_format = get_calendar_config_value("date_time_format", 'M d, Y h:i a');
+	    $disp_date_format = $config['rp_date_format'];
+	    $disp_date_time_format = $config['rp_date_time_format'];
 
 		// don't list events that are more than 1 year in the future
-		$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_TABLE . ' e, '.CALENDAR_RSVP_TABLE.' r
+		$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . ' e, '.CALENDAR_RSVP_TABLE.' r
 				WHERE e.event_id = r.event_id AND r.poster_id = '.$user_id.' AND
 					( (e.event_access_level = 2) OR
 					(e.poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
@@ -1745,7 +1742,7 @@ function generate_birthday_list( $day, $month, $year )
 	global $db, $user, $config;
 
 	$birthday_list = "";
-	if ($config['load_birthdays'] && $config['allow_birthdays'])
+	if ($config['rp_load_birthdays'] && $config['rp_allow_birthdays'])
 	{
 		$sql = 'SELECT user_id, username, user_colour, user_birthday
 				FROM ' . USERS_TABLE . "
@@ -1924,7 +1921,7 @@ function init_calendar_data()
 
 
 		//find the available event types:
-		$sql = 'SELECT * FROM ' . CALENDAR_EVENT_TYPES_TABLE . ' ORDER BY etype_index';
+		$sql = 'SELECT * FROM ' . RP_EVENT_TYPES_TABLE . ' ORDER BY etype_index';
 		$result = $db->sql_query($sql);
 		$available_etype_count = 0;
 		while ($row = $db->sql_fetchrow($result))
@@ -1981,23 +1978,6 @@ function init_calendar_data()
 	}
 }
 
-/* read the calendar configuration value for given variable name
-*/
-function get_calendar_config_value( $config_name, $default_val )
-{
-	global $auth, $db, $user;
-
-	$config_val = $default_val;
-	$sql = 'SELECT * FROM ' . CALENDAR_CONFIG_TABLE ."
-			WHERE config_name ='".$db->sql_escape($config_name)."'";
-	$result = $db->sql_query($sql);
-	if($row = $db->sql_fetchrow($result))
-	{
-		$config_val = $row['config_value'];
-	}
-	$db->sql_freeresult($result);
-	return $config_val;
-}
 
 /* "shift" names of weekdays depending on which day we want to display as the first day of the week
 */
@@ -2174,7 +2154,7 @@ function init_view_selection_code( $view_mode )
 {
 	global $auth, $db, $user, $config, $date, $month_names, $month_sel_code, $day_sel_code, $year_sel_code, $mode_sel_code;
 
-	// create CALENDAR_VIEW_OPTIONS
+	// create RP_VIEW_OPTIONS
 	$month_sel_code  = "<select name='calM' id='calM'>\n";
 	for( $i = 1; $i <= 12; $i++ )
 	{
@@ -2231,7 +2211,7 @@ function get_event_data( $id, &$event_data )
 	{
 		trigger_error('NO_EVENT');
 	}
-	$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_TABLE . '
+	$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
 			WHERE event_id = '.$db->sql_escape($id);
 	$result = $db->sql_query($sql);
 	$event_data = $db->sql_fetchrow($result);
@@ -2247,7 +2227,7 @@ function get_event_data( $id, &$event_data )
 	{
 	    $event_data['is_recurr'] = 1;
 
-		$sql = 'SELECT * FROM ' . CALENDAR_RECURRING_EVENTS_TABLE . '
+		$sql = 'SELECT * FROM ' . RP_RECURRING_EVENTS_TABLE . '
 					WHERE recurr_id = '.$db->sql_escape( $event_data['recurr_id'] );
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
@@ -2266,7 +2246,7 @@ function get_event_data( $id, &$event_data )
 	    $event_data['frequency'] = 0;
 	    $event_data['final_occ_time'] = 0;
 	    $event_data['week_index'] = 0;
-	    $event_data['first_day_of_week'] = get_calendar_config_value("first_day_of_week", 0);
+	    $event_data['first_day_of_week'] = $config["first_day_of_week"];
 	}
 }
 
@@ -2281,7 +2261,7 @@ function get_rsvp_data( $id, &$rsvp_data )
 	{
 		trigger_error('NO_RSVP');
 	}
-	$sql = 'SELECT * FROM ' . CALENDAR_RSVP_TABLE . '
+	$sql = 'SELECT * FROM ' . RP_RSVP_TABLE . '
 			WHERE rsvp_id = '.$db->sql_escape($id);
 	$result = $db->sql_query($sql);
 	$rsvp_data = $db->sql_fetchrow($result);
@@ -2316,14 +2296,14 @@ function handle_event_delete($event_id, &$event_data)
 	if (confirm_box(true))
 	{
 		// delete all the rsvps for this event before deleting the event
-		$sql = 'DELETE FROM ' . CALENDAR_RSVP_TABLE . ' WHERE event_id = ' .$db->sql_escape($event_id);
+		$sql = 'DELETE FROM ' . RP_RSVP_TABLE . ' WHERE event_id = ' .$db->sql_escape($event_id);
 		$db->sql_query($sql);
 
-		$sql = 'DELETE FROM ' . CALENDAR_EVENTS_WATCH . ' WHERE event_id = ' .$db->sql_escape($event_id);
+		$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE event_id = ' .$db->sql_escape($event_id);
 		$db->sql_query($sql);
 
 		// Delete event
-		$sql = 'DELETE FROM ' . CALENDAR_EVENTS_TABLE . '
+		$sql = 'DELETE FROM ' . RP_EVENTS_TABLE . '
 				WHERE event_id = '.$db->sql_escape($event_id);
 		$db->sql_query($sql);
 
@@ -2369,28 +2349,28 @@ function handle_event_delete_all($event_id, &$event_data)
 		if (confirm_box(true))
 		{
 			// find all of the events in this recurring event string so we can delete their rsvps
-			$sql = 'SELECT event_id FROM ' . CALENDAR_EVENTS_TABLE . '
+			$sql = 'SELECT event_id FROM ' . RP_EVENTS_TABLE . '
 						WHERE recurr_id = '. $event_data['recurr_id'];
 			$result = $db->sql_query($sql);
 
 			// delete all the rsvps for this event before deleting the event
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$sql = 'DELETE FROM ' . CALENDAR_RSVP_TABLE . ' WHERE event_id = ' .$db->sql_escape($row['event_id']);
+				$sql = 'DELETE FROM ' . RP_RSVP_TABLE . ' WHERE event_id = ' .$db->sql_escape($row['event_id']);
 				$db->sql_query($sql);
 
-				$sql = 'DELETE FROM ' . CALENDAR_EVENTS_WATCH . ' WHERE event_id = ' .$db->sql_escape($row['event_id']);
+				$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE event_id = ' .$db->sql_escape($row['event_id']);
 				$db->sql_query($sql);
 			}
 			$db->sql_freeresult($result);
 
 			// delete the recurring event
-			$sql = 'DELETE FROM ' . CALENDAR_RECURRING_EVENTS_TABLE . '
+			$sql = 'DELETE FROM ' . RP_RECURRING_EVENTS_TABLE . '
 					WHERE recurr_id = '.$db->sql_escape($event_data['recurr_id']);
 			$db->sql_query($sql);
 
 			// finally delete all of the events
-			$sql = 'DELETE FROM ' . CALENDAR_EVENTS_TABLE . '
+			$sql = 'DELETE FROM ' . RP_EVENTS_TABLE . '
 					WHERE recurr_id = '.$db->sql_escape($event_data['recurr_id']);
 			$db->sql_query($sql);
 
@@ -2417,7 +2397,7 @@ function posting_generate_group_selection_code( $user_id )
 {
 	global $auth, $db, $user, $config;
 
-	$disp_hidden_groups = get_calendar_config_value("display_hidden_groups", 0);
+	$disp_hidden_groups = $config['rp_display_hidden_groups'];
 
 	if ( $auth->acl_get('u_calendar_nonmember_groups') )
 	{
@@ -2480,10 +2460,10 @@ function posting_generate_group_selection_code( $user_id )
 function prune_calendar()
 {
 	global $auth, $db, $user, $config, $phpEx, $phpbb_root_path;
-	$prune_limit = get_calendar_config_value("prune_limit", 0);
+	$prune_limit = $config['rp_prune_limit'];
 
 	$config_name = "last_prune";
-	$sql = 'UPDATE ' . CALENDAR_CONFIG_TABLE . '
+	$sql = 'UPDATE ' . RP_CONFIG_TABLE . '
 			SET ' . $db->sql_build_array('UPDATE', array(
 			'config_name'	=> $config_name,
 			'config_value'	=> time() )) . "
@@ -2495,7 +2475,7 @@ function prune_calendar()
 
 	// find all day events that finished before the prune limit
 	$sort_timestamp_cutoff = $end_temp_date - 86400;
-	$sql = 'SELECT event_id FROM ' . CALENDAR_EVENTS_TABLE . '
+	$sql = 'SELECT event_id FROM ' . RP_EVENTS_TABLE . '
 				WHERE ( (event_all_day = 1 AND sort_timestamp < '.$db->sql_escape($sort_timestamp_cutoff).')
 				OR (event_all_day = 0 AND event_end_time < '.$db->sql_escape($end_temp_date).') )';
 	$result = $db->sql_query($sql);
@@ -2503,23 +2483,23 @@ function prune_calendar()
 	// delete all the rsvps for this event before deleting the event
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$sql = 'DELETE FROM ' . CALENDAR_RSVP_TABLE . ' WHERE event_id = ' .$row['event_id'];
+		$sql = 'DELETE FROM ' . RP_RSVP_TABLE . ' WHERE event_id = ' .$row['event_id'];
 		$db->sql_query($sql);
 
-		$sql = 'DELETE FROM ' . CALENDAR_EVENTS_WATCH . ' WHERE event_id = ' .$row['event_id'];
+		$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE event_id = ' .$row['event_id'];
 		$db->sql_query($sql);
 
 	}
 	$db->sql_freeresult($result);
 
 	// now delete the old events
-	$sql = 'DELETE FROM ' . CALENDAR_EVENTS_TABLE . '
+	$sql = 'DELETE FROM ' . RP_EVENTS_TABLE . '
 				WHERE ( (event_all_day = 1 AND sort_timestamp < '.$db->sql_escape($sort_timestamp_cutoff).')
 				OR (event_all_day = 0 AND event_end_time < '.$db->sql_escape($end_temp_date).') )';
 	$db->sql_query($sql);
 
 	// delete any recurring events that are permanently over
-	$sql = 'DELETE FROM ' . CALENDAR_RECURRING_EVENTS_TABLE . '
+	$sql = 'DELETE FROM ' . RP_RECURRING_EVENTS_TABLE . '
 				WHERE (final_occ_time > 0) AND
 				      (final_occ_time < '. $end_temp_date .')';
 	$db->sql_query($sql);
@@ -2584,7 +2564,7 @@ function generate_calendar_smilies($mode)
 			$template->assign_block_vars('smiley', array(
 				'SMILEY_CODE'	=> $row['code'],
 				'A_SMILEY_CODE'	=> addslashes($row['code']),
-				'SMILEY_IMG'	=> $phpbb_root_path . $config['smilies_path'] . '/' . $row['smiley_url'],
+				'SMILEY_IMG'	=> $phpbb_root_path . $config['rp_smilies_path'] . '/' . $row['smiley_url'],
 				'SMILEY_WIDTH'	=> $row['smiley_width'],
 				'SMILEY_HEIGHT'	=> $row['smiley_height'],
 				'SMILEY_DESC'	=> $row['emotion'])
@@ -2630,39 +2610,34 @@ function generate_calendar_smilies($mode)
 function populate_calendar( $recurr_id_to_pop = 0 )
 {
 	global $auth, $db, $user, $config, $phpEx, $phpbb_root_path;
-	$populate_limit = get_calendar_config_value("populate_limit", 0);
+	$populate_limit = $config['rp_populate_limit'];
 
     if( $recurr_id_to_pop > 0 )
     {
-		$config_name = "last_populate";
-		$sql = 'UPDATE ' . CALENDAR_CONFIG_TABLE . '
-				SET ' . $db->sql_build_array('UPDATE', array(
-				'config_name'	=> $config_name,
-				'config_value'	=> time() )) . "
-				WHERE config_name = '".$config_name."'";
-		$db->sql_query($sql);
+    	set_config ('last_populate', time() ,0);
+    	$cache->destroy('config');
 	}
 
 	// create events that occur between now and $populate_limit seconds.
 	$end_populate_limit = time() + $populate_limit;
 
-
 	$first_pop = 0;
 	$first_pop_event_id = 0;
 	if( $recurr_id_to_pop > 0 )
 	{
-		$sql = 'SELECT * FROM ' . CALENDAR_RECURRING_EVENTS_TABLE . '
+		$sql = 'SELECT * FROM ' . RP_RECURRING_EVENTS_TABLE . '
 					WHERE recurr_id = '.$recurr_id_to_pop;
 	}
 	else
 	{
 		// find all day events that need new events occurrences
-		$sql = 'SELECT * FROM ' . CALENDAR_RECURRING_EVENTS_TABLE . '
+		$sql = 'SELECT * FROM ' . RP_RECURRING_EVENTS_TABLE . '
 					WHERE ( (last_calc_time = 0) OR
-							((next_calc_time < '.$end_populate_limit.') AND
-								((next_calc_time < final_occ_time) OR (final_occ_time = 0)) ))';
+							((next_calc_time < '. $end_populate_limit .') AND
+							((next_calc_time < final_occ_time) OR (final_occ_time = 0)) ))';
 	}
 	$result = $db->sql_query($sql);
+	
 	while ($row = $db->sql_fetchrow($result))
 	{
 		if( $row['final_occ_time'] == 0 )
@@ -2698,8 +2673,6 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 				    	$poster_new_start_time = $poster_new_start_time - (($row['poster_timezone'] + $row['poster_dst'])*3600);
 				    }
 
-
-
 				    $row['next_calc_time'] = $poster_new_start_time;
 
 				    $r_event_all_day = $row['event_all_day'];
@@ -2707,6 +2680,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 				    $r_sort_timestamp = $row['last_calc_time'];
 				    $r_event_start = $row['last_calc_time'];
 				    $r_event_end = $row['last_calc_time'] + $row['event_duration'];
+
 				    if( $r_event_all_day == 1 )
 				    {
 				    	$r_event_start = 0;
@@ -2714,7 +2688,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 						$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 				    }
 
-				    $sql = 'INSERT INTO ' . CALENDAR_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 							'etype_id'				=> (int) $row['etype_id'],
 							'sort_timestamp'		=> (int) $r_sort_timestamp,
 							'event_start_time'		=> (int) $r_event_start,
@@ -2790,7 +2764,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 						$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 				    }
 
-				    $sql = 'INSERT INTO ' . CALENDAR_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 							'etype_id'				=> (int) $row['etype_id'],
 							'sort_timestamp'		=> (int) $r_sort_timestamp,
 							'event_start_time'		=> (int) $r_event_start,
@@ -2866,7 +2840,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 						$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 				    }
 
-				    $sql = 'INSERT INTO ' . CALENDAR_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 							'etype_id'				=> (int) $row['etype_id'],
 							'sort_timestamp'		=> (int) $r_sort_timestamp,
 							'event_start_time'		=> (int) $r_event_start,
@@ -2942,7 +2916,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 						$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 				    }
 
-				    $sql = 'INSERT INTO ' . CALENDAR_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 							'etype_id'				=> (int) $row['etype_id'],
 							'sort_timestamp'		=> (int) $r_sort_timestamp,
 							'event_start_time'		=> (int) $r_event_start,
@@ -3018,7 +2992,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 						$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 				    }
 
-				    $sql = 'INSERT INTO ' . CALENDAR_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 							'etype_id'				=> (int) $row['etype_id'],
 							'sort_timestamp'		=> (int) $r_sort_timestamp,
 							'event_start_time'		=> (int) $r_event_start,
@@ -3100,7 +3074,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 						$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 				    }
 
-				    $sql = 'INSERT INTO ' . CALENDAR_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 							'etype_id'				=> (int) $row['etype_id'],
 							'sort_timestamp'		=> (int) $r_sort_timestamp,
 							'event_start_time'		=> (int) $r_event_start,
@@ -3188,7 +3162,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 						$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 				    }
 
-				    $sql = 'INSERT INTO ' . CALENDAR_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 							'etype_id'				=> (int) $row['etype_id'],
 							'sort_timestamp'		=> (int) $r_sort_timestamp,
 							'event_start_time'		=> (int) $r_event_start,
@@ -3276,7 +3250,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 						$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 				    }
 
-				    $sql = 'INSERT INTO ' . CALENDAR_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 							'etype_id'				=> (int) $row['etype_id'],
 							'sort_timestamp'		=> (int) $r_sort_timestamp,
 							'event_start_time'		=> (int) $r_event_start,
@@ -3364,7 +3338,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 						$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 				    }
 
-				    $sql = 'INSERT INTO ' . CALENDAR_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 							'etype_id'				=> (int) $row['etype_id'],
 							'sort_timestamp'		=> (int) $r_sort_timestamp,
 							'event_start_time'		=> (int) $r_event_start,
@@ -3452,7 +3426,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 						$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 				    }
 
-				    $sql = 'INSERT INTO ' . CALENDAR_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 							'etype_id'				=> (int) $row['etype_id'],
 							'sort_timestamp'		=> (int) $r_sort_timestamp,
 							'event_start_time'		=> (int) $r_event_start,
@@ -3501,7 +3475,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 						$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 				    }
 
-				    $sql = 'INSERT INTO ' . CALENDAR_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 							'etype_id'				=> (int) $row['etype_id'],
 							'sort_timestamp'		=> (int) $r_sort_timestamp,
 							'event_start_time'		=> (int) $r_event_start,
@@ -3550,7 +3524,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 						$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 				    }
 
-				    $sql = 'INSERT INTO ' . CALENDAR_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 							'etype_id'				=> (int) $row['etype_id'],
 							'sort_timestamp'		=> (int) $r_sort_timestamp,
 							'event_start_time'		=> (int) $r_event_start,
@@ -3573,6 +3547,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 							)
 						);
 					$db->sql_query($sql);
+					
 					if( $first_pop == 1 )
 					{
 						$first_pop_event_id = $db->sql_nextid();
@@ -3582,7 +3557,7 @@ function populate_calendar( $recurr_id_to_pop = 0 )
 			default:
 				break;
 		}
-		$sql = 'UPDATE ' . CALENDAR_RECURRING_EVENTS_TABLE . '
+		$sql = 'UPDATE ' . RP_RECURRING_EVENTS_TABLE . '
 				SET ' . $db->sql_build_array('UPDATE', array(
 					'last_calc_time'		=> (int) $row['last_calc_time'],
 					'next_calc_time'		=> (int) $row['next_calc_time'],
@@ -3660,7 +3635,7 @@ function find_week_index( $date, $from_start, $full_week, $first_day_of_week = -
 	$year = gmdate('Y',$date);
 	if( $first_day_of_week < 0 )
 	{
-		$first_day_of_week = get_calendar_config_value("first_day_of_week", 0);
+		$first_day_of_week = $config['rp_first_day_of_week'];
 	}
 
 	if( $from_start )
@@ -3782,7 +3757,7 @@ function find_day_via_week_index( $weekday, $index, $month, $year, $from_start, 
 	$number_of_days_in_month = gmdate('t', $first_date);
 	if( $first_day_of_week < 0 )
 	{
-		$first_day_of_week = get_calendar_config_value("first_day_of_week", 0);
+		$first_day_of_week = $config['rp_first_day_of_week'];
 	}
 	if( $from_start )
 	{
@@ -3916,7 +3891,7 @@ function get_recurring_event_string_via_id( $recurr_id )
 		return $string;
 	}
 
-	$sql = 'SELECT * FROM ' . CALENDAR_RECURRING_EVENTS_TABLE ."
+	$sql = 'SELECT * FROM ' . RP_RECURRING_EVENTS_TABLE ."
 			WHERE recurr_id ='".$db->sql_escape($recurr_id)."'";
 	$result = $db->sql_query($sql);
 	if($row = $db->sql_fetchrow($result))
@@ -3934,7 +3909,7 @@ function get_recurring_event_string_via_id( $recurr_id )
 ** recurring event
 **
 ** INPUT
-**   $row - the row of data from the CALENDAR_RECURRING_EVENTS_TABLE
+**   $row - the row of data from the RP_RECURRING_EVENTS_TABLE
 **          describing this recurring event.
 */
 function get_recurring_event_string( $row )
@@ -4016,7 +3991,7 @@ function get_recurring_event_string( $row )
 
 /* calendar_mark_user_read_event()
 **
-** Changes the user's notify_status in the CALENDAR_EVENTS_WATCH table
+** Changes the user's notify_status in the RP_EVENTS_WATCH table
 ** This indicates that the user has re-visited the event, and
 ** they will recieve a notification the next time there is
 ** an update/reply posted to this event.
@@ -4028,7 +4003,7 @@ function calendar_mark_user_read_event( $event_id, $user_id )
 {
 	global $db;
 
-	$sql = 'UPDATE ' . CALENDAR_EVENTS_WATCH . '
+	$sql = 'UPDATE ' . RP_EVENTS_WATCH . '
 		SET ' . $db->sql_build_array('UPDATE', array(
 		'notify_status'		=> (int) 0,
 							)) . "
@@ -4038,7 +4013,7 @@ function calendar_mark_user_read_event( $event_id, $user_id )
 
 /* calendar_mark_user_read_calendar()
 **
-** Changes the user's notify_status in the CALENDAR_WATCH table
+** Changes the user's notify_status in the RP_WATCH table
 ** This indicates that the user has re-visited the page, and
 ** they will recieve a notification the next time there is
 ** a new event posted.
@@ -4050,7 +4025,7 @@ function calendar_mark_user_read_calendar( $user_id )
 {
 	global $db;
 
-	$sql = 'UPDATE ' . CALENDAR_WATCH . '
+	$sql = 'UPDATE ' . RP_WATCH . '
 		SET ' . $db->sql_build_array('UPDATE', array(
 		'notify_status'		=> (int) 0,
 							)) . "
@@ -4091,7 +4066,7 @@ function calendar_add_or_update_reply( $event_id, $is_reply = true )
 	}
 
 	$sql = 'SELECT w.*, u.username, u.username_clean, u.user_email, u.user_notify_type,
-		u.user_jabber, u.user_lang FROM ' . CALENDAR_EVENTS_WATCH . ' w, ' . USERS_TABLE . ' u
+		u.user_jabber, u.user_lang FROM ' . RP_EVENTS_WATCH . ' w, ' . USERS_TABLE . ' u
 		WHERE w.user_id = u.user_id '. $sql_track_replies .' AND w.event_id = ' .$event_id.' AND u.user_id <> '.$user_id;
 	$db->sql_query($sql);
 	$result = $db->sql_query($sql);
@@ -4119,7 +4094,7 @@ function calendar_add_or_update_reply( $event_id, $is_reply = true )
 
 			$messenger->send($row['user_notify_type']);
 
-			$sql = 'UPDATE ' . CALENDAR_EVENTS_WATCH . '
+			$sql = 'UPDATE ' . RP_EVENTS_WATCH . '
 				SET ' . $db->sql_build_array('UPDATE', array(
 				'notify_status'		=> (int) 1,
 									)) . "
@@ -4210,7 +4185,7 @@ function calendar_notify_new_event( $event_id )
 		{
 			$group_sql = calendar_generate_group_sql_for_notify_new_event( $event_data );
 			$sql = 'SELECT w.*, u.username, u.username_clean, u.user_email, u.user_notify_type,
-				u.user_jabber, u.user_lang FROM ' . CALENDAR_WATCH . ' w, ' . USERS_TABLE . ' u,
+				u.user_jabber, u.user_lang FROM ' . RP_WATCH . ' w, ' . USERS_TABLE . ' u,
 				'. GROUPS_TABLE. ' g, '.USER_GROUP_TABLE.' ug
 				WHERE w.user_id = u.user_id '. $group_sql .' AND u.user_id <> '.$user_id;
 
@@ -4219,7 +4194,7 @@ function calendar_notify_new_event( $event_id )
 		else /* this is a public event */
 		{
 			$sql = 'SELECT w.*, u.username, u.username_clean, u.user_email, u.user_notify_type,
-				u.user_jabber, u.user_lang FROM ' . CALENDAR_WATCH . ' w, ' . USERS_TABLE . ' u
+				u.user_jabber, u.user_lang FROM ' . RP_WATCH . ' w, ' . USERS_TABLE . ' u
 				WHERE w.user_id = u.user_id AND u.user_id <> '.$user_id;
 		}
 		include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
@@ -4253,7 +4228,7 @@ function calendar_notify_new_event( $event_id )
 
 				$messenger->send($row['user_notify_type']);
 
-				$sql = 'UPDATE ' . CALENDAR_WATCH . '
+				$sql = 'UPDATE ' . RP_WATCH . '
 					SET ' . $db->sql_build_array('UPDATE', array(
 					'notify_status'		=> (int) 1,
 										)) . "
@@ -4296,7 +4271,7 @@ function calendar_init_s_watching_event_data( $event_id, &$s_watching_event )
 	$s_watching_event['is_watching'] = false;
 	if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 	{
-		$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_WATCH . '
+		$sql = 'SELECT * FROM ' . RP_EVENTS_WATCH . '
 			WHERE user_id = '.$user->data['user_id'].' AND event_id = ' .$event_id;
 		$db->sql_query($sql);
 		$result = $db->sql_query($sql);
@@ -4337,7 +4312,7 @@ function calendar_init_s_watching_calendar( &$s_watching_calendar )
 	$s_watching_calendar['is_watching'] = false;
 	if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 	{
-		$sql = 'SELECT * FROM ' . CALENDAR_WATCH . '
+		$sql = 'SELECT * FROM ' . RP_WATCH . '
 			WHERE user_id = '.$user->data['user_id'];
 		$db->sql_query($sql);
 		$result = $db->sql_query($sql);
@@ -4362,7 +4337,7 @@ function calendar_init_s_watching_calendar( &$s_watching_calendar )
 
 /* calendar_watch_event()
 **
-** Adds/removes the current user into the CALENDAR_EVENTS_WATCH table
+** Adds/removes the current user into the RP_EVENTS_WATCH table
 ** so that they can start/stop recieving notifications about updates
 ** and replies to the specified event.
 **
@@ -4382,7 +4357,7 @@ function calendar_watch_event( $event_id, $turn_on = 1 )
 	if( $turn_on == 1 )
 	{
 		$is_watching_event = false;
-		$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_WATCH . '
+		$sql = 'SELECT * FROM ' . RP_EVENTS_WATCH . '
 			WHERE user_id = '.$user_id.' AND event_id = ' .$event_id;
 		$db->sql_query($sql);
 		$result = $db->sql_query($sql);
@@ -4412,7 +4387,7 @@ function calendar_watch_event( $event_id, $turn_on = 1 )
 				}
 			}
 
-			$sql = 'INSERT INTO ' . CALENDAR_EVENTS_WATCH . ' ' . $db->sql_build_array('INSERT', array(
+			$sql = 'INSERT INTO ' . RP_EVENTS_WATCH . ' ' . $db->sql_build_array('INSERT', array(
 					'event_id'		=> (int) $event_id,
 					'user_id'		=> (int) $user_id,
 					'notify_status'	=> (int) 0,
@@ -4424,7 +4399,7 @@ function calendar_watch_event( $event_id, $turn_on = 1 )
 	}
 	else if( $turn_on == 0 )
 	{
-		$sql = 'DELETE FROM ' . CALENDAR_EVENTS_WATCH . '
+		$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . '
 				WHERE event_id = ' .$db->sql_escape($event_id). '
 				AND user_id = '.$db->sql_escape($user_id);
 		$db->sql_query($sql);
@@ -4433,7 +4408,7 @@ function calendar_watch_event( $event_id, $turn_on = 1 )
 
 /* calendar_watch_calendar()
 **
-** Adds/removes the current user into the CALENDAR_WATCH table
+** Adds/removes the current user into the RP_WATCH table
 ** so that they can start/stop recieving notifications about new events
 **
 ** INPUT
@@ -4451,7 +4426,7 @@ function calendar_watch_calendar( $turn_on = 1 )
 	if( $turn_on == 1 )
 	{
 		$is_watching_calendar = false;
-		$sql = 'SELECT * FROM ' . CALENDAR_WATCH . '
+		$sql = 'SELECT * FROM ' . RP_WATCH . '
 			WHERE user_id = '.$user_id;
 		$db->sql_query($sql);
 		$result = $db->sql_query($sql);
@@ -4466,7 +4441,7 @@ function calendar_watch_calendar( $turn_on = 1 )
 		}
 		else
 		{
-			$sql = 'INSERT INTO ' . CALENDAR_WATCH . ' ' . $db->sql_build_array('INSERT', array(
+			$sql = 'INSERT INTO ' . RP_WATCH . ' ' . $db->sql_build_array('INSERT', array(
 					'user_id'		=> (int) $user_id,
 					'notify_status'	=> (int) 0,
 					)
@@ -4476,7 +4451,7 @@ function calendar_watch_calendar( $turn_on = 1 )
 	}
 	else if( $turn_on == 0 )
 	{
-		$sql = 'DELETE FROM ' . CALENDAR_WATCH . '
+		$sql = 'DELETE FROM ' . RP_WATCH . '
 				WHERE user_id = '.$db->sql_escape($user_id);
 		$db->sql_query($sql);
 	}

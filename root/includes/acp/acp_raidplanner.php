@@ -207,10 +207,10 @@ class acp_raidplanner
 		global $auth, $db, $user, $config, $phpEx, $phpbb_root_path;
 	
 		$s_hidden_fields = build_hidden_fields(array(
+				'mode'		=> 'rp_settings',
+				'i'			=> 'raidplanner',
 				'plusVal'	=> $plusVal,
-				'mode'		=> 'calsettings',
 				'calPlusHour' => 1,
-				'i'			=> 'calendar',
 				)
 		);
 	
@@ -225,7 +225,7 @@ class acp_raidplanner
 	
 			/* first populate all recurring events to make sure
 			   the cron job does not run again while we are working. */
-			include_once($phpbb_root_path . 'includes/functions_calendar.' . $phpEx);
+			include_once($phpbb_root_path . 'includes/bbdkp/raidplanner/functions_rp.' . $phpEx);
 			populate_calendar(0);
 	
 			/* next move all recurring events by one hour
@@ -263,7 +263,7 @@ class acp_raidplanner
 			$db->sql_freeresult($result);
 	
 			/* finally move each individual event by one hour */
-			$sql = 'SELECT * FROM ' . CALENDAR_EVENTS_TABLE . '
+			$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
 						ORDER BY event_id';
 			$db->sql_query($sql);
 			$result = $db->sql_query($sql);
@@ -273,7 +273,7 @@ class acp_raidplanner
 				$event_start_time = $row['event_start_time'] + ($factor * 3600);
 				$event_end_time = $row['event_end_time'] + ($factor * 3600);
 				$event_id = $row['event_id'];
-				$sql = 'UPDATE ' . CALENDAR_EVENTS_TABLE . '
+				$sql = 'UPDATE ' . RP_EVENTS_TABLE . '
 					SET ' . $db->sql_build_array('UPDATE', array(
 						'sort_timestamp'	=> (int) $sort_timestamp,
 						'event_start_time'	=> (int) $event_start_time,
@@ -283,9 +283,8 @@ class acp_raidplanner
 				$db->sql_query($sql);
 			}
 			$db->sql_freeresult($result);
-	
-			$meta_info = append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=calendar&amp;mode=calsettings" );
-	
+						 
+			$meta_info = append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_settings" );
 			meta_refresh(3, $meta_info);
 	
 			$message .= '<br /><br />' . sprintf( $user->lang['PLUS_HOUR_SUCCESS'],(string)$factor);
