@@ -296,10 +296,7 @@ class acp_raidplanner
 			confirm_box(false, sprintf( $user->lang['PLUS_HOUR_CONFIRM'],(string)$factor), $s_hidden_fields);
 		}
 	}
-	
-	
-	
-	
+
 }
 
 ?>
