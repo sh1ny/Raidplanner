@@ -92,12 +92,12 @@ $versions = array(
             /* admin */
         	 array('a_raid_config', true),
 			/* mod */
-            array('m_calendar_edit_other_users_events', true),
-            array('m_calendar_delete_other_users_events', true),
-            array('m_calendar_edit_other_users_rsvps', true),
+            array('m_raidplanner_edit_other_users_events', true),
+            array('m_raidplanner_delete_other_users_events', true),
+            array('m_raidplanner_edit_other_users_rsvps', true),
             /* user */
             array('u_raidplanner_view_headcount', true),
-            array('u_u_raidplanner_view_events', true),
+            array('u_raidplanner_view_events', true),
             array('u_raidplanner_view_detailed_rsvps', true),
             array('u_raidplanner_create_events', true),
             array('u_raidplanner_create_public_events', true),
@@ -170,15 +170,15 @@ $versions = array(
 			array('ROLE_USER_FULL', 'u_raidplanner_view_headcount'),
 			
 			// allows viewing raids
-			array('ROLE_ADMIN_FULL', 'u_u_raidplanner_view_events'),
-			array('ROLE_ADMIN_FORUM', 'u_u_raidplanner_view_events'),
-			array('ROLE_ADMIN_STANDARD', 'u_u_raidplanner_view_events'),
-			array('ROLE_ADMIN_USERGROUP', 'u_u_raidplanner_view_events'),
-			array('ROLE_MOD_FULL', 'u_u_raidplanner_view_events'),
-			array('ROLE_MOD_QUEUE', 'u_u_raidplanner_view_events'),
-			array('ROLE_MOD_SIMPLE', 'u_u_raidplanner_view_events'),
-			array('ROLE_MOD_STANDARD', 'u_u_raidplanner_view_events'),
-			array('ROLE_USER_FULL', 'u_u_raidplanner_view_events'),
+			array('ROLE_ADMIN_FULL', 'u_aidplanner_view_events'),
+			array('ROLE_ADMIN_FORUM', 'u_raidplanner_view_events'),
+			array('ROLE_ADMIN_STANDARD', 'u_raidplanner_view_events'),
+			array('ROLE_ADMIN_USERGROUP', 'u_raidplanner_view_events'),
+			array('ROLE_MOD_FULL', 'u_raidplanner_view_events'),
+			array('ROLE_MOD_QUEUE', 'u_raidplanner_view_events'),
+			array('ROLE_MOD_SIMPLE', 'u_raidplanner_view_events'),
+			array('ROLE_MOD_STANDARD', 'u_raidplanner_view_events'),
+			array('ROLE_USER_FULL', 'u_raidplanner_view_events'),
 			
 			// allows viewing who rsvp back
 			array('ROLE_ADMIN_FULL', 'u_raidplanner_view_detailed_rsvps'),

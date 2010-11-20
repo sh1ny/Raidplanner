@@ -35,7 +35,8 @@ $mode_sel_code = "";
 /* main function to display a month in the calendar */
 function calendar_display_month()
 {
-	global $auth, $db, $user, $config, $template, $date, $available_etype_colors, $available_etype_images, $available_etype_display_names, $month_sel_code, $day_sel_code, $year_sel_code, $mode_sel_code;
+	global $auth, $db, $user, $config, $template, $date, $available_etype_colors, 
+	$available_etype_images, $available_etype_display_names, $month_sel_code, $day_sel_code, $year_sel_code, $mode_sel_code;
 	global $phpEx, $phpbb_root_path;
 
 	init_calendar_data();
@@ -63,7 +64,7 @@ function calendar_display_month()
 
 	// Is the user able to view ANY events?
 	$user_can_view_events = false;
-	if ( $auth->acl_get('u_calendar_view_events') )
+	if ( $auth->acl_get('u_raidplanner_view_events') )
 	{
 		$user_can_view_events = true;
 
@@ -125,8 +126,8 @@ function calendar_display_month()
 			$calendar_days['END_WEEK'] = true;
 		}
 		$calendar_days['NUMBER'] = $j;
-		//if( $auth->acl_get('u_calendar_create_events') )
-		if ( $auth->acl_gets('u_calendar_create_public_events', 'u_calendar_create_group_events', 'u_calendar_create_private_events') )
+		//if( $auth->acl_get('u_raidplanner_create_events') )
+		if ( $auth->acl_gets('u_raidplanner_create_public_events', 'u_raidplanner_create_group_events', 'u_raidplanner_create_private_events') )
 		{
 			$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}calendarpost.$phpEx", "mode=post&amp;calD=".$j."&amp;calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts);
 		}
@@ -343,7 +344,7 @@ function calendar_display_week( $index_display )
 
 	// Is the user able to view ANY events?
 	$user_can_view_events = false;
-	if ( $auth->acl_get('u_calendar_view_events') )
+	if ( $auth->acl_get('u_raidplanner_view_events') )
 	{
 		$user_can_view_events = true;
 
@@ -396,8 +397,8 @@ function calendar_display_week( $index_display )
 			$calendar_days['END_WEEK'] = true;
 		}
 		$calendar_days['NUMBER'] = $true_j;
-		//if( $auth->acl_get('u_calendar_create_events') )
-		if ( $auth->acl_gets('u_calendar_create_public_events', 'u_calendar_create_group_events', 'u_calendar_create_private_events') )
+		//if( $auth->acl_get('u_raidplanner_create_events') )
+		if ( $auth->acl_gets('u_raidplanner_create_public_events', 'u_raidplanner_create_group_events', 'u_raidplanner_create_private_events') )
 		{
 			$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}calendarpost.$phpEx", "mode=post&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
 		}
@@ -597,7 +598,7 @@ function calendar_display_day()
 
     $event_counter = 0;
 	// Is the user able to view ANY events?
-	if ( $auth->acl_get('u_calendar_view_events') )
+	if ( $auth->acl_get('u_raidplanner_view_events') )
 	{
 		// find birthdays
 		if( $auth->acl_get('u_viewprofile') )
@@ -729,8 +730,8 @@ function calendar_display_day()
 	$month_view_url = append_sid("{$phpbb_root_path}calendar.$phpEx", "view=month&amp;calD=".$date['day']."&amp;calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts);
 	$add_event_url = "";
 
-	//if( $auth->acl_get('u_calendar_create_events') )
-	if ( $auth->acl_gets('u_calendar_create_public_events', 'u_calendar_create_group_events', 'u_calendar_create_private_events') )
+	//if( $auth->acl_get('u_raidplanner_create_events') )
+	if ( $auth->acl_gets('u_raidplanner_create_public_events', 'u_raidplanner_create_group_events', 'u_raidplanner_create_private_events') )
 	{
 		$add_event_url = append_sid("{$phpbb_root_path}calendarpost.$phpEx", "mode=post&amp;calD=".$date['day']."&amp;calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts);
 	}
@@ -787,7 +788,7 @@ function calendar_display_event()
 		}
 
 		// Is the user able to view ANY events?
-		if ( !$auth->acl_get('u_calendar_view_events') )
+		if ( !$auth->acl_get('u_raidplanner_view_events') )
 		{
 			trigger_error( 'USER_CANNOT_VIEW_EVENT' );
 		}
@@ -851,7 +852,8 @@ function calendar_display_event()
 		$back_url = append_sid("{$phpbb_root_path}calendar.$phpEx", "calD=".$date['day']."&amp;calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts );
 
 		$event_body = $event_data['event_body'];
-		$event_data['bbcode_options'] = (($event_data['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) +    (($event_data['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) +     (($event_data['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
+		$event_data['bbcode_options'] = (($event_data['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) +   
+		 (($event_data['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) +     (($event_data['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
 
 		$message = generate_text_for_display($event_body, $event_data['bbcode_uid'], $event_data['bbcode_bitfield'], $event_data['bbcode_options']);
 		$event_display_name = $available_etype_display_names[$event_data['etype_id']];
@@ -866,8 +868,8 @@ function calendar_display_event()
 
 		$edit_url = "";
 		$edit_all_url = "";
-		if( $user->data['is_registered'] && $auth->acl_get('u_calendar_edit_events') &&
-		    (($user->data['user_id'] == $event_data['poster_id'])|| $auth->acl_get('m_calendar_edit_other_users_events') ))
+		if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_events') &&
+		    (($user->data['user_id'] == $event_data['poster_id'])|| $auth->acl_get('m_raidplanner_edit_other_users_events') ))
 		{
 			$edit_url = append_sid("{$phpbb_root_path}calendarpost.$phpEx", "mode=edit&amp;calEid=".$event_id."&amp;calD=".$date['day']."&amp;calM=".$date['month_no']."&amp;calY=".$date['year']);
 			if( $event_data['recurr_id'] > 0 )
@@ -877,8 +879,8 @@ function calendar_display_event()
 		}
 		$delete_url = "";
 		$delete_all_url = "";
-		if( $user->data['is_registered'] && $auth->acl_get('u_calendar_delete_events') &&
-		    (($user->data['user_id'] == $event_data['poster_id'])|| $auth->acl_get('m_calendar_delete_other_users_events') ))
+		if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_delete_events') &&
+		    (($user->data['user_id'] == $event_data['poster_id'])|| $auth->acl_get('m_raidplanner_delete_other_users_events') ))
 
 		{
 			$delete_url = append_sid("{$phpbb_root_path}calendarpost.$phpEx", "mode=delete&amp;calEid=".$event_id."&amp;calD=".$date['day']."&amp;calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts);
@@ -919,7 +921,7 @@ function calendar_display_event()
 
 			// Can we edit this reply ... if we're a moderator with rights then always yes
 			// else it depends on editing times, lock status and if we're the correct user
-			if ( $rsvp_id !== 0 && !$auth->acl_get('m_calendar_edit_other_users_rsvps'))
+			if ( $rsvp_id !== 0 && !$auth->acl_get('m_raidplanner_edit_other_users_rsvps'))
 			{
 				if ($user->data['user_id'] != $rsvp_data['poster_id'])
 				{
@@ -1057,7 +1059,7 @@ function calendar_display_event()
 			$result = $db->sql_query($sql);
 
 			$edit_rsvps = 0;
-			if( $auth->acl_get('m_calendar_edit_other_users_rsvps') )
+			if( $auth->acl_get('m_raidplanner_edit_other_users_rsvps') )
 			{
 				$edit_rsvps = 1;
 				$edit_rsvp_url = append_sid("{$phpbb_root_path}calendar.$phpEx", "view=event&amp;calEid=".$event_id.$etype_url_opts );
@@ -1144,8 +1146,8 @@ function calendar_display_event()
 
 
 		$add_event_url = "";
-		//if( $auth->acl_get('u_calendar_create_events') )
-		if ( $auth->acl_gets('u_calendar_create_public_events', 'u_calendar_create_group_events', 'u_calendar_create_private_events') )
+		//if( $auth->acl_get('u_raidplanner_create_events') )
+		if ( $auth->acl_gets('u_raidplanner_create_public_events', 'u_raidplanner_create_group_events', 'u_raidplanner_create_private_events') )
 		{
 			$add_event_url = append_sid("{$phpbb_root_path}calendarpost.$phpEx", "mode=post&amp;calD=".$date['day']."&amp;calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts);
 		}
@@ -1154,12 +1156,12 @@ function calendar_display_event()
 		$month_view_url = append_sid("{$phpbb_root_path}calendar.$phpEx", "view=month&amp;calD=".$date['day']."&amp;calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts);
 
 		$s_rsvp_headcount = false;
-		if( ($user->data['user_id'] == $event_data['poster_id'])|| $auth->acl_get('u_calendar_view_headcount') )
+		if( ($user->data['user_id'] == $event_data['poster_id'])|| $auth->acl_get('u_raidplanner_view_headcount') )
 		{
 			$s_rsvp_headcount = true;
 		}
 		$s_rsvp_details = false;
-		if( ($user->data['user_id'] == $event_data['poster_id'])|| $auth->acl_get('u_calendar_view_detailed_rsvps') )
+		if( ($user->data['user_id'] == $event_data['poster_id'])|| $auth->acl_get('u_raidplanner_view_detailed_rsvps') )
 		{
 			$s_rsvp_details = true;
 		}
@@ -1216,7 +1218,7 @@ function calendar_display_calendar_on_index()
 	$user->setup('calendar');
 
 	//find the first day of the week
-	$index_display_week = get_calendar_config_value( "index_display_week", 0 );
+	$index_display_week = $config['index_display_week']; 
 	if( $index_display_week === "1" )
 	{
 		$template->assign_vars(array(
@@ -1227,7 +1229,7 @@ function calendar_display_calendar_on_index()
 	else
 	{
 		//see if we should display X number of upcoming events
-		$index_display_next_events = get_calendar_config_value( "index_display_next_events", 0 );
+		$index_display_next_events = $config['index_display_next_events'];  
 		$s_next_events = false;
 		if( $index_display_next_events > 0 )
 		{
@@ -1253,7 +1255,7 @@ function display_next_events( $x )
 
 	// Is the user able to view ANY events?
 	$user_can_view_events = false;
-	if ( $auth->acl_get('u_calendar_view_events') )
+	if ( $auth->acl_get('u_raidplanner_view_events') )
 	{
 
 		init_calendar_data();
@@ -1334,7 +1336,7 @@ function display_next_events_for_x_days( $x )
 
 	// Is the user able to view ANY events?
 	$user_can_view_events = false;
-	if ( $auth->acl_get('u_calendar_view_events') )
+	if ( $auth->acl_get('u_raidplanner_view_events') )
 	{
 
 		init_calendar_data();
@@ -1416,7 +1418,7 @@ function display_posters_next_events_for_x_days( $x, $user_id )
 
 	// Is the user able to view ANY events?
 	$user_can_view_events = false;
-	if ( $auth->acl_get('u_calendar_view_events') )
+	if ( $auth->acl_get('u_raidplanner_view_events') )
 	{
 
 		init_calendar_data();
@@ -1488,8 +1490,8 @@ function display_posters_next_events_for_x_days( $x, $user_id )
 
 			$edit_url = "";
 			$edit_all_url = "";
-			if( $user->data['is_registered'] && $auth->acl_get('u_calendar_edit_events') &&
-				(($user->data['user_id'] == $row['poster_id'])|| $auth->acl_get('m_calendar_edit_other_users_events') ))
+			if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_events') &&
+				(($user->data['user_id'] == $row['poster_id'])|| $auth->acl_get('m_raidplanner_edit_other_users_events') ))
 			{
 				$edit_url = append_sid("{$phpbb_root_path}calendarpost.$phpEx", "mode=edit&amp;calEid=".$row['event_id']."&amp;calD=".$date['day']."&amp;calM=".$date['month_no']."&amp;calY=".$date['year']);
 				if( $row['recurr_id'] > 0 )
@@ -1499,8 +1501,8 @@ function display_posters_next_events_for_x_days( $x, $user_id )
 			}
 			$delete_url = "";
 			$delete_all_url = "";
-			if( $user->data['is_registered'] && $auth->acl_get('u_calendar_delete_events') &&
-				(($user->data['user_id'] == $row['poster_id'])|| $auth->acl_get('m_calendar_delete_other_users_events') ))
+			if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_delete_events') &&
+				(($user->data['user_id'] == $row['poster_id'])|| $auth->acl_get('m_raidplanner_delete_other_users_events') ))
 
 			{
 				$delete_url = append_sid("{$phpbb_root_path}calendarpost.$phpEx", "mode=delete&amp;calEid=".$row['event_id']."&amp;calD=".$date['day']."&amp;calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts);
@@ -1535,7 +1537,7 @@ function display_users_next_events_for_x_days( $x, $user_id )
 
 	// Is the user able to view ANY events?
 	$user_can_view_events = false;
-	if ( $auth->acl_get('u_calendar_view_events') )
+	if ( $auth->acl_get('u_raidplanner_view_events') )
 	{
 
 		init_calendar_data();
@@ -1742,7 +1744,7 @@ function generate_birthday_list( $day, $month, $year )
 	global $db, $user, $config;
 
 	$birthday_list = "";
-	if ($config['rp_load_birthdays'] && $config['rp_allow_birthdays'])
+	if ($config['load_birthdays'] && $config['allow_birthdays'])
 	{
 		$sql = 'SELECT user_id, username, user_colour, user_birthday
 				FROM ' . USERS_TABLE . "
@@ -1779,7 +1781,6 @@ function get_sql_group_options($user_id)
 	global $auth, $db;
 
 	// What groups is this user a member of?
-	// Do the SQL thang
 
 	/* don't check for hidden group setting -
 	  if the event was made by the admin for a hidden group -
@@ -1793,7 +1794,6 @@ function get_sql_group_options($user_id)
 			ORDER BY g.group_type, g.group_name';
 	$result = $db->sql_query($sql);
 
-	//$group_options = "group_id = 1 OR group_id = 2 OR group_id = 3"
 	$group_options = '';
 	while ($row = $db->sql_fetchrow($result))
 	{
@@ -1806,8 +1806,6 @@ function get_sql_group_options($user_id)
 	$db->sql_freeresult($result);
 	return $group_options;
 }
-
-
 
 /* get the the invite list for an event and the poster url
 */
@@ -1898,10 +1896,13 @@ function get_event_invite_list_and_poster_url($event_data, &$poster_url, &$invit
 
 /* initialize global variables used throughout
    all of the calendar functions
+	ok
 */
 function init_calendar_data()
 {
-	global $auth, $db, $user, $config, $date, $month_names, $available_etype_count, $available_etype_ids, $available_etype_full_names, $available_etype_colors, $available_etype_images, $available_etype_display_names;
+	global $auth, $db, $user, $config, $date, $month_names, 
+	$available_etype_count, $available_etype_ids, $available_etype_full_names, 
+	$available_etype_colors, $available_etype_images, $available_etype_display_names;
 
 	/* check to see if we have already initialized things */
 	if( count($month_names) == 0 )
@@ -2053,6 +2054,7 @@ function get_weekday_names( $first_day_of_week, &$sunday, &$monday, &$tuesday, &
 }
 
 /* used to find info about the previous and next [day, week, or month]
+ * ok
 */
 function set_date_prev_next( $view_mode )
 {
@@ -2149,10 +2151,12 @@ function get_fday($day, $month, $year, $first_day_of_week)
 
 /* Initialize the pulldown menus that allow the user
    to jump from one calendar display mode/time to another
+	ok
 */
 function init_view_selection_code( $view_mode )
 {
-	global $auth, $db, $user, $config, $date, $month_names, $month_sel_code, $day_sel_code, $year_sel_code, $mode_sel_code;
+	global $auth, $db, $user, $config, $date, $month_names, 
+	$month_sel_code, $day_sel_code, $year_sel_code, $mode_sel_code;
 
 	// create RP_VIEW_OPTIONS
 	$month_sel_code  = "<select name='calM' id='calM'>\n";
@@ -2246,7 +2250,7 @@ function get_event_data( $id, &$event_data )
 	    $event_data['frequency'] = 0;
 	    $event_data['final_occ_time'] = 0;
 	    $event_data['week_index'] = 0;
-	    $event_data['first_day_of_week'] = $config["first_day_of_week"];
+	    $event_data['first_day_of_week'] = $config["rp_first_day_of_week"];
 	}
 }
 
@@ -2399,7 +2403,7 @@ function posting_generate_group_selection_code( $user_id )
 
 	$disp_hidden_groups = $config['rp_display_hidden_groups'];
 
-	if ( $auth->acl_get('u_calendar_nonmember_groups') )
+	if ( $auth->acl_get('u_raidplanner_nonmember_groups') )
 	{
 		if( $disp_hidden_groups == 1 )
 		{
@@ -2462,14 +2466,8 @@ function prune_calendar()
 	global $auth, $db, $user, $config, $phpEx, $phpbb_root_path;
 	$prune_limit = $config['rp_prune_limit'];
 
-	$config_name = "last_prune";
-	$sql = 'UPDATE ' . RP_CONFIG_TABLE . '
-			SET ' . $db->sql_build_array('UPDATE', array(
-			'config_name'	=> $config_name,
-			'config_value'	=> time() )) . "
-			WHERE config_name = '".$config_name."'";
-	$db->sql_query($sql);
-
+	set_config  ( 'last_prune',  time(),0);
+	
 	// delete events that have been over for $prune_limit seconds.
 	$end_temp_date = time() - $prune_limit;
 
@@ -2564,7 +2562,7 @@ function generate_calendar_smilies($mode)
 			$template->assign_block_vars('smiley', array(
 				'SMILEY_CODE'	=> $row['code'],
 				'A_SMILEY_CODE'	=> addslashes($row['code']),
-				'SMILEY_IMG'	=> $phpbb_root_path . $config['rp_smilies_path'] . '/' . $row['smiley_url'],
+				'SMILEY_IMG'	=> $phpbb_root_path . $config['smilies_path'] . '/' . $row['smiley_url'],
 				'SMILEY_WIDTH'	=> $row['smiley_width'],
 				'SMILEY_HEIGHT'	=> $row['smiley_height'],
 				'SMILEY_DESC'	=> $row['emotion'])
@@ -2609,7 +2607,7 @@ function generate_calendar_smilies($mode)
 */
 function populate_calendar( $recurr_id_to_pop = 0 )
 {
-	global $auth, $db, $user, $config, $phpEx, $phpbb_root_path;
+	global $auth, $db, $user, $config, $phpEx, $phpbb_root_path, $cache;
 	$populate_limit = $config['rp_populate_limit'];
 
     if( $recurr_id_to_pop > 0 )
@@ -3848,6 +3846,7 @@ function get_etype_filter()
 	}
 	return " AND etype_id = ".$db->sql_escape($calEType)." ";
 }
+
 function get_etype_url_opts()
 {
 	$calEType = request_var('calEType', 0);
@@ -3857,6 +3856,7 @@ function get_etype_url_opts()
 	}
 	return "&amp;calEType=".$calEType;
 }
+
 function get_etype_post_opts()
 {
 	$calEType = request_var('calEType', 0);
@@ -3866,6 +3866,7 @@ function get_etype_post_opts()
 	}
 	return "calEType=".$calEType;
 }
+
 /*------------------------------------------------------
   End helper functions for filtering the calendar
   display based on a specified event type.
@@ -4373,7 +4374,7 @@ function calendar_watch_event( $event_id, $turn_on = 1 )
 		else
 		{
 			$track_replies = 0;
-			if( $auth->acl_get('u_calendar_view_detailed_rsvps') )
+			if( $auth->acl_get('u_raidplanner_view_detailed_rsvps') )
 			{
 				$track_replies = 1;
 			}
