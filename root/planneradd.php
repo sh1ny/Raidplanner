@@ -18,7 +18,11 @@ $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-include($phpbb_root_path . 'includes/bbdkp/raidplanner/functions_rp.' . $phpEx);
+include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_base.' . $phpEx);
+include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
+$raidevents = new raidevents();
+include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_population.' . $phpEx);
+$newraid= new raidplanner_population();
 
 // Start session management
 $user->session_begin();
@@ -37,28 +41,21 @@ $delete		= (isset($_POST['delete'])) ? true : false;
 $cancel		= (isset($_POST['cancel'])) ? true : false;
 
 // mode: post, edit, delete, or smilies
-$mode		= ($delete && !$preview && $submit) ? 'delete' : request_var('mode', '');
-
+$mode = ($delete && !$preview && $submit) ? 'delete' : request_var('mode', '');
 $error = array();
-
-init_calendar_data();
-
 // are there any event types defined?
-if( $available_etype_count < 1 )
+if( $newraid->available_etype_count < 1 )
 {
 	trigger_error('NO_EVENT_TYPES');
 }
 
-
 $current_time = time();
-
 // Was cancel pressed? If so then redirect to the appropriate page
 if ($cancel || ($current_time - $lastclick < 2 && $submit))
 {
-	$redirect = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$date['month_no']."&amp;calY=".$date['year']);
+	$redirect = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->$date['month_no']."&amp;calY=".$newraid->$date['year']);
 	redirect($redirect);
 }
-
 
 /*-------------------------------------
   begin event_data initialization
@@ -66,7 +63,7 @@ if ($cancel || ($current_time - $lastclick < 2 && $submit))
 $event_data = array();
 if( $event_id !== 0 )
 {
-	get_event_data( $event_id, $event_data );
+	$raidevents->get_event_data( $event_id, $event_data );
 }
 else
 {
@@ -106,11 +103,9 @@ else
 // take care of smilies popup
 if( $mode == 'smilies' )
 {
-	generate_calendar_smilies('window');
+	$newraid->generate_calendar_smilies('window');
 	trigger_error('NO_POST_EVENT_MODE');
 }
-
-
 
 /*-------------------------------------
   begin permission checking
@@ -265,11 +260,11 @@ if ($mode == 'delete')
     $delete_all = request_var('calDelAll', 0);
     if( $delete_all == 0 )
     {
-		handle_event_delete($event_id, $event_data);
+		$newraid->handle_event_delete($event_id, $event_data);
 	}
 	else
 	{
-		handle_event_delete_all($event_id, $event_data);
+		$newraid->handle_event_delete_all($event_id, $event_data);
 	}
 	exit;
 }
@@ -305,7 +300,6 @@ if ($submit || $preview)
 	$event_data['event_subject']= utf8_normalize_nfc(request_var('subject', '', true));
 	$event_data['event_body']	= utf8_normalize_nfc(request_var('message', '', true));
 	$event_data['etype_id']		= request_var('calEType', 0);
-
 
     /*------------------------------------------------------------------
       Begin to find the invite access level and list of invited groups
@@ -346,6 +340,7 @@ if ($submit || $preview)
       NOTE: if s_date_time_opts is false we are editing all events and
             there will not be any data to get
     -------------------------------------------------------------------*/
+	
 	if( $s_date_time_opts )
 	{
 		if( request_var('calAllDay', '') == "ON" )
@@ -353,14 +348,15 @@ if ($submit || $preview)
 			$event_start_date = 0;
 			$event_end_date = 0;
 			$event_data['event_all_day'] = 1;
-			$event_data['event_day'] = sprintf('%2d-%2d-%4d', $date['day'], $date['month_no'], $date['year']);
-			$sort_timestamp = gmmktime( 0,0,0,$date['month_no'], $date['day'], $date['year']);
+			$event_data['event_day'] = sprintf('%2d-%2d-%4d', $newraid->$date['day'], $newraid->date['month_no'], $newraid->date['year']);
+			$sort_timestamp = gmmktime( 0,0,0,$newraid->date['month_no'], $newraid->date['day'], $newraid->date['year']);
 		}
 		else
 		{
 			$start_hr = request_var('calHr', 0);
 			$start_mn = request_var('calMn', 0);
-			$event_start_date = gmmktime($start_hr, $start_mn, 0, $date['month_no'], $date['day'], $date['year'] ) - $user->timezone - $user->dst;
+			$event_start_date = gmmktime($start_hr, $start_mn, 0, $newraid->date['month_no'], 
+				$newraid->date['day'], $newraid->date['year'] ) - $user->timezone - $user->dst;
 			$sort_timestamp = $event_start_date;
 			$end_m = request_var('calMEnd', 0);
 			$end_d = request_var('calDEnd', 0);
@@ -442,19 +438,19 @@ if ($submit || $preview)
 		{
 			case 2:
 			case 7:
-				$event_data['week_index'] = find_week_index( $poster_timestamp, true, false, $event_data['first_day_of_week'] );
+				$event_data['week_index'] = $newraid->find_week_index( $poster_timestamp, true, false, $event_data['first_day_of_week'] );
 				break;
 			case 3:
 			case 8:
-				$event_data['week_index'] = find_week_index( $poster_timestamp, true, true, $event_data['first_day_of_week'] );
+				$event_data['week_index'] = $newraid->find_week_index( $poster_timestamp, true, true, $event_data['first_day_of_week'] );
 				break;
 			case 4:
 			case 9:
-				$event_data['week_index'] = find_week_index( $poster_timestamp, false, false, $event_data['first_day_of_week'] );
+				$event_data['week_index'] = $newraid->find_week_index( $poster_timestamp, false, false, $event_data['first_day_of_week'] );
 				break;
 			case 5:
 			case 10:
-				$event_data['week_index'] = find_week_index( $poster_timestamp, false, true, $event_data['first_day_of_week'] );
+				$event_data['week_index'] = $newraid->find_week_index( $poster_timestamp, false, true, $event_data['first_day_of_week'] );
 				break;
 			default:
 				$event_data['week_index'] = 0;
@@ -607,7 +603,10 @@ if ($submit || $preview)
 						WHERE recurr_id = $recurr_id";
 					$db->sql_query($sql);
 				}
-				calendar_add_or_update_reply( $event_id, false );
+				
+				$raidplanner= new displayplanner;
+				$raidplanner->calendar_add_or_update_reply($event_id, false );
+				
 			}
 			/*---------------------------------------------
 			   CREATE
@@ -665,7 +664,7 @@ if ($submit || $preview)
 					$db->sql_query($sql);
 					$recurr_id = $db->sql_nextid();
 
-					$event_id = populate_calendar( $recurr_id );
+					$event_id = $newraid->populate_calendar( $recurr_id );
 
 				}
 				/*----------------------------------------------------
@@ -699,15 +698,14 @@ if ($submit || $preview)
 					$db->sql_query($sql);
 					$event_id = $db->sql_nextid();
 				}
-				calendar_notify_new_event( $event_id );
+				$newraid->calendar_notify_new_event( $event_id );
 			}
 
-			/* calendar_add_or_update_reply( $event_id, false ); */
 			/*---------------------------------------------
 			   Confirm create/edit and display results
 			---------------------------------------------*/
-			$main_calendar_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$date['month_no']."&amp;calY=".$date['year']);
-			$view_event_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$event_id."&amp;calM=".$date['month_no']."&amp;calY=".$date['year']);
+			$main_calendar_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+			$view_event_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$event_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
 
 			// by default you should show the user the newly created event - not the main calendar page
 			meta_refresh(3, $view_event_url);
@@ -767,14 +765,16 @@ if (!sizeof($error) && $preview)
 	generate_text_for_storage($event_body, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
 	$preview_message = generate_text_for_display($event_body, $uid, $bitfield, $options);
 
-	$preview_etype_display_name = $available_etype_display_names[$event_data['etype_id']];
-	$preview_event_color = $available_etype_colors[$event_data['etype_id']];
-	$preview_event_image = $available_etype_images[$event_data['etype_id']];
+	$preview_etype_display_name = $newraid->available_etype_display_names[$event_data['etype_id']];
+	$preview_event_color = $newraid->available_etype_colors[$event_data['etype_id']];
+	$preview_event_image = $newraid->available_etype_images[$event_data['etype_id']];
 	$preview_subject = censor_text($event_data['event_subject']);
 
 	$poster_url = '';
 	$invite_list = '';
-	get_event_invite_list_and_poster_url($event_data, $poster_url, $invite_list );
+	
+	$revents = new raidevents;
+	$revents->get_event_invite_list_and_poster_url($event_data, $poster_url, $invite_list );
 	$preview_track_rsvps = $event_data['track_rsvps'];
 	$preview_allow_guests = $event_data['allow_guests'];
 
@@ -802,10 +802,10 @@ if (!sizeof($error) && $preview)
 // MAIN POSTING PAGE BEGINS HERE
 
 // Generate smiley listing
-generate_calendar_smilies('inline');
+$newraid->generate_calendar_smilies('inline');
 
 // action URL, include session_id for security purpose
-$s_action = append_sid("{$phpbb_root_path}calendarpost.$phpEx", "mode=$mode", true, $user->session_id);
+$s_action = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=$mode", true, $user->session_id);
 
 // Page title
 switch ($mode)
@@ -834,7 +834,7 @@ $event_data['event_body'] = str_replace( $temp_find_str, $temp_replace_str, $eve
 $month_sel_code  = "<select name='calM' id='calM'>\n";
 for( $i = 1; $i <= 12; $i++ )
 {
-	$month_sel_code .= "<option value='".$i."'>".$user->lang['datetime'][$month_names[$i]]."</option>\n";
+	$month_sel_code .= "<option value='".$i."'>".$user->lang['datetime'][$newraid->$month_names[$i]]."</option>\n";
 }
 $month_sel_code .= "</select>\n";
 
@@ -899,14 +899,14 @@ for( $i = 0; $i < 4; $i++ )
 $min_sel_code .= "</select>\n";
 
 $e_type_sel_code  = "<select name='calEType' id='calEType'>\n";
-for( $i = 0; $i < $available_etype_count; $i++ )
+for( $i = 0; $i < $newraid->available_etype_count; $i++ )
 {
-	$e_type_sel_code .= "<option value='".$available_etype_ids[$i]."'>".$available_etype_full_names[$i]."</option>\n";
+	$e_type_sel_code .= "<option value='".$newraid->available_etype_ids[$i]."'>".$newraid->available_etype_full_names[$i]."</option>\n";
 }
 $e_type_sel_code .= "</select>\n";
 
 // Find what groups this user is a member of and add them to the list of groups to invite
-$group_sel_code = posting_generate_group_selection_code( $event_data['poster_id'] );
+$group_sel_code = $newraid->posting_generate_group_selection_code( $event_data['poster_id'] );
 
 $level_sel_code  = "<select name='calELevel' id='calELevel' onchange='update_group_id_state();'>\n";
 if( $auth->acl_get('u_raidplanner_create_public_events') )
@@ -922,7 +922,6 @@ if( $auth->acl_get('u_raidplanner_create_private_events') )
 	$level_sel_code .= "<option value='0'>".$user->lang['EVENT_ACCESS_LEVEL_PERSONAL']."</option>\n";
 }
 $level_sel_code .= "</select>\n";
-
 
 $all_day_check = "<input type='checkbox' name='calAllDay' value='ON' checked='checked' onclick='toggle_all_day_event()' />";
 $track_rsvp_check = "<input type='checkbox' name='calTrackRsvps' value='ON' checked='checked' />";
@@ -972,12 +971,11 @@ if( $s_recurring_opts )
 	$temp_replace_str = "id='calY' onchange='update_recurring_options()'";
 	$year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $year_sel_code );
 
-
 	$end_recurr_month_sel_code  = "<select name='calRMEnd' id='calRMEnd' onchange='update_recurring_end_date_opts(this.value)' disabled='disabled'>\n";
 	$end_recurr_month_sel_code .= "<option value='0'>".$user->lang['NEVER']."</option>\n";
 	for( $i = 1; $i <= 12; $i++ )
 	{
-		$end_recurr_month_sel_code .= "<option value='".$i."'>".$user->lang['datetime'][$month_names[$i]]."</option>\n";
+		$end_recurr_month_sel_code .= "<option value='".$i."'>".$user->lang['datetime'][$newraid->$month_names[$i]]."</option>\n";
 	}
 	$end_recurr_month_sel_code .= "</select>\n";
 
@@ -1000,7 +998,6 @@ if( $s_recurring_opts )
 }
 
 $cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".$date['month_no']."&amp;y=".$date['year']);
-
 
 // check to see if we're editing an existing event
 if( sizeof($error) || $preview || $event_id > 0 )
@@ -1346,14 +1343,14 @@ else
 
 
 // Build Navigation Links
-generate_forum_nav($post_data);
+$newraid->generate_forum_nav($post_data);
 
 $s_hidden_fields = '<input type="hidden" name="calEid" value="' . $event_data['event_id'] . '" />';
 $s_hidden_fields .= '<input type="hidden" name="lastclick" value="' . $current_time . '" />';
 
-$day_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=day&amp;calD=".$date['day']."&amp;calM=".$date['month_no']."&amp;calY=".$date['year']);
-$week_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=week&amp;calD=".$date['day']."&amp;calM=".$date['month_no']."&amp;calY=".$date['year']);
-$month_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=month&amp;calD=".$date['day']."&amp;calM=".$date['month_no']."&amp;calY=".$date['year']);
+$day_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=day&amp;calD=".$newraid->$date['day']."&amp;calM=".$newraid->$date['month_no']."&amp;calY=".$newraid->$date['year']);
+$week_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=week&amp;calD=".$newraid->$date['day']."&amp;calM=".$newraid->$date['month_no']."&amp;calY=".$newraid->$date['year']);
+$month_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=month&amp;calD=".$newraid->$date['day']."&amp;calM=".$newraid->$date['month_no']."&amp;calY=".$newraid->$date['year']);
 
 $allow_delete = false;
 if( ($mode == 'edit') &&
@@ -1370,7 +1367,9 @@ $template->assign_vars(array(
 	'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
 	'SUBJECT'					=> $event_data['event_subject'],
 	'MESSAGE'					=> $event_data['event_body'],
-	'BBCODE_STATUS'				=> ($bbcode_status) ? sprintf($user->lang['BBCODE_IS_ON'], '<a href="' . append_sid("{$phpbb_root_path}faq.$phpEx", 'mode=bbcode') . '">', '</a>') : sprintf($user->lang['BBCODE_IS_OFF'], '<a href="' . append_sid("{$phpbb_root_path}faq.$phpEx", 'mode=bbcode') . '">', '</a>'),
+	'BBCODE_STATUS'				=> ($bbcode_status) ? 
+		sprintf($user->lang['BBCODE_IS_ON'], '<a href="' . append_sid("{$phpbb_root_path}faq.$phpEx", 'mode=bbcode') . '">', '</a>') : 
+		sprintf($user->lang['BBCODE_IS_OFF'], '<a href="' . append_sid("{$phpbb_root_path}faq.$phpEx", 'mode=bbcode') . '">', '</a>'),
 	'IMG_STATUS'				=> ($img_status) ? $user->lang['IMAGES_ARE_ON'] : $user->lang['IMAGES_ARE_OFF'],
 	'FLASH_STATUS'				=> ($flash_status) ? $user->lang['FLASH_IS_ON'] : $user->lang['FLASH_IS_OFF'],
 	'SMILIES_STATUS'			=> ($smilies_status) ? $user->lang['SMILIES_ARE_ON'] : $user->lang['SMILIES_ARE_OFF'],
@@ -1391,7 +1390,7 @@ $template->assign_vars(array(
 	'END_HOUR_SEL'				=> $end_hour_code,
 	'END_MIN_SEL'				=> $end_min_code,
 	'EVENT_TYPE_SEL'			=> $e_type_sel_code,
-	'EVENT_ACCESS_LEVEL_SEL'			=> $level_sel_code,
+	'EVENT_ACCESS_LEVEL_SEL'	=> $level_sel_code,
 	'EVENT_GROUP_SEL'			=> $group_sel_code,
 
 	'DAY_VIEW_URL'				=> $day_view_url,
