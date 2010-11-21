@@ -7,69 +7,19 @@
  @version $Id$
 //-->
 <h1>{L_ACP_RAIDPLANNER_SETTINGS}</h1>
-<p>{L_ACP_RAIDPLANNER_SETTINGS_EXPLAIN}</p>
-<a href="{U_BACK}" style="float: {S_CONTENT_FLOW_END};">&laquo; {L_BACK}</a>
-
-<style type="text/css" >
-fieldset 
-{
-	background :transparent url(../images/bg_tabs_alt1.gif) no-repeat scroll 100% -35px; 
-	/*border-color:#D7D7D7 #CCCCCC #CCCCCC #D7D7D7;*/
-	border-style:solid;
-	border-width:0	px;
-	margin:15px 0;
-	padding:10px;
-	position:relative;
-}
-fieldset dt {
-	width: 55%;
-	text-align: left;
-	border: none;
-	border-right: 1px solid #CCCCCC;
-	padding-top: 3px;
-}
-
-fieldset dd {
-	margin: 0 0 0 55%;
-	padding: 0 0 0 5px;
-	border: none;
-	border-left: 1px solid #CCCCCC;
-	vertical-align: top;
-	font-size: 1.00em;
-}
-
-</style>
+<p>{L_MANAGE_ETYPES_EXPLAIN}</p>
 <fieldset>
-<div id="advanced00">
-	<div class="permissions-category">
-	<span class="corners-top"><span></span></span>
-		<ul>
-			<li class="permissions">
-				<a href="{U_MANAGE_SETTINGS}"><span class="tabbg"><span class="colour"></span>{L_SETTINGS}</span></a>
-			</li>	
-			<li class="permissions-preset-yes activetab">
-				<a href="{U_MANAGE_ETYPES}"><span class="tabbg"><span class="colour"></span>{L_MANAGE_ETYPES}</span></a>
-			</li>
-		</ul>
-	<span class="corners-bottom"><span></span></span>
-	</div>
-	
-	<div class="permissions-panel" id="options001">
-	<span class="corners-top"><span></span></span>
 	
 	<form id="eventsettings" name="eventsettings" method="post" action="{U_ACTION}" >
 	<div class="tablewrap">
-	<fieldset>
 	
 	<!-- IF S_MANAGE_ETYPES -->
-		<legend>{L_MANAGE_ETYPES_EXPLAIN}</legend>
 		<!-- IF ERROR_MSG -->
 			<div class="errorbox">
 				<h3>{L_WARNING}</h3>
 				<p>{ERROR_MSG}</p>
 			</div>
 		<!-- ENDIF -->	
-		
 		<table cellspacing="1">
 				<col class="row1" /><col class="row2" />
 			<tbody>
@@ -216,11 +166,7 @@ fieldset dd {
 		
 	<!-- ENDIF -->
 	
-	</fieldset>
 				
 	</form>
-	</div>
-	<span class="corners-bottom"><span></span></span>
-</div>
 </fieldset>
-<!-- INCLUDE overall_footer.html -->
+<!-- INCLUDE dkp/overall_footer.html -->

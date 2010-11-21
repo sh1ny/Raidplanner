@@ -33,23 +33,12 @@ class acp_raidplanner
 		
 		$form_key = 'acp_raidplanner';
 		add_form_key($form_key);
-		
-		// main tabs
-		$template->assign_vars ( array (
-				//tab links
-				'U_MANAGE_SETTINGS' 	=> append_sid ( "{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_settings" ), 
-				'U_MANAGE_ETYPES' 		=> append_sid ( "{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_eventsettings" ), 
-        ));
-        
-        $this->u_action = append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=".$mode );
+
+		$this->u_action = append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=".$mode );
 		$action	= request_var('action', '');
 		
-		$update	= (isset($_POST['update'])) ? true : false;
-		$etype_index = request_var('etype_index', 0);
-		
 		$etype_id = 0;
-		//$submit = (isset($_POST['updrp_settings'])) ? true : false;
-		
+		$etype_index = request_var('etype_index', 0);
 		if( $etype_index > 0 )
 		{
 			// find the event_id for this item
@@ -62,7 +51,6 @@ class acp_raidplanner
 			{
 				$etype_id = $row['etype_id'];
 			}
-
 		}
 		
         switch ($mode) 
@@ -75,6 +63,7 @@ class acp_raidplanner
 					exit;
 				}
 				
+				$update	= (isset($_POST['update_rp_settings'])) ? true : false;
 				if( $update )
 				{
 					$first_day	= request_var('first_day', 0);

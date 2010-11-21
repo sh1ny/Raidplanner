@@ -1,11 +1,11 @@
 <?php
 /**
 *
-* @author alightner
-*
+* @author alightner, Salaki
 * @package phpBB Calendar
 * @version $Id $
 * @copyright (c) 2009 alightner
+* @copyright (c) 2010 Sajaki 
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -18,6 +18,8 @@ $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/bbdkp/raidplanner/functions_rp.' . $phpEx);
+include($phpbb_root_path . 'includes/bbdkp/raidplanner/functions_displayplanner.' . $phpEx);
+
 
 // Start session management
 $user->session_begin();
@@ -34,13 +36,15 @@ if ( !$auth->acl_get('u_raidplanner_view_events') )
 if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 {
 	$calWatch = request_var( 'calWatch', 2 );
+	$watchclass = new calendar_watch();
+				
 	if( $calWatch < 2 )
 	{
-		calendar_watch_calendar( $calWatch );
+		$watchclass->alendar_watch_calendar( $calWatch );
 	}
 	else
 	{
-		calendar_mark_user_read_calendar( $user->data['user_id'] );
+		$watchclass->calendar_mark_user_read_calendar( $user->data['user_id'] );
 	}
 }
 
@@ -48,11 +52,6 @@ $view_mode = request_var('view', 'month');
 
 switch( $view_mode )
 {
-	case "event":
-		// display a single event
-		$template_body = "calendar_view_event.html";
-		calendar_display_event();
-		break;
 
    case "next":
       // display next events for specified number of days
@@ -69,23 +68,33 @@ switch( $view_mode )
       }
       break;
 
+	case "event":
+		// display a single event
+		$cal = new displayplanner;
+		$template_body = "calendar_view_event.html";
+		$cal->display_event();
+		break;
 	case "day":
 		// display all of the events on this day
+		$cal = new displayplanner; 
+		$cal->display_day(0);
 		$template_body = "calendar_view_day.html";
-		calendar_display_day();
 		break;
 
 	case "week":
 		// display the entire week
-		// viewing the week is a lot like viewing the month...
+		$cal = new displayplanner; 
+		$cal->display_week(0);
 		$template_body = "calendar.html";
-		calendar_display_week( 0 );
 		break;
 
 	case "month":
+		$cal = new displayplanner; 
 		// display the entire month
 		$template_body = "calendar.html";
-		calendar_display_month();
+		$cal->displaymonth();
+		
+		
 		break;
 }
 

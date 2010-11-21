@@ -37,7 +37,7 @@ class acp_raidplanner_info
 			'modes'		=> array(
 				'rp_settings'		=> array('title' => 'ACP_RAIDPLANNER_SETTINGS',  'display' => true, 
 									'auth' => 'acl_a_raid_config', 'cat' => array('ACP_CAT_RAIDPLANNER')),
-				'rp_eventsettings'	=> array('title' => 'ACP_RAIDPLANNER_EVENTSETTINGS',  'display' => false, 
+				'rp_eventsettings'	=> array('title' => 'ACP_RAIDPLANNER_EVENTSETTINGS',  'display' => true, 
 									'auth' => 'acl_a_raid_config', 'cat' => array('ACP_CAT_RAIDPLANNER')),
 		
 		
