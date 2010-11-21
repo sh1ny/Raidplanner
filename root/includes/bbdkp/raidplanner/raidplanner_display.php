@@ -868,7 +868,7 @@ class displayplanner extends raidplanner_base
 				$rsvp_data = array();
 				if( $rsvp_id !== 0 )
 				{
-					get_rsvp_data( $rsvp_id, $rsvp_data );
+					$this->get_rsvp_data( $rsvp_id, $rsvp_data );
 					if( $rsvp_data['event_id'] != $event_id )
 					{
 						trigger_error('NO_RSVP');
@@ -1180,6 +1180,197 @@ class displayplanner extends raidplanner_base
 		
 		
 	}
+	
+	
+	/* get_rsvp_data()
+	**
+	** Gets the rsvp data for the selected rsvp id
+	*/
+	function get_rsvp_data( $id, &$rsvp_data )
+	{
+		global $auth, $db, $user;
+		if( $id < 1 )
+		{
+			trigger_error('NO_RSVP');
+		}
+		$sql = 'SELECT * FROM ' . RP_RSVP_TABLE . '
+				WHERE rsvp_id = '.$db->sql_escape($id);
+		$result = $db->sql_query($sql);
+		$rsvp_data = $db->sql_fetchrow($result);
+		if( !$rsvp_data )
+		{
+			trigger_error('NO_RSVP');
+		}
+	
+	    $db->sql_freeresult($result);
+	    $rsvp_data['rsvp_detail_edit'] = "";
+	}
+		
+	
+		
+	/* calendar_init_s_watching_event_data()
+	**
+	** Determines if the current user is watching the specified event, and
+	** generates the data required for the overall_footer to display
+	** the watch/unwatch link.
+	**
+	** INPUT
+	**   $event_id - event currently being displayed
+	**
+	** OUTPUT
+	**   $s_watching_event - filled with data for the overall_footer template
+	*/
+	function calendar_init_s_watching_event_data( $event_id, &$s_watching_event )
+	{
+		global $db, $user;
+		global $phpEx, $phpbb_root_path;
+	
+		$s_watching_event['link'] = "";
+		$s_watching_event['title'] = "";
+		$s_watching_event['is_watching'] = false;
+		if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
+		{
+			$sql = 'SELECT * FROM ' . RP_EVENTS_WATCH . '
+				WHERE user_id = '.$user->data['user_id'].' AND event_id = ' .$event_id;
+			$db->sql_query($sql);
+			$result = $db->sql_query($sql);
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$s_watching_event['is_watching'] = true;
+			}
+			$db->sql_freeresult($result);
+			if( $s_watching_event['is_watching'] )
+			{
+				$s_watching_event['link'] = append_sid( "{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$event_id."&amp;calWatchE=0" );
+				$s_watching_event['title'] = $user->lang['WATCH_EVENT_TURN_OFF'];
+			}
+			else
+			{
+				$s_watching_event['link'] = append_sid( "{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$event_id."&amp;calWatchE=1" );
+				$s_watching_event['title'] = $user->lang['WATCH_EVENT_TURN_ON'];
+			}
+		}
+	}
+		
+	
+		
+	/* get_recurring_event_string_via_id()
+	**
+	** Gets the displayable string that describes the frequency of a
+	** recurring event
+	**
+	** INPUT
+	**   $recurr_id - the recurring event id.
+	*/
+	private function get_recurring_event_string_via_id( $recurr_id )
+	{
+		global $db, $user;
+	
+		$string = "";
+	
+		if( $recurr_id == 0 )
+		{
+			return $string;
+		}
+	
+		$sql = 'SELECT * FROM ' . RP_RECURRING_EVENTS_TABLE ."
+				WHERE recurr_id ='".$db->sql_escape($recurr_id)."'";
+		$result = $db->sql_query($sql);
+		if($row = $db->sql_fetchrow($result))
+		{
+			$string = $this->get_recurring_event_string( $row );
+		}
+		$db->sql_freeresult($result);
+	
+		return $string;
+	}
+	
+	/* get_recurring_event_string()
+	**
+	** Gets the displayable string that describes the frequency of a
+	** recurring event
+	**
+	** INPUT
+	**   $row - the row of data from the RP_RECURRING_EVENTS_TABLE
+	**          describing this recurring event.
+	*/
+	private function get_recurring_event_string( $row )
+	{
+		global $user;
+	
+		$string = "";
+	
+		if( $row['recurr_id']== 0 && $row['is_recurr'] != 1 )
+		{
+			return string;
+		}
+	
+		$week_index = $row['week_index'];
+	
+		$case_string = (string)$row['frequency_type'];
+		if( $row['frequency_type'] == 3 ||
+			$row['frequency_type'] == 5 ||
+			$row['frequency_type'] == 8 ||
+			$row['frequency_type'] == 10 )
+		{
+			if( $row['week_index'] == 0 )
+			{
+				$case_string = $case_string."b";
+			}
+		}
+		if( $row['frequency_type'] == 4 ||
+			$row['frequency_type'] == 5 ||
+			$row['frequency_type'] == 9 ||
+			$row['frequency_type'] == 10 )
+		{
+			$week_index--;
+		}
+	
+		$case_string = 'RECURRING_EVENT_CASE_'.$case_string.'_STR';
+		$timestamp = 0;
+		$timezone_string = "";
+		if( $row['first_occ_time'] > 0 )
+		{
+			$timestamp = $row['first_occ_time'];
+		}
+		else if( $row['next_calc_time'] > 0 )
+		{
+			$timestamp = $row['next_calc_time'];
+		}
+	
+		if( $row['event_all_day'] == 0 )
+		{
+			$timestamp = $timestamp + (($row['poster_timezone'] + $row['poster_dst'])*3600);
+	
+			// we only need to display a timezone reference if it's different from the viewer
+			// and it's a timed (not all day) event
+			if( ($user->data['user_timezone'] + $user->data['user_dst']) !=
+				($row['poster_timezone'] + $row['poster_dst']) )
+			{
+				$poster_time = strval(doubleval($row['poster_timezone']));
+				$timezone_string = " " .$user->lang['tz'][$poster_time];
+				if( $row['poster_dst'] > 0 )
+				{
+					$timezone_string = $timezone_string . " " . $user->lang['tz']['dst'];
+				}
+			}
+		}
+	
+		$month = gmdate("F", $timestamp);
+		$day = gmdate("j", $timestamp);
+		$weekdayName = gmdate("l", $timestamp);
+	
+		$string = sprintf($user->lang[$case_string], $user->lang['numbertext'][$day], $user->lang['datetime'][$weekdayName], $user->lang['numbertext'][$week_index], $user->lang['datetime'][$month], $row['frequency'] );
+	
+		$zeroth = $user->lang['ZEROTH_FROM'];
+		$temp_replace_str = "";
+		$string = str_replace( $zeroth, $temp_replace_str, $string );
+		$string = $string . $timezone_string;
+	
+		return $string;
+	
+	}
+		
 	
 	
 	

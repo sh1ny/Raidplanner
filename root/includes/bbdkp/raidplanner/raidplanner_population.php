@@ -164,7 +164,7 @@ class raidplanner_population extends raidplanner_base
 			   (ie event_data['event_access_level'] == 0) */
 			if( $event_data['event_access_level'] == 1 )
 			{
-				$group_sql = calendar_generate_group_sql_for_notify_new_event( $event_data );
+				$group_sql = $this->calendar_generate_group_sql_for_notify_new_event( $event_data );
 				$sql = 'SELECT w.*, u.username, u.username_clean, u.user_email, u.user_notify_type,
 					u.user_jabber, u.user_lang FROM ' . RP_WATCH . ' w, ' . USERS_TABLE . ' u,
 					'. GROUPS_TABLE. ' g, '.USER_GROUP_TABLE.' ug
@@ -228,6 +228,54 @@ class raidplanner_population extends raidplanner_base
 			calendar_watch_calendar( 1 );
 		}
 	}
+	
+	
+	/* calendar_generate_group_sql_for_notify_new_event()
+	**
+	** Given the data for a "group" event, find the sql
+	** options we need to search for users with permission
+	** to view the event.
+	**
+	** INPUT
+	**   $event_data - the data of the newly created event
+	**
+	** OUTPUT
+	**   sql group related options used in query
+	*/
+	private function calendar_generate_group_sql_for_notify_new_event( $event_data )
+	{
+			/* find the groups we need to notify */
+			$group_sql = "AND u.user_id = ug.user_id AND g.group_id = ug.group_id AND (";
+			$group_options = "";
+			if( $event_data['group_id'] != 0 )
+			{
+				$group_options = " g.group_id = ".$event_data['group_id']." ";
+			}
+			else
+			{
+				$group_list = explode( ',', $event_data['group_id_list'] );
+				$num_groups = sizeof( $group_list );
+				for( $i = 0; $i < $num_groups; $i++ )
+				{
+					if( $group_list[$i] == "")
+					{
+						continue;
+					}
+					if( $group_options == "" )
+					{
+						$group_options = " g.group_id = ".$group_list[$i]." ";
+					}
+					else
+					{
+						$group_options = $group_options . "OR g.group_id = ".$group_list[$i]." ";
+					}
+				}
+			}
+			$group_sql = $group_sql . $group_options . ") ";
+			return $group_sql;
+	}
+		
+	
 	
 		
 	/* find_week_index()
@@ -698,7 +746,7 @@ class raidplanner_population extends raidplanner_base
 					    while( $start_day == 0 )
 					    {
 					    	$start_year = $start_year + $row['frequency'];
-							$start_day = find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, true, false, $row['first_day_of_week'] );
+							$start_day = $this->find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, true, false, $row['first_day_of_week'] );
 					    }
 					    $start_hour = gmdate('G',$poster_start_time);
 					    $start_minute = gmdate('i',$poster_start_time);
@@ -774,7 +822,7 @@ class raidplanner_population extends raidplanner_base
 					    while( $start_day == 0 )
 					    {
 					    	$start_year = $start_year + $row['frequency'];
-					    	$start_day = find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, true, true, $row['first_day_of_week'] );
+					    	$start_day = $this->find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, true, true, $row['first_day_of_week'] );
 					    }
 					    $start_hour = gmdate('G',$poster_start_time);
 					    $start_minute = gmdate('i',$poster_start_time);
@@ -850,7 +898,7 @@ class raidplanner_population extends raidplanner_base
 					    while( $start_day == 0 )
 					    {
 					    	$start_year = $start_year + $row['frequency'];
-					    	$start_day = find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, false, false, $row['first_day_of_week'] );
+					    	$start_day = $this->find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, false, false, $row['first_day_of_week'] );
 					    }
 					    $start_hour = gmdate('G',$poster_start_time);
 					    $start_minute = gmdate('i',$poster_start_time);
@@ -926,7 +974,7 @@ class raidplanner_population extends raidplanner_base
 					    while( $start_day == 0 )
 					    {
 					    	$start_year = $start_year + $row['frequency'];
-					    	$start_day = find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, false, true, $row['first_day_of_week'] );
+					    	$start_day = $this->find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, false, true, $row['first_day_of_week'] );
 					    }
 					    $start_hour = gmdate('G',$poster_start_time);
 					    $start_minute = gmdate('i',$poster_start_time);
@@ -1096,7 +1144,7 @@ class raidplanner_population extends raidplanner_base
 					    		}
 					    		$start_year = $start_year + $add_year;
 					    	}
-					    	$start_day = find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, true, false, $row['first_day_of_week'] );
+					    	$start_day = $this->find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, true, false, $row['first_day_of_week'] );
 					    }
 					    $start_hour = gmdate('G',$poster_start_time);
 					    $start_minute = gmdate('i',$poster_start_time);
@@ -1184,7 +1232,7 @@ class raidplanner_population extends raidplanner_base
 					    		}
 					    		$start_year = $start_year + $add_year;
 					    	}
-					    	$start_day = find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, true, true, $row['first_day_of_week'] );
+					    	$start_day = $this->find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, true, true, $row['first_day_of_week'] );
 					    }
 					    $start_hour = gmdate('G',$poster_start_time);
 					    $start_minute = gmdate('i',$poster_start_time);
@@ -1272,7 +1320,7 @@ class raidplanner_population extends raidplanner_base
 					    		}
 					    		$start_year = $start_year + $add_year;
 					    	}
-					    	$start_day = find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, false, false, $row['first_day_of_week'] );
+					    	$start_day = $this->find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, false, false, $row['first_day_of_week'] );
 					    }
 					    $start_hour = gmdate('G',$poster_start_time);
 					    $start_minute = gmdate('i',$poster_start_time);
@@ -1360,7 +1408,7 @@ class raidplanner_population extends raidplanner_base
 					    		}
 					    		$start_year = $start_year + $add_year;
 					    	}
-					    	$start_day = find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, false, true, $row['first_day_of_week'] );
+					    	$start_day = $this->find_day_via_week_index( $week_day, $row['week_index'], $start_month, $start_year, false, true, $row['first_day_of_week'] );
 					    }
 					    $start_hour = gmdate('G',$poster_start_time);
 					    $start_minute = gmdate('i',$poster_start_time);
@@ -1632,6 +1680,112 @@ class raidplanner_population extends raidplanner_base
 		return $group_sel_code;
 	}
 	
+	
+		
+	/* find_day_via_week_index()
+	**
+	** Given a weekday (monday, tuesday, wednesday...) and and index (n)
+	** Find the day number of the nth weekday and return it.
+	**
+	** INPUT
+	**   $weekday - number 0-6, 0=Sunday, 6=Saturday,
+	**              this is the weekday we're searching for
+	**   $index - what week are we looking for this weeday in?
+	**   $month - the month we're searching
+	**   $year - the year we're searching
+	**   $from_start - is this looking for the nth weekday from the
+	**                 start of the month, or the end of the month?
+	**   $full_week - is it the nth weekday of full weeks in the month,
+	**                or is it just the nth weekday of the month?
+	**   $first_day_of_week - used to determine the start and end of a "full week"
+	**
+	** OUTPUT
+	**   the number of the day we were searching for.
+	*/
+	private function find_day_via_week_index( $weekday, $index, $month, $year, $from_start, $full_week, $first_day_of_week = -1 )
+	{
+	
+		$first_date = gmmktime(0, 0, 0, $month, 1, $year);
+		$number_of_days_in_month = gmdate('t', $first_date);
+		if( $first_day_of_week < 0 )
+		{
+			$first_day_of_week = $config['rp_first_day_of_week'];
+		}
+		if( $from_start )
+		{
+			$month_first_weekday = gmdate('w',$first_date);
+			$first_day_of_first_full_week = 1;
+			if( !$full_week )
+			{
+				$first_day_of_week = $month_first_weekday;
+			}
+			if( $full_week && $first_day_of_week != $month_first_weekday )
+			{
+				$diff = $month_first_weekday - $first_day_of_week;
+				if( $diff > 0 )
+				{
+					$first_day_of_first_full_week = 8 - $diff;
+				}
+				else
+				{
+					$first_day_of_first_full_week = 1 - $diff;
+				}
+			}
+			$diff = $weekday - $first_day_of_week;
+			if( $diff >= 0 )
+			{
+				$day = $first_day_of_first_full_week + (($index-1) * 7) + $diff;
+			}
+			else
+			{
+				$day = $first_day_of_first_full_week + ($index * 7) + $diff;
+			}
+		}
+		else
+		{
+			$last_day_of_week = $first_day_of_week-1;
+			if( $last_day_of_week < 0 )
+			{
+				$last_day_of_week = 6;
+			}
+			$last_date = gmmktime(0, 0, 0, $month, $number_of_days_in_month, $year);
+			$month_last_weekday = gmdate('w',$last_date);
+			$last_day_of_last_full_week = $number_of_days_in_month;
+	
+			if( !$full_week )
+			{
+				$last_day_of_week = $month_last_weekday;
+			}
+			if( $full_week && $last_day_of_week != $month_last_weekday )
+			{
+				$diff = $last_day_of_week - $month_last_weekday;
+				if( $diff > 0 )
+				{
+					$last_day_of_last_full_week = $number_of_days_in_month - 7 + $diff;
+				}
+				else
+				{
+					$last_day_of_last_full_week = $number_of_days_in_month + $diff;
+				}
+			}
+			$diff = $weekday - $last_day_of_week;
+			if( $diff > 0 )
+			{
+				$day = $last_day_of_last_full_week - ($index * 7) + $diff;
+			}
+			else
+			{
+				$day = $last_day_of_last_full_week - (($index-1) * 7) + $diff;
+			}
+		}
+		if( $day < 1 || $day > $number_of_days_in_month )
+		{
+			$day = 0;
+		}
+		return $day;
+	}
+		
+
 
 
 
