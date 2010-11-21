@@ -17,9 +17,9 @@ define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/bbdkp/raidplanner/functions_rp.' . $phpEx);
-include($phpbb_root_path . 'includes/bbdkp/raidplanner/functions_displayplanner.' . $phpEx);
-
+//include($phpbb_root_path . 'includes/bbdkp/raidplanner/functions_rp.' . $phpEx);
+include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_base.' . $phpEx);
+include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
 
 // Start session management
 $user->session_begin();
@@ -58,13 +58,14 @@ switch( $view_mode )
       $template_body = "calendar_next_events_for_x_days.html";
       $daycount = request_var('daycount', 60 );
       $user_id = request_var('u', 0);
+      $cal = new displayplanner;
       if( $user_id == 0 )
       {
-      	display_next_events_for_x_days( $daycount );
+      	$cal->display_next_events_for_x_days( $daycount );
       }
       else
       {
-      	display_users_next_events_for_x_days($daycount, $user_id);
+      	$cal->display_users_next_events_for_x_days($daycount, $user_id);
       }
       break;
 
@@ -98,8 +99,10 @@ switch( $view_mode )
 		break;
 }
 
+$watcher = new calendar_watch(); 
+
 $s_watching_calendar = array();
-calendar_init_s_watching_calendar( $s_watching_calendar );
+$watcher->calendar_init_s_watching_calendar( $s_watching_calendar );
 
 $template->assign_vars(array(
 		'U_WATCH_CALENDAR' 		=> $s_watching_calendar['link'],
