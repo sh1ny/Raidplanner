@@ -53,7 +53,7 @@ $current_time = time();
 // Was cancel pressed? If so then redirect to the appropriate page
 if ($cancel || ($current_time - $lastclick < 2 && $submit))
 {
-	$redirect = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->$date['month_no']."&amp;calY=".$newraid->$date['year']);
+	$redirect = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
 	redirect($redirect);
 }
 
@@ -137,7 +137,7 @@ switch ($mode)
 		{
 			$is_authed = true;
 			if( $submit )
-			{
+			{	
 				// on submit we need to double check that they have permission to create the selected type of event
 				$is_authed = false;
 				$test_event_level = request_var('calELevel', 0);
@@ -348,7 +348,7 @@ if ($submit || $preview)
 			$event_start_date = 0;
 			$event_end_date = 0;
 			$event_data['event_all_day'] = 1;
-			$event_data['event_day'] = sprintf('%2d-%2d-%4d', $newraid->$date['day'], $newraid->date['month_no'], $newraid->date['year']);
+			$event_data['event_day'] = sprintf('%2d-%2d-%4d', $newraid->date['day'], $newraid->date['month_no'], $newraid->date['year']);
 			$sort_timestamp = gmmktime( 0,0,0,$newraid->date['month_no'], $newraid->date['day'], $newraid->date['year']);
 		}
 		else
@@ -834,7 +834,7 @@ $event_data['event_body'] = str_replace( $temp_find_str, $temp_replace_str, $eve
 $month_sel_code  = "<select name='calM' id='calM'>\n";
 for( $i = 1; $i <= 12; $i++ )
 {
-	$month_sel_code .= "<option value='".$i."'>".$user->lang['datetime'][$newraid->$month_names[$i]]."</option>\n";
+	$month_sel_code .= "<option value='".$i."'>".$user->lang['datetime'][$newraid->month_names[$i]]."</option>\n";
 }
 $month_sel_code .= "</select>\n";
 
@@ -846,7 +846,7 @@ for( $i = 1; $i <= 31; $i++ )
 $day_sel_code .= "</select>\n";
 
 $year_sel_code  = "<select name='calY' id='calY'>\n";
-for( $i = $date['year']; $i < ($date['year']+5); $i++ )
+for( $i = $newraid->date['year']; $i < ($newraid->date['year']+5); $i++ )
 {
 	$year_sel_code .= "<option value='".$i."'>".$i."</option>\n";
 }
@@ -975,7 +975,7 @@ if( $s_recurring_opts )
 	$end_recurr_month_sel_code .= "<option value='0'>".$user->lang['NEVER']."</option>\n";
 	for( $i = 1; $i <= 12; $i++ )
 	{
-		$end_recurr_month_sel_code .= "<option value='".$i."'>".$user->lang['datetime'][$newraid->$month_names[$i]]."</option>\n";
+		$end_recurr_month_sel_code .= "<option value='".$i."'>".$user->lang['datetime'][$newraid->month_names[$i]]."</option>\n";
 	}
 	$end_recurr_month_sel_code .= "</select>\n";
 
@@ -989,7 +989,7 @@ if( $s_recurring_opts )
 
 	$end_recurr_year_sel_code  = "<select name='calRYEnd' id='calRYEnd' onchange='update_recurring_end_date_opts(this.value)' disabled='disabled'>\n";
 	$end_recurr_year_sel_code .= "<option value='0'>".$user->lang['NEVER']."</option>\n";
-	for( $i = $date['year']; $i < ($date['year']+5); $i++ )
+	for( $i = $newraid->date['year']; $i < ($newraid->date['year']+5); $i++ )
 	{
 		$end_recurr_year_sel_code .= "<option value='".$i."'>".$i."</option>\n";
 	}
@@ -997,7 +997,7 @@ if( $s_recurring_opts )
 
 }
 
-$cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".$date['month_no']."&amp;y=".$date['year']);
+$cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".$newraid->date['month_no']."&amp;y=".$newraid->date['year']);
 
 // check to see if we're editing an existing event
 if( sizeof($error) || $preview || $event_id > 0 )
@@ -1249,8 +1249,8 @@ else // we are creating a new event
 	//-----------------------------------------
 	// month selection data
 	//-----------------------------------------
-	$temp_find_str = "value='".$date['month_no']."'>";
-	$temp_replace_str = "value='".$date['month_no']."' selected='selected'>";
+	$temp_find_str = "value='".$newraid->date['month_no']."'>";
+	$temp_replace_str = "value='".$newraid->date['month_no']."' selected='selected'>";
 	$month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $month_sel_code );
 
 	$temp_find_str = "name='calM' id='calM'";
@@ -1261,8 +1261,8 @@ else // we are creating a new event
 	//-----------------------------------------
 	// day selection data
 	//-----------------------------------------
-	$temp_find_str = "value='".$date['day']."'>";
-	$temp_replace_str = "value='".$date['day']."' selected='selected'>";
+	$temp_find_str = "value='".$newraid->date['day']."'>";
+	$temp_replace_str = "value='".$newraid->date['day']."' selected='selected'>";
 	$day_sel_code = str_replace( $temp_find_str, $temp_replace_str, $day_sel_code );
 
 	$temp_find_str = "name='calD' id='calD'";
@@ -1273,8 +1273,8 @@ else // we are creating a new event
 	//-----------------------------------------
 	// year selection data
 	//-----------------------------------------
-	$temp_find_str = "value='".$date['year']."'>";
-	$temp_replace_str = "value='".$date['year']."' selected='selected'>";
+	$temp_find_str = "value='".$newraid->date['year']."'>";
+	$temp_replace_str = "value='".$newraid->date['year']."' selected='selected'>";
 	$year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $year_sel_code );
 
 	$temp_find_str = "name='calY' id='calY'";
@@ -1348,9 +1348,9 @@ $newraid->generate_forum_nav($post_data);
 $s_hidden_fields = '<input type="hidden" name="calEid" value="' . $event_data['event_id'] . '" />';
 $s_hidden_fields .= '<input type="hidden" name="lastclick" value="' . $current_time . '" />';
 
-$day_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=day&amp;calD=".$newraid->$date['day']."&amp;calM=".$newraid->$date['month_no']."&amp;calY=".$newraid->$date['year']);
-$week_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=week&amp;calD=".$newraid->$date['day']."&amp;calM=".$newraid->$date['month_no']."&amp;calY=".$newraid->$date['year']);
-$month_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=month&amp;calD=".$newraid->$date['day']."&amp;calM=".$newraid->$date['month_no']."&amp;calY=".$newraid->$date['year']);
+$day_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=day&amp;calD=".$newraid->date['day']."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+$week_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=week&amp;calD=".$newraid->date['day']."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+$month_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=month&amp;calD=".$newraid->date['day']."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
 
 $allow_delete = false;
 if( ($mode == 'edit') &&
