@@ -1137,7 +1137,7 @@ class displayplanner extends raidplanner_base
 				$s_rsvp_details = true;
 			}
 			$s_watching_event = array();
-			$this->calendar_init_s_watching_event_data( $event_id, $s_watching_event );
+			calendar_init_s_watching_event_data( $event_id, $s_watching_event );
 	
 			$template->assign_vars(array(
 				'U_CALENDAR'		=> $back_url,
@@ -1149,7 +1149,7 @@ class displayplanner extends raidplanner_base
 				'START_DATE'		=> $start_date_txt,
 				'END_DATE'			=> $end_date_txt,
 				'IS_RECURRING'		=> $event_data['recurr_id'],
-				'RECURRING_TXT'		=> $this->get_recurring_event_string_via_id( $event_data['recurr_id'] ),
+				'RECURRING_TXT'		=> get_recurring_event_string_via_id( $event_data['recurr_id'] ),
 				'POSTER'			=> $poster_url,
 				'ALL_DAY'			=> $all_day,
 				'INVITED'			=> $invite_list,
@@ -1182,6 +1182,30 @@ class displayplanner extends raidplanner_base
 	}
 	
 	
+	/* get_rsvp_data()
+	**
+	** Gets the rsvp data for the selected rsvp id
+	*/
+	function get_rsvp_data( $id, &$rsvp_data )
+	{
+		global $auth, $db, $user;
+		if( $id < 1 )
+		{
+			trigger_error('NO_RSVP');
+		}
+		$sql = 'SELECT * FROM ' . RP_RSVP_TABLE . '
+				WHERE rsvp_id = '.$db->sql_escape($id);
+		$result = $db->sql_query($sql);
+		$rsvp_data = $db->sql_fetchrow($result);
+		if( !$rsvp_data )
+		{
+			trigger_error('NO_RSVP');
+		}
+	
+	    $db->sql_freeresult($result);
+	    $rsvp_data['rsvp_detail_edit'] = "";
+	}
+		
 	
 		
 	/* calendar_init_s_watching_event_data()
@@ -1228,33 +1252,6 @@ class displayplanner extends raidplanner_base
 		}
 	}
 		
-	
-	/* get_rsvp_data()
-	**
-	** Gets the rsvp data for the selected rsvp id
-	*/
-	function get_rsvp_data( $id, &$rsvp_data )
-	{
-		global $auth, $db, $user;
-		if( $id < 1 )
-		{
-			trigger_error('NO_RSVP');
-		}
-		$sql = 'SELECT * FROM ' . RP_RSVP_TABLE . '
-				WHERE rsvp_id = '.$db->sql_escape($id);
-		$result = $db->sql_query($sql);
-		$rsvp_data = $db->sql_fetchrow($result);
-		if( !$rsvp_data )
-		{
-			trigger_error('NO_RSVP');
-		}
-	
-	    $db->sql_freeresult($result);
-	    $rsvp_data['rsvp_detail_edit'] = "";
-	}
-		
-	
-	
 	
 		
 	/* get_recurring_event_string_via_id()
@@ -2193,6 +2190,7 @@ class calendar_watch extends raidplanner_base
 	
 }
 
+
 /*
  * event functions
  */
@@ -2205,7 +2203,7 @@ class raidevents extends raidplanner_base
 	*/
 	public function get_event_data( $id, &$event_data )
 	{
-		global $auth, $db, $user, $config;
+		global $auth, $db, $user;
 		if( $id < 1 )
 		{
 			trigger_error('NO_EVENT');

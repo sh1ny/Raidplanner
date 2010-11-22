@@ -5,7 +5,7 @@
 * @package bbDKP Raidplanner
 * @version CVS/SVN: $Id$
 * @copyright (c) 2009 alightner
-* @copyright (c) 2010 Sajaki : refactoring code into classes, adapting to bbdkp
+* @copyright (c) 2010 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 * 
 */
@@ -19,13 +19,19 @@ if (!defined('IN_PHPBB'))
 }
 
 
-/*
- * new raid population class
- * no constructor, we follow base
- * 
- */
 class raidplanner_population extends raidplanner_base
 {
+	
+	/**
+	 * 
+	 */
+	function __construct()
+	{
+		
+	//TODO - Insert your code here
+	}
+	
+		
 	/**
 	* Create forum navigation links for given forum, create parent
 	* list if currently null, assign basic forum info to template
@@ -149,8 +155,7 @@ class raidplanner_population extends raidplanner_base
 		$user_notify = $user->data['user_notify'];
 	
 		$event_data = array();
-		$raidevents = new raidevents;
-		$raidevents->get_event_data( $event_id, $event_data );
+		get_event_data( $event_id, $event_data );
 	
 		$sql = "";
 		if( $event_data['event_access_level'] > 0 )

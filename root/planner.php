@@ -20,7 +20,7 @@ include($phpbb_root_path . 'common.' . $phpEx);
 //include($phpbb_root_path . 'includes/bbdkp/raidplanner/functions_rp.' . $phpEx);
 include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_base.' . $phpEx);
 include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
-
+$cal = new displayplanner; 
 // Start session management
 $user->session_begin();
 $auth->acl($user->data); 
@@ -36,15 +36,14 @@ if ( !$auth->acl_get('u_raidplanner_view_events') )
 if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 {
 	$calWatch = request_var( 'calWatch', 2 );
-	$watchclass = new calendar_watch();
-				
+	$raidwatch = new raid_watch();	
 	if( $calWatch < 2 )
 	{
-		$watchclass->alendar_watch_calendar( $calWatch );
+		$raidwatch->calendar_watch_calendar( $calWatch );
 	}
 	else
 	{
-		$watchclass->calendar_mark_user_read_calendar( $user->data['user_id'] );
+		$raidwatch->calendar_mark_user_read_calendar( $user->data['user_id'] );
 	}
 }
 
@@ -58,7 +57,6 @@ switch( $view_mode )
       $template_body = "calendar_next_events_for_x_days.html";
       $daycount = request_var('daycount', 60 );
       $user_id = request_var('u', 0);
-      $cal = new displayplanner;
       if( $user_id == 0 )
       {
       	$cal->display_next_events_for_x_days( $daycount );
@@ -71,26 +69,22 @@ switch( $view_mode )
 
 	case "event":
 		// display a single event
-		$cal = new displayplanner;
 		$template_body = "calendar_view_event.html";
 		$cal->display_event();
 		break;
 	case "day":
 		// display all of the events on this day
-		$cal = new displayplanner; 
 		$cal->display_day(0);
 		$template_body = "calendar_view_day.html";
 		break;
 
 	case "week":
 		// display the entire week
-		$cal = new displayplanner; 
 		$cal->display_week(0);
 		$template_body = "calendar.html";
 		break;
 
 	case "month":
-		$cal = new displayplanner; 
 		// display the entire month
 		$template_body = "calendar.html";
 		$cal->displaymonth();
@@ -102,7 +96,7 @@ switch( $view_mode )
 $watcher = new calendar_watch(); 
 
 $s_watching_calendar = array();
-$watcher->calendar_init_s_watching_calendar( $s_watching_calendar );
+$cal->calendar_init_s_watching_calendar( $s_watching_calendar );
 
 $template->assign_vars(array(
 		'U_WATCH_CALENDAR' 		=> $s_watching_calendar['link'],

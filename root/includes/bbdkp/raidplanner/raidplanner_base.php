@@ -28,7 +28,7 @@ class raidplanner_base
 	 */
 	function __construct()
 	{
-		$this->_init_calendar_data();
+		
 	}
 	
 	public $date = array();
@@ -126,7 +126,6 @@ class raidplanner_base
 		    $this->date['day'] = $number_days;
 		}
 	}
-	
 	
 	
 }
