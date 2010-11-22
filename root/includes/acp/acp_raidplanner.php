@@ -187,7 +187,7 @@ class acp_raidplanner
 			case 'rp_eventsettings' :
 				$this->u_action = $this->u_action . "&amp;mode=rp_eventsettings";
 				$this->tpl_name = 'dkp/acp_' . $mode;
-				
+				$update	= (isset($_POST['update'])) ? true : false;
 				if( $update )
 				{
 					switch ($action)
