@@ -128,52 +128,6 @@ class raidplanner_base
 	}
 	
 	
-		
-	/* calendar_init_s_watching_event_data()
-	**
-	** Determines if the current user is watching the specified event, and
-	** generates the data required for the overall_footer to display
-	** the watch/unwatch link.
-	**
-	** INPUT
-	**   $event_id - event currently being displayed
-	**
-	** OUTPUT
-	**   $s_watching_event - filled with data for the overall_footer template
-	*/
-	function calendar_init_s_watching_event_data( $event_id, &$s_watching_event )
-	{
-		global $db, $user;
-		global $phpEx, $phpbb_root_path;
-	
-		$s_watching_event['link'] = "";
-		$s_watching_event['title'] = "";
-		$s_watching_event['is_watching'] = false;
-		if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
-		{
-			$sql = 'SELECT * FROM ' . RP_EVENTS_WATCH . '
-				WHERE user_id = '.$user->data['user_id'].' AND event_id = ' .$event_id;
-			$db->sql_query($sql);
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$s_watching_event['is_watching'] = true;
-			}
-			$db->sql_freeresult($result);
-			if( $s_watching_event['is_watching'] )
-			{
-				$s_watching_event['link'] = append_sid( "{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$event_id."&amp;calWatchE=0" );
-				$s_watching_event['title'] = $user->lang['WATCH_EVENT_TURN_OFF'];
-			}
-			else
-			{
-				$s_watching_event['link'] = append_sid( "{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$event_id."&amp;calWatchE=1" );
-				$s_watching_event['title'] = $user->lang['WATCH_EVENT_TURN_ON'];
-			}
-		}
-	}
-		
-	
 	
 }
 
