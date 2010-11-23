@@ -64,8 +64,8 @@
 				<changelog lang="en">
 					<change>[CHG] split backend /includes code and refactored into
 						classes</change>
-					<change>[CHG] added UMIF installer script, removed sql
-						portions from modx, changed tablenames</change>
+					<change>[CHG] added UMIF installer script, removed sql portions from modx, changed tablenames</change>
+					<change>[CHG] split modx file into main and language</change>
 					<change>[CHG] new constants file</change>
 					<change>[CHG] mod renamed and version number back to 0.0.1
 					</change>
@@ -125,7 +125,7 @@ require($phpbb_root_path .  'includes/bbdkp/raidplanner/constants_rp.' . $phpEx)
 				<find><![CDATA[case 'bookmarks':]]></find>
 				<action type="before-add"><![CDATA[			case 'raidplanner_registration':
 
-				$user->add_lang('raidplanner');
+				$user->add_lang('mods/raidplanner');
 				if ( !class_exists('displayplanner')) 
 		        {
 					include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
@@ -139,13 +139,13 @@ require($phpbb_root_path .  'includes/bbdkp/raidplanner/constants_rp.' . $phpEx)
 				unset($cal); 
 			break;
 
-			case 'calendar_myevents':
+			case 'raidplanner_myevents':
 
-				$user->add_lang('calendar');
+				$user->add_lang('mods/raidplanner');
 				if ( !class_exists('displayplanner')) 
 		        {
 					include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
-		        }
+				}
 				$cal = new displayplanner;
 				$daycount = request_var('daycount', 7 );
 				$cal->display_posters_next_events_for_x_days($daycount, $user->data['user_id'] );
@@ -165,7 +165,7 @@ require($phpbb_root_path .  'includes/bbdkp/raidplanner/constants_rp.' . $phpEx)
 				<find><![CDATA['subscribed'	=> array('title' => 'UCP_MAIN_SUBSCRIBED', 'auth' => '', 'cat' => array('UCP_MAIN')),
 				]]></find>
 				<action type="after-add"><![CDATA[				'raidplanner_registration'		=> array('title' => 'UCP_MAIN_RAIDPLANNER_REGISTRATION', 'auth' => '', 'cat' => array('UCP_MAIN')),
-				'calendar_myevents'		=> array('title' => 'UCP_MAIN_RAIDPLANNER_MYEVENTS', 'auth' => '', 'cat' => array('UCP_MAIN')),
+				'raidplanner_myevents'		=> array('title' => 'UCP_MAIN_RAIDPLANNER_MYEVENTS', 'auth' => '', 'cat' => array('UCP_MAIN')),
 				]]></action>
 			</edit>
 		</open>

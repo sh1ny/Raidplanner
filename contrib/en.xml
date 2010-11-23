@@ -46,8 +46,31 @@
 	</header>
 	<action-group>
 		<copy>
-			<file from="root/language/en/mods/*.*" to="language/en/mods/*.*" />
+			<file from="root/language/en/*.*" to="language/en/*.*" />
 		</copy>
+
+		<open src="language/en/common.php">
+			<edit>
+				<comment lang="en"><![CDATA[Define Calendar string]]></comment>
+				<find><![CDATA[=> 'Bytes',]]></find>
+				<action type="after-add"><![CDATA[	'CALENDAR'				=> 'Calendar',
+]]></action>
+			</edit>
+			<edit>
+				<comment lang="en"><![CDATA[Define Calendar view online strings]]></comment>
+				<find><![CDATA['VIEWED'					=> 'Viewed',
+]]></find>
+				<action type="after-add"><![CDATA[	'VIEWING_CALENDAR'			=> 'Viewing calendar',
+	'VIEWING_CALENDAR_DAY'		=> 'Viewing calendar day',
+	'VIEWING_CALENDAR_EVENT'	=> 'Viewing calendar event',
+	'VIEWING_CALENDAR_MONTH'	=> 'Viewing calendar month',
+	'VIEWING_CALENDAR_WEEK'		=> 'Viewing calendar week',
+	'EDITING_CALENDAR_EVENT'	=> 'Editing calendar event',
+	'CREATING_CALENDAR_EVENT'	=> 'Creating calendar event',
+
+]]></action>
+			</edit>
+		</open>
 
 		<open src="language/en/ucp.php">
 			<edit>
@@ -84,6 +107,7 @@
 'IMG_BUTTON_CALENDAR_MONTH'	=> 'View Month',]]></action>
 			</edit>
 		</open>
+
 
 
 		<diy-instructions lang="en"><![CDATA[See general install.xml file]]></diy-instructions>
