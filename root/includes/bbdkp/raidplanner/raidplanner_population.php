@@ -18,6 +18,11 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
+// Include the base class
+if (!class_exists('raidplanner_base'))
+{
+	require($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_base.' . $phpEx);
+}
 
 /*
  * new raid population class
