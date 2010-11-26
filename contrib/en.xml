@@ -40,14 +40,14 @@
 			<edit>
 				<comment lang="en"><![CDATA[Define Calendar string]]></comment>
 				<find><![CDATA[=> 'Bytes',]]></find>
-				<action type="after-add"><![CDATA[	'CALENDAR'				=> 'Calendar',
+				<action type="after-add"><![CDATA[	'CALENDAR'				=> 'Planner',
 ]]></action>
 			</edit>
 			<edit>
 				<comment lang="en"><![CDATA[Define Calendar view online strings]]></comment>
 				<find><![CDATA['VIEWED'					=> 'Viewed',
 ]]></find>
-				<action type="after-add"><![CDATA[	'VIEWING_CALENDAR'			=> 'Viewing calendar',
+				<action type="after-add"><![CDATA[	'VIEWING_CALENDAR'			=> 'Viewing Planner',
 	'VIEWING_CALENDAR_DAY'		=> 'Viewing calendar day',
 	'VIEWING_CALENDAR_EVENT'	=> 'Viewing calendar event',
 	'VIEWING_CALENDAR_MONTH'	=> 'Viewing calendar month',

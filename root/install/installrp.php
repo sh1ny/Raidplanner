@@ -5,7 +5,7 @@
  * @author sajaki9@gmail.com
  * @copyright (c) 2010 bbDkp <http://code.google.com/p/bbdkp/>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version $Id$
+ * @version $Id: installrp.php 1758 2010-11-22 20:24:53Z sajaki9 $
  * 
  */
 
@@ -198,13 +198,11 @@ $versions = array(
         ),
         
 		'module_add' => array(
-            array('acp', 0, 'ACP_CAT_RAIDPLANNER'),
-            
-            array('acp', 'ACP_CAT_RAIDPLANNER', 'ACP_RAIDPLANNER'),
+            array('acp', 'ACP_DKP_RAIDS', 'ACP_RAIDPLANNER'),
             
             array('acp', 'ACP_RAIDPLANNER', array(
            		 'module_basename' => 'raidplanner',
-            	 'modes'           => array('rp_settings', 'rp_eventsettings') ,
+            	 'modes'           => array('rp_settings') ,
         		),
         	 )), 
      

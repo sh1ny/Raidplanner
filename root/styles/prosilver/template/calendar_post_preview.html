@@ -11,8 +11,7 @@
     <!-- IF ALL_DAY -->
       <h5>{L_ALL_DAY}: {PREVIEW_START_DATE}</h5>
     <!-- ELSE -->
-      <h5>{L_FROM_TIME}: {PREVIEW_START_DATE}<br />
-      {L_TO_TIME}: {PREVIEW_END_DATE}</h5>
+      <h5>{L_FROM_TIME}: {PREVIEW_START_DATE} -> {L_TO_TIME}: {PREVIEW_END_DATE}</h5>
     <!-- ENDIF -->
 		</fieldset>
 	</div>
@@ -22,7 +21,10 @@
 
 		<!-- IF U_ACP -->
 
-		<!-- IF PREVIEW_TRACK_RSVPS --><div class="content">{L_TRACK_RSVPS_ON}<br><!-- IF PREVIEW_ALLOW_GUESTS -->{L_ALLOW_GUESTS_ON}<!-- ELSE -->{L_ALLOW_GUESTS_OFF}<!-- ENDIF --></div>
+		<!-- IF PREVIEW_TRACK_RSVPS --><div class="content">
+		{L_TRACK_RSVPS_ON}<br />
+		<!-- IF PREVIEW_ALLOW_GUESTS -->{L_ALLOW_GUESTS_ON}<!-- ELSE -->{L_ALLOW_GUESTS_OFF}<!-- ENDIF -->
+		</div>
 		<!-- ELSE --><div class="content">{L_TRACK_RSVPS_OFF}</div>
 		<!-- ENDIF -->
 

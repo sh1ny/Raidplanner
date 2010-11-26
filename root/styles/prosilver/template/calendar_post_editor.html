@@ -73,7 +73,7 @@
 	<!-- IF S_UPDATE_RECURRING_OPTIONS -->
 
 	  var number_strings = new Array();
-	  number_strings[0] = "Nth";
+	  number_strings[0] = "numbertext";
 	  number_strings[1] = "1st";
 	  number_strings[2] = "2nd";
 	  number_strings[3] = "3rd";
@@ -280,48 +280,6 @@
 		<dd><input type="text" name="subject" id="subject" size="45" maxlength="60" tabindex="2" value="{SUBJECT}" class="inputbox autowidth" /></dd>
 	</dl>
 
-	<!-- IF S_DATE_TIME_OPTS -->
-	<dl style="clear: left;">
-		<dt><label for="calM">{L_START_DATE}:</label></dt>
-		<dd>{MONTH_SEL} {DAY_SEL} {YEAR_SEL}</dd>
-	</dl>
-	<dl style="clear: left;">
-		<dt><label for="calHr">{L_START_TIME}:</label></dt>
-		<dd>{START_HOUR_SEL} {START_MIN_SEL}</dd>
-	</dl>
-	<dl style="clear: left;">
-		<dt><label>{L_ALL_DAY}:</label></dt>
-		<dd>{ALL_DAY_CHECK}</dd>
-	</dl>
-	<dl style="clear: left;">
-		<dt><label for="calMEnd">{L_END_DATE}:</label></dt>
-		<dd>{END_MONTH_SEL} {END_DAY_SEL} {END_YEAR_SEL}</dd>
-	</dl>
-	<dl style="clear: left;">
-		<dt><label for="calHrEnd">{L_END_TIME}:</label></dt>
-		<dd>{END_HOUR_SEL} {END_MIN_SEL}</dd>
-	</dl>
-		<!-- IF S_RECURRING_OPTS -->
-		<dl style="clear: left;">
-			<dt><label>{L_RECURRING_EVENT}:</label></dt>
-			<dd>{RECURRING_EVENT_CHECK}</dd>
-		</dl>
-		<dl style="clear: left;">
-			<dt><label for="calRType">{L_RECURRING_EVENT_TYPE}</label><br />{L_RECURRING_EVENT_TYPE_EXPLAIN}</dt>
-			<dd>{RECURRING_EVENT_TYPE_SEL}</dd>
-		</dl>
-		<dl style="clear: left;">
-			<dt><label for="calRFreq">{L_RECURRING_EVENT_FREQ}</label><br />{L_RECURRING_EVENT_FREQ_EXPLAIN}</dt>
-			<dd>{RECURRING_EVENT_FREQ_IN}</dd>
-		</dl>
-		<dl style="clear: left;">
-			<dt><label for="calMEnd">{L_END_RECURRING_EVENT_DATE}</label></dt>
-			<dd>{END_RECURR_MONTH_SEL} {END_RECURR_DAY_SEL} {END_RECURR_YEAR_SEL}</dd>
-		</dl>
-		<!-- ENDIF -->
-	<!-- ELSE -->
-	<input type="hidden" name="calEditAll" id="calEditAll" value="1">
-	<!-- ENDIF -->
 	<dl style="clear: left;">
 		<dt><label for="calEType">{L_EVENT_TYPE}:</label></dt>
 		<dd>{EVENT_TYPE_SEL}</dd>
@@ -334,17 +292,64 @@
 		<dt><label for="calGroupId">{L_EVENT_GROUP}:</label></dt>
 		<dd>{EVENT_GROUP_SEL}</dd>
 	</dl>
+	
+	<!-- IF S_DATE_TIME_OPTS -->
+		<dl style="clear: left;">
+			<dt><label for="calM">{L_START_DATE}:</label></dt>
+			<dd>{MONTH_SEL} {DAY_SEL} {YEAR_SEL}</dd>
+		</dl>
+		<dl style="clear: left;">
+			<dt><label for="calHr">{L_START_TIME}:</label></dt>
+			<dd>{START_HOUR_SEL} {START_MIN_SEL}</dd>
+		</dl>
+		<dl style="clear: left;">
+			<dt><label>{L_ALL_DAY}:</label></dt>
+			<dd>{ALL_DAY_CHECK}</dd>
+		</dl>
+		<dl style="clear: left;">
+			<dt><label for="calMEnd">{L_END_DATE}:</label></dt>
+			<dd>{END_MONTH_SEL} {END_DAY_SEL} {END_YEAR_SEL}</dd>
+		</dl>
+		<dl style="clear: left;">
+			<dt><label for="calHrEnd">{L_END_TIME}:</label></dt>
+			<dd>{END_HOUR_SEL} {END_MIN_SEL}</dd>
+		</dl>
+			<!-- IF S_RECURRING_OPTS -->
+			<hr />
+			
+			<dl style="clear: left;">
+				<dt><label>{L_RECURRING_EVENT}:</label></dt>
+				<dd>{RECURRING_EVENT_CHECK}</dd>
+			</dl>
+			<dl style="clear: left;">
+				<dt><label for="calRType">{L_RECURRING_EVENT_TYPE}</label><br />{L_RECURRING_EVENT_TYPE_EXPLAIN}</dt>
+				<dd>{RECURRING_EVENT_TYPE_SEL}</dd>
+			</dl>
+			<dl style="clear: left;">
+				<dt><label for="calRFreq">{L_RECURRING_EVENT_FREQ}</label><br />{L_RECURRING_EVENT_FREQ_EXPLAIN}</dt>
+				<dd>{RECURRING_EVENT_FREQ_IN}</dd>
+			</dl>
+			<dl style="clear: left;">
+				<dt><label for="calMEnd">{L_END_RECURRING_EVENT_DATE}</label></dt>
+				<dd>{END_RECURR_MONTH_SEL} {END_RECURR_DAY_SEL} {END_RECURR_YEAR_SEL}</dd>
+			</dl>
+			<hr />
+			<!-- ENDIF -->
+	<!-- ELSE -->
+			<input type="hidden" name="calEditAll" id="calEditAll" value="1">
+	<!-- ENDIF -->
+
 	<!-- IF S_TRACK_RSVPS -->
 	<dl style="clear: left;">
 		<dt><label>{L_TRACK_RSVPS}:</label></dt>
 		<dd>{TRACK_RSVP_CHECK}</dd>
 	</dl>
-		<!-- IF S_ALLOW_GUESTS -->
-		<dl style="clear: left;">
+	<!-- IF S_ALLOW_GUESTS -->
+	<dl style="clear: left;">
 			<dt><label>{L_ALLOW_GUESTS}:</label></dt>
 			<dd>{ALLOW_GUEST_CHECK}</dd>
 		</dl>
-		<!-- ELSE -->{ALLOW_GUEST_CHECK_HIDDEN}
+	<!-- ELSE -->{ALLOW_GUEST_CHECK_HIDDEN}
 		<!-- ENDIF -->
 	<!-- ELSE -->{TRACK_RSVP_CHECK_HIDDEN}{ALLOW_GUEST_CHECK_HIDDEN}
 	<!-- ENDIF -->
