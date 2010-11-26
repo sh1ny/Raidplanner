@@ -38,7 +38,7 @@ if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 				
 	if( $calWatch < 2 )
 	{
-		$watchclass->alendar_watch_calendar( $calWatch );
+		$watchclass->calendar_watch_calendar( $calWatch );
 	}
 	else
 	{
