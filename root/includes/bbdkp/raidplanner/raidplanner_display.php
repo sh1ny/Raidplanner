@@ -3,7 +3,7 @@
 *
 * @author alightner, Sajaki
 * @package bbDKP Raidplanner
-* @version CVS/SVN: $Id$
+* @version CVS/SVN: $Id: raidplanner_display.php 1761 2010-11-23 01:27:59Z sajaki9 $
 * @copyright (c) 2009 alightner
 * @copyright (c) 2010 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
@@ -447,7 +447,7 @@ class displayplanner extends raidplanner_base
 				{
 					$event_output['COLOR'] = $this->available_etype_colors[$row['etype_id']];
 					$event_output['IMAGE'] = $this->available_etype_images[$row['etype_id']];
-					$event_output['EVENT_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$row['event_id'].$this->etype_url_opts);
+					$event_output['EVENT_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$row['event_id'].$etype_url_opts);
 	
 					// if the event was created by this user
 					// display it in bold
