@@ -8,7 +8,7 @@
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[RaidPlanner 0.0.1]]></title>
+		<title lang="en"><![CDATA[bbDKP RaidPlanner 0.0.1]]></title>
 		<description lang="en"><![CDATA[Raidplanner Installer. The Raidplanner mod is based on Alightner's Calendar mod, and modified to work with bbDKP. It has an UMIL installer, Raid icons and links to the bbDKP event and members Table. If you have no bbDKP installation it can be used as a standalone Calendar.]]></description>
 		<author-notes lang="en"><![CDATA[We hope you get everything working. further developement requests, support questions are welcome at www.bbdkp.com]]></author-notes>
 		<author-group>
@@ -75,6 +75,21 @@
 				<action type="after-add"><![CDATA[// Raidplanner
 require($phpbb_root_path .  'includes/bbdkp/raidplanner/constants_rp.' . $phpEx);
 ]]></action>
+			</edit>
+		</open>
+		
+		<open src="includes/bbdkp/constants_bbdkp.php">
+			<edit>
+				<comment lang="en"><![CDATA[adding tablenames to constants file]]></comment>
+				<comment lang="fr"><![CDATA[Ajout noms des tables]]></comment>
+				<comment lang="de"><![CDATA[Zufügung Dateinamen]]></comment>
+				<find><![CDATA[// RAIDPLANNER]]></find>
+				<action type="after-add"><![CDATA[	define('RP_EVENTS_TABLE',			$table_prefix . 'rp_events');
+define('RP_RECURRING_EVENTS_TABLE',	$table_prefix . 'rp_recurring_events');
+define('RP_RSVP_TABLE',				$table_prefix . 'rp_rsvps');
+define('RP_EVENTS_WATCH',			$table_prefix . 'rp_events_watch');
+define('RP_WATCH',					$table_prefix . 'rp_watch');
+	]]></action>
 			</edit>
 		</open>
 		

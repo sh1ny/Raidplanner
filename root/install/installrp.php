@@ -230,18 +230,6 @@ $versions = array(
 			//adding some tables
 			'table_add' => array(
 			
-			array( 'phpbb_rp_event_types', array(
-			            'COLUMNS'			=> array(
-					   'etype_id' 			=> array('INT:8', NULL, 'auto_increment' ),
-                       'etype_index'		=> array('INT:8', 0),
-		  			   'etype_full_name' 	=> array('VCHAR_UNI:255', ''),
-		  			   'etype_display_name' => array('VCHAR_UNI:255', 0),
-					   'etype_color'   		=> array('VCHAR:8', 0),
-					   'etype_image'   		=> array('VCHAR:255', ''),
-					),
-                    'PRIMARY_KEY'	=> array('etype_id')),
-				),  
-					
 			array( 'phpbb_rp_events', array(
                     'COLUMNS'			=> array(
                        'event_id'			=> array('INT:8', NULL, 'auto_increment' ),
