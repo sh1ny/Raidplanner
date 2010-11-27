@@ -69,16 +69,16 @@ class raidplanner_base
 			$this->month_names[12] = "December";
 	
 			//find the available event types:
-			$sql = 'SELECT * FROM ' . RP_EVENT_TYPES_TABLE . ' ORDER BY etype_index';
+			$sql = 'SELECT * FROM ' . EVENTS_TABLE . ' ORDER BY event_id';
 			$result = $db->sql_query($sql);
 			$this->available_etype_count = 0;
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$this->available_etype_ids[$this->available_etype_count] = $row['etype_id'];
-				$this->available_etype_full_names[$this->available_etype_count] = $row['etype_full_name'];
-				$this->available_etype_colors[$row['etype_id']] = $row['etype_color'];
-				$this->available_etype_images[$row['etype_id']] = $row['etype_image'];
-				$this->available_etype_display_names[$row['etype_id']] = $row['etype_display_name'];
+				$this->available_etype_ids[$this->available_etype_count] = $row['event_id'];
+				$this->available_etype_full_names[$this->available_etype_count] = $row['event_name'];
+				$this->available_etype_colors[$row['etype_id']] = $row['event_color'];
+				$this->available_etype_images[$row['etype_id']] = $row['event_imagename'];
+				$this->available_etype_display_names[$row['etype_id']] = $row['event_name'];
 				$this->available_etype_count++;
 			}
 			$db->sql_freeresult($result);
