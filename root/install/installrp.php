@@ -198,9 +198,7 @@ $versions = array(
         ),
         
 		'module_add' => array(
-            array('acp', 'ACP_DKP_RAIDS', 'ACP_RAIDPLANNER'),
-            
-            array('acp', 'ACP_RAIDPLANNER', array(
+            array('acp', 'ACP_DKP_RAIDS', array(
            		 'module_basename' => 'raidplanner',
             	 'modes'           => array('rp_settings') ,
         		),
@@ -229,7 +227,7 @@ $versions = array(
         	 
 			//adding some tables
 			'table_add' => array(
-			
+						
 			array( 'phpbb_rp_events', array(
                     'COLUMNS'			=> array(
                        'event_id'			=> array('INT:8', NULL, 'auto_increment' ),
