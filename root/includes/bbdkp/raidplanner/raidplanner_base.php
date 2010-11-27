@@ -76,9 +76,9 @@ class raidplanner_base
 			{
 				$this->available_etype_ids[$this->available_etype_count] = $row['event_id'];
 				$this->available_etype_full_names[$this->available_etype_count] = $row['event_name'];
-				$this->available_etype_colors[$row['etype_id']] = $row['event_color'];
-				$this->available_etype_images[$row['etype_id']] = $row['event_imagename'];
-				$this->available_etype_display_names[$row['etype_id']] = $row['event_name'];
+				$this->available_etype_colors[$row['event_id']] = $row['event_color'];
+				$this->available_etype_images[$row['event_id']] = $row['event_imagename'];
+				$this->available_etype_display_names[$row['event_id']] = $row['event_name'];
 				$this->available_etype_count++;
 			}
 			$db->sql_freeresult($result);
