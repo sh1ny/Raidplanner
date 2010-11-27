@@ -66,18 +66,6 @@
 		<copy>
 			<file from="root/*.*" to="*.*"/>
 		</copy>
-		<open src="common.php">
-			<edit>
-				<comment lang="en"><![CDATA[adding required classfiles for Raidplanner in common.php.]]></comment>
-				<comment lang="fr"><![CDATA[Ajout des classes requises Raidplanner dans common.php]]></comment>
-				<comment lang="de"><![CDATA[Zufügung Raidplanner im common.php]]></comment>
-				<find><![CDATA[require($phpbb_root_path . 'includes/constants.' . $phpEx);]]></find>
-				<action type="after-add"><![CDATA[// Raidplanner
-require($phpbb_root_path .  'includes/bbdkp/raidplanner/constants_rp.' . $phpEx);
-]]></action>
-			</edit>
-		</open>
-		
 		<open src="includes/bbdkp/constants_bbdkp.php">
 			<edit>
 				<comment lang="en"><![CDATA[adding tablenames to constants file]]></comment>
