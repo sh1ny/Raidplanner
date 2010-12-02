@@ -31,6 +31,9 @@ if (!class_exists('raidplanner_base'))
  */
 class raidplanner_population extends raidplanner_base
 {
+	
+	
+	
 	/**
 	* Create forum navigation links for given forum, create parent
 	* list if currently null, assign basic forum info to template

@@ -108,9 +108,9 @@ img_icon_calendar_delete_all = icon_calendar_delete_all.gif*20*40]]></action>
 		<!-- ENDIF -->]]></action>
 			</edit>
 			<edit>
-				<comment lang="en"><![CDATA[Add calendar link to the top of all pages]]></comment>
+				<comment lang="en"><![CDATA[Add Planner link to the top of all pages]]></comment>
 				<find><![CDATA[<!-- IF not S_IS_BOT -->]]></find>
-				<action type="after-add"><![CDATA[<li class="icon-pages"><a href="{U_CALENDAR}">{L_CALENDAR}</a></li>]]></action>
+				<action type="after-add"><![CDATA[<li class="icon-pages"><a href="{U_PLANNER}">{L_PLANNER}</a></li>]]></action>
 			</edit>
 		</open>
 		<open src="styles/prosilver/theme/buttons.css">

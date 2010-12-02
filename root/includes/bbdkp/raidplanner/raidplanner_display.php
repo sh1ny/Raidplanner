@@ -1973,16 +1973,6 @@ class displayplanner extends raidplanner_base
 		return " AND etype_id = ".$db->sql_escape($calEType)." ";
 	}
 	
-	private function get_etype_url_opts()
-	{
-		$calEType = request_var('calEType', 0);
-		if( $calEType == 0 )
-		{
-			return "";
-		}
-		return "&amp;calEType=".$calEType;
-	}
-	
 	private function get_etype_post_opts()
 	{
 		$calEType = request_var('calEType', 0);

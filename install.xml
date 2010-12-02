@@ -9,8 +9,8 @@
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[bbDKP RaidPlanner 0.0.1]]></title>
-		<description lang="en"><![CDATA[Raidplanner Installer. The Raidplanner mod is based on Alightner's Calendar mod, and modified to work with bbDKP. It has an UMIL installer, Raid icons and links to the bbDKP event and members Table. If you have no bbDKP installation it can be used as a standalone Calendar.]]></description>
-		<author-notes lang="en"><![CDATA[We hope you get everything working. further developement requests, support questions are welcome at www.bbdkp.com]]></author-notes>
+		<description lang="en"><![CDATA[Raidplanner Installer. The Raidplanner mod is a fork of Alightner's Calendar mod, modified to work with bbDKP. the base code was refactored into functional classes. It has an UMIL Database installer, new Raid icons and hooks into the bbDKP event and guildmembers Table. So bbDKP 1.1.3 must be installed before.]]></description>
+		<author-notes lang="en"><![CDATA[We hope you get everything working. further development requests, support questions are welcome at www.bbdkp.com]]></author-notes>
 		<author-group>
 			<author>
 				<realname><![CDATA[A. Vandenberghe]]></realname>
@@ -39,8 +39,8 @@
 		</author-group>
 		<mod-version>0.0.1</mod-version>
 		<installation>
-			<level>easy</level>
-			<time>300</time>
+			<level>advanced</level>
+			<time>1200</time>
 			<target-version>3.0.8</target-version>
 		</installation>
 		<history>

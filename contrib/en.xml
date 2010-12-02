@@ -40,7 +40,7 @@
 			<edit>
 				<comment lang="en"><![CDATA[Define Calendar string]]></comment>
 				<find><![CDATA[=> 'Bytes',]]></find>
-				<action type="after-add"><![CDATA[	'CALENDAR'				=> 'Planner',
+				<action type="after-add"><![CDATA[	'PLANNER'				=> 'Raidplanner',
 ]]></action>
 			</edit>
 			<edit>

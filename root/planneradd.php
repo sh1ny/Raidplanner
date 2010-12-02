@@ -68,7 +68,7 @@ else
 {
 	if( $auth->acl_get('u_raidplanner_create_recurring_events') )
 	{
-		$s_recurring_opts = true;
+		$event_data['s_recurring_opts'] = true;
 	}
 	$event_data['event_id'] = 0;
 	$event_data['event_start_time'] = 0;
@@ -106,153 +106,16 @@ if( $mode == 'smilies' )
 	trigger_error('NO_POST_EVENT_MODE');
 }
 
-/*-------------------------------------
-  begin permission checking
--------------------------------------*/
+/*--------------------------------
+  permission checking
 
-// Bots can't post events in the calendar
-if ($user->data['is_bot'])
-{
-	redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
-}
+*/
 
-// Is the user able to view events?
-if ( !$auth->acl_get('u_raidplanner_view_events') )
-{
-	if ($user->data['user_id'] != ANONYMOUS)
-	{
-		trigger_error('USER_CANNOT_VIEW_EVENT');
-	}
-	trigger_error('LOGIN_EXPLAIN_POST_EVENT');
-}
-
-// Permission to do the action asked?
-$is_authed = false;
-switch ($mode)
-{
-	case 'post':
+$newraid->authcheck($mode, $submit, $event_data, $event_id);
 		
-		if ( $auth->acl_gets('u_raidplanner_create_public_events', 'u_raidplanner_create_group_events', 'u_raidplanner_create_private_events') )
-		{
-			$is_authed = true;
-			if( $submit )
-			{	
-				// on submit we need to double check that they have permission to create the selected type of event
-				$is_authed = false;
-				$test_event_level = request_var('calELevel', 0);
-				switch ($test_event_level)
-				{
-					case 2:
-						if ( $auth->acl_get('u_raidplanner_create_public_events') )
-						{
-							$is_authed = true;
-						}
-					break;
-
-					case 1:
-						if ( $auth->acl_get('u_raidplanner_create_group_events') )
-						{
-							$is_authed = true;
-						}
-					break;
-
-					case 0:
-					default:
-						if ( $auth->acl_get('u_raidplanner_create_private_events') )
-						{
-							$is_authed = true;
-						}
-					break;
-				}
-			}
-		}
-	break;
-
-	case 'edit':
-		if ($user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_events') )
-		{
-			$is_authed = true;
-		}
-	break;
-
-	case 'delete':
-		if ($user->data['is_registered'] && $auth->acl_get('u_raidplanner_delete_events') )
-		{
-			$is_authed = true;
-		}
-	break;
-}
-
-if (!$is_authed)
-{
-	if ($user->data['is_registered'])
-	{
-		if( strtoupper($mode) == "" )
-		{
-			$error_string = 'USER_CANNOT_POST_EVENT';
-		}
-		else
-		{
-			$error_string = 'USER_CANNOT_' . strtoupper($mode) . '_EVENT';
-		}
-		trigger_error($error_string);
-	}
-
-	login_box('', $user->lang['LOGIN_EXPLAIN_POST_EVENT']);
-}
-
-// Can we edit this post ... if we're a moderator with rights then always yes
-// else it depends on editing times, lock status and if we're the correct user
-if ($mode == 'edit' && !$auth->acl_get('m_raidplanner_edit_other_users_events'))
-{
-	if ($user->data['user_id'] != $event_data['poster_id'])
-	{
-		trigger_error('USER_CANNOT_EDIT_EVENT');
-	}
-}
-if ($mode == 'delete' && !$auth->acl_get('m_raidplanner_delete_other_users_events'))
-{
-	if ($user->data['user_id'] != $event_data['poster_id'])
-	{
-		trigger_error('USER_CANNOT_DELETE_EVENT');
-	}
-}
-
-/*-------------------------------------------
-  Does the user have permission for
-  rsvps allowing guests, & recurring events?
----------------------------------------------*/
-$s_track_rsvps = false;
-if( $auth->acl_get('u_raidplanner_track_rsvps'))
-{
-	$s_track_rsvps = true;
-}
-$s_allow_guests = false;
-if( $auth->acl_get('u_raidplanner_allow_guests'))
-{
-	$s_allow_guests = true;
-}
-$s_recurring_opts = false;
-if( $event_id == 0 )
-{
-	if( $auth->acl_get('u_raidplanner_create_recurring_events') )
-	{
-		$s_recurring_opts = true;
-	}
-}
-$s_update_recurring_options = false;
-if( $user->data['user_lang'] == 'en' )
-{
-	$s_update_recurring_options = true;
-}
-
-/*-------------------------------------
-  end permission checking
--------------------------------------*/
-
-
 /*-------------------------------------
   Handle delete mode...
+  user checked
 -------------------------------------*/
 if ($mode == 'delete')
 {
@@ -924,7 +787,7 @@ $level_sel_code .= "</select>\n";
 
 $all_day_check = "<input type='checkbox' name='calAllDay' value='ON' checked='checked' onclick='toggle_all_day_event()' />";
 $track_rsvp_check = "<input type='checkbox' name='calTrackRsvps' value='ON' checked='checked' />";
-if( $s_allow_guests )
+if( $event_data['s_allow_guests']  )
 {
 	$track_rsvp_check = "<input type='checkbox' name='calTrackRsvps' value='ON' checked='checked' onclick='update_allow_guest_state()' />";
 }
@@ -939,7 +802,7 @@ $end_recurr_month_sel_code = "";
 $end_recurr_day_sel_code = "";
 $end_recurr_year_sel_code = "";
 
-if( $s_recurring_opts )
+if( $event_data['s_recurring_opts'] )
 {
 	$recurr_event_check = "<input type='checkbox' name='calIsRecurr' value='ON' onclick='update_recurr_state();update_recurring_options();' />";
 	$recurr_event_freq_sel_code  = "<select name='calRFrqT' id='calRFrqT' disabled='disabled'>\n";
@@ -1396,14 +1259,14 @@ $template->assign_vars(array(
 	'WEEK_VIEW_URL'				=> $week_view_url,
 	'MONTH_VIEW_URL'			=> $month_view_url,
 
-	'S_TRACK_RSVPS'				=> $s_track_rsvps,
+	'S_TRACK_RSVPS'				=> $event_data['s_track_rsvps'] ,
 	'TRACK_RSVP_CHECK'			=> $track_rsvp_check,
 	'TRACK_RSVP_CHECK_HIDDEN'	=> $track_rsvp_check_hidden,
-	'S_ALLOW_GUESTS'			=> $s_allow_guests,
+	'S_ALLOW_GUESTS'			=> $event_data['s_allow_guests'] ,
 	'ALLOW_GUEST_CHECK'			=> $allow_guest_check,
 	'ALLOW_GUEST_CHECK_HIDDEN'	=> $allow_guest_check_hidden,
-	'S_RECURRING_OPTS'			=> $s_recurring_opts,
-	'S_UPDATE_RECURRING_OPTIONS'=> $s_update_recurring_options,
+	'S_RECURRING_OPTS'			=> $event_data['s_recurring_opts'],
+	'S_UPDATE_RECURRING_OPTIONS'=> $event_data['s_update_recurring_options'],
 	'RECURRING_EVENT_CHECK'		=> $recurr_event_check,
 	'RECURRING_EVENT_TYPE_SEL'	=> $recurr_event_freq_sel_code,
 	'RECURRING_EVENT_FREQ_IN'	=> $recurr_event_freq_val_code,
@@ -1439,5 +1302,6 @@ $template->set_filenames(array(
 make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
 
 page_footer();
+
 
 ?>

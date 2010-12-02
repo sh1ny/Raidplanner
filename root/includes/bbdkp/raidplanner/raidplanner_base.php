@@ -45,6 +45,162 @@ class raidplanner_base
 	public $mode_sel_code = "";
 	
 	
+	
+	/*
+	 * checks if a user has right to post a new raid
+	 * 
+	 */
+	public function authcheck($mode, $submit, $event_data)
+	{
+		global $user, $auth; 
+		$is_authed = false;
+		
+		// Bots can't post events in the calendar
+		if ($user->data['is_bot'])
+		{
+			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		}
+	
+		// Is the user able to view events?
+		if ( !$auth->acl_get('u_raidplanner_view_events') )
+		{
+			if ($user->data['user_id'] != ANONYMOUS)
+			{
+				trigger_error('USER_CANNOT_VIEW_EVENT');
+			}
+			trigger_error('LOGIN_EXPLAIN_POST_EVENT');
+		}
+	
+		// Permission to do the action asked?
+		switch ($mode)
+		{
+			case 'post':
+				if ( $auth->acl_gets(
+					'u_raidplanner_create_public_events', 
+					'u_raidplanner_create_group_events', 
+					'u_raidplanner_create_private_events'))
+					{
+						$is_authed = true;
+						if( $submit )
+						{	
+							// on submit we need to double check that they have permission to create the selected type of event
+							$is_authed = false;
+							$test_event_level = request_var('calELevel', 0);
+							switch ($test_event_level)
+							{
+								case 2:
+									if ( $auth->acl_get('u_raidplanner_create_public_events') )
+									{
+										$is_authed = true;
+									}
+								break;
+			
+								case 1:
+									if ( $auth->acl_get('u_raidplanner_create_group_events') )
+									{
+										$is_authed = true;
+									}
+								break;
+			
+								case 0:
+								default:
+									if ( $auth->acl_get('u_raidplanner_create_private_events') )
+									{
+										$is_authed = true;
+									}
+								break;
+							}
+						}
+				}
+			break;
+		
+			case 'edit':
+				if ($user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_events') )
+				{
+					$is_authed = true;
+				}
+			break;
+		
+			case 'delete':
+				if ($user->data['is_registered'] && $auth->acl_get('u_raidplanner_delete_events') )
+				{
+					$is_authed = true;
+				}
+			break;
+		}
+		
+		if (!$is_authed)
+		{
+			if ($user->data['is_registered'])
+			{
+				if( strtoupper($mode) == "" )
+				{
+					$error_string = 'USER_CANNOT_POST_EVENT';
+				}
+				else
+				{
+					$error_string = 'USER_CANNOT_' . strtoupper($mode) . '_EVENT';
+				}
+				trigger_error($error_string);
+			}
+		
+			login_box('', $user->lang['LOGIN_EXPLAIN_POST_EVENT']);
+		}
+		
+		// Can we edit this post ... if we're a moderator with rights then always yes
+		// else it depends on editing times, lock status and if we're the correct user
+		if ($mode == 'edit' && !$auth->acl_get('m_raidplanner_edit_other_users_events'))
+		{
+			if ($user->data['user_id'] != $event_data['poster_id'])
+			{
+				trigger_error('USER_CANNOT_EDIT_EVENT');
+			}
+		}
+		if ($mode == 'delete' && !$auth->acl_get('m_raidplanner_delete_other_users_events'))
+		{
+			if ($user->data['user_id'] != $event_data['poster_id'])
+			{
+				trigger_error('USER_CANNOT_DELETE_EVENT');
+			}
+		}
+		
+		/*-------------------------------------------
+		  Does the user have permission for
+		  rsvps allowing guests, & recurring events?
+		---------------------------------------------*/
+		$event_data['s_track_rsvps'] = false;
+		if( $auth->acl_get('u_raidplanner_track_rsvps'))
+		{
+			$event_data['s_track_rsvps'] = true;
+		}
+		
+		
+		$event_data['s_allow_guests'] = false;
+		if( $auth->acl_get('u_raidplanner_allow_guests'))
+		{
+			$event_data['s_allow_guests'] = true;
+		}
+
+		$event_data['s_recurring_opts'] = false;
+		if( $event_id == 0 )
+		{
+			if( $auth->acl_get('u_raidplanner_create_recurring_events') )
+			{
+				$event_data['s_recurring_opts'] = true;
+			}
+		}
+			
+		$event_data['s_update_recurring_options'] = false;
+		if( $user->data['user_lang'] == 'en' )
+		{
+			$event_data['s_update_recurring_options'] = true;
+		}
+		
+		return $event_data;
+	}
+	
+	
+	
 	/* initialize global variables used throughout
 	   all of the calendar functions
 	*/
@@ -125,6 +281,17 @@ class raidplanner_base
 		{
 		    $this->date['day'] = $number_days;
 		}
+	}
+	
+	
+	public function get_etype_url_opts()
+	{
+		$calEType = request_var('calEType', 0);
+		if( $calEType == 0 )
+		{
+			return "";
+		}
+		return "&amp;calEType=".$calEType;
 	}
 	
 	
