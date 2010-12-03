@@ -31,9 +31,6 @@ if (!class_exists('raidplanner_base'))
  */
 class raidplanner_population extends raidplanner_base
 {
-	
-	
-	
 	/**
 	* Create forum navigation links for given forum, create parent
 	* list if currently null, assign basic forum info to template
@@ -1786,6 +1783,59 @@ class raidplanner_population extends raidplanner_base
 			$day = 0;
 		}
 		return $day;
+	}
+	
+	/* prune_calendar()
+	**
+	** Cron job used to delete old events (and all of their related data:
+	** rsvps, recurring event data, etc) after they've expired.
+	**
+	** The expiration date of an event = when the event ends + the prune_limit
+	** specified in the calendar ACP.
+	*/
+	function prune_calendar()
+	{
+		global $auth, $db, $user, $config, $phpEx, $phpbb_root_path;
+		
+		$prune_limit = $config['rp_prune_limit']; 
+		
+		set_config ('rp_last_prune', time() ,0);
+	    $cache->destroy('config');
+	    	
+		// delete events that have been over for $prune_limit seconds.
+		$end_temp_date = time() - $prune_limit;
+	
+		// find all day events that finished before the prune limit
+		$sort_timestamp_cutoff = $end_temp_date - 86400;
+		$sql = 'SELECT event_id FROM ' . RP_EVENTS_TABLE . '
+					WHERE ( (event_all_day = 1 AND sort_timestamp < '.$db->sql_escape($sort_timestamp_cutoff).')
+					OR (event_all_day = 0 AND event_end_time < '.$db->sql_escape($end_temp_date).') )';
+		$result = $db->sql_query($sql);
+	
+		// delete all the rsvps for this event before deleting the event
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$sql = 'DELETE FROM ' . RP_RSVP_TABLE . ' WHERE event_id = ' .$row['event_id'];
+			$db->sql_query($sql);
+	
+			$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE event_id = ' .$row['event_id'];
+			$db->sql_query($sql);
+	
+		}
+		$db->sql_freeresult($result);
+	
+		// now delete the old events
+		$sql = 'DELETE FROM ' . RP_EVENTS_TABLE . '
+					WHERE ( (event_all_day = 1 AND sort_timestamp < '.$db->sql_escape($sort_timestamp_cutoff).')
+					OR (event_all_day = 0 AND event_end_time < '.$db->sql_escape($end_temp_date).') )';
+		$db->sql_query($sql);
+	
+		// delete any recurring events that are permanently over
+		$sql = 'DELETE FROM ' . RP_RECURRING_EVENTS_TABLE . '
+					WHERE (final_occ_time > 0) AND
+					      (final_occ_time < '. $end_temp_date .')';
+		$db->sql_query($sql);
+	
 	}
 		
 

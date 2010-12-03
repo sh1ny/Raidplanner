@@ -9,8 +9,136 @@
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[bbDKP RaidPlanner 0.0.1]]></title>
-		<description lang="en"><![CDATA[Raidplanner Installer. The Raidplanner mod is a fork of Alightner's Calendar mod, modified to work with bbDKP. the base code was refactored into functional classes. It has an UMIL Database installer, new Raid icons and hooks into the bbDKP event and guildmembers Table. So bbDKP 1.1.3 must be installed before.]]></description>
-		<author-notes lang="en"><![CDATA[We hope you get everything working. further development requests, support questions are welcome at www.bbdkp.com]]></author-notes>
+		<description lang="en"><![CDATA[Raidplanner Installer. 
+		
+* The Raidplanner mod is a fork of Alightner's Calendar mod, modified to work with bbDKP. 
+* the base code was refactored into functional classes. 
+* It has an UMIL Database installer, and so is database independent.
+
+Feature list
+---------		
+* hooks into the bbDKP event and guildmembers Table, so bbDKP 1.1.3 must be installed before.
+
+* Raid Events pick up new Raid icons from DKP event. 
+
+* Sign up with your Guild characters or as your forum account.
+
+* Follow up to which raid(s) you signed up from your UCP.
+		
+* Includes both All Day and Timed Events
+
+* Event View - filled with all event details (who's invited, who created the event, BBCode, Smilies, start and end times, edit & delete buttons if applicable etc) 
+
+* Month View - can jump to any month via next and prev links, or jump randomly via pulldown menus. Lists birthdays, event types and event names only. Click on the day's number to add a new event on that day
+
+* Week View - can jump to any week via next and prev links, or jump randomly via pulldown menus. Lists birthdays, event types, names, and times. Click on the day's number to add a new event on that day.
+
+* Day View - can jump to any day via next and prev links, or jump randomly via pulldown menus. Includes a Graphical display of events on a timeline - lets you quickly see schedule conflicts etc. Lists birthdays, event types, names, and times. Click on the day's number to add a new event on that day.
+
+* Support for BBCode and Smilies 
+
+* Birthday Support - Using phpBB3 Birthdays 
+
+* 3 Event types exist : Public events (no signup), Raid events (Signup), and personal events. Raid Events are picked up from bbDKP. 
+  Public events and Personal events are set up in Raidplanner.
+
+* Make events bold if you are event creator - Let's you quickly see events most important to you.
+
+* List of Upcoming Events on index - in the ACP you can specify whether or not you want to display 
+the upcoming events on the index (and if so how many events to list). You also have the option to list the current week view on the index.
+
+* Detailed Permissions - You can control who has permission to view, create, edit, delete, and moderate events. 
+
+* Auto pruning of past events - From the ACP you control how often events are pruned, and how old they have to be before they are added to the delete list. 
+
+* Recurring events - events will be occurrenceable with 12 different options:
+1) A: Day [X] of [Month Name] every [Y] Year(s)
+2) A: [Xth] [Weekday Name] of [Month Name] every [Y] Year(s)
+3) A: [Xth] [Weekday Name] of full weeks in [Month Name] every [Y] Year(s)
+4) A: [Xth from last] [Weekday Name] of [Month Name] every [Y] Year(s)
+5) A: [Xth from last] [Weekday Name] of full weeks in [Month Name] every [Y] Year(s)
+6) M: Day [X] of month every [Y] Month(s)
+7) M: [Xth] [Weekday Name] of month every [Y] Month(s)
+8) M: [Xth] [Weekday Name] of full weeks in month every [Y] Month(s)
+9) M: [Xth from last] [Weekday Name] of month every [Y] Month(s)
+10) M: [Xth from last] [Weekday Name] of full weeks in month every [Y] Month(s)
+11) W: [Weekday Name] every [Y] Week(s)
+12) D: Every [Y] Day(s)
+
+The user gets to enter the frequency [Y] value, and the other value's in []'s are interpolated 
+from the user's selected start date. 
+
+There is a new user permission setting to determine which users have permission to create recurring events. 
+
+Recurring events can be deleted individually, or all events of the recurring group can be deleted together. 
+Recurring events can be edited individually (including start/end time settings, but not recurring event settings) 
+or you can edit the whole group of events altogether. If you're editing the whole group of recurring events - 
+you will not be able to edit any of the scheduling data, you'll only have access to the subject, body, i
+nvite list, and registration (rsvp) settings. 
+
+When creating a recurring event you can specify the last day of the event group, or you can specify 
+the recurring event as never ending. 
+
+Recurring events are populated by a cron job, and you can edit how often the cron job runs in the ACP. 
+You can also specify in the ACP how many days into the future you want to have populated in the calendar at a time.
+
+* Event Registration - When creating new events, users have the option to enable attendance tracking 
+which allows users to register for the event. The event creator can also specify whether forum members are allowed 
+to bring guests to this event. When viewing the event, users are prompted to register for the event, and if guests 
+are allowed they can specify how many people they are bringing to the event so the calendar can track the total 
+headcount for the event. Permissions can be used to control who has permission to create events with attendance 
+tracking, and who is able to see what information gathered from users registering for the event.
+ Users are allowed to leave comments with their "yes", "no", or"maybe" reply, and the comments support smilies, bbcode, etc.
+
+* Ability to invite multiple groups to an event
+
+* Custom date/time formatting controlled in calendar ACP - this overwrites the user's preferred
+ date/time format, so you can display just the time in hours where it makes sense (like in the week view) 
+ or the whole date+time (like in the display event)
+
+* Ability to display events only on their start date - obviously the day view is a graphical display of 
+all things going on, and events will display in the day view even if not on the start date with this
+ setting turned on. However it's great for things like a week view with an event that starts at
+  10pm and ends at 2am the next day, because it will only display on the first day.
+
+* Ability to display a list of upcoming events for the next X days 
+
+* Detailed display for calendar on who is online page 
+
+* New permission option to invite groups you're not a member of - if this is turned on, you'll be able to create events for groups 
+you don't belong to, but the author of the event will always be able to see their own events - even if they don't belong to the invite list.
+
+* Detailed permissions for ability to create private, group, or public events - now you can give some users the power to
+ create public events, and others only permission to create private events, or whatever combination makes sense for your forum.
+
+* Utility in ACP to move all events +/- one hour (helps when changing forum's dst setting). When you create an event 
+it's stored in an absolute time, and if the forum (and/or users) change their dst settings they may suddenly
+ see all the events appear off by one hour, now there's a utility to move ALL events in the calendar forward or
+  back by one hour to help correct things when you change your DST.
+
+* Ability to filter the calendar for events of a specific type - currently there's no UI for this, 
+it's simply a matter of adding a calEType argument to the URL. The user who requested this feature 
+sounded like they would create links to "different" calendars on their forum, where each 
+calendar only displayed events of the specified type.
+
+* UCP module that displays upcoming events (that the user has registered for) for the next X days.
+
+* UCP module that displays upcoming events (that the user has created) for the next X days.
+
+* Ability to "Watch" the calendar - users can elect to watch the calendar for email notifications when new 
+events are created (that they are invited to).  The user is sent one notification when a new event 
+is created, but no new notifications for new events are sent until they re-visit the calendar
+ (much like how notifications are sent for forums you "subscribe" to).
+
+* Ability to "Watch" a specific event for updates and/or replies.  Users can elect to watch a specific event
+ for update notifications whenever the event creator updates the event information or other users update thier reply 
+ (registration) for the event.  Note if the user doesn't have permission to view detailed event replies - they will not
+  receive the email notifications when other users reply to an event, but they will still recieve the email notifications
+   when the event poster updates the event information.
+
+]]></description>
+		<author-notes lang="en"><![CDATA[We hope you get everything working. further development requests, 
+		support questions are welcome at www.bbdkp.com]]></author-notes>
 		<author-group>
 			<author>
 				<realname><![CDATA[A. Vandenberghe]]></realname>
@@ -48,10 +176,13 @@
 				<date>2010-12-01</date>
 				<rev-version>0.0.1</rev-version>
 				<changelog lang="en">
+					<change><![CDATA[[CHG] Raid Events picked up from bbDKP.]]></change>
+					<change><![CDATA[[CHG] UCP module is no longer optional]]></change>
+					<change><![CDATA[[CHG] Removed config table, now uses phpbb config table.]]></change>
+					<change><![CDATA[[CHG] changed tablenames, appends table constants to bbDKP constants file]]></change>
 					<change><![CDATA[[CHG] split backend /includes code and refactored into php5 classes]]></change>
-					<change><![CDATA[[CHG] added UMIF installer script, removed sql portions from modx, changed tablenames]]></change>
-					<change><![CDATA[[CHG] split modx file into main and language]]></change>
-					<change><![CDATA[[CHG] new constants file]]></change>
+					<change><![CDATA[[CHG] added UMIF installer script, removed sql portions from modx]]></change>
+					<change><![CDATA[[CHG] split modx file into main, template and language]]></change>
 					<change><![CDATA[[CHG] mod renamed and version number back to 0.0.1]]></change>
 				</changelog>
 			</entry>
@@ -158,6 +289,35 @@ define('RP_WATCH',					$table_prefix . 'rp_watch');
 				]]></action>
 			</edit>
 		</open>
+		
+				<open src="cron.php">
+			<edit>
+				<comment lang="en"><![CDATA[Add auto prune/populate event support]]></comment>
+				<find><![CDATA[	case 'prune_forum':]]></find>
+				<action type="before-add"><![CDATA[	case 'prune_calendar':
+		if ( !class_exists('raidplanner_population')) 
+        {
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_population.' . $phpEx);
+		}
+		$populate = new raidplanner_population;
+		$populate->prune_calendar();
+
+	break;
+	case 'populate_calendar':
+		if ( !class_exists('raidplanner_population')) 
+        {
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_population.' . $phpEx);
+		}
+		$populate = new raidplanner_population;
+		$populate->populate_calendar(0);
+
+	break;
+	
+]]></action>
+			</edit>
+		</open>
+		
+		
 		<php-installer><![CDATA[install/installrp.php]]></php-installer>
 		<diy-instructions lang="en"><![CDATA[Run database installer : Browse to install/installrp.php. This will install the Raidplanner database tables, the ACP and UCP modules, purge the cache and refresh the template, imagesets and themes. Note that if you run a Style other than Prosilver, you will need to apply the Prosilver changes to your style either manually - by following the edit instructions in prosilver.xml, or by automatically, by going into the "Detail" tab in Automod and applying the Prosilver changes to yur style. ]]></diy-instructions>
 	</action-group>
