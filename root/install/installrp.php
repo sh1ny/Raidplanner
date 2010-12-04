@@ -214,7 +214,7 @@ $versions = array(
 			array('rp_display_truncated_name', 0, true),
 			array('rp_prune_frequency', 0, true),
 			array('rp_last_prune', 0, true),
-			array('rp_prune_limit', 2592000, true),
+			array('rp_prune_limit', 31536000, true),
 			array('rp_display_hidden_groups', 0, true),
 			array('rp_time_format', 'H:i', true),
 			array('rp_date_format', 'M d, Y', true),
@@ -222,7 +222,7 @@ $versions = array(
 			array('rp_disp_events_only_on_start', 0, true),
 			array('rp_populate_frequency', 86400, true),
 			array('rp_last_populate', 0, true),
-			array('rp_populate_limit', 2592000, true),
+			array('rp_populate_limit', 94608000, true),
 			),
         	 
 			//adding some tables
