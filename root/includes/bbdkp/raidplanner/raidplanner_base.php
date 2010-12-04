@@ -283,6 +283,20 @@ class raidplanner_base
 		}
 	}
 	
+	/*------------------------------------------------------
+	  Begin helper functions for filtering the calendar
+	  display based on a specified event type.
+	------------------------------------------------------*/
+	public function get_etype_filter()
+	{
+		global $db;
+		$calEType = request_var('calEType', 0);
+		if( $calEType == 0 )
+		{
+			return "";
+		}
+		return " AND etype_id = ".$db->sql_escape($calEType)." ";
+	}
 	
 	public function get_etype_url_opts()
 	{
@@ -294,6 +308,15 @@ class raidplanner_base
 		return "&amp;calEType=".$calEType;
 	}
 	
+	public function get_etype_post_opts()
+	{
+		$calEType = request_var('calEType', 0);
+		if( $calEType == 0 )
+		{
+			return "";
+		}
+		return "calEType=".$calEType;
+	}
 	
 	
 }

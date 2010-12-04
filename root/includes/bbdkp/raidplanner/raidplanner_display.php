@@ -2071,40 +2071,7 @@ class displayplanner extends raidplanner_base
 		return $group_options;
 	}
 	
-	/*------------------------------------------------------
-	  Begin helper functions for filtering the calendar
-	  display based on a specified event type.
-	------------------------------------------------------*/
-	private function get_etype_filter()
-	{
-		global $db;
-		$calEType = request_var('calEType', 0);
-		if( $calEType == 0 )
-		{
-			return "";
-		}
-		return " AND etype_id = ".$db->sql_escape($calEType)." ";
-	}
 	
-	private function get_etype_url_opts()
-	{
-		$calEType = request_var('calEType', 0);
-		if( $calEType == 0 )
-		{
-			return "";
-		}
-		return "&amp;calEType=".$calEType;
-	}
-	
-	private function get_etype_post_opts()
-	{
-		$calEType = request_var('calEType', 0);
-		if( $calEType == 0 )
-		{
-			return "";
-		}
-		return "calEType=".$calEType;
-	}
 	 
 	/* Generates the list of birthdays for the given date
 	*/
@@ -2141,7 +2108,6 @@ class displayplanner extends raidplanner_base
 		return $birthday_list;
 	}
 		
-	
 	
 	/* is_user_authorized_to_view_event()
 	**

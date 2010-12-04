@@ -202,9 +202,9 @@ class raidplanner_population extends raidplanner_base
 					$messenger->assign_vars(array(
 									'USERNAME'			=> htmlspecialchars_decode($row['username']),
 									'EVENT_SUBJECT'		=> $event_data['event_subject'],
-									'U_CALENDAR'		=> generate_board_url() . "/calendar.$phpEx",
-									'U_UNWATCH_CALENDAR'=> generate_board_url() . "/calendar.$phpEx?calWatch=0",
-									'U_EVENT'			=> generate_board_url() . "/calendar.$phpEx?view=event&calEid=$event_id", )
+									'U_CALENDAR'		=> generate_board_url() . "/planner.$phpEx",
+									'U_UNWATCH_CALENDAR'=> generate_board_url() . "/planner.$phpEx?calWatch=0",
+									'U_EVENT'			=> generate_board_url() . "/planner.$phpEx?view=event&calEid=$event_id", )
 								);
 	
 					$messenger->send($row['user_notify_type']);
@@ -498,8 +498,8 @@ class raidplanner_population extends raidplanner_base
 						WHERE recurr_id = '.$db->sql_escape($event_data['recurr_id']);
 				$db->sql_query($sql);
 	
-				$etype_url_opts = get_etype_url_opts();
-				$meta_info = append_sid("{$phpbb_root_path}calendar.$phpEx", "calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts);
+				$etype_url_opts = $this->get_etype_url_opts();
+				$meta_info = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts);
 				$message = $user->lang['EVENT_DELETED'];
 	
 				meta_refresh(3, $meta_info);
