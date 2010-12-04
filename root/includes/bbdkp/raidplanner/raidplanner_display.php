@@ -1613,10 +1613,10 @@ class displayplanner extends raidplanner_base
 	public function display_calendar_on_index()
 	{
 		global $auth, $db, $user, $config, $template;
-		$user->setup('raidplanner');
+		$user->setup('mods/raidplanner');
 	
 		//find the first day of the week
-		if( $config['index_display_week'] === "1" )
+		if( $config['rp_index_display_week'] === "1" )
 		{
 			$template->assign_vars(array(
 				'S_CALENDAR_WEEK'	=> true,
