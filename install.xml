@@ -290,7 +290,27 @@ define('RP_WATCH',					$table_prefix . 'rp_watch');
 			</edit>
 		</open>
 		
-				<open src="cron.php">
+		<open src="index.php">
+		 <edit>
+				<comment lang="en"><![CDATA[Include functions_calendar so we can later display the current week or next events on the index]]></comment>
+				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
+				<action type="after-add"><![CDATA[if ( !class_exists('displayplanner')) 
+		        {
+					include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
+				}
+				$cal = new displayplanner;]]></action>
+			</edit>
+		<edit>
+				<comment lang="en"><![CDATA[Displays Raidplanner Week view on index]]></comment>
+				<find><![CDATA[// Assign index specific vars]]></find>
+				<action type="before-add"><![CDATA[// Raidplanner Week view
+$cal->display_calendar_on_index();
+]]></action>
+			</edit>
+		 </open>
+		
+		
+		<open src="cron.php">
 			<edit>
 				<comment lang="en"><![CDATA[Add auto prune/populate event support]]></comment>
 				<find><![CDATA[	case 'prune_forum':]]></find>

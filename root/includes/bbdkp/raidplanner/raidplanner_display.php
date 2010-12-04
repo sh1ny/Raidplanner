@@ -1608,7 +1608,120 @@ class displayplanner extends raidplanner_base
 		}
 	}
 			
+	/* displays the calendar - either week view or upcoming event list
+	   as specified in the ACP on the index */
+	public function display_calendar_on_index()
+	{
+		global $auth, $db, $user, $config, $template;
+		$user->setup('raidplanner');
 	
+		//find the first day of the week
+		if( $config['index_display_week'] === "1" )
+		{
+			$template->assign_vars(array(
+				'S_CALENDAR_WEEK'	=> true,
+			));
+			$this->display_week(1);
+		}
+		else
+		{
+			//see if we should display X number of upcoming events
+			$s_next_events = false;
+			if( $config['rp_index_display_next_events'] > 0 )
+			{
+				$s_next_events = true;
+			}
+	
+			$template->assign_vars(array(
+				'S_CALENDAR_WEEK'	=> false,
+				'S_CALENDAR_NEXT_EVENTS'	=> $s_next_events,
+			));
+			$this->_display_next_events( $config['rp_index_display_next_events'] );
+		}
+	}	
+	
+		
+	
+	/* displays the next x number of upcoming events */
+	private function _display_next_events( $x )
+	{
+		global $auth, $db, $user, $config, $template, $phpEx, $phpbb_root_path;
+	
+		$etype_url_opts = $this->get_etype_url_opts(); 
+	
+		// Is the user able to view ANY events?
+		$user_can_view_events = false;
+		if ( $auth->acl_get('u_calendar_view_events') )
+		{
+	
+			$this->_init_calendar_data();
+			$subject_limit = $config['display_truncated_name']; 
+			$group_options = $this->get_sql_group_options($user->data['user_id']);
+			$etype_options = $this->get_etype_filter();
+	
+			$start_temp_date = time();
+			$end_temp_date = $start_temp_date + 31536000;
+			// find all day events that are still taking place
+			$sort_timestamp_cutoff = $start_temp_date - 86400+1;
+	
+		    $disp_date_format = $config['rp_date_format'];
+		    $disp_date_time_format = $config['date_time_format']; 
+	
+			// don't list events that are more than 1 year in the future
+			$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
+					WHERE ( (event_access_level = 2) OR
+						(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
+						(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
+					((( event_start_time >= '.$db->sql_escape($start_temp_date).' AND event_start_time <= '.$db->sql_escape($end_temp_date).' ) OR
+					 ( event_end_time > '.$db->sql_escape($start_temp_date).' AND event_end_time <= '.$db->sql_escape($end_temp_date).' ) OR
+					 ( event_start_time < '.$db->sql_escape($start_temp_date).' AND event_end_time > '.$db->sql_escape($end_temp_date)." )) OR (sort_timestamp > ".
+						$db->sql_escape($sort_timestamp_cutoff)." AND event_all_day = 1) ) ORDER BY sort_timestamp ASC";
+	
+			$result = $db->sql_query_limit($sql, $x, 0);
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$events['EVENT_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$row['event_id'].$etype_url_opts);
+				$events['IMAGE'] = $this->available_etype_images[$row['etype_id']];
+				$events['COLOR'] = $this->available_etype_colors[$row['etype_id']];
+				$events['ETYPE_DISPLAY_NAME'] = $this->available_etype_display_names[$row['etype_id']];
+	
+				$events['FULL_SUBJECT'] = censor_text($row['event_subject']);
+				$events['SUBJECT'] = $events['FULL_SUBJECT'];
+				if( $subject_limit > 0 )
+				{
+					if(utf8_strlen($events['SUBJECT']) > $subject_limit)
+					{
+						$events['SUBJECT'] = truncate_string($events['SUBJECT'], $subject_limit) . '...';
+					}
+				}
+	
+				$poster_url = '';
+				$invite_list = '';
+				$revents = new raidevents; 
+				$revents->get_event_invite_list_and_poster_url($row, $poster_url, $invite_list );
+				$events['POSTER'] = $poster_url;
+				$events['INVITED'] = $invite_list;
+				$events['ALL_DAY'] = 0;
+				if( $row['event_all_day'] == 1 )
+				{
+					list($eday['eday_day'], $eday['eday_month'], $eday['eday_year']) = explode('-', $row['event_day']);
+					$row['event_start_time'] = gmmktime(0,0,0,$eday['eday_month'], $eday['eday_day'], $eday['eday_year'])- $user->timezone - $user->dst;
+					$row['event_end_time'] = $row['event_start_time']+86399;
+					$events['ALL_DAY'] = 1;
+					$events['START_TIME'] = $user->format_date($row['event_start_time'], $disp_date_format, true);
+					$events['END_TIME'] = $user->format_date($row['event_end_time'], $disp_date_format, true);
+				}
+				else
+				{
+					$events['START_TIME'] = $user->format_date($row['event_start_time'], $disp_date_time_format, true);
+					$events['END_TIME'] = $user->format_date($row['event_end_time'], $disp_date_time_format, true);
+				}
+	
+				$template->assign_block_vars('events', $events);
+			}
+			$db->sql_freeresult($result);
+		}
+	}
 	
 	/* displays the upcoming events for the next x number of days */
 	public function display_next_events_for_x_days( $x )
@@ -1971,6 +2084,16 @@ class displayplanner extends raidplanner_base
 			return "";
 		}
 		return " AND etype_id = ".$db->sql_escape($calEType)." ";
+	}
+	
+	private function get_etype_url_opts()
+	{
+		$calEType = request_var('calEType', 0);
+		if( $calEType == 0 )
+		{
+			return "";
+		}
+		return "&amp;calEType=".$calEType;
 	}
 	
 	private function get_etype_post_opts()
