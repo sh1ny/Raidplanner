@@ -34,6 +34,18 @@
       }
   }
 
+  Date.prototype.getWeek = function() 
+  {
+	    var determinedate = new Date();
+	    determinedate.setFullYear(this.getFullYear(), this.getMonth(), this.getDate());
+	    var D = determinedate.getDay();
+	    if(D == 0) D = 7;
+	    determinedate.setDate(determinedate.getDate() + (4 - D));
+	    var YN = determinedate.getFullYear();
+	    var ZBDoCY = Math.floor((determinedate.getTime() - new Date(YN, 0, 1, -6)) / 86400000);
+	    var WN = 1 + Math.floor(ZBDoCY / 7);
+	    return WN;
+	}
 
   <!-- IF S_TRACK_RSVPS -->
     <!-- IF S_ALLOW_GUESTS -->
@@ -73,7 +85,7 @@
 	<!-- IF S_UPDATE_RECURRING_OPTIONS -->
 
 	  var number_strings = new Array();
-	  number_strings[0] = "numbertext";
+	  number_strings[0] = "1st";
 	  number_strings[1] = "1st";
 	  number_strings[2] = "2nd";
 	  number_strings[3] = "3rd";
@@ -147,19 +159,27 @@
 
 	  function update_recurring_options()
 	  {
-			var selDate = new Date();
+		  /* get date */
+		    var selDate = new Date();
 			selDate.setDate( document.getElementById('calD').value );
-			selDate.setMonth( (document.getElementById('calM').value - 1) );
-			selDate.setFullYear( document.getElementById('calY').value );
+			var thisdate = document.getElementById('calD').value; 
+			var sel_day_string = number_strings[ thisdate ];
+			var sel_week_day_string = weekday_strings[ selDate.getDay() ];
 
-			var sel_day_string = number_strings[ document.getElementById('calD').value ];
-			var sel_month_string = month_strings[ document.getElementById('calM').value ];
+			/* get month */
+			selDate.setMonth( (document.getElementById('calM').value - 1) );
+			var thismonth =  (document.getElementById('calM').value); 
+			var sel_month_string = month_strings[ thismonth ];
+
+			/* get year */
+			var thisyear = selDate.setFullYear( document.getElementById('calY').value );
+
+			/* frequency y_string */
 			var y_string = document.getElementById('calRFrq').value;
 			var freq_type = document.getElementById('calRFrqT');
 
 			/* update this later */
-			var sel_week_day_string = weekday_strings[ selDate.getDay() ];
-			var sel_week = 0;
+			var sel_week = selDate.getWeek();
 			var sel_week_from_end = 0;
 			var sel_week_of_full_weeks = 0;
 			var sel_week_of_full_weeks_from_end = 0;
@@ -292,7 +312,7 @@
 		<dt><label for="calGroupId">{L_EVENT_GROUP}:</label></dt>
 		<dd>{EVENT_GROUP_SEL}</dd>
 	</dl>
-	
+	<hr />
 	<!-- IF S_DATE_TIME_OPTS -->
 		<dl style="clear: left;">
 			<dt><label for="calM">{L_START_DATE}:</label></dt>

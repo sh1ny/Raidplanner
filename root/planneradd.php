@@ -48,7 +48,7 @@ if( $newraid->available_etype_count < 1 )
 	trigger_error('NO_EVENT_TYPES');
 }
 
-$current_time = time();
+$current_time = $user->time_now;
 // Was cancel pressed? If so then redirect to the appropriate page
 if ($cancel || ($current_time - $lastclick < 2 && $submit))
 {
@@ -109,7 +109,7 @@ if( $mode == 'smilies' )
 /*-------------------------------------
   begin permission checking
 -------------------------------------*/
-$newraid->authcheck($mode, $submit, $event_data, $event_id);
+$newraid->authcheck($mode, $submit, &$event_data, $event_id);
 
 /*-------------------------------------
   end permission checking
@@ -149,13 +149,7 @@ if( $event_id != 0 )
     }
 }
 
-// HTML, BBCode, Smilies, Images and Flash status
-$bbcode_status	= ($config['allow_bbcode']) ? true : false;
-$smilies_status	= ($bbcode_status && $config['allow_smilies']) ? true : false;
-$img_status		= ($bbcode_status) ? true : false;
-$url_status		= ($config['allow_post_links']) ? true : false;
-$flash_status	= ($bbcode_status && $config['allow_post_flash']) ? true : false;
-$quote_status	= false;
+
 
 
 // in submit and preview we need to gather the posted data...
@@ -663,10 +657,11 @@ if (!sizeof($error) && $preview)
 }
 
 
-// MAIN POSTING PAGE BEGINS HERE
-
-// Generate smiley listing
-$newraid->generate_calendar_smilies('inline');
+/**********************************
+ * 
+ * build new Raid posting form
+ * 
+ **********************************/
 
 // action URL, include session_id for security purpose
 $s_action = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=$mode", true, $user->session_id);
@@ -789,7 +784,7 @@ $level_sel_code .= "</select>\n";
 
 $all_day_check = "<input type='checkbox' name='calAllDay' value='ON' checked='checked' onclick='toggle_all_day_event()' />";
 $track_rsvp_check = "<input type='checkbox' name='calTrackRsvps' value='ON' checked='checked' />";
-if( $event_data['s_allow_guests'] )
+if( $event_data['allow_guests'] )
 {
 	$track_rsvp_check = "<input type='checkbox' name='calTrackRsvps' value='ON' checked='checked' onclick='update_allow_guest_state()' />";
 }
@@ -1121,7 +1116,6 @@ else // we are creating a new event
 	$temp_replace_str = "name='calMEnd' id='calMEnd' disabled='disabled'";
 	$end_month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $month_sel_code );
 
-
 	//-----------------------------------------
 	// day selection data
 	//-----------------------------------------
@@ -1224,6 +1218,19 @@ if( ($mode == 'edit') &&
 	$allow_delete = true;
 }
 
+// HTML, BBCode, Smilies, Images and Flash status
+$bbcode_status	= ($config['allow_bbcode']) ? true : false;
+$img_status		= ($bbcode_status) ? true : false;
+$flash_status	= ($bbcode_status && $config['allow_post_flash']) ? true : false;
+$url_status		= ($config['allow_post_links']) ? true : false;
+$smilies_status	= ($bbcode_status && $config['allow_smilies']) ? true : false;
+if ($smilies_status)
+{
+	// Generate smiley listing
+	$newraid->generate_calendar_smilies('inline');
+}
+$quote_status	= false;
+
 
 // Start assigning vars for main posting page ...
 $template->assign_vars(array(
@@ -1264,7 +1271,7 @@ $template->assign_vars(array(
 	'S_TRACK_RSVPS'				=> $event_data['s_track_rsvps'],
 	'TRACK_RSVP_CHECK'			=> $track_rsvp_check,
 	'TRACK_RSVP_CHECK_HIDDEN'	=> $track_rsvp_check_hidden,
-	'S_ALLOW_GUESTS'			=> $event_data['s_allow_guests'],
+	'S_ALLOW_GUESTS'			=> $event_data['allow_guests'],
 	'ALLOW_GUEST_CHECK'			=> $allow_guest_check,
 	'ALLOW_GUEST_CHECK_HIDDEN'	=> $allow_guest_check_hidden,
 	'S_RECURRING_OPTS'			=> $event_data['s_recurring_opts'],
@@ -1280,10 +1287,10 @@ $template->assign_vars(array(
 	'S_BBCODE_ALLOWED'			=> $bbcode_status,
 	'S_SMILIES_ALLOWED'			=> $smilies_status,
 	'S_LINKS_ALLOWED'			=> $url_status,
-	'S_BBCODE_IMG'			=> $img_status,
-	'S_BBCODE_URL'			=> $url_status,
-	'S_BBCODE_FLASH'		=> $flash_status,
-	'S_BBCODE_QUOTE'		=> $quote_status,
+	'S_BBCODE_IMG'				=> $img_status,
+	'S_BBCODE_URL'				=> $url_status,
+	'S_BBCODE_FLASH'			=> $flash_status,
+	'S_BBCODE_QUOTE'			=> $quote_status,
 
 	'S_POST_ACTION'			=> $s_action,
 	'S_HIDDEN_FIELDS'		=> $s_hidden_fields)
