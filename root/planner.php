@@ -48,6 +48,7 @@ if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 
 $view_mode = request_var('view', 'month');
 
+$cal = new displayplanner;
 switch( $view_mode )
 {
 
@@ -56,7 +57,6 @@ switch( $view_mode )
       $template_body = "calendar_next_events_for_x_days.html";
       $daycount = request_var('daycount', 60 );
       $user_id = request_var('u', 0);
-      $cal = new displayplanner;
       if( $user_id == 0 )
       {
       	$cal->display_next_events_for_x_days( $daycount );
@@ -69,30 +69,25 @@ switch( $view_mode )
 
 	case "event":
 		// display a single event
-		$cal = new displayplanner;
 		$template_body = "calendar_view_event.html";
 		$cal->display_event();
 		break;
 	case "day":
 		// display all of the events on this day
-		$cal = new displayplanner; 
 		$cal->display_day(0);
 		$template_body = "calendar_view_day.html";
 		break;
 
 	case "week":
 		// display the entire week
-		$cal = new displayplanner; 
 		$cal->display_week(0);
 		$template_body = "calendar.html";
 		break;
 
 	case "month":
-		$cal = new displayplanner; 
 		// display the entire month
 		$template_body = "calendar.html";
 		$cal->displaymonth();
-		
 		
 		break;
 }

@@ -1,0 +1,67 @@
+<!-- INCLUDE ucp_header.html -->
+
+<h2>{L_MY_EVENTS }</h2>
+
+<div class="panel">
+<div class="inner"><span class="corners-top"><span></span></span>
+<!-- IF .myraids -->
+<ul class="topiclist">
+	<li class="header">
+	<dl class="icon">
+		<dt>{L_MY_EVENTS}</dt>
+		<dd style="width: 16%">{L_INVITE_INFO}</dd>
+	</dl>
+	</li>
+</ul>
+<ul class="topiclist cplist">
+	<!-- BEGIN myraids -->
+	<li class="row">
+	<dl class="icon"
+		<!-- IF myraids.IMAGE -->
+		style="background-image: url({myraids.IMAGE}); background-repeat: no-repeat;"
+		<!-- ENDIF -->>
+		<dt><a href="{myraids.EVENT_URL}" title="<!-- IF myraids.ETYPE_DISPLAY_NAME -->{myraids.ETYPE_DISPLAY_NAME}:
+		<!-- ENDIF -->{myraids.FULL_SUBJECT}"> <span style=""<!-- IF myraids.COLOR -->color:#{myraids.COLOR};<!-- ENDIF -->
+		font-weight: bold;"> <!-- IF myraids.ETYPE_DISPLAY_NAME -->{myraids.ETYPE_DISPLAY_NAME}:
+		<!-- ENDIF -->{myraids.SUBJECT}</span><br />
+		<!-- IF myraids.ALL_DAY -->{L_ALL_DAY} {myraids.START_TIME}<!-- ELSE -->{myraids.START_TIME}
+		{L_TO_TIME} {myraids.END_TIME}<!-- ENDIF --></a> <!-- IF myraids.IS_RECURRING --><br />
+		{L_OCCURS_EVERY}: {myraids.RECURRING_TXT}<!-- ENDIF --> <!-- IF myraids.U_DELETE or myraids.U_EDIT --><br />
+		<div class="postbody">
+		<ul class="profile-icons">
+			<!-- IF myraids.U_EDIT -->
+			<li class="edit-icon"><a href="{myraids.U_EDIT}"
+				title="{L_EDIT_POST}"><span>{L_EDIT_POST}</span></a></li>
+			<!-- ENDIF -->
+			<!-- IF myraids.U_EDIT_ALL -->
+			<li class="edit-all-icon"><a href="{myraids.U_EDIT_ALL}"
+				title="{L_EDIT_ALL_EVENTS}"><span>{L_EDIT_ALL_EVENTS}</span></a></li>
+			<!-- ENDIF -->
+			<!-- IF myraids.U_DELETE -->
+			<li class="delete-icon"><a href="{myraids.U_DELETE}"
+				title="{L_DELETE_POST}"><span>{L_DELETE_POST}</span></a></li>
+			<!-- ENDIF -->
+			<!-- IF myraids.U_DELETE_ALL -->
+			<li class="delete-all-icon"><a href="{myraids.U_DELETE_ALL}"
+				title="{L_DELETE_ALL_EVENTS}"><span>{L_DELETE_ALL_EVENTS}</span></a></li>
+			<!-- ENDIF -->
+		</ul>
+		</div>
+		<!-- ENDIF --></dt>
+		<dd style="width: 16%; padding-left: 5px;" class="lastpost">{myraids.INVITED}</dd>
+	</dl>
+	</li>
+	<!-- END myraids -->
+</ul>
+<!-- ENDIF --> <span class="corners-bottom"><span></span></span></div>
+</div>
+
+<form method="post" action="{U_COUNT_ACTION}" name="count_form"
+	id="count_form">
+<fieldset class="submit-buttons">{L_DISPLAY_EVENTS_DAYCOUNT}
+<input type="number" name="daycount" id="daycount" value="{DAYCOUNT}">
+<input type="submit" name="post" value="{L_SUBMIT}" class="button1" />{S_FORM_TOKEN}
+</fieldset>
+</form>
+
+<!-- INCLUDE ucp_footer.html -->

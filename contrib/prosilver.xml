@@ -42,40 +42,28 @@
 	</header>
 	<action-group>
 		<copy>
-			<file from="root/styles/prosilver/imageset/en/icon_calendar_delete_all.gif" to="styles/prosilver/imageset/en/icon_calendar_delete_all.gif"/>
-			<file from="root/styles/prosilver/imageset/en/icon_calendar_edit_all.gif" to="styles/prosilver/imageset/en/icon_calendar_edit_all.gif"/>
-			<file from="root/styles/prosilver/imageset/en/prosilver_day_icon.gif" to="styles/prosilver/imageset/en/prosilver_day_icon.gif"/>
-			<file from="root/styles/prosilver/imageset/en/prosilver_month_icon.gif" to="styles/prosilver/imageset/en/prosilver_month_icon.gif"/>
-			<file from="root/styles/prosilver/imageset/en/prosilver_new_star_icon.gif" to="styles/prosilver/imageset/en/prosilver_new_star_icon.gif"/>
-			<file from="root/styles/prosilver/imageset/en/prosilver_week_icon.gif" to="styles/prosilver/imageset/en/prosilver_week_icon.gif"/>
-			<file from="root/styles/prosilver/template/calendar.html" to="styles/prosilver/template/calendar.html"/>
-			<file from="root/styles/prosilver/template/calendar_next_events_for_x_days.html" to="styles/prosilver/template/calendar_next_events_for_x_days.html"/>
-			<file from="root/styles/prosilver/template/calendar_next_events_on_index.html" to="styles/prosilver/template/calendar_next_events_on_index.html"/>
-			<file from="root/styles/prosilver/template/calendar_post_body.html" to="styles/prosilver/template/calendar_post_body.html"/>
-			<file from="root/styles/prosilver/template/calendar_post_buttons.html" to="styles/prosilver/template/calendar_post_buttons.html"/>
-			<file from="root/styles/prosilver/template/calendar_post_editor.html" to="styles/prosilver/template/calendar_post_editor.html"/>
-			<file from="root/styles/prosilver/template/calendar_post_preview.html" to="styles/prosilver/template/calendar_post_preview.html"/>
-			<file from="root/styles/prosilver/template/calendar_view_day.html" to="styles/prosilver/template/calendar_view_day.html"/>
-			<file from="root/styles/prosilver/template/calendar_view_event.html" to="styles/prosilver/template/calendar_view_event.html"/>
-			<file from="root/styles/prosilver/template/calendar_week_on_index.html" to="styles/prosilver/template/calendar_week_on_index.html"/>
-			<file from="root/styles/prosilver/template/sorttable.js" to="styles/prosilver/template/sorttable.js"/>
-			<file from="root/styles/prosilver/template/ucp_main_raidplanner_myevents.html" to="styles/prosilver/template/ucp_main_raidplanner_myevents.html"/>
-			<file from="root/styles/prosilver/template/ucp_main_raidplanner_registration.html" to="styles/prosilver/template/ucp_main_raidplanner_registration.html"/>
+			<file from="root/styles/prosilver/imageset/en/planner/icon_calendar_delete_all.gif" to="styles/prosilver/imageset/en/planner/icon_calendar_delete_all.gif"/>
+			<file from="root/styles/prosilver/imageset/en/planner/icon_calendar_edit_all.gif" to="styles/prosilver/imageset/en/planner/icon_calendar_edit_all.gif"/>
+			<file from="root/styles/prosilver/imageset/en/planner/prosilver_day_icon.gif" to="styles/prosilver/imageset/en/planner/prosilver_day_icon.gif"/>
+			<file from="root/styles/prosilver/imageset/en/planner/prosilver_month_icon.gif" to="styles/prosilver/imageset/en/planner/prosilver_month_icon.gif"/>
+			<file from="root/styles/prosilver/imageset/en/planner/prosilver_new_star_icon.gif" to="styles/prosilver/imageset/en/planner/prosilver_new_star_icon.gif"/>
+			<file from="root/styles/prosilver/imageset/en/planner/prosilver_week_icon.gif" to="styles/prosilver/imageset/en/planner/prosilver_week_icon.gif"/>
+			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
 		</copy>
 		<open src="styles/prosilver/imageset/en/imageset.cfg">
 			<edit>
 				<comment lang="en"><![CDATA[Define recurring event icons in imageset]]></comment>
 				<find><![CDATA[img_icon_post_edit = icon_post_edit.gif*20*42]]></find>
-				<action type="after-add"><![CDATA[img_icon_calendar_edit_all = icon_calendar_edit_all.gif*20*61
-img_icon_calendar_delete_all = icon_calendar_delete_all.gif*20*40]]></action>
+				<action type="after-add"><![CDATA[img_icon_calendar_edit_all = planner/icon_calendar_edit_all.gif*20*61
+img_icon_calendar_delete_all = planner/icon_calendar_delete_all.gif*20*40]]></action>
 			</edit>
 			<edit>
 				<comment lang="en"><![CDATA[Define main calendar icons in imageset]]></comment>
 				<find><![CDATA[img_button_topic_reply = button_topic_reply.gif*25*96]]></find>
-				<action type="after-add"><![CDATA[img_button_calendar_new = prosilver_new_star_icon.gif*12*12
-		img_button_calendar_day = prosilver_day_icon.gif*12*12
-		img_button_calendar_week = prosilver_week_icon.gif*12*12
-		img_button_calendar_month = prosilver_month_icon.gif*12*12]]></action>
+				<action type="after-add"><![CDATA[img_button_calendar_new = planner/prosilver_new_star_icon.gif*12*12
+		img_button_calendar_day = planner/prosilver_day_icon.gif*12*12
+		img_button_calendar_week = planner/prosilver_week_icon.gif*12*12
+		img_button_calendar_month = planner/prosilver_month_icon.gif*12*12]]></action>
 			</edit>
 		</open>
 		<open src="styles/prosilver/template/index_body.html">
@@ -83,9 +71,9 @@ img_icon_calendar_delete_all = icon_calendar_delete_all.gif*20*40]]></action>
 				<comment lang="en"><![CDATA[Add calendar to index page]]></comment>
 				<find><![CDATA[<!-- INCLUDE forumlist_body.html -->]]></find>
 				<action type="after-add"><![CDATA[<!-- IF S_CALENDAR_WEEK -->
-		<!-- INCLUDE calendar_week_on_index.html -->
+		<!-- INCLUDE planner/planner_week_on_index.html -->
 		<!-- ELSEIF S_CALENDAR_NEXT_EVENTS -->
-			<!-- INCLUDE calendar_next_events_on_index.html -->
+			<!-- INCLUDE planner/planner_next_events_on_index.html -->
 		<!-- ENDIF -->
 		]]></action>
 			</edit>
@@ -104,7 +92,7 @@ img_icon_calendar_delete_all = icon_calendar_delete_all.gif*20*40]]></action>
 				<comment lang="en"><![CDATA[Add sorttable script when displaying rsvps]]></comment>
 				<find><![CDATA[<script type="text/javascript" src="{T_TEMPLATE_PATH}/forum_fn.js"></script>]]></find>
 				<action type="after-add"><![CDATA[<!-- IF S_CALENDAR_RSVPS -->
-		<script src="{T_TEMPLATE_PATH}/sorttable.js"></script>
+		<script src="{T_TEMPLATE_PATH}/planner/sorttable.js"></script>
 		<!-- ENDIF -->]]></action>
 			</edit>
 			<edit>
