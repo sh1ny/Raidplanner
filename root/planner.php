@@ -69,24 +69,24 @@ switch( $view_mode )
 
 	case "event":
 		// display a single event
-		$template_body = "calendar_view_event.html";
+		$template_body = "planner/planner_view_event.html";
 		$cal->display_event();
 		break;
 	case "day":
 		// display all of the events on this day
 		$cal->display_day(0);
-		$template_body = "calendar_view_day.html";
+		$template_body = "planner/planner_view_day.html";
 		break;
 
 	case "week":
 		// display the entire week
 		$cal->display_week(0);
-		$template_body = "calendar.html";
+		$template_body = "planner/planner.html";
 		break;
 
 	case "month":
 		// display the entire month
-		$template_body = "calendar.html";
+		$template_body = "planner/planner.html";
 		$cal->displaymonth();
 		
 		break;

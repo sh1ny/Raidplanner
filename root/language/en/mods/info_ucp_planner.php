@@ -26,7 +26,7 @@ if (empty($lang) || !is_array($lang))
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
     'UCP_MAIN_RAIDPLANNER_REGISTRATION'	=> 'Raid Registration',
-	'UCP_MAIN_RAIDPLANNER_MYEVENTS'		=> 'My Raids',  
+	'UCP_MAIN_RAIDPLANNER_MYEVENTS'		=> 'Subscribed Raids',  
 
 ));
 

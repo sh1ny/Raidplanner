@@ -1394,10 +1394,6 @@ class displayplanner extends raidplanner_base
 		$user_can_view_events = false;
 		if ( $auth->acl_get('u_raidplanner_view_events') )
 		{
-			$subject_limit = $config['rp_display_truncated_name'];
-			$group_options = $this->get_sql_group_options($user->data['user_id']);
-			$etype_options = $this->get_etype_filter();
-	
 			$start_temp_date = time();
 			//$end_temp_date = $start_temp_date + 31536000;
 			$end_temp_date = $start_temp_date + ($x * 86400);
@@ -1495,119 +1491,6 @@ class displayplanner extends raidplanner_base
 		}
 	}
 	
-	/* used to generate the UCP "manage event registration" module */
-	public function display_users_next_events_for_x_days( $x, $user_id )
-	{
-		global $auth, $db, $user, $config, $template, $phpEx, $phpbb_root_path;
-	
-		$etype_url_opts = $this->get_etype_url_opts();
-		$template->assign_vars(array(
-				'S_RSVP_COLUMN'	=> true ));
-		// Is the user able to view ANY events?
-		$user_can_view_events = false;
-		if ( $auth->acl_get('u_raidplanner_view_events') )
-		{
-			$subject_limit = $config['rp_display_truncated_name'];
-			$group_options = $this->get_sql_group_options($user->data['user_id']);
-			$temp_find_str = "group_id";
-			$temp_replace_str = "e.group_id";
-			$group_options = str_replace( $temp_find_str, $temp_replace_str, $group_options );
-	
-			$etype_options = $this->get_etype_filter();
-			$temp_find_str = "etype";
-			$temp_replace_str = "e.etype";
-			$etype_options = str_replace( $temp_find_str, $temp_replace_str, $etype_options );
-	
-			$start_temp_date = time();
-			//$end_temp_date = $start_temp_date + 31536000;
-			$end_temp_date = $start_temp_date + ( $x * 86400 );
-			// find all day events that are still taking place
-			$sort_timestamp_cutoff = $start_temp_date - 86400+1;
-	
-		    $disp_date_format = $config['rp_date_format'];
-		    $disp_date_time_format = $config['rp_date_time_format'];
-	
-			// don't list events that are more than 1 year in the future
-			$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . ' e, '.RP_RSVP_TABLE.' r
-					WHERE e.event_id = r.event_id AND r.poster_id = '.$user_id.' AND
-						( (e.event_access_level = 2) OR
-						(e.poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
-						(e.event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
-					((( e.event_start_time >= '.$db->sql_escape($start_temp_date).' AND e.event_start_time <= '.$db->sql_escape($end_temp_date).' ) OR
-					 ( e.event_end_time > '.$db->sql_escape($start_temp_date).' AND e.event_end_time <= '.$db->sql_escape($end_temp_date).' ) OR
-					 ( e.event_start_time < '.$db->sql_escape($start_temp_date).' AND e.event_end_time > '.$db->sql_escape($end_temp_date)." )) OR (e.sort_timestamp > ".$db->sql_escape($sort_timestamp_cutoff)." AND e.sort_timestamp <= ".$db->sql_escape($end_temp_date)." AND e.event_all_day = 1) ) ORDER BY e.sort_timestamp ASC";
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$events['EVENT_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$row['event_id'].$etype_url_opts);
-				$events['IMAGE'] = $this->available_etype_images[$row['etype_id']];
-				$events['COLOR'] = $this->available_etype_colors[$row['etype_id']];
-				$events['ETYPE_DISPLAY_NAME'] = $this->available_etype_display_names[$row['etype_id']];
-	
-				$events['FULL_SUBJECT'] = censor_text($row['event_subject']);
-				$events['SUBJECT'] = $events['FULL_SUBJECT'];
-				if( $subject_limit > 0 )
-				{
-					if(utf8_strlen($events['SUBJECT']) > $subject_limit)
-					{
-						$events['SUBJECT'] = truncate_string($events['SUBJECT'], $subject_limit) . '...';
-					}
-				}
-				$events['POSTER'] = $row['poster_name'];
-				$events['POSTER_URL'] = get_username_string( 'full', $row['poster_id'], $row['poster_name'], $row['poster_colour'] );
-				$events['VALUE'] = $row['rsvp_val'];
-				if( $row['rsvp_val'] == 0 )
-				{
-					$events['COLOR'] = '#00ff00';
-					$events['VALUE_TXT'] = $user->lang['YES'];
-				}
-				else if( $row['rsvp_val'] == 1 )
-				{
-					$events['COLOR'] = '#ff0000';
-					$events['VALUE_TXT'] = $user->lang['NO'];
-				}
-				else
-				{
-					$events['COLOR'] = '#0000ff';
-					$events['VALUE_TXT'] = $user->lang['MAYBE'];
-				}
-				$events['U_EDIT'] = "";
-				if( $edit_rsvps === 1 )
-				{
-					$events['U_EDIT'] = $edit_rsvp_url . $row['rsvp_id'];
-				}
-				$events['HEADCOUNT'] = $row['rsvp_count'];
-				$events['DETAILS'] = generate_text_for_display($row['rsvp_detail'], $row['bbcode_uid'], $row['bbcode_bitfield'], $row['bbcode_options']);
-				$events['POST_TIMESTAMP'] = $row['post_time'];
-				$events['POST_TIME'] = $user->format_date($row['post_time']);
-	
-				$poster_url = '';
-				$invite_list = '';
-				$revents = new raidevents; 
-				$revents->get_event_invite_list_and_poster_url($row, $poster_url, $invite_list );
-				$events['POSTER'] = $poster_url;
-				$events['INVITED'] = $invite_list;
-				$events['ALL_DAY'] = 0;
-				if( $row['event_all_day'] == 1 )
-				{
-					list($eday['eday_day'], $eday['eday_month'], $eday['eday_year']) = explode('-', $row['event_day']);
-					$row['event_start_time'] = gmmktime(0,0,0,$eday['eday_month'], $eday['eday_day'], $eday['eday_year'])- $user->timezone - $user->dst;
-					$row['event_end_time'] = $row['event_start_time']+86399;
-					$events['ALL_DAY'] = 1;
-					$events['START_TIME'] = $user->format_date($row['event_start_time'], $disp_date_format, true);
-					$events['END_TIME'] = $user->format_date($row['event_end_time'], $disp_date_format, true);
-				}
-				else
-				{
-					$events['START_TIME'] = $user->format_date($row['event_start_time'], $disp_date_time_format, true);
-					$events['END_TIME'] = $user->format_date($row['event_end_time'], $disp_date_time_format, true);
-				}
-				$template->assign_block_vars('events', $events);
-			}
-			$db->sql_freeresult($result);
-		}
-	}
-			
 	/* displays the calendar - either week view or upcoming event list
 	   as specified in the ACP on the index */
 	public function display_calendar_on_index()

@@ -1305,7 +1305,7 @@ display_custom_bbcodes();
 page_header($page_title);
 
 $template->set_filenames(array(
-	'body' => 'calendar_post_body.html')
+	'body' => 'planner/planner_post_body.html')
 );
 
 make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
