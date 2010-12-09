@@ -2225,7 +2225,8 @@ class calendar_watch extends raidplanner_base
 					}
 				}
 	
-				$sql = 'INSERT INTO ' . RP_EVENTS_WATCH . ' ' . $db->sql_build_array('INSERT', array(
+				$sql = 'INSERT INTO ' . RP_EVENTS_WATCH . ' ' . 
+				$db->sql_build_array('INSERT', array(
 						'event_id'		=> (int) $event_id,
 						'user_id'		=> (int) $user_id,
 						'notify_status'	=> (int) 0,
@@ -2243,58 +2244,6 @@ class calendar_watch extends raidplanner_base
 			$db->sql_query($sql);
 		}
 	}
-	
-	/* calendar_watch_calendar()
-	**
-	** Adds/removes the current user into the RP_WATCH table
-	** so that they can start/stop recieving notifications about new events
-	**
-	** INPUT
-	**    $turn_on = 1 - the user wants to START watching the calendar
-	**    $turn_on = 0 - the user wants to STOP watching the calendar
-	*/
-	public function calendar_watch_calendar( $turn_on = 1 )
-	{
-		global $db, $user, $auth;
-		global $phpEx, $phpbb_root_path;
-	
-		$user_id = $user->data['user_id'];
-	
-		if( $turn_on == 1 )
-		{
-			$is_watching_calendar = false;
-			$sql = 'SELECT * FROM ' . RP_WATCH . '
-				WHERE user_id = '.$user_id;
-			$db->sql_query($sql);
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$is_watching_calendar = true;
-			}
-			$db->sql_freeresult($result);
-			if( $is_watching_calendar )
-			{
-				$this->calendar_mark_user_read_calendar( $user_id );
-			}
-			else
-			{
-				$sql = 'INSERT INTO ' . RP_WATCH . ' ' . $db->sql_build_array('INSERT', array(
-						'user_id'		=> (int) $user_id,
-						'notify_status'	=> (int) 0,
-						)
-					);
-				$db->sql_query($sql);
-			}
-		}
-		else if( $turn_on == 0 )
-		{
-			$sql = 'DELETE FROM ' . RP_WATCH . '
-					WHERE user_id = '.$db->sql_escape($user_id);
-			$db->sql_query($sql);
-		}
-	}
-	
-	
 	
 	/* calendar_mark_user_read_event()
 	**
@@ -2331,7 +2280,7 @@ class calendar_watch extends raidplanner_base
 	public function calendar_mark_user_read_calendar( $user_id )
 	{
 		global $db;
-	
+
 		$sql = 'UPDATE ' . RP_WATCH . '
 			SET ' . $db->sql_build_array('UPDATE', array(
 			'notify_status'		=> (int) 0,
@@ -2339,8 +2288,6 @@ class calendar_watch extends raidplanner_base
 			WHERE user_id = $user_id";
 		$db->sql_query($sql);
 	}
-	
-	
 	
 	/* calendar_init_s_watching_calendar()
 	**

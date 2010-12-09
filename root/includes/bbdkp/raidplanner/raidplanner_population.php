@@ -136,145 +136,137 @@ class raidplanner_population extends raidplanner_base
 	}
 		
 		
-
 	/* calendar_notify_new_event()
 	**
-	** Notifies users who are watching the calendar of the new event
+	** send email to users who are watching the calendar of the new event
 	** (if the event is one the user has permission to see).
 	**
 	** INPUT
 	**   $event_id - the id of the newly created event
+	** OUTPUT
+	**   
 	*/
 	public function calendar_notify_new_event( $event_id )
 	{
 		global $auth, $db, $user, $config;
 		global $phpEx, $phpbb_root_path;
 	
+		include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
+		
 		$user_id = $user->data['user_id'];
 		$user_notify = $user->data['user_notify'];
 	
 		$event_data = array();
 		$raidevents = new raidevents;
 		$raidevents->get_event_data( $event_id, $event_data );
-	
-		$sql = "";
-		if( $event_data['event_access_level'] > 0 )
+
+		switch ($event_data['event_access_level']) 
 		{
-			/* don't worry about notifications for private events
+		    case 0:
+			   /* don't worry about notifications for private events
 			   (ie event_data['event_access_level'] == 0) */
-			if( $event_data['event_access_level'] == 1 )
-			{
-				$group_sql = $this->calendar_generate_group_sql_for_notify_new_event( $event_data );
-				$sql = 'SELECT w.*, u.username, u.username_clean, u.user_email, u.user_notify_type,
-					u.user_jabber, u.user_lang FROM ' . RP_WATCH . ' w, ' . USERS_TABLE . ' u,
-					'. GROUPS_TABLE. ' g, '.USER_GROUP_TABLE.' ug
-					WHERE w.user_id = u.user_id '. $group_sql .' AND u.user_id <> '.$user_id;
-	
-	
-			}
-			else /* this is a public event */
-			{
-				$sql = 'SELECT w.*, u.username, u.username_clean, u.user_email, u.user_notify_type,
-					u.user_jabber, u.user_lang FROM ' . RP_WATCH . ' w, ' . USERS_TABLE . ' u
-					WHERE w.user_id = u.user_id AND u.user_id <> '.$user_id;
-			}
-			include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
-			include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
-			$messenger = new messenger();
-			$db->sql_query($sql);
-			$result = $db->sql_query($sql);
-			$notified_users = array();
-			$notify_user_index = 0;
-			while ($row = $db->sql_fetchrow($result))
-			{
-				if( $row['notify_status'] == 0 && !in_array($row['user_id'], $notified_users) )
+				return;
+		        break;
+		    case 1:
+				// group event
+				$sql_array = array(
+				    'SELECT'    => 'w.*, u.username, u.username_clean, u.user_email, u.user_notify_type, u.user_jabber, u.user_lang  ', 
+				 
+				    'FROM'      => array(
+				        RP_WATCH  		  => 'w',
+				        USERS_TABLE       => 'u',
+				        GROUPS_TABLE      => 'g',
+				        USER_GROUP_TABLE  => 'ug', 
+				    ),
+				 
+				    'WHERE'     => ' w.user_id = u.user_id AND u.user_id <> ' . $user->data['user_id'] . ' 
+				    				AND u.user_id = ug.user_id AND g.group_id = ug.group_id ',
+				);
+				
+				if( $event_data['group_id'] != 0)
 				{
-					// track the list of users we've notified, so we only send the email once
-					// this should only be an issue if the user is a member of multiple groups
-					// that were all invited to the same event, but still it should be avoided.
-					$notified_users[$notify_user_index] = $row['user_id'];
-					$notify_user_index++;
-	
-					$messenger->template('calendar_new_event', $row['user_lang']);
-					$messenger->to($row['user_email'], $row['username']);
-					$messenger->im($row['user_jabber'], $row['username']);
-	
-					$messenger->assign_vars(array(
-									'USERNAME'			=> htmlspecialchars_decode($row['username']),
-									'EVENT_SUBJECT'		=> $event_data['event_subject'],
-									'U_CALENDAR'		=> generate_board_url() . "/planner.$phpEx",
-									'U_UNWATCH_CALENDAR'=> generate_board_url() . "/planner.$phpEx?calWatch=0",
-									'U_EVENT'			=> generate_board_url() . "/planner.$phpEx?view=event&calEid=$event_id", )
-								);
-	
-					$messenger->send($row['user_notify_type']);
-	
-					$sql = 'UPDATE ' . RP_WATCH . '
-						SET ' . $db->sql_build_array('UPDATE', array(
-						'notify_status'		=> (int) 1,
-											)) . "
-						WHERE user_id = " . $row['user_id'];
-					$db->sql_query($sql);
+					$sql_array['WHERE'] .= " AND ( g.group_id = ". $event_data['group_id'].") ";
 				}
-	
-			}
-			$db->sql_freeresult($result);
-			$messenger->save_queue();
-	
+				
+				elseif ($event_data['group_id_list'] )
+				{
+					$group_list = explode( ',', $event_data['group_id_list'] );
+					$sql_array['WHERE'] .= ' AND ' . $db->sql_in_set('g.group_id', $group_list);
+				}
+		        
+		        break;
+		    case 2:
+				// public event
+				$sql_array = array(
+				    'SELECT'    => 'w.*, u.username, u.username_clean, u.user_email, u.user_notify_type, u.user_jabber, u.user_lang  ', 
+				 
+				    'FROM'      => array(
+				        RP_WATCH  		  => 'w',
+				        USERS_TABLE       => 'u',
+				    ),
+				 
+				    'WHERE'     => 'w.user_id = u.user_id AND u.user_id <> ' . $user->data['user_id'] ,
+				);
+		        
+		        break;
 		}
+		
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		$db->sql_query($sql);
+		
+		$result = $db->sql_query($sql);
+		$notified_users = array();
+		$notify_user_index = 0;
+		
+		// Include the messenger class
+		if (!class_exists('messenger'))
+		{
+			require($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+		}
+		$messenger = new messenger();
+		
+		while ($row = $db->sql_fetchrow($result))
+		{
+			if( $row['notify_status'] == 0 && !in_array($row['user_id'], $notified_users) )
+			{
+				// track the list of users we've notified, so we only send the email once
+				// this should only be an issue if the user is a member of multiple groups
+				// that were all invited to the same event, but still it should be avoided.
+				$notified_users[$notify_user_index] = $row['user_id'];
+				$notify_user_index++;
+
+				$messenger->template('calendar_new_event', $row['user_lang']);
+				$messenger->to($row['user_email'], $row['username']);
+				$messenger->im($row['user_jabber'], $row['username']);
+				$messenger->assign_vars(array(
+					'USERNAME'			=> htmlspecialchars_decode($row['username']),
+					'EVENT_SUBJECT'		=> $event_data['event_subject'],
+					'U_CALENDAR'		=> generate_board_url() . "/planner.$phpEx",
+					'U_UNWATCH_CALENDAR'=> generate_board_url() . "/planner.$phpEx?calWatch=0",
+					'U_EVENT'			=> generate_board_url() . "/planner.$phpEx?view=event&calEid=$event_id", )
+				);
+
+				$messenger->send($row['user_notify_type']);
+
+				$sql = 'UPDATE ' . RP_WATCH . '
+					SET ' . $db->sql_build_array('UPDATE', array(
+					'notify_status'		=> (int) 1,
+										)) . "
+					WHERE user_id = " . $row['user_id'];
+				$db->sql_query($sql);
+			}
+
+		}
+		$db->sql_freeresult($result);
+		$messenger->save_queue();
 	
 		if( $user_notify == 1 )
 		{
-			calendar_watch_calendar( 1 );
+			$this->calendar_watch_calendar( 1 );
 		}
 	}
 	
-	
-	/* calendar_generate_group_sql_for_notify_new_event()
-	**
-	** Given the data for a "group" event, find the sql
-	** options we need to search for users with permission
-	** to view the event.
-	**
-	** INPUT
-	**   $event_data - the data of the newly created event
-	**
-	** OUTPUT
-	**   sql group related options used in query
-	*/
-	private function calendar_generate_group_sql_for_notify_new_event( $event_data )
-	{
-			/* find the groups we need to notify */
-			$group_sql = "AND u.user_id = ug.user_id AND g.group_id = ug.group_id AND (";
-			$group_options = "";
-			if( $event_data['group_id'] != 0 )
-			{
-				$group_options = " g.group_id = ".$event_data['group_id']." ";
-			}
-			else
-			{
-				$group_list = explode( ',', $event_data['group_id_list'] );
-				$num_groups = sizeof( $group_list );
-				for( $i = 0; $i < $num_groups; $i++ )
-				{
-					if( $group_list[$i] == "")
-					{
-						continue;
-					}
-					if( $group_options == "" )
-					{
-						$group_options = " g.group_id = ".$group_list[$i]." ";
-					}
-					else
-					{
-						$group_options = $group_options . "OR g.group_id = ".$group_list[$i]." ";
-					}
-				}
-			}
-			$group_sql = $group_sql . $group_options . ") ";
-			return $group_sql;
-	}
-		
+
 	
 	
 		
