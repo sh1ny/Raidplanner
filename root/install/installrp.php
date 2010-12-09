@@ -214,9 +214,7 @@ $versions = array(
             // hook new modules to the UCP_DKP ucp
 			array('ucp', 'UCP_DKP', array(
 					'module_basename'   => 'planner',
-					'module_langname'   => 'UCP_DKP_CHARACTERS',
 					'module_mode'       => array('raidplanner_registration', 'raidplanner_myevents') ,
-					'module_auth'       => '',
 				),
 			),
         ), 
