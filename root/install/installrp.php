@@ -136,7 +136,7 @@ $versions = array(
 			array('GLOBAL_MODERATORS', 'u_raidplanner_view_headcount', 'group', true),
 			array('REGISTERED', 'u_raidplanner_view_headcount', 'group', true),
 
-			// allows viewing who rsvp back
+			// allows viewing who signed up
 			array('ADMINISTRATORS', 'u_raidplanner_view_detailed_rsvps', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_view_detailed_rsvps', 'group', true),
 			array('REGISTERED', 'u_raidplanner_view_detailed_rsvps', 'group', true),
@@ -147,6 +147,13 @@ $versions = array(
 			array('REGISTERED', 'u_raidplanner_view_events', 'group', true),
 			array('NEWLY_REGISTERED', 'u_raidplanner_view_events', 'group', true),
 			array('GUESTS', 'u_raidplanner_view_events', 'group', true),
+			
+			// allows signing up for an event or raid
+			array('ADMINISTRATORS', 'u_raidplanner_signup_events', 'group', true),
+			array('GLOBAL_MODERATORS', 'u_raidplanner_signup_events', 'group', true),
+			array('REGISTERED', 'u_raidplanner_signup_events', 'group', true),
+			array('NEWLY_REGISTERED', 'u_raidplanner_signup_events', 'group', true),
+			array('GUESTS', 'u_raidplanner_signup_events', 'group', true),
 			
 			// allows creating raids
 			array('ADMINISTRATORS', 'u_raidplanner_create_events', 'group', true),
@@ -202,7 +209,17 @@ $versions = array(
            		 'module_basename' => 'raidplanner',
             	 'modes'           => array('rp_settings') ,
         		),
-        	 )), 
+        	 ), 
+        	 
+            // hook new modules to the UCP_DKP ucp
+			array('ucp', 'UCP_DKP', array(
+					'module_basename'   => 'planner',
+					'module_langname'   => 'UCP_DKP_CHARACTERS',
+					'module_mode'       => array('raidplanner_registration', 'raidplanner_myevents') ,
+					'module_auth'       => '',
+				),
+			),
+        ), 
      
         	 
 	      // adding some configs
