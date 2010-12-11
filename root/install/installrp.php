@@ -103,8 +103,7 @@ $versions = array(
             array('u_raidplanner_create_public_events', true),
             array('u_raidplanner_create_group_events', true),
             array('u_raidplanner_create_private_events', true),
-            array('u_raidplanner_track_rsvps', true),
-            array('u_raidplanner_allow_guests', true),
+
             array('u_raidplanner_create_recurring_events', true),
             array('u_raidplanner_edit_events', true),
             array('u_raidplanner_delete_events', true),
@@ -174,16 +173,6 @@ $versions = array(
 			array('ADMINISTRATORS', 'u_raidplanner_create_private_events', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_create_private_events', 'group', true),
 			array('REGISTERED', 'u_raidplanner_create_private_events', 'group', true),
-			
-			// means that every member *must* say yes or no whether to attend on next login 
-			array('ADMINISTRATORS', 'u_raidplanner_track_rsvps', 'group', true),
-			array('GLOBAL_MODERATORS', 'u_raidplanner_track_rsvps', 'group', true),
-			array('REGISTERED', 'u_raidplanner_track_rsvps', 'group', true),
-
-			// means that you can create a raid with non guild members
-			array('ADMINISTRATORS', 'u_raidplanner_allow_guests', 'group', true),
-			array('GLOBAL_MODERATORS', 'u_raidplanner_allow_guests', 'group', true),
-			array('REGISTERED', 'u_raidplanner_allow_guests', 'group', true),
 
 			// can create events that recur
 			array('ADMINISTRATORS', 'u_raidplanner_create_recurring_events', 'group', true),

@@ -163,10 +163,10 @@ class ucp_planner
 				if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_events') &&
 					(($user->data['user_id'] == $row['poster_id'])|| $auth->acl_get('m_raidplanner_edit_other_users_events') ))
 				    {
-					 $edit_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=edit&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
+					 $edit_url = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=edit&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
 					 if( $row['recurr_id'] > 0 )
 					 {
-						$edit_all_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=edit&amp;calEditAll=1&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
+						$edit_all_url = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=edit&amp;calEditAll=1&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
 					 }
 				}
 				$delete_url = "";
@@ -175,10 +175,10 @@ class ucp_planner
 					(($user->data['user_id'] == $row['poster_id'])|| $auth->acl_get('m_raidplanner_delete_other_users_events') ))
 	
 				{
-					$delete_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=delete&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
+					$delete_url = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=delete&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 					if( $row['recurr_id'] > 0 )
 					{
-						$delete_all_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=delete&amp;calDelAll=1&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
+						$delete_all_url = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=delete&amp;calDelAll=1&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 					}
 				}
 				$events['U_EDIT'] = $edit_url;

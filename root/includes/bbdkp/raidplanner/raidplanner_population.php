@@ -144,6 +144,9 @@ class raidplanner_population extends raidplanner_base
 	** INPUT
 	**   $event_id - the id of the newly created event
 	** OUTPUT
+	* 
+	* 
+	* 
 	**   
 	*/
 	public function calendar_notify_new_event( $event_id )
@@ -265,11 +268,7 @@ class raidplanner_population extends raidplanner_base
 			$this->calendar_watch_calendar( 1 );
 		}
 	}
-	
-
-	
-	
-		
+			
 	/* find_week_index()
 	**
 	** Given a GMT date, determine what week (index) of the month this day occurs in.

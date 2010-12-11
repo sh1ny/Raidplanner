@@ -1,11 +1,8 @@
 <?php
 /**
 *
-* @author alightner
-*
-* @package phpBB Calendar
-* @version CVS/SVN: $Id$
-* @copyright (c) 2009 alightner
+* @author Sajaki
+* @package  Raidplanner
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -33,7 +30,7 @@ $user->add_lang ( array ('posting', 'mods/dkp_common','mods/raidplanner'  ));
 // Grab only parameters needed here
 //----------------------------
 $event_id	= request_var('calEid', 0);
-$lastclick	= request_var('lastclick', 0);
+$lastclick	= request_var('lastclick', 0);  // time of last click
 $submit		= (isset($_POST['post'])) ? true : false;
 $preview	= (isset($_POST['preview'])) ? true : false;
 $delete		= (isset($_POST['delete'])) ? true : false;
@@ -42,19 +39,13 @@ $cancel		= (isset($_POST['cancel'])) ? true : false;
 // mode: post, edit, delete, or smilies
 $mode = ($delete && !$preview && $submit) ? 'delete' : request_var('mode', '');
 $error = array();
-// are there any event types defined?
+// get the number of events : of none defined throw error..
 if( $newraid->available_etype_count < 1 )
 {
 	trigger_error('NO_EVENT_TYPES');
 }
 
 $current_time = $user->time_now;
-// Was cancel pressed? If so then redirect to the appropriate page
-if ($cancel || ($current_time - $lastclick < 2 && $submit))
-{
-	$redirect = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
-	redirect($redirect);
-}
 
 /*-------------------------------------
   begin event_data initialization
@@ -79,7 +70,7 @@ else
 	$event_data['poster_id'] = $user->data['user_id'];
 	$event_data['poster_timezone'] = $user->data['user_timezone'];
 	$event_data['poster_dst'] = $user->data['user_dst'];
-	$event_data['event_all_day'] = 0;
+	
 	$event_data['event_day'] = "00-00-0000";
 	$event_data['track_rsvps'] = 0;
 	$event_data['allow_guests'] = 0;
@@ -110,7 +101,7 @@ if( $mode == 'smilies' )
   begin permission checking
 -------------------------------------*/
 $newraid->authcheck($mode, $submit, &$event_data, $event_id);
-
+		
 /*-------------------------------------
   Handle delete mode...
 -------------------------------------*/
@@ -183,55 +174,20 @@ if ($submit || $preview)
 
     /*------------------------------------------------------------------
       Begin to find start/end times
-
       NOTE: if s_date_time_opts is false we are editing all events and
             there will not be any data to get
     -------------------------------------------------------------------*/
 	
 	if( $s_date_time_opts )
 	{
-		if( request_var('calAllDay', '') == "ON" )
-		{
-			$event_start_date = 0;
-			$event_end_date = 0;
-			$event_data['event_all_day'] = 1;
-			$event_data['event_day'] = sprintf('%2d-%2d-%4d', $newraid->date['day'], $newraid->date['month_no'], $newraid->date['year']);
-			$sort_timestamp = gmmktime( 0,0,0,$newraid->date['month_no'], $newraid->date['day'], $newraid->date['year']);
-		}
-		else
-		{
-			$start_hr = request_var('calHr', 0);
-			$start_mn = request_var('calMn', 0);
-			$event_start_date = gmmktime($start_hr, $start_mn, 0, $newraid->date['month_no'], 
-				$newraid->date['day'], $newraid->date['year'] ) - $user->timezone - $user->dst;
-			$sort_timestamp = $event_start_date;
-			$end_m = request_var('calMEnd', 0);
-			$end_d = request_var('calDEnd', 0);
-			$end_y = request_var('calYEnd', 0);
-			$end_hr = request_var('calHrEnd', 0);
-			$end_mn = request_var('calMnEnd', 0);
-			$event_end_date = gmmktime($end_hr, $end_mn, 0, $end_m, $end_d, $end_y ) - $user->timezone - $user->dst;
-			$event_data['event_all_day'] = 0;
-			$event_data['event_day'] = '';
-
-			// validate start and end times
-			if( $event_end_date < $event_start_date )
-			{
-				$error[] = $user->lang['NEGATIVE_LENGTH_EVENT'];
-			}
-			else if( $event_end_date == $event_start_date )
-			{
-				$error[] = $user->lang['ZERO_LENGTH_EVENT'];
-			}
-		}
+		$start_hr = request_var('calHr', 0);
+		$start_mn = request_var('calMn', 0);
+		$event_start_date = gmmktime($start_hr, $start_mn, 0, $newraid->date['month_no'], 
+			$newraid->date['day'], $newraid->date['year'] ) - $user->timezone - $user->dst;
+		$sort_timestamp = $event_start_date;
 		$event_data['event_start_time'] = $event_start_date;
-		$event_data['event_end_time'] = $event_end_date;
-		$event_all_day = $event_data['event_all_day'];
 		$event_day = $event_data['event_day'];
 	}
-    /*------------------------------------------------------------------
-      End start/end times
-    -------------------------------------------------------------------*/
 
 	// Parse subject
 	if (!$preview && !utf8_clean_string($event_data['event_subject']) && ($mode == 'post' || ($mode == 'edit')))
@@ -249,27 +205,6 @@ if ($submit || $preview)
 	}
 
     /*------------------------------------------------------------------
-      Check options for rsvps and allowing guests
-    -------------------------------------------------------------------*/
-	if( request_var('calTrackRsvps', '') == "ON" )
-	{
-		$event_data['track_rsvps'] = 1;
-	}
-	else
-	{
-		$event_data['track_rsvps'] = 0;
-	}
-
-	if( request_var('calAllowGuests', '') == "ON" )
-	{
-		$event_data['allow_guests'] = 1;
-	}
-	else
-	{
-		$event_data['allow_guests'] = 0;
-	}
-
-    /*------------------------------------------------------------------
       Check options for recurring events
     -------------------------------------------------------------------*/
 	if( request_var('calIsRecurr', '') == "ON" )
@@ -277,10 +212,6 @@ if ($submit || $preview)
 	    $event_data['is_recurr'] = 1;
 		$event_data['frequency_type'] = request_var('calRFrqT', 1);
 		$poster_timestamp = $sort_timestamp;
-		if( $event_data['event_all_day'] == 0 )
-		{
-			$poster_timestamp = $sort_timestamp + (($event_data['poster_timezone'] + $event_data['poster_dst'])*3600);
-		}
 		switch ($event_data['frequency_type'])
 		{
 			case 2:
@@ -319,17 +250,11 @@ if ($submit || $preview)
 		}
 		else
 		{
-			if( $event_data['event_all_day'] == 1 )
-			{
-				// for all day events, the end time needs to be the first second of the last day's event
-				$event_data['final_occ_time'] = gmmktime(0, 0, 0, $final_occ_month, $final_occ_day, $final_occ_year ) - $user->timezone - $user->dst;
-			}
-			else
-			{
-				// we want to use the last minute of their selected day so we will populate events on their last selected day, but not any day after
-				$event_data['final_occ_time'] = gmmktime(23, 59, 0, $final_occ_month, $final_occ_day, $final_occ_year ) - $user->timezone - $user->dst;
-			}
-			// validate start and end times
+			// we want to use the last minute of their selected day so we will populate events
+			// on their last selected day, but not any day after
+			$event_data['final_occ_time'] = gmmktime(23, 59, 0, $final_occ_month, $final_occ_day, $final_occ_year ) - $user->timezone - $user->dst;
+
+			
 			if( $event_data['final_occ_time'] < $sort_timestamp )
 			{
 				$error[] = $user->lang['NEGATIVE_LENGTH_EVENT'];
@@ -369,9 +294,6 @@ if ($submit || $preview)
 			$event_group_id_list = $event_data['group_id_list'];
 			$event_access_level = $event_data['event_access_level'];
 
-			$event_track_rsps = $event_data['track_rsvps'];
-			$event_allow_guests = $event_data['allow_guests'];
-
 			$event_is_recurring = $event_data['is_recurr'];
 			/*---------------------------------------------
 			   EDIT
@@ -386,8 +308,7 @@ if ($submit || $preview)
 							'etype_id'				=> (int) $etype_id,
 							'sort_timestamp'		=> (int)$sort_timestamp,
 							'event_start_time'		=> (int) $event_start_date,
-							'event_end_time'		=> (int) $event_end_date,
-							'event_all_day'			=> (int) $event_all_day,
+							
 							'event_day'				=> (string) $event_day,
 							'event_subject'			=> (string) $event_subject,
 							'event_body'			=> (string) $event_body,
@@ -400,8 +321,8 @@ if ($submit || $preview)
 							'enable_bbcode'			=> $allow_bbcode,
 							'enable_magic_url'		=> (int) $allow_urls,
 							'enable_smilies'		=> (int) $allow_smilies,
-							'track_rsvps'			=> (int) $event_track_rsps,
-							'allow_guests'			=> (int) $event_allow_guests,
+							
+							
 							)) . "
 						WHERE event_id = $event_id";
 					$db->sql_query($sql);
@@ -424,8 +345,8 @@ if ($submit || $preview)
 							'enable_magic_url'		=> (int) $allow_urls,
 							'bbcode_bitfield'		=> (string) $bitfield,
 							'bbcode_uid'			=> (string) $uid,
-							'track_rsvps'			=> (int) $event_track_rsps,
-							'allow_guests'			=> (int) $event_allow_guests,
+							
+							
 							)) . "
 						WHERE recurr_id = $recurr_id";
 					$db->sql_query($sql);
@@ -444,8 +365,8 @@ if ($submit || $preview)
 							'enable_bbcode'			=> (int) $allow_bbcode,
 							'enable_magic_url'		=> (int) $allow_urls,
 							'enable_smilies'		=> (int) $allow_smilies,
-							'track_rsvps'			=> (int) $event_track_rsps,
-							'allow_guests'			=> (int) $event_allow_guests,
+							
+							
 							)) . "
 						WHERE recurr_id = $recurr_id";
 					$db->sql_query($sql);
@@ -472,10 +393,7 @@ if ($submit || $preview)
 					$event_week_index = $event_data['week_index'];
 					$event_final_occ_time = $event_data['final_occ_time'];
 					$event_duration = 0;
-					if( $event_all_day == 0 )
-					{
-						$event_duration = $event_end_date - $event_start_date;
-					}
+					$event_duration = $event_end_date - $event_start_date;
 					$poster_timezone = $event_data['poster_timezone'];
 					$poster_dst = $event_data['poster_dst'];
 
@@ -485,7 +403,6 @@ if ($submit || $preview)
 							'frequency_type'		=> (int) $event_frequency_type,
 							'first_occ_time'		=> (int) $sort_timestamp,
 							'final_occ_time'		=> (int) $event_final_occ_time,
-							'event_all_day'			=> (int) $event_all_day,
 							'event_duration'		=> (int) $event_duration,
 							'week_index'			=> (int) $event_week_index,
 							'first_day_of_week'		=> (int) $event_data['first_day_of_week'],
@@ -524,7 +441,6 @@ if ($submit || $preview)
 							'sort_timestamp'		=> (int)$sort_timestamp,
 							'event_start_time'		=> (int) $event_start_date,
 							'event_end_time'		=> (int) $event_end_date,
-							'event_all_day'			=> (int) $event_all_day,
 							'event_day'				=> (string) $event_day,
 							'event_subject'			=> (string) $event_subject,
 							'event_body'			=> (string) $event_body,
@@ -584,25 +500,6 @@ if (!sizeof($error) && $preview)
 	$user_event_start = $event_data['event_start_time'] + $user->timezone + $user->dst;
 	$user_event_end = $event_data['event_end_time'] + $user->timezone + $user->dst;
 
-	$preview_all_day = 0;
-	if( $event_data['event_all_day'] == 1 )
-	{
-		$preview_all_day = 1;
-		// All day event - find the string for the event day
-		if ($event_data['event_day'])
-		{
-			list($eday['eday_day'], $eday['eday_month'], $eday['eday_year']) = explode('-', $event_data['event_day']);
-			$event_days_time = gmmktime(0,0,0,$eday['eday_month'], $eday['eday_day'], $eday['eday_year']) - $user->timezone - $user->dst;
-			$start_date_txt = $user->format_date($event_days_time);
-		}
-		else
-		{
-			// We should never get here
-			// (this would be an all day event with no specified day for the event)
-			$start_date_txt = "";
-		}
-	}
-
 
 
 	// Convert event comment into preview version with bbcode and all
@@ -637,7 +534,7 @@ if (!sizeof($error) && $preview)
 			'PREVIEW_END_DATE'		=> $end_date_txt,
 			'PREVIEW_POSTER'		=> $poster_url,
 			'PREVIEW_INVITED'		=> $invite_list,
-			'ALL_DAY'				=> $preview_all_day,
+			
 			'S_DISPLAY_PREVIEW'		=> true,
 			'PREVIEW_TRACK_RSVPS'	=> $preview_track_rsvps,
 			'PREVIEW_ALLOW_GUESTS'	=> $preview_allow_guests )
@@ -679,28 +576,51 @@ $event_data['event_body'] = str_replace( $temp_find_str, $temp_replace_str, $eve
 // populate form options...
 //-----------------------------------------
 
-$month_sel_code  = "<select name='calM' id='calM'>\n";
+//event types 
+$e_type_sel_code  = "";
+for( $i = 0; $i < $newraid->available_etype_count; $i++ )
+{
+	$e_type_sel_code .= "<option value='".$newraid->available_etype_ids[$i]."'>".$newraid->available_etype_full_names[$i]."</option>\n";
+}
+
+// event acces level
+$level_sel_code ="";	
+// Find what groups this user is a member of and add them to the list of groups to invite
+$group_sel_code = $newraid->posting_generate_group_selection_code( $event_data['poster_id'] );
+if( $auth->acl_get('u_raidplanner_create_public_events') )
+{
+	$level_sel_code .= "<option value='2'>".$user->lang['EVENT_ACCESS_LEVEL_PUBLIC']."</option>\n";
+}
+if( $auth->acl_get('u_raidplanner_create_group_events') )
+{
+	$level_sel_code .= "<option value='1'>".$user->lang['EVENT_ACCESS_LEVEL_GROUP']."</option>\n";
+}
+if( $auth->acl_get('u_raidplanner_create_private_events') )
+{
+	$level_sel_code .= "<option value='0'>".$user->lang['EVENT_ACCESS_LEVEL_PERSONAL']."</option>\n";
+}
+
+
+// Raid start date
+$month_sel_code  = " ";
 for( $i = 1; $i <= 12; $i++ )
 {
 	$month_sel_code .= "<option value='".$i."'>".$user->lang['datetime'][$newraid->month_names[$i]]."</option>\n";
 }
-$month_sel_code .= "</select>\n";
 
-$day_sel_code  = "<select name='calD' id='calD'>\n";
+$day_sel_code= "";
 for( $i = 1; $i <= 31; $i++ )
 {
 	$day_sel_code .= "<option value='".$i."'>".$i."</option>\n";
 }
-$day_sel_code .= "</select>\n";
 
-$year_sel_code  = "<select name='calY' id='calY'>\n";
+$year_sel_code  = " ";
 for( $i = $newraid->date['year']; $i < ($newraid->date['year']+5); $i++ )
 {
 	$year_sel_code .= "<option value='".$i."'>".$i."</option>\n";
 }
-$year_sel_code .= "</select>\n";
-
-$hour_sel_code = "<select name='calHr' id='calHr'>\n";
+// Raid start time
+$hour_sel_code = "";
 $hour_mode = $config['rp_hour_mode'];
 if( $hour_mode == 12 )
 {
@@ -731,12 +651,12 @@ else
 		$hour_sel_code .= "<option value='".$i."'>".$o.$i."</option>\n";
 	}
 }
-$hour_sel_code .= "</select>\n";
 
-$min_sel_code = "<select name='calMn' id='calMn'>\n";
-for( $i = 0; $i < 4; $i++ )
+
+$min_sel_code = "";
+for( $i = 0; $i < 12; $i++ )
 {
-	$t = $i * 15;
+	$t = $i * 5;
 	$o = "";
 	if($t < 10 )
 	{
@@ -744,42 +664,6 @@ for( $i = 0; $i < 4; $i++ )
 	}
 	$min_sel_code .= "<option value='".$t."'>".$o.$t."</option>\n";
 }
-$min_sel_code .= "</select>\n";
-
-$e_type_sel_code  = "<select name='calEType' id='calEType'>\n";
-for( $i = 0; $i < $newraid->available_etype_count; $i++ )
-{
-	$e_type_sel_code .= "<option value='".$newraid->available_etype_ids[$i]."'>".$newraid->available_etype_full_names[$i]."</option>\n";
-}
-$e_type_sel_code .= "</select>\n";
-
-// Find what groups this user is a member of and add them to the list of groups to invite
-$group_sel_code = $newraid->posting_generate_group_selection_code( $event_data['poster_id'] );
-
-$level_sel_code  = "<select name='calELevel' id='calELevel' onchange='update_group_id_state();'>\n";
-if( $auth->acl_get('u_raidplanner_create_public_events') )
-{
-	$level_sel_code .= "<option value='2'>".$user->lang['EVENT_ACCESS_LEVEL_PUBLIC']."</option>\n";
-}
-if( $auth->acl_get('u_raidplanner_create_group_events') )
-{
-	$level_sel_code .= "<option value='1'>".$user->lang['EVENT_ACCESS_LEVEL_GROUP']."</option>\n";
-}
-if( $auth->acl_get('u_raidplanner_create_private_events') )
-{
-	$level_sel_code .= "<option value='0'>".$user->lang['EVENT_ACCESS_LEVEL_PERSONAL']."</option>\n";
-}
-$level_sel_code .= "</select>\n";
-
-$all_day_check = "<input type='checkbox' name='calAllDay' value='ON' checked='checked' onclick='toggle_all_day_event()' />";
-$track_rsvp_check = "<input type='checkbox' name='calTrackRsvps' value='ON' checked='checked' />";
-if( $event_data['allow_guests'] )
-{
-	$track_rsvp_check = "<input type='checkbox' name='calTrackRsvps' value='ON' checked='checked' onclick='update_allow_guest_state()' />";
-}
-$allow_guest_check = "<input type='checkbox' name='calAllowGuests' value='ON' checked='checked' />";
-$track_rsvp_check_hidden = "<input type='hidden' name='calTrackRsvps' id='calTrackRsvps' value='ON' />";
-$allow_guest_check_hidden = "<input type='hidden' name='calAllowGuests' id='calAllowGuests' value='ON' />";
 
 $recurr_event_check = "";
 $recurr_event_freq_sel_code = "";
@@ -853,71 +737,31 @@ if( sizeof($error) || $preview || $event_id > 0 )
 
 	// translate event start and end time into user's timezone
 	$event_start = $event_data['event_start_time'] + $user->timezone + $user->dst;
-	$event_end = $event_data['event_end_time'] + $user->timezone + $user->dst;
-
-	$all_day = 0;
-	if( $event_data['event_all_day'] == 1 )
-	{
-		$all_day = 1;
-		list($eday['eday_day'], $eday['eday_month'], $eday['eday_year']) = explode('-', $event_data['event_day']);
-		$event_start = gmmktime(0,0,0,$eday['eday_month'], $eday['eday_day'], $eday['eday_year']);
-	}
-	else
-	{
-		$temp_find_str = "value='ON' checked='checked'";
-		$temp_replace_str = "value='ON'";
-		$all_day_check = str_replace( $temp_find_str, $temp_replace_str, $all_day_check );
-	}
-
 	$cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".gmdate('n', $event_start)."&amp;y=".gmdate('Y', $event_start) );
 
 	//-----------------------------------------
 	// month selection data
 	//-----------------------------------------
-	if( $all_day == 0 )
-	{
-		$temp_find_str = "value='".gmdate('n', $event_end)."'";
-		$temp_replace_str = "value='".gmdate('n', $event_end)."' selected='selected'";
-		$end_month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $month_sel_code );
-		$temp_find_str = "name='calM' id='calM'";
-		$temp_replace_str = "name='calMEnd' id='calMEnd'";
-		$end_month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_month_sel_code );
-	}
-	else
-	{
-		$temp_find_str = "value='".gmdate('n', $event_start)."'";
-		$temp_replace_str = "value='".gmdate('n', $event_start)."' selected='selected'";
-		$end_month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $month_sel_code );
-		$temp_find_str = "name='calM' id='calM'";
-		$temp_replace_str = "name='calMEnd' id='calMEnd' disabled='disabled'";
-		$end_month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_month_sel_code );
-	}
+	$temp_find_str = "value='".gmdate('n', $event_end)."'";
+	$temp_replace_str = "value='".gmdate('n', $event_end)."' selected='selected'";
+	$end_month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $month_sel_code );
+	$temp_find_str = "name='calM' id='calM'";
+	$temp_replace_str = "name='calMEnd' id='calMEnd'";
+	$end_month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_month_sel_code );
 	$temp_find_str = "value='".gmdate('n', $event_start)."'";
+
 	$temp_replace_str = "value='".gmdate('n', $event_start)."' selected='selected'";
 	$month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $month_sel_code );
-
 
 	//-----------------------------------------
 	// day selection data
 	//-----------------------------------------
-	if( $all_day == 0 )
-	{
-		$temp_find_str = "value='".gmdate('j', $event_end)."'";
-		$temp_replace_str = "value='".gmdate('j', $event_end)."' selected='selected'";
-		$end_day_sel_code = str_replace( $temp_find_str, $temp_replace_str, $day_sel_code );
-		$temp_find_str = "name='calD' id='calD'";
-		$temp_replace_str = "name='calDEnd' id='calDEnd'";
-		$end_day_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_day_sel_code );
-	}
-	else
-	{
-		$temp_find_str = "value='".gmdate('j', $event_start)."'";
-		$temp_replace_str = "value='".gmdate('j', $event_start)."' selected='selected'";
-		$end_day_sel_code = str_replace( $temp_find_str, $temp_replace_str, $day_sel_code );
-		$temp_find_str = "name='calD' id='calD'";
-		$temp_replace_str = "name='calDEnd' id='calDEnd' disabled='disabled'";
-		$end_day_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_day_sel_code );
-	}
+	$temp_find_str = "value='".gmdate('j', $event_end)."'";
+	$temp_replace_str = "value='".gmdate('j', $event_end)."' selected='selected'";
+	$end_day_sel_code = str_replace( $temp_find_str, $temp_replace_str, $day_sel_code );
+	$temp_find_str = "name='calD' id='calD'";
+	$temp_replace_str = "name='calDEnd' id='calDEnd'";
+	$end_day_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_day_sel_code );
 	$temp_find_str = "value='".gmdate('j', $event_start)."'";
 	$temp_replace_str = "value='".gmdate('j', $event_start)."' selected='selected'";
 	$day_sel_code = str_replace( $temp_find_str, $temp_replace_str, $day_sel_code );
@@ -925,53 +769,25 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	//-----------------------------------------
 	// year selection data
 	//-----------------------------------------
-	if( $all_day == 0 )
-	{
-		$temp_find_str = "value='".gmdate('Y', $event_end)."'";
-		$temp_replace_str = "value='".gmdate('Y', $event_end)."' selected='selected'";
-		$end_year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $year_sel_code );
-		$temp_find_str = "name='calY' id='calY'";
-		$temp_replace_str = "name='calYEnd' id='calYEnd'";
-		$end_year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_year_sel_code );
-	}
-	else
-	{
-		$temp_find_str = "value='".gmdate('Y', $event_start)."'";
-		$temp_replace_str = "value='".gmdate('Y', $event_start)."' selected='selected'";
-		$end_year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $year_sel_code );
-		$temp_find_str = "name='calY' id='calY'";
-		$temp_replace_str = "name='calYEnd' id='calYEnd' disabled='disabled'";
-		$end_year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_year_sel_code );
-	}
+	$temp_find_str = "value='".gmdate('Y', $event_end)."'";
+	$temp_replace_str = "value='".gmdate('Y', $event_end)."' selected='selected'";
+	$end_year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $year_sel_code );
+	$temp_find_str = "name='calY' id='calY'";
+	$temp_replace_str = "name='calYEnd' id='calYEnd'";
+	$end_year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_year_sel_code );
 	$temp_find_str = "value='".gmdate('Y', $event_start)."'";
 	$temp_replace_str = "value='".gmdate('Y', $event_start)."' selected='selected'";
 	$year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $year_sel_code );
 
-
 	//-----------------------------------------
 	// hour selection data
 	//-----------------------------------------
-	if( $all_day == 0 )
-	{
-		$temp_find_str = "value='".gmdate('G', $event_end)."'";
-		$temp_replace_str = "value='".gmdate('G', $event_end)."' selected='selected'";
-		$end_hour_code = str_replace( $temp_find_str, $temp_replace_str, $hour_sel_code );
-		$temp_find_str = "name='calHr' id='calHr'";
-		$temp_replace_str = "name='calHrEnd' id='calHrEnd'";
-		$end_hour_code = str_replace( $temp_find_str, $temp_replace_str, $end_hour_code );
-	}
-	else
-	{
-		$temp_find_str = "value='".gmdate('G', $event_start)."'";
-		$temp_replace_str = "value='".gmdate('G', $event_start)."' selected='selected'";
-		$end_hour_code = str_replace( $temp_find_str, $temp_replace_str, $hour_sel_code );
-		$temp_find_str = "name='calHr' id='calHr'";
-		$temp_replace_str = "name='calHrEnd' id='calHrEnd' disabled='disabled'";
-		$end_hour_code = str_replace( $temp_find_str, $temp_replace_str, $end_hour_code );
-		$temp_find_str = "name='calHr' id='calHr'";
-		$temp_replace_str = "name='calHr' id='calHr' disabled='disabled'";
-		$hour_sel_code = str_replace( $temp_find_str, $temp_replace_str, $hour_sel_code );
-	}
+	$temp_find_str = "value='".gmdate('G', $event_end)."'";
+	$temp_replace_str = "value='".gmdate('G', $event_end)."' selected='selected'";
+	$end_hour_code = str_replace( $temp_find_str, $temp_replace_str, $hour_sel_code );
+	$temp_find_str = "name='calHr' id='calHr'";
+	$temp_replace_str = "name='calHrEnd' id='calHrEnd'";
+	$end_hour_code = str_replace( $temp_find_str, $temp_replace_str, $end_hour_code );
 	$temp_find_str = "value='".gmdate('G', $event_start)."'";
 	$temp_replace_str = "value='".gmdate('G', $event_start)."' selected='selected'";
 	$start_hour_code = str_replace( $temp_find_str, $temp_replace_str, $hour_sel_code );
@@ -979,27 +795,12 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	//-----------------------------------------
 	// minute selection data
 	//-----------------------------------------
-	if( $all_day == 0 )
-	{
-		$temp_find_str = "value='".gmdate('i', $event_end)."'";
-		$temp_replace_str = "value='".gmdate('i', $event_end)."' selected='selected'";
-		$end_min_code = str_replace( $temp_find_str, $temp_replace_str, $min_sel_code );
-		$temp_find_str = "name='calMn' id='calMn'";
-		$temp_replace_str = "name='calMnEnd' id='calMnEnd'";
-		$end_min_code = str_replace( $temp_find_str, $temp_replace_str, $end_min_code );
-	}
-	else
-	{
-		$temp_find_str = "value='".gmdate('i', $event_start)."'";
-		$temp_replace_str = "value='".gmdate('i', $event_start)."' selected='selected'";
-		$end_min_code = str_replace( $temp_find_str, $temp_replace_str, $min_sel_code );
-		$temp_find_str = "name='calMn' id='calMn'";
-		$temp_replace_str = "name='calMnEnd' id='calMnEnd' disabled='disabled'";
-		$end_min_code = str_replace( $temp_find_str, $temp_replace_str, $end_min_code );
-		$temp_find_str = "name='calMn' id='calMn'";
-		$temp_replace_str = "name='calMn' id='calMn' disabled='disabled'";
-		$min_sel_code = str_replace( $temp_find_str, $temp_replace_str, $min_sel_code );
-	}
+	$temp_find_str = "value='".gmdate('i', $event_end)."'";
+	$temp_replace_str = "value='".gmdate('i', $event_end)."' selected='selected'";
+	$end_min_code = str_replace( $temp_find_str, $temp_replace_str, $min_sel_code );
+	$temp_find_str = "name='calMn' id='calMn'";
+	$temp_replace_str = "name='calMnEnd' id='calMnEnd'";
+	$end_min_code = str_replace( $temp_find_str, $temp_replace_str, $end_min_code );
 	$temp_find_str = "value='".gmdate('i', $event_start)."'";
 	$temp_replace_str = "value='".gmdate('i', $event_start)."' selected='selected'";
 	$start_min_code = str_replace( $temp_find_str, $temp_replace_str, $min_sel_code );
@@ -1010,7 +811,6 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	$temp_find_str = "value='".$event_data['etype_id']."'";
 	$temp_replace_str = "value='".$event_data['etype_id']."' selected='selected'";
 	$e_type_sel_code = str_replace( $temp_find_str, $temp_replace_str, $e_type_sel_code );
-
 
 	//-----------------------------------------
 	// event levels
@@ -1048,7 +848,6 @@ if( sizeof($error) || $preview || $event_id > 0 )
 		$group_sel_code = str_replace( $temp_find_str, $temp_replace_str, $group_sel_code );
 	}
 
-
 	//-----------------------------------------
 	// recurring events
 	//-----------------------------------------
@@ -1062,9 +861,9 @@ if( sizeof($error) || $preview || $event_id > 0 )
 		$temp_replace_str = "";
 		$recurr_event_freq_sel_code = str_replace( $temp_find_str, $temp_replace_str, $recurr_event_freq_sel_code );
 		$recurr_event_freq_val_code = str_replace( $temp_find_str, $temp_replace_str, $recurr_event_freq_val_code );
-		$end_recurr_month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_recurr_month_sel_code );
-		$end_recurr_day_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_recurr_day_sel_code );
-		$end_recurr_year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_recurr_year_sel_code );
+		$end_recurr_month_sel_code  = str_replace( $temp_find_str, $temp_replace_str, $end_recurr_month_sel_code );
+		$end_recurr_day_sel_code    = str_replace( $temp_find_str, $temp_replace_str, $end_recurr_day_sel_code );
+		$end_recurr_year_sel_code   = str_replace( $temp_find_str, $temp_replace_str, $end_recurr_year_sel_code );
 
 		$temp_find_str = "value='".$event_data['frequency_type']."'";
 		$temp_replace_str = "value='".$event_data['frequency_type']."' selected='selected'";
@@ -1157,37 +956,6 @@ else // we are creating a new event
 
 }
 
-//-----------------------------------------
-// event rsvps
-//-----------------------------------------
-if( $event_data['track_rsvps'] == 1 )
-{
-	// do nothing - the default is turned on
-	if( $event_data['allow_guests'] == 1 )
-	{
-		// do nothing - the default is turned on
-	}
-	else
-	{
-		$temp_find_str = "value='ON' checked='checked'";
-		$temp_replace_str = "value='ON'";
-		$allow_guest_check = str_replace( $temp_find_str, $temp_replace_str, $allow_guest_check );
-		$allow_guest_check_hidden = "<input type='hidden' name='calAllowGuests' id='calAllowGuests' value='' />";
-	}
-}
-else
-{
-	$temp_find_str = "value='ON' checked='checked'";
-	$temp_replace_str = "value='ON'";
-	$track_rsvp_check = str_replace( $temp_find_str, $temp_replace_str, $track_rsvp_check );
-	$track_rsvp_check_hidden = "<input type='hidden' name='calTrackRsvps' id='calTrackRsvps' value='' />";
-	$temp_find_str = "name='calAllowGuests'";
-	$temp_replace_str = "name='calAllowGuests' disabled='disabled'";
-	$allow_guest_check = str_replace( $temp_find_str, $temp_replace_str, $allow_guest_check );
-	$allow_guest_check_hidden = "<input type='hidden' name='calAllowGuests' id='calAllowGuests' value='' />";
-}
-
-
 // Build Navigation Links
 $newraid->generate_forum_nav($post_data);
 
@@ -1206,6 +974,43 @@ if( ($mode == 'edit') &&
 	$allow_delete = true;
 }
 
+
+$template->assign_vars(array(
+	'L_POST_A'					=> $page_title,
+	'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
+	'SUBJECT'					=> $event_data['event_subject'],
+	'MESSAGE'					=> $event_data['event_body'],
+	'MINI_POST_IMG'				=> $user->img('icon_post_target', $user->lang['POST']),
+	'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
+	'U_CALENDAR'				=> append_sid("{$phpbb_root_path}planner.$phpEx"),
+	'S_DATE_TIME_OPTS'			=> $s_date_time_opts,
+	'MONTH_SEL'					=> $month_sel_code,
+	'DAY_SEL'					=> $day_sel_code,
+	'YEAR_SEL'					=> $year_sel_code,
+	'START_HOUR_SEL'			=> $start_hour_code,
+	'START_MIN_SEL'				=> $start_min_code,
+
+	'EVENT_TYPE_SEL'			=> $e_type_sel_code,
+	'EVENT_ACCESS_LEVEL_SEL'	=> $level_sel_code,
+	'EVENT_GROUP_SEL'			=> $group_sel_code,
+
+	'DAY_VIEW_URL'				=> $day_view_url,
+	'WEEK_VIEW_URL'				=> $week_view_url,
+	'MONTH_VIEW_URL'			=> $month_view_url,
+
+	'S_RECURRING_OPTS'			=> $event_data['s_recurring_opts'],
+	'S_UPDATE_RECURRING_OPTIONS'=> $event_data['s_update_recurring_options'],
+	'RECURRING_EVENT_CHECK'		=> $recurr_event_check,
+	'RECURRING_EVENT_TYPE_SEL'	=> $recurr_event_freq_sel_code,
+	'RECURRING_EVENT_FREQ_IN'	=> $recurr_event_freq_val_code,
+	'END_RECURR_MONTH_SEL'		=> $end_recurr_month_sel_code,
+	'END_RECURR_DAY_SEL'		=> $end_recurr_day_sel_code,
+	'END_RECURR_YEAR_SEL'		=> $end_recurr_year_sel_code,
+
+	'S_POST_ACTION'			=> $s_action,
+	'S_HIDDEN_FIELDS'		=> $s_hidden_fields)
+);
+
 // HTML, BBCode, Smilies, Images and Flash status
 $bbcode_status	= ($config['allow_bbcode']) ? true : false;
 $img_status		= ($bbcode_status) ? true : false;
@@ -1219,13 +1024,7 @@ if ($smilies_status)
 }
 $quote_status	= false;
 
-
-// Start assigning vars for main posting page ...
 $template->assign_vars(array(
-	'L_POST_A'					=> $page_title,
-	'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
-	'SUBJECT'					=> $event_data['event_subject'],
-	'MESSAGE'					=> $event_data['event_body'],
 	'BBCODE_STATUS'				=> ($bbcode_status) ? 
 		sprintf($user->lang['BBCODE_IS_ON'], '<a href="' . append_sid("{$phpbb_root_path}faq.$phpEx", 'mode=bbcode') . '">', '</a>') : 
 		sprintf($user->lang['BBCODE_IS_OFF'], '<a href="' . append_sid("{$phpbb_root_path}faq.$phpEx", 'mode=bbcode') . '">', '</a>'),
@@ -1233,43 +1032,6 @@ $template->assign_vars(array(
 	'FLASH_STATUS'				=> ($flash_status) ? $user->lang['FLASH_IS_ON'] : $user->lang['FLASH_IS_OFF'],
 	'SMILIES_STATUS'			=> ($smilies_status) ? $user->lang['SMILIES_ARE_ON'] : $user->lang['SMILIES_ARE_OFF'],
 	'URL_STATUS'				=> ($bbcode_status && $url_status) ? $user->lang['URL_IS_ON'] : $user->lang['URL_IS_OFF'],
-	'MINI_POST_IMG'				=> $user->img('icon_post_target', $user->lang['POST']),
-	'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
-	'U_CALENDAR'				=> append_sid("{$phpbb_root_path}planner.$phpEx"),
-	'S_DATE_TIME_OPTS'			=> $s_date_time_opts,
-	'MONTH_SEL'					=> $month_sel_code,
-	'DAY_SEL'					=> $day_sel_code,
-	'YEAR_SEL'					=> $year_sel_code,
-	'START_HOUR_SEL'			=> $start_hour_code,
-	'START_MIN_SEL'				=> $start_min_code,
-	'ALL_DAY_CHECK'				=> $all_day_check,
-	'END_MONTH_SEL'				=> $end_month_sel_code,
-	'END_DAY_SEL'				=> $end_day_sel_code,
-	'END_YEAR_SEL'				=> $end_year_sel_code,
-	'END_HOUR_SEL'				=> $end_hour_code,
-	'END_MIN_SEL'				=> $end_min_code,
-	'EVENT_TYPE_SEL'			=> $e_type_sel_code,
-	'EVENT_ACCESS_LEVEL_SEL'	=> $level_sel_code,
-	'EVENT_GROUP_SEL'			=> $group_sel_code,
-
-	'DAY_VIEW_URL'				=> $day_view_url,
-	'WEEK_VIEW_URL'				=> $week_view_url,
-	'MONTH_VIEW_URL'			=> $month_view_url,
-
-	'S_TRACK_RSVPS'				=> $event_data['s_track_rsvps'],
-	'TRACK_RSVP_CHECK'			=> $track_rsvp_check,
-	'TRACK_RSVP_CHECK_HIDDEN'	=> $track_rsvp_check_hidden,
-	'S_ALLOW_GUESTS'			=> $event_data['allow_guests'],
-	'ALLOW_GUEST_CHECK'			=> $allow_guest_check,
-	'ALLOW_GUEST_CHECK_HIDDEN'	=> $allow_guest_check_hidden,
-	'S_RECURRING_OPTS'			=> $event_data['s_recurring_opts'],
-	'S_UPDATE_RECURRING_OPTIONS'=> $event_data['s_update_recurring_options'],
-	'RECURRING_EVENT_CHECK'		=> $recurr_event_check,
-	'RECURRING_EVENT_TYPE_SEL'	=> $recurr_event_freq_sel_code,
-	'RECURRING_EVENT_FREQ_IN'	=> $recurr_event_freq_val_code,
-	'END_RECURR_MONTH_SEL'		=> $end_recurr_month_sel_code,
-	'END_RECURR_DAY_SEL'		=> $end_recurr_day_sel_code,
-	'END_RECURR_YEAR_SEL'		=> $end_recurr_year_sel_code,
 
 	'S_DELETE_ALLOWED'			=> $allow_delete,
 	'S_BBCODE_ALLOWED'			=> $bbcode_status,
@@ -1279,15 +1041,11 @@ $template->assign_vars(array(
 	'S_BBCODE_URL'				=> $url_status,
 	'S_BBCODE_FLASH'			=> $flash_status,
 	'S_BBCODE_QUOTE'			=> $quote_status,
-
-	'S_POST_ACTION'			=> $s_action,
-	'S_HIDDEN_FIELDS'		=> $s_hidden_fields)
+)
 );
-
 
 // Build custom bbcodes array
 display_custom_bbcodes();
-
 
 // Output page ...
 page_header($page_title);

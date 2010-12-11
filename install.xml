@@ -19,16 +19,18 @@
 			content="MODX file generated with PP MODX Creator by tumba25 (online version)" />
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)" />
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[bbDKP RaidPlanner 0.0.1]]></title>
-		<description lang="en"><![CDATA[Raidplanner Installer. 
+		<title lang="en"><![CDATA[bbDKP Raidplanner plugin 0.0.1]]></title>
+		<description lang="en"><![CDATA[Raidplanner Plugin Installer. 
 		
-* The Raidplanner mod is a fork of Alightner's Calendar mod, modified to work with bbDKP. 
-* the base code was refactored into functional classes. 
-* It has an UMIL Database installer, and so is database independent.
+* forked from Alightner's Calendar mod, modified to work with bbDKP. 
 
 Feature list
 ---------		
 * hooks into the bbDKP event and guildmembers Table, so bbDKP 1.1.3 must be installed before.
+
+* the base code was refactored into functional classes. 
+
+* It has an UMIL Database installer, and so is database independent.
 
 * Raid Events pick up new Raid icons from DKP event. 
 
@@ -303,7 +305,6 @@ $cal->display_calendar_on_index();
 ]]></action>
 			</edit>
 		</open>
-
 
 		<php-installer><![CDATA[install/installrp.php]]></php-installer>
 		<diy-instructions lang="en"><![CDATA[Run database installer : Browse to install/installrp.php. This will install the Raidplanner database tables, the ACP and UCP modules, purge the cache and refresh the template, imagesets and themes. Note that if you run a Style other than Prosilver, you will need to apply the Prosilver changes to your style either manually - by following the edit instructions in prosilver.xml, or by automatically, by going into the "Detail" tab in Automod and applying the Prosilver changes to yur style. ]]></diy-instructions>

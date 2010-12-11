@@ -119,7 +119,7 @@ class displayplanner extends raidplanner_base
 			
 			if ( $auth->acl_gets('u_raidplanner_create_public_events', 'u_raidplanner_create_group_events', 'u_raidplanner_create_private_events') )
 			{
-				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=post&amp;calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']. $etype_url_opts);
+				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=post&amp;calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']. $etype_url_opts);
 			}
 			$calendar_days['DAY_VIEW_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=day&amp;calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 			$calendar_days['WEEK_VIEW_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=week&amp;calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
@@ -380,7 +380,7 @@ class displayplanner extends raidplanner_base
 			//if( $auth->acl_get('u_raidplanner_create_events') )
 			if ( $auth->acl_gets('u_raidplanner_create_public_events', 'u_raidplanner_create_group_events', 'u_raidplanner_create_private_events') )
 			{
-				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=post&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
+				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=post&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
 			}
 			$calendar_days['DAY_VIEW_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=day&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
 			$calendar_days['MONTH_VIEW_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=month&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
@@ -707,7 +707,7 @@ class displayplanner extends raidplanner_base
 	
 		if ( $auth->acl_gets('u_raidplanner_create_public_events', 'u_raidplanner_create_group_events', 'u_raidplanner_create_private_events') )
 		{
-			$add_event_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=post&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
+			$add_event_url = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=post&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 		}
 	
 		// A typical usage for sending your variables to your template.
@@ -847,10 +847,10 @@ class displayplanner extends raidplanner_base
 			if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_events') &&
 			    (($user->data['user_id'] == $event_data['poster_id'])|| $auth->acl_get('m_raidplanner_edit_other_users_events') ))
 			{
-				$edit_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=edit&amp;calEid=".$event_id."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
+				$edit_url = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=edit&amp;calEid=".$event_id."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
 				if( $event_data['recurr_id'] > 0 )
 				{
-					$edit_all_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=edit&amp;calEditAll=1&amp;calEid=".$event_id."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
+					$edit_all_url = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=edit&amp;calEditAll=1&amp;calEid=".$event_id."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
 				}
 			}
 			$delete_url = "";
@@ -858,10 +858,10 @@ class displayplanner extends raidplanner_base
 			if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_delete_events') &&
 			    (($user->data['user_id'] == $event_data['poster_id'])|| $auth->acl_get('m_raidplanner_delete_other_users_events') ))
 			{
-				$delete_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=delete&amp;calEid=".$event_id."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
+				$delete_url = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=delete&amp;calEid=".$event_id."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 				if( $event_data['recurr_id'] > 0 )
 				{
-					$delete_all_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=delete&amp;calDelAll=1&amp;calEid=".$event_id."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
+					$delete_all_url = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=delete&amp;calDelAll=1&amp;calEid=".$event_id."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 				}
 			}
 
@@ -1125,7 +1125,7 @@ class displayplanner extends raidplanner_base
 			//if( $auth->acl_get('u_raidplanner_create_events') )
 			if ( $auth->acl_gets('u_raidplanner_create_public_events', 'u_raidplanner_create_group_events', 'u_raidplanner_create_private_events') )
 			{
-				$add_event_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=post&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
+				$add_event_url = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=post&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 			}
 			$day_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=day&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 			$week_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=week&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
@@ -1461,10 +1461,10 @@ class displayplanner extends raidplanner_base
 				if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_events') &&
 					(($user->data['user_id'] == $row['poster_id'])|| $auth->acl_get('m_raidplanner_edit_other_users_events') ))
 				{
-					$edit_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=edit&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
+					$edit_url = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=edit&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
 					if( $row['recurr_id'] > 0 )
 					{
-						$edit_all_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=edit&amp;calEditAll=1&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
+						$edit_all_url = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=edit&amp;calEditAll=1&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
 					}
 				}
 				$delete_url = "";
@@ -1473,10 +1473,10 @@ class displayplanner extends raidplanner_base
 					(($user->data['user_id'] == $row['poster_id'])|| $auth->acl_get('m_raidplanner_delete_other_users_events') ))
 	
 				{
-					$delete_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=delete&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
+					$delete_url = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=delete&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 					if( $row['recurr_id'] > 0 )
 					{
-						$delete_all_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=delete&amp;calDelAll=1&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
+						$delete_all_url = append_sid("{$phpbb_root_path}planneradd2.$phpEx", "mode=delete&amp;calDelAll=1&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 					}
 				}
 				$events['U_EDIT'] = $edit_url;
