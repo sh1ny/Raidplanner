@@ -52,18 +52,14 @@
 		</copy>
 		<open src="styles/prosilver/imageset/en/imageset.cfg">
 			<edit>
-				<comment lang="en"><![CDATA[Define recurring event icons in imageset]]></comment>
-				<find><![CDATA[img_icon_post_edit = icon_post_edit.gif*20*42]]></find>
-				<action type="after-add"><![CDATA[img_icon_calendar_edit_all = planner/icon_calendar_edit_all.gif*20*61
-img_icon_calendar_delete_all = planner/icon_calendar_delete_all.gif*20*40]]></action>
-			</edit>
-			<edit>
 				<comment lang="en"><![CDATA[Define main calendar icons in imageset]]></comment>
 				<find><![CDATA[img_button_topic_reply = button_topic_reply.gif*25*96]]></find>
-				<action type="after-add"><![CDATA[img_button_calendar_new = planner/prosilver_new_star_icon.gif*12*12
-		img_button_calendar_day = planner/prosilver_day_icon.gif*12*12
-		img_button_calendar_week = planner/prosilver_week_icon.gif*12*12
-		img_button_calendar_month = planner/prosilver_month_icon.gif*12*12]]></action>
+				<action type="after-add"><![CDATA[img_button_raidplanner_new = planner/date_add.png*16*16
+img_button_raidplanner_day = planner/calendar_view_day.png*16*16
+img_button_raidplanner_week = planner/calendar_view_week.png*16*16
+img_button_raidplanner_month = planner/calendar_view_month.png*16*16
+img_icon_raidplanner_edit_all = planner/icon_calendar_edit_all.gif*20*61
+img_icon_raidplanner_delete_all = planner/icon_calendar_delete_all.gif*20*40]]></action>
 			</edit>
 		</open>
 		<open src="styles/prosilver/template/index_body.html">
@@ -126,16 +122,16 @@ img_icon_calendar_delete_all = planner/icon_calendar_delete_all.gif*20*40]]></ac
 		   Note the "text-align: left" was added because there were a few instances where the icons were cut in half... 
 		   adding the text align property helps reserve enough space to fully display the icon.
 		*/
-		.buttons div.calendar-new-icon	{ width: {IMG_BUTTON_CALENDAR_NEW_WIDTH}px; height: {IMG_BUTTON_CALENDAR_NEW_HEIGHT}px; text-align: left; }
-		.buttons div.calendar-day-icon	{ width: {IMG_BUTTON_CALENDAR_DAY_WIDTH}px; height: {IMG_BUTTON_CALENDAR_DAY_HEIGHT}px; text-align: left; }
-		.buttons div.calendar-week-icon	{ width: {IMG_BUTTON_CALENDAR_WEEK_WIDTH}px; height: {IMG_BUTTON_CALENDAR_WEEK_HEIGHT}px; text-align: left; }
-		.buttons div.calendar-month-icon	{ width: {IMG_BUTTON_CALENDAR_MONTH_WIDTH}px; height: {IMG_BUTTON_CALENDAR_MONTH_HEIGHT}px; text-align: left; }]]></action>
+		.buttons div.calendar-new-icon	{ width: {IMG_BUTTON_RAIDPLANNER_NEW_WIDTH}px; height: {IMG_BUTTON_RAIDPLANNER_NEW_HEIGHT}px; text-align: left; }
+		.buttons div.calendar-day-icon	{ width: {IMG_BUTTON_RAIDPLANNER_DAY_WIDTH}px; height: {IMG_BUTTON_RAIDPLANNER_DAY_HEIGHT}px; text-align: left; }
+		.buttons div.calendar-week-icon	{ width: {IMG_BUTTON_RAIDPLANNER_WEEK_WIDTH}px; height: {IMG_BUTTON_RAIDPLANNER_WEEK_HEIGHT}px; text-align: left; }
+		.buttons div.calendar-month-icon	{ width: {IMG_BUTTON_RAIDPLANNER_MONTH_WIDTH}px; height: {IMG_BUTTON_RAIDPLANNER_MONTH_HEIGHT}px; text-align: left; }]]></action>
 			</edit>
 			<edit>
 				<comment lang="en"><![CDATA[Add recurring event icons]]></comment>
 				<find><![CDATA[ul.profile-icons li.edit-icon	{ width: {IMG_ICON_POST_EDIT_WIDTH}px; height: {IMG_ICON_POST_EDIT_HEIGHT}px; }]]></find>
-				<action type="after-add"><![CDATA[ul.profile-icons li.edit-all-icon	{ width: {IMG_ICON_CALENDAR_EDIT_ALL_WIDTH}px; height: {IMG_ICON_CALENDAR_EDIT_ALL_HEIGHT}px; }
-		ul.profile-icons li.delete-all-icon	{ width: {IMG_ICON_CALENDAR_DELETE_ALL_WIDTH}px; height: {IMG_ICON_CALENDAR_DELETE_ALL_HEIGHT}px; }]]></action>
+				<action type="after-add"><![CDATA[ul.profile-icons li.edit-all-icon	{ width: {IMG_ICON_RAIDPLANNER_EDIT_ALL_WIDTH}px; height: {IMG_ICON_RAIDPLANNER_EDIT_ALL_HEIGHT}px; }
+		ul.profile-icons li.delete-all-icon	{ width: {IMG_ICON_RAIDPLANNER_DELETE_ALL_WIDTH}px; height: {IMG_ICON_RAIDPLANNER_DELETE_ALL_HEIGHT}px; }]]></action>
 			</edit>
 		</open>
 		<open src="styles/prosilver/theme/colours.css">
@@ -248,16 +244,16 @@ img_icon_calendar_delete_all = planner/icon_calendar_delete_all.gif*20*40]]></ac
 		   If you are trying to implement a style other then prosilver, look at how your existing style defines
 		   those icons, and do the same for the new calendar icons.
 		*/
-		.calendar-new-icon span 	{ background-image: url("{IMG_BUTTON_CALENDAR_NEW_SRC}") ;}
-		.calendar-day-icon span     { background-image: url("{IMG_BUTTON_CALENDAR_DAY_SRC}") ;}
-		.calendar-week-icon span    { background-image: url("{IMG_BUTTON_CALENDAR_WEEK_SRC}") ;}
-		.calendar-month-icon span   { background-image: url("{IMG_BUTTON_CALENDAR_MONTH_SRC}") ;}]]></action>
+		.calendar-new-icon span 	{ background-image: url("{IMG_BUTTON_RAIDPLANNER_NEW_SRC}") ;}
+		.calendar-day-icon span     { background-image: url("{IMG_BUTTON_RAIDPLANNER_DAY_SRC}") ;}
+		.calendar-week-icon span    { background-image: url("{IMG_BUTTON_RAIDPLANNER_WEEK_SRC}") ;}
+		.calendar-month-icon span   { background-image: url("{IMG_BUTTON_RAIDPLANNER_MONTH_SRC}") ;}]]></action>
 			</edit>
 			<edit>
 				<comment lang="en"><![CDATA[Define recurring event icon data]]></comment>
 				<find><![CDATA[.edit-icon, .edit-icon a			{ background-image: url("{IMG_ICON_POST_EDIT_SRC}"); }]]></find>
-				<action type="after-add"><![CDATA[.edit-all-icon, .edit-all-icon a			{ background-image: url("{IMG_ICON_CALENDAR_EDIT_ALL_SRC}"); }
-		.delete-all-icon, .delete-all-icon a			{ background-image: url("{IMG_ICON_CALENDAR_DELETE_ALL_SRC}"); }]]></action>
+				<action type="after-add"><![CDATA[.edit-all-icon, .edit-all-icon a			{ background-image: url("{IMG_ICON_RAIDPLANNER_EDIT_ALL_SRC}"); }
+		.delete-all-icon, .delete-all-icon a			{ background-image: url("{IMG_ICON_RAIDPLANNER_DELETE_ALL_SRC}"); }]]></action>
 			</edit>
 		</open>
 		<diy-instructions lang="en"><![CDATA[]]></diy-instructions>
