@@ -263,7 +263,7 @@ $versions = array(
 					),
                     'PRIMARY_KEY'	=> array('event_id')), 
               ),
-              
+
 			array('phpbb_rp_recurring_events', array(
 			         'COLUMNS'			=> array(
 			           'recurr_id'			=> array('INT:8', NULL, 'auto_increment' ),
@@ -297,7 +297,7 @@ $versions = array(
 			             'PRIMARY_KEY'	=> array('recurr_id')), 
 			        ),
                             
-			array( 'phpbb_rp_rsvps', array(
+			array( 'phpbb_rp_invite_responses', array(
                     'COLUMNS'			=> array(
                        'rsvp_id'			=> array('INT:8', NULL, 'auto_increment' ),
 					   'event_id' 			=> array('INT:8', 0),
@@ -345,8 +345,67 @@ $versions = array(
 						 'notify_stat'  => array('INDEX', 'notify_status'),
 						)
 					)),
+					
+			array( 'phpbb_rp_eventroles', array(
+                    'COLUMNS'			=> array(
+                       'eventdet_id'		=> array('INT:8', NULL, 'auto_increment' ),
+					   'event_id' 			=> array('INT:8', 0),
+					   'role_id' 			=> array('INT:8', 0),
+					   'role_needed' 		=> array('INT:8', 0),
+					),
+                    'PRIMARY_KEY'	=> array('eventdet_id')), 
+              ),              
+
+              array('phpbb_rp_roles' , array(
+                    'COLUMNS'        => array(
+                        'r_index'    		=> array('INT:8', NULL, 'auto_increment'),
+                        'role_id'   		=> array('INT:8', 0),
+                        'role_name'     	=> array('VCHAR_UNI', ''),
+                    ),
+                    'PRIMARY_KEY'    => 'r_index', 
+                    'KEYS'         => array('role_id'    => array('UNIQUE', 'role_id')),                  
+                    
+                ),
+            ),
 		),
 
+		 'table_row_insert'	=> array(
+		// inserting roles
+		array('phpbb_rp_roles',
+           array(
+           		  // ranged DPS
+                  array(
+                      'role_id' => 1,
+                      'role_name' => 'Ranged DPS', 
+                  		),
+                  
+           		  // Melee DPS                  
+                  array(
+                      'role_id' => 2,
+                      'role_name' => 'Melee DPS', 
+                  		),
+                  
+                  array(
+                      'role_id' => 3,
+                      'role_name' => 'Tank', 
+                  		),
+                  
+                  array(
+                      'role_id' => 4,
+                      'role_name' => 'Healer', 
+                  		),
+                  
+                  array(
+                      'role_id' => 5,
+                      'role_name' => 'Hybrid DPS/Heal', 
+                  		),
+                  
+                  array(
+                      'role_id' => 6,
+                      'role_name' => 'Hybrid Tank/Heal', 
+                  		),
+           ))),
+           
         'custom' => array('purgecaches'),
         
         ),

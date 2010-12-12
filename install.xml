@@ -227,6 +227,8 @@ define('RP_RECURRING_EVENTS_TABLE',	$table_prefix . 'rp_recurring_events');
 define('RP_RSVP_TABLE',				$table_prefix . 'rp_rsvps');
 define('RP_EVENTS_WATCH',			$table_prefix . 'rp_events_watch');
 define('RP_WATCH',					$table_prefix . 'rp_watch');
+define('RP_ROLES',					$table_prefix . 'rp_roles');
+define('RP_EVENTROLES',				$table_prefix . 'rp_eventroles');
 	]]></action>
 			</edit>
 		</open>
