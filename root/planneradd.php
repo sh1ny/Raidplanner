@@ -63,7 +63,7 @@ else
 	}
 	$event_data['event_id'] = 0;
 	$event_data['event_start_time'] = 0;
-	$event_data['event_end_time'] = 0;
+	
 	$event_data['etype_id'] = 0;
 	$event_data['event_subject'] = "";
 	$event_data['event_body'] = "";
@@ -175,7 +175,7 @@ if ($preview)
 
 	// translate event start and end time into user's timezone
 	$user_event_start = $event_data['event_start_time'] + $user->timezone + $user->dst;
-	$user_event_end = $event_data['event_end_time'] + $user->timezone + $user->dst;
+	
 
 	// Convert event comment into preview version with bbcode and all
 	$event_body = $event_data['event_body'];
@@ -206,7 +206,7 @@ if ($preview)
 			'PREVIEW_EVENT_IMAGE'	=> $preview_event_image,
 			'PREVIEW_MESSAGE'		=> $preview_message,
 			'PREVIEW_START_DATE'	=> $user->format_date($event_data['event_start_time']),
-			'PREVIEW_END_DATE'		=> $user->format_date($event_data['event_end_time']),
+		
 			'PREVIEW_POSTER'		=> $poster_url,
 			'PREVIEW_INVITED'		=> $invite_list,
 			
@@ -250,7 +250,7 @@ $event_data['event_body'] = str_replace( $temp_find_str, $temp_replace_str, $eve
 // populate form options...
 //-----------------------------------------
 
-//event types 
+//count events from bbdkp, put them in a pulldown...
 $e_type_sel_code  = "";
 for( $i = 0; $i < $newraid->available_etype_count; $i++ )
 {
@@ -293,6 +293,7 @@ for( $i = $newraid->date['year']; $i < ($newraid->date['year']+5); $i++ )
 {
 	$year_sel_code .= "<option value='".$i."'>".$i."</option>\n";
 }
+
 // Raid start time
 $hour_sel_code = "";
 $hour_mode = $config['rp_hour_mode'];
@@ -326,7 +327,6 @@ else
 	}
 }
 
-
 $min_sel_code = "";
 for( $i = 0; $i < 12; $i++ )
 {
@@ -339,6 +339,9 @@ for( $i = 0; $i < 12; $i++ )
 	$min_sel_code .= "<option value='".$t."'>".$o.$t."</option>\n";
 }
 
+/**
+ * Event recurrance
+ */
 $recurr_event_check = "";
 $recurr_event_freq_sel_code = "";
 $recurr_event_freq_val_code = "";
@@ -402,7 +405,6 @@ $cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".$newraid->date
 // check to see if we're editing an existing event
 if( sizeof($error) || $preview || $event_id > 0 )
 {
-
 	// translate event start and end time into user's timezone
 	$event_start = $event_data['event_start_time'] + $user->timezone + $user->dst;
 	$cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".gmdate('n', $event_start)."&amp;y=".gmdate('Y', $event_start) );
@@ -410,8 +412,7 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	//-----------------------------------------
 	// month selection data
 	//-----------------------------------------
-	$temp_find_str = "value='".gmdate('n', $event_end)."'";
-	$temp_replace_str = "value='".gmdate('n', $event_end)."' selected='selected'";
+
 	$end_month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $month_sel_code );
 	$temp_find_str = "name='calM' id='calM'";
 	$temp_replace_str = "name='calMEnd' id='calMEnd'";
@@ -424,8 +425,7 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	//-----------------------------------------
 	// day selection data
 	//-----------------------------------------
-	$temp_find_str = "value='".gmdate('j', $event_end)."'";
-	$temp_replace_str = "value='".gmdate('j', $event_end)."' selected='selected'";
+	
 	$end_day_sel_code = str_replace( $temp_find_str, $temp_replace_str, $day_sel_code );
 	$temp_find_str = "name='calD' id='calD'";
 	$temp_replace_str = "name='calDEnd' id='calDEnd'";
@@ -437,8 +437,7 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	//-----------------------------------------
 	// year selection data
 	//-----------------------------------------
-	$temp_find_str = "value='".gmdate('Y', $event_end)."'";
-	$temp_replace_str = "value='".gmdate('Y', $event_end)."' selected='selected'";
+	
 	$end_year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $year_sel_code );
 	$temp_find_str = "name='calY' id='calY'";
 	$temp_replace_str = "name='calYEnd' id='calYEnd'";
@@ -450,8 +449,7 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	//-----------------------------------------
 	// hour selection data
 	//-----------------------------------------
-	$temp_find_str = "value='".gmdate('G', $event_end)."'";
-	$temp_replace_str = "value='".gmdate('G', $event_end)."' selected='selected'";
+	
 	$end_hour_code = str_replace( $temp_find_str, $temp_replace_str, $hour_sel_code );
 	$temp_find_str = "name='calHr' id='calHr'";
 	$temp_replace_str = "name='calHrEnd' id='calHrEnd'";
@@ -463,8 +461,7 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	//-----------------------------------------
 	// minute selection data
 	//-----------------------------------------
-	$temp_find_str = "value='".gmdate('i', $event_end)."'";
-	$temp_replace_str = "value='".gmdate('i', $event_end)."' selected='selected'";
+	
 	$end_min_code = str_replace( $temp_find_str, $temp_replace_str, $min_sel_code );
 	$temp_find_str = "name='calMn' id='calMn'";
 	$temp_replace_str = "name='calMnEnd' id='calMnEnd'";
@@ -666,10 +663,7 @@ $template->assign_vars(array(
 	'WEEK_VIEW_URL'				=> $week_view_url,
 	'MONTH_VIEW_URL'			=> $month_view_url,
 
-	'S_TRACK_ATTENDANCE'		=> $event_data['s_track_attendance'],
-	'TRACK_ATTENDANCE_CHECK'		=> $track_attendance_check,
-	'TRACK_ATTENDANCE_CHECK_HIDDEN'	=> $track_attendance_check_hidden,
-
+	//'S_TRACK_ATTENDANCE'		=> $event_data['s_track_attendance'],
 
 	'S_RECURRING_OPTS'			=> $event_data['s_recurring_opts'],
 	'S_UPDATE_RECURRING_OPTIONS'=> $event_data['s_update_recurring_options'],
@@ -690,6 +684,7 @@ $img_status		= ($bbcode_status) ? true : false;
 $flash_status	= ($bbcode_status && $config['allow_post_flash']) ? true : false;
 $url_status		= ($config['allow_post_links']) ? true : false;
 $smilies_status	= ($bbcode_status && $config['allow_smilies']) ? true : false;
+
 if ($smilies_status)
 {
 	// Generate smiley listing
@@ -730,10 +725,6 @@ $template->set_filenames(array(
 make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
 
 page_footer();
-
-
-
-
 
 
 /***
@@ -974,7 +965,7 @@ function create_event($event_data, $newraid, $event_id)
 		$event_week_index = $event_data['week_index'];
 		$event_final_occ_time = $event_data['final_occ_time'];
 		$event_duration = 0;
-		$event_duration = $event_end_date - $event_data['event_start_time'];
+		
 		$poster_timezone = $event_data['poster_timezone'];
 		$poster_dst = $event_data['poster_dst'];
 
@@ -1021,7 +1012,7 @@ function create_event($event_data, $newraid, $event_id)
 				'etype_id'				=> (int) $event_data['etype_id'],
 				'sort_timestamp'		=> (int) $event_data['event_start_time'],
 				'event_start_time'		=> (int) $event_data['event_start_time'],
-				/*'event_end_time'		=> (int) $event_end_date,*/
+				
 				'event_day'				=> (string) $event_data['event_day'],
 				'event_subject'			=> (string) $event_data['event_subject'],
 				'event_body'			=> (string) $event_data['event_body'],
