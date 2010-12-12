@@ -95,18 +95,20 @@ $versions = array(
             array('m_raidplanner_edit_other_users_events', true),
             array('m_raidplanner_delete_other_users_events', true),
             array('m_raidplanner_edit_other_users_rsvps', true),
+            
             /* user */
-            array('u_raidplanner_view_headcount', true),
             array('u_raidplanner_view_events', true),
+            array('u_raidplanner_view_headcount', true),
             array('u_raidplanner_view_detailed_rsvps', true),
+            array('u_raidplanner_signup_events', true), 		            
             array('u_raidplanner_create_events', true),
             array('u_raidplanner_create_public_events', true),
             array('u_raidplanner_create_group_events', true),
             array('u_raidplanner_create_private_events', true),
-
             array('u_raidplanner_create_recurring_events', true),
             array('u_raidplanner_edit_events', true),
             array('u_raidplanner_delete_events', true),
+
       	),
       	
 		  // Assign default permissions 
@@ -130,6 +132,13 @@ $versions = array(
 			array('GLOBAL_MODERATORS', 'm_raidplanner_edit_other_users_rsvps', 'group', true),
 			
 			/*set user permissions */
+			// allows viewing raids
+			array('ADMINISTRATORS', 'u_raidplanner_view_events', 'group', true),
+			array('GLOBAL_MODERATORS', 'u_raidplanner_view_events', 'group', true),
+			array('REGISTERED', 'u_raidplanner_view_events', 'group', true),
+			array('NEWLY_REGISTERED', 'u_raidplanner_view_events', 'group', true),
+			array('GUESTS', 'u_raidplanner_view_events', 'group', true),
+			
 			// view raid participation		
 			array('ADMINISTRATORS', 'u_raidplanner_view_headcount', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_view_headcount', 'group', true),
@@ -139,13 +148,6 @@ $versions = array(
 			array('ADMINISTRATORS', 'u_raidplanner_view_detailed_rsvps', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_view_detailed_rsvps', 'group', true),
 			array('REGISTERED', 'u_raidplanner_view_detailed_rsvps', 'group', true),
-			
-			// allows viewing raids
-			array('ADMINISTRATORS', 'u_raidplanner_view_events', 'group', true),
-			array('GLOBAL_MODERATORS', 'u_raidplanner_view_events', 'group', true),
-			array('REGISTERED', 'u_raidplanner_view_events', 'group', true),
-			array('NEWLY_REGISTERED', 'u_raidplanner_view_events', 'group', true),
-			array('GUESTS', 'u_raidplanner_view_events', 'group', true),
 			
 			// allows signing up for an event or raid
 			array('ADMINISTRATORS', 'u_raidplanner_signup_events', 'group', true),
@@ -188,19 +190,19 @@ $versions = array(
 			array('ADMINISTRATORS', 'u_raidplanner_delete_events', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_delete_events', 'group', true),
 			array('REGISTERED', 'u_raidplanner_delete_events', 'group', true),
-
-			/* end set user pemissions */ 
+			
 
         ),
         
 		'module_add' => array(
-            array('acp', 'ACP_DKP_RAIDS', array(
+            /* hook acp module to dkp_raids */ 
+        	array('acp', 'ACP_DKP_RAIDS', array(
            		 'module_basename' => 'raidplanner',
             	 'modes'           => array('rp_settings') ,
         		),
         	 ), 
         	 
-            // hook new modules to the UCP_DKP ucp
+            // hook ucp module to ucp_dkp
 			array('ucp', 'UCP_DKP', array(
 					'module_basename'   => 'planner',
 					'module_mode'       => array('raidplanner_registration', 'raidplanner_myevents') ,

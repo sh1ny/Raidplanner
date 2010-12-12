@@ -42,12 +42,7 @@
 	</header>
 	<action-group>
 		<copy>
-			<file from="root/styles/prosilver/imageset/en/planner/icon_calendar_delete_all.gif" to="styles/prosilver/imageset/en/planner/icon_calendar_delete_all.gif"/>
-			<file from="root/styles/prosilver/imageset/en/planner/icon_calendar_edit_all.gif" to="styles/prosilver/imageset/en/planner/icon_calendar_edit_all.gif"/>
-			<file from="root/styles/prosilver/imageset/en/planner/prosilver_day_icon.gif" to="styles/prosilver/imageset/en/planner/prosilver_day_icon.gif"/>
-			<file from="root/styles/prosilver/imageset/en/planner/prosilver_month_icon.gif" to="styles/prosilver/imageset/en/planner/prosilver_month_icon.gif"/>
-			<file from="root/styles/prosilver/imageset/en/planner/prosilver_new_star_icon.gif" to="styles/prosilver/imageset/en/planner/prosilver_new_star_icon.gif"/>
-			<file from="root/styles/prosilver/imageset/en/planner/prosilver_week_icon.gif" to="styles/prosilver/imageset/en/planner/prosilver_week_icon.gif"/>
+			<file from="root/styles/prosilver/imageset/en/planner/*.*" to="styles/prosilver/imageset/en/planner/*.*"/>
 			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
 		</copy>
 		<open src="styles/prosilver/imageset/en/imageset.cfg">
