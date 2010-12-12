@@ -132,241 +132,50 @@ if( $event_id != 0 )
     }
 }
 
-// in submit and preview we need to gather the posted data...
+// in submit or preview we need to gather the posted data...
 if ($submit || $preview)
 {
 	
-	gather_eventdata($event_data, $s_date_time_opts, $newraid);
-
-    /*------------------------------------------------------------------
-      Store message/event
-    -------------------------------------------------------------------*/
-	if (!sizeof($error) && $submit)
+	gather_eventdata(&$event_data, &$newraid, $s_date_time_opts);
+	
+	if( $event_id > 0 )
 	{
-		if ($submit)
-		{
-			$poster_id = $event_data['poster_id'];
-			$etype_id = $event_data['etype_id'];
-
-			$event_body = $event_data['event_body'];
-			$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
-			$allow_bbcode = $allow_urls = $allow_smilies = true;
-			generate_text_for_storage($event_body, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
-
-			$event_subject = $event_data['event_subject'];
-			$event_subject = str_replace("\'", "''", $event_subject);
-
-			$event_group_id = $event_data['group_id'];
-			$event_group_id_list = $event_data['group_id_list'];
-			$event_access_level = $event_data['event_access_level'];
-
-			$event_is_recurring = $event_data['is_recurr'];
-			/*---------------------------------------------
-			   EDIT
-			---------------------------------------------*/
-			if( $event_id > 0 )
-			{
-				// we are only editing the one event
-				if( $s_date_time_opts )
-				{
-					$sql = 'UPDATE ' . RP_EVENTS_TABLE . '
-						SET ' . $db->sql_build_array('UPDATE', array(
-							'etype_id'				=> (int) $etype_id,
-							'sort_timestamp'		=> (int)$sort_timestamp,
-							'event_start_time'		=> (int) $event_start_date,
-							
-							'event_day'				=> (string) $event_day,
-							'event_subject'			=> (string) $event_subject,
-							'event_body'			=> (string) $event_body,
-							'poster_id'				=> (int) $poster_id,
-							'event_access_level'	=> (int) $event_access_level,
-							'group_id'				=> (int) $event_group_id,
-							'group_id_list'			=> (string) $event_group_id_list,
-							'bbcode_uid'			=> (string) $uid,
-							'bbcode_bitfield'		=> (string) $bitfield,
-							'enable_bbcode'			=> $allow_bbcode,
-							'enable_magic_url'		=> (int) $allow_urls,
-							'enable_smilies'		=> (int) $allow_smilies,
-							
-							
-							)) . "
-						WHERE event_id = $event_id";
-					$db->sql_query($sql);
-				}
-				// we are editing all occurrences of this event...
-				else
-				{
-					$recurr_id = $event_data['recurr_id'];
-					//start by updating the recurring events table
-					$sql = 'UPDATE ' . RP_RECURRING_EVENTS_TABLE . '
-						SET ' . $db->sql_build_array('UPDATE', array(
-							'etype_id'				=> (int) $etype_id,
-							'event_subject'			=> (string) $event_subject,
-							'event_body'			=> (string) $event_body,
-							'event_access_level'	=> (int) $event_access_level,
-							'group_id'				=> (int) $event_group_id,
-							'group_id_list'			=> (string) $event_group_id_list,
-							'enable_bbcode'			=> (int) $allow_bbcode,
-							'enable_smilies'		=> (int) $allow_smilies,
-							'enable_magic_url'		=> (int) $allow_urls,
-							'bbcode_bitfield'		=> (string) $bitfield,
-							'bbcode_uid'			=> (string) $uid,
-							
-							
-							)) . "
-						WHERE recurr_id = $recurr_id";
-					$db->sql_query($sql);
-
-					// now update all events of this occurence id
-					$sql = 'UPDATE ' . RP_EVENTS_TABLE . '
-						SET ' . $db->sql_build_array('UPDATE', array(
-							'etype_id'				=> (int) $etype_id,
-							'event_subject'			=> (string) $event_subject,
-							'event_body'			=> (string) $event_body,
-							'event_access_level'	=> (int) $event_access_level,
-							'group_id'				=> (int) $event_group_id,
-							'group_id_list'			=> (string) $event_group_id_list,
-							'bbcode_uid'			=> (string) $uid,
-							'bbcode_bitfield'		=> (string) $bitfield,
-							'enable_bbcode'			=> (int) $allow_bbcode,
-							'enable_magic_url'		=> (int) $allow_urls,
-							'enable_smilies'		=> (int) $allow_smilies,
-							
-							
-							)) . "
-						WHERE recurr_id = $recurr_id";
-					$db->sql_query($sql);
-				}
-				
-				$raidplanner= new displayplanner;
-				$raidplanner->calendar_add_or_update_reply($event_id, false );
-				
-			}
-			/*---------------------------------------------
-			   CREATE
-			---------------------------------------------*/
-			else
-			{
-				$recurr_id = 0;
-				/*----------------------------------------------------
-				   RECURRING EVENT: add it to the recurring
-				   event table and begin populating the events
-				----------------------------------------------------*/
-				if( $event_is_recurring == 1 )
-				{
-					$event_frequency_type = $event_data['frequency_type'];
-					$event_frequency = $event_data['frequency'];
-					$event_week_index = $event_data['week_index'];
-					$event_final_occ_time = $event_data['final_occ_time'];
-					$event_duration = 0;
-					$event_duration = $event_end_date - $event_start_date;
-					$poster_timezone = $event_data['poster_timezone'];
-					$poster_dst = $event_data['poster_dst'];
-
-					$sql = 'INSERT INTO ' . RP_RECURRING_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
-							'etype_id'				=> (int) $etype_id,
-							'frequency'				=> (int) $event_frequency,
-							'frequency_type'		=> (int) $event_frequency_type,
-							'first_occ_time'		=> (int) $sort_timestamp,
-							'final_occ_time'		=> (int) $event_final_occ_time,
-							'event_duration'		=> (int) $event_duration,
-							'week_index'			=> (int) $event_week_index,
-							'first_day_of_week'		=> (int) $event_data['first_day_of_week'],
-							'last_calc_time'		=> (int) 0,
-							'next_calc_time'		=> (int) $sort_timestamp,
-							'event_subject'			=> (string) $event_subject,
-							'event_body'			=> (string) $event_body,
-							'poster_id'				=> (int) $poster_id,
-							'poster_timezone'		=> (int) $poster_timezone,
-							'poster_dst'			=> (int) $poster_dst,
-							'event_access_level'	=> (int) $event_access_level,
-							'group_id'				=> (int) $event_group_id,
-							'group_id_list'			=> (string) $event_group_id_list,
-							'bbcode_uid'			=> (string) $uid,
-							'bbcode_bitfield'		=> (string) $bitfield,
-							'enable_bbcode'			=> (int) $allow_bbcode,
-							'enable_magic_url'		=> (int) $allow_urls,
-							'enable_smilies'		=> (int) $allow_smilies,
-							'track_rsvps'			=> (int) $event_track_rsps,
-							'allow_guests'			=> (int) $event_allow_guests,
-							)
-						);
-					$db->sql_query($sql);
-					$recurr_id = $db->sql_nextid();
-
-					$event_id = $newraid->populate_calendar( $recurr_id );
-
-				}
-				/*----------------------------------------------------
-				   NON-RECURRING EVENT: add it to the event table
-				----------------------------------------------------*/
-				else
-				{
-					$sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
-							'etype_id'				=> (int) $etype_id,
-							'sort_timestamp'		=> (int)$sort_timestamp,
-							'event_start_time'		=> (int) $event_start_date,
-							'event_end_time'		=> (int) $event_end_date,
-							'event_day'				=> (string) $event_day,
-							'event_subject'			=> (string) $event_subject,
-							'event_body'			=> (string) $event_body,
-							'poster_id'				=> (int) $poster_id,
-							'event_access_level'	=> (int) $event_access_level,
-							'group_id'				=> (int) $event_group_id,
-							'group_id_list'			=> (string) $event_group_id_list,
-							'bbcode_uid'			=> (string) $uid,
-							'bbcode_bitfield'		=> (string) $bitfield,
-							'enable_bbcode'			=> (int) $allow_bbcode,
-							'enable_magic_url'		=> (int) $allow_urls,
-							'enable_smilies'		=> (int) $allow_smilies,
-							'track_rsvps'			=> (int) $event_track_rsps,
-							'allow_guests'			=> (int) $event_allow_guests,
-							'recurr_id'				=> (int) $recurr_id,
-							)
-						);
-					$db->sql_query($sql);
-					$event_id = $db->sql_nextid();
-				}
-				$newraid->calendar_notify_new_event( $event_id );
-			}
-
-			/*---------------------------------------------
-			   Confirm create/edit and display results
-			---------------------------------------------*/
-			$main_calendar_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
-			$view_event_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$event_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
-
-			// by default you should show the user the newly created event - not the main calendar page
-			meta_refresh(3, $view_event_url);
-
-			if( $mode == 'edit' )
-			{
-				$message = $user->lang['EVENT_EDITED'] . '<br /><br />' . sprintf($user->lang['VIEW_EVENT'], '<a href="' . $view_event_url . '">', '</a>');
-
-			}
-			else
-			{
-				$message = $user->lang['EVENT_STORED'] . '<br /><br />' . sprintf($user->lang['VIEW_EVENT'], '<a href="' . $view_event_url . '">', '</a>');
-			}
-
-			$message .= '<br /><br />' . sprintf($user->lang['RETURN_CALENDAR'], '<a href="' . $main_calendar_url . '">', '</a>');
-			trigger_error($message);
-		}
+		edit_event(&$event_data, $newraid, $event_id );
 	}
+	else 
+	{
+		//pass zero event_id by reference to get it updated
+		create_event(&$event_data, &$newraid, &$event_id);
+	}
+	
+	$main_calendar_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+	$view_event_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$event_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+	
+	// by default you should show the user the newly created event - not the main calendar page
+	meta_refresh(3, $view_event_url);
+	
+	if( $mode == 'edit' )
+	{
+		$message = $user->lang['EVENT_EDITED'] . '<br /><br />' . sprintf($user->lang['VIEW_EVENT'], '<a href="' . $view_event_url . '">', '</a>');
+	
+	}
+	else
+	{
+		$message = $user->lang['EVENT_STORED'] . '<br /><br />' . sprintf($user->lang['VIEW_EVENT'], '<a href="' . $view_event_url . '">', '</a>');
+	}
+	
+	$message .= '<br /><br />' . sprintf($user->lang['RETURN_CALENDAR'], '<a href="' . $main_calendar_url . '">', '</a>');
+	trigger_error($message);
+	
 }
 
 // Preview
-if (!sizeof($error) && $preview)
+if ($preview)
 {
-	// Get the date/time info in the user display format
-	$start_date_txt = $user->format_date($event_data['event_start_time']);
-	$end_date_txt = $user->format_date($event_data['event_end_time']);
 
 	// translate event start and end time into user's timezone
 	$user_event_start = $event_data['event_start_time'] + $user->timezone + $user->dst;
 	$user_event_end = $event_data['event_end_time'] + $user->timezone + $user->dst;
-
-
 
 	// Convert event comment into preview version with bbcode and all
 	$event_body = $event_data['event_body'];
@@ -396,8 +205,8 @@ if (!sizeof($error) && $preview)
 			'PREVIEW_EVENT_COLOR'	=> $preview_event_color,
 			'PREVIEW_EVENT_IMAGE'	=> $preview_event_image,
 			'PREVIEW_MESSAGE'		=> $preview_message,
-			'PREVIEW_START_DATE'	=> $start_date_txt,
-			'PREVIEW_END_DATE'		=> $end_date_txt,
+			'PREVIEW_START_DATE'	=> $user->format_date($event_data['event_start_time']),
+			'PREVIEW_END_DATE'		=> $user->format_date($event_data['event_end_time']),
 			'PREVIEW_POSTER'		=> $poster_url,
 			'PREVIEW_INVITED'		=> $invite_list,
 			
@@ -409,11 +218,11 @@ if (!sizeof($error) && $preview)
 }
 
 
-/**********************************
+/******************************************************************************************************
  * 
  * build new Raid posting form
  * 
- **********************************/
+ ******************************************************************************************************/
 
 // action URL, include session_id for security purpose
 $s_action = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=$mode", true, $user->session_id);
@@ -923,6 +732,10 @@ make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
 page_footer();
 
 
+
+
+
+
 /***
  * function to build event array used for posting new event.
  * error checking is done
@@ -931,8 +744,11 @@ page_footer();
  * @returns : $event_data or trigger_error
  * 
  */
-function gather_eventdata( &$event_data, $s_date_time_opts, &$newraid)
+function gather_eventdata( $event_data, $newraid, $s_date_time_opts)
 {
+	global $user, $config; 
+	$error = array();
+	
 	$event_data['event_subject']= utf8_normalize_nfc(request_var('subject', '', true));
 	$event_data['event_body']	= utf8_normalize_nfc(request_var('message', '', true));
 	$event_data['etype_id']		= request_var('calEType', 0);
@@ -973,10 +789,7 @@ function gather_eventdata( &$event_data, $s_date_time_opts, &$newraid)
 	{
 		$start_hr = request_var('calHr', 0);
 		$start_mn = request_var('calMn', 0);
-		$event_start_date = gmmktime($start_hr, $start_mn, 0, $newraid->date['month_no'], $newraid->date['day'], $newraid->date['year'] ) - $user->timezone - $user->dst;
-		$sort_timestamp = $event_start_date;
-		$event_data['event_start_time'] = $event_start_date;
-		$event_day = $event_data['event_day'];
+		$event_data['event_start_time'] = gmmktime($start_hr, $start_mn, 0, $newraid->date['month_no'], $newraid->date['day'], $newraid->date['year'] ) - $user->timezone - $user->dst;
 	}
 
 	// DNSBL check
@@ -995,24 +808,11 @@ function gather_eventdata( &$event_data, $s_date_time_opts, &$newraid)
 	{
 	    $event_data['is_recurr'] = 1;
 		$event_data['frequency_type'] = request_var('calRFrqT', 1);
-		$poster_timestamp = $sort_timestamp;
 		switch ($event_data['frequency_type'])
 		{
 			case 2:
-			case 7:
-				$event_data['week_index'] = $newraid->find_week_index( $poster_timestamp, true, false, $event_data['first_day_of_week'] );
-				break;
-			case 3:
-			case 8:
-				$event_data['week_index'] = $newraid->find_week_index( $poster_timestamp, true, true, $event_data['first_day_of_week'] );
-				break;
 			case 4:
-			case 9:
-				$event_data['week_index'] = $newraid->find_week_index( $poster_timestamp, false, false, $event_data['first_day_of_week'] );
-				break;
-			case 5:
-			case 10:
-				$event_data['week_index'] = $newraid->find_week_index( $poster_timestamp, false, true, $event_data['first_day_of_week'] );
+				$event_data['week_index'] = $newraid->find_week_index( $event_data['event_start_time'], true, false, $event_data['first_day_of_week'] );
 				break;
 			default:
 				$event_data['week_index'] = 0;
@@ -1038,11 +838,11 @@ function gather_eventdata( &$event_data, $s_date_time_opts, &$newraid)
 			// on their last selected day, but not any day after
 			$event_data['final_occ_time'] = gmmktime(23, 59, 0, $final_occ_month, $final_occ_day, $final_occ_year ) - $user->timezone - $user->dst;
 			
-			if( $event_data['final_occ_time'] < $sort_timestamp )
+			if( $event_data['final_occ_time'] < $event_data['event_start_time'] )
 			{
 				$error[] = $user->lang['NEGATIVE_LENGTH_EVENT'];
 			}
-			else if( $event_data['final_occ_time'] == $sort_timestamp )
+			else if( $event_data['final_occ_time'] == $event_data['event_start_time'] )
 			{
 				$error[] = $user->lang['ZERO_LENGTH_EVENT'];
 			}
@@ -1054,8 +854,198 @@ function gather_eventdata( &$event_data, $s_date_time_opts, &$newraid)
 	    $event_data['is_recurr'] = 0;
 	}
 	
-	return $event_data;
+	if (!sizeof($error))
+	{
+		return $event_data;
+	}
 	
 }
+
+
+function edit_event($event_data, $newraid, $event_id)
+{
+	global $db;
+	
+	$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
+	$allow_bbcode = $allow_urls = $allow_smilies = true;
+	generate_text_for_storage($event_data['event_body'], $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+	
+	/*---------------------------------------------
+	   EDIT
+	---------------------------------------------*/
+	if( $event_id > 0 )
+	{
+		// we are only editing the one event
+		if( $s_date_time_opts )
+		{
+			$sql = 'UPDATE ' . RP_EVENTS_TABLE . '
+				SET ' . $db->sql_build_array('UPDATE', array(
+					'etype_id'				=> (int) $event_data['etype_id'],
+					'sort_timestamp'		=> (int) $event_data['event_start_time'],
+					'event_start_time'		=> (int) $event_data['event_start_time'],
+					'event_day'				=> (string) $event_data['event_day'],
+					'event_subject'			=> (string) $event_data['event_subject'],
+					'event_body'			=> (string) $event_data['event_body'],
+					'poster_id'				=> (int) $event_data['poster_id'],
+					'event_access_level'	=> (int) $event_data['event_access_level'],
+					'group_id'				=> (int) $event_data['group_id'],
+					'group_id_list'			=> (string) $event_data['group_id_list'],
+					'bbcode_uid'			=> (string) $uid,
+					'bbcode_bitfield'		=> (string) $bitfield,
+					'enable_bbcode'			=> $allow_bbcode,
+					'enable_magic_url'		=> (int) $allow_urls,
+					'enable_smilies'		=> (int) $allow_smilies,
+					
+					
+					)) . "
+				WHERE event_id = $event_id";
+			$db->sql_query($sql);
+		}
+		// we are editing all occurrences of this event...
+		else
+		{
+			$recurr_id = $event_data['recurr_id'];
+			//start by updating the recurring events table
+			$sql = 'UPDATE ' . RP_RECURRING_EVENTS_TABLE . '
+				SET ' . $db->sql_build_array('UPDATE', array(
+					'etype_id'				=> (int) $event_data['etype_id'],
+					'event_subject'			=> (string) $event_data['event_subject'],
+					'event_body'			=> (string) $event_data['event_body'],
+					'event_access_level'	=> (int) $event_data['event_access_level'],
+					'group_id'				=> (int) $event_data['group_id'],
+					'group_id_list'			=> (string) $event_data['group_id_list'],
+					'enable_bbcode'			=> (int) $allow_bbcode,
+					'enable_smilies'		=> (int) $allow_smilies,
+					'enable_magic_url'		=> (int) $allow_urls,
+					'bbcode_bitfield'		=> (string) $bitfield,
+					'bbcode_uid'			=> (string) $uid,
+					
+					
+					)) . "
+				WHERE recurr_id = $recurr_id";
+			$db->sql_query($sql);
+	
+			// now update all events of this occurence id
+			$sql = 'UPDATE ' . RP_EVENTS_TABLE . '
+				SET ' . $db->sql_build_array('UPDATE', array(
+					'etype_id'				=> (int) $event_data['etype_id'],
+					'event_subject'			=> (string) $event_data['event_subject'],
+					'event_body'			=> (string) $event_data['event_body'],
+					'event_access_level'	=> (int) $event_data['event_access_level'],
+					'group_id'				=> (int) $event_data['group_id'],
+					'group_id_list'			=> (string) $event_data['group_id_list'],
+					'bbcode_uid'			=> (string) $uid,
+					'bbcode_bitfield'		=> (string) $bitfield,
+					'enable_bbcode'			=> (int) $allow_bbcode,
+					'enable_magic_url'		=> (int) $allow_urls,
+					'enable_smilies'		=> (int) $allow_smilies,
+					
+					
+					)) . "
+				WHERE recurr_id = $recurr_id";
+			$db->sql_query($sql);
+		}
+		
+		$raidplanner= new displayplanner;
+		$raidplanner->calendar_add_or_update_reply($event_id, false );
+		
+	}
+	
+}
+
+
+function create_event($event_data, $newraid, $event_id)
+{
+	global $db;
+	
+	$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
+	$allow_bbcode = $allow_urls = $allow_smilies = true;
+	generate_text_for_storage($event_data['event_body'], $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+	$event_track_attendance = 0;
+	$recurr_id = 0;
+	/*----------------------------------------------------
+	   RECURRING EVENT: add it to the recurring
+	   event table and begin populating the events
+	----------------------------------------------------*/
+	if( $event_data['is_recurr'] == 1 )
+	{
+		$event_frequency_type = $event_data['frequency_type'];
+		$event_frequency = $event_data['frequency'];
+		$event_week_index = $event_data['week_index'];
+		$event_final_occ_time = $event_data['final_occ_time'];
+		$event_duration = 0;
+		$event_duration = $event_end_date - $event_data['event_start_time'];
+		$poster_timezone = $event_data['poster_timezone'];
+		$poster_dst = $event_data['poster_dst'];
+
+		$sql = 'INSERT INTO ' . RP_RECURRING_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				'etype_id'				=> (int) $event_data['etype_id'],
+				'frequency'				=> (int) $event_frequency,
+				'frequency_type'		=> (int) $event_frequency_type,
+				'first_occ_time'		=> (int) $event_data['event_start_time'],
+				'final_occ_time'		=> (int) $event_final_occ_time,
+				'event_duration'		=> (int) $event_duration,
+				'week_index'			=> (int) $event_week_index,
+				'first_day_of_week'		=> (int) $event_data['first_day_of_week'],
+				'last_calc_time'		=> (int) 0,
+				'next_calc_time'		=> (int) $event_data['event_start_time'],
+				'event_subject'			=> (string) $event_data['event_subject'],
+				'event_body'			=> (string) $event_data['event_body'],
+				'poster_id'				=> (int) $event_data['poster_id'],
+				'poster_timezone'		=> (int) $poster_timezone,
+				'poster_dst'			=> (int) $poster_dst,
+				'event_access_level'	=> (int) $event_data['event_access_level'],
+				'group_id'				=> (int) $event_data['group_id'],
+				'group_id_list'			=> (string) $event_data['group_id_list'],
+				'bbcode_uid'			=> (string) $uid,
+				'bbcode_bitfield'		=> (string) $bitfield,
+				'enable_bbcode'			=> (int) $allow_bbcode,
+				'enable_magic_url'		=> (int) $allow_urls,
+				'enable_smilies'		=> (int) $allow_smilies,
+				'track_rsvps'			=> (int) $event_track_attendance,
+				
+				)
+			);
+		$db->sql_query($sql);
+		$recurr_id = $db->sql_nextid();
+
+		$event_id = $newraid->populate_calendar( $recurr_id );
+
+	}
+	/*----------------------------------------------------
+	   NON-RECURRING EVENT: add it to the event table
+	----------------------------------------------------*/
+	else
+	{
+		$sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+				'etype_id'				=> (int) $event_data['etype_id'],
+				'sort_timestamp'		=> (int) $event_data['event_start_time'],
+				'event_start_time'		=> (int) $event_data['event_start_time'],
+				/*'event_end_time'		=> (int) $event_end_date,*/
+				'event_day'				=> (string) $event_data['event_day'],
+				'event_subject'			=> (string) $event_data['event_subject'],
+				'event_body'			=> (string) $event_data['event_body'],
+				'poster_id'				=> (int) $event_data['poster_id'],
+				'event_access_level'	=> (int) $event_data['event_access_level'],
+				'group_id'				=> (int) $event_data['group_id'],
+				'group_id_list'			=> (string) $event_data['group_id_list'],
+				'bbcode_uid'			=> (string) $uid,
+				'bbcode_bitfield'		=> (string) $bitfield,
+				'enable_bbcode'			=> (int) $allow_bbcode,
+				'enable_magic_url'		=> (int) $allow_urls,
+				'enable_smilies'		=> (int) $allow_smilies,
+				'track_rsvps'			=> (int) $event_track_attendance,
+				'recurr_id'				=> (int) $recurr_id,
+				)
+			);
+		$db->sql_query($sql);
+		$event_id = $db->sql_nextid();
+	}
+	$newraid->calendar_notify_new_event( $event_id );
+
+	
+	
+}
+
 
 ?>
