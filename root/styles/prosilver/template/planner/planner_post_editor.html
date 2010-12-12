@@ -1,27 +1,4 @@
 <script type="text/javascript">
-  function toggle_all_day_event()
-  {
-    if( document.postform.calAllDay.checked )
-    {
-      document.postform.calMEnd.disabled=true;
-      document.postform.calDEnd.disabled=true;
-      document.postform.calYEnd.disabled=true;
-      document.postform.calHr.disabled=true;
-      document.postform.calMn.disabled=true;
-      document.postform.calHrEnd.disabled=true;
-      document.postform.calMnEnd.disabled=true;
-    }
-    else
-    {
-      document.postform.calMEnd.disabled=false;
-      document.postform.calDEnd.disabled=false;
-      document.postform.calYEnd.disabled=false;
-      document.postform.calHr.disabled=false;
-      document.postform.calMn.disabled=false;
-      document.postform.calHrEnd.disabled=false;
-      document.postform.calMnEnd.disabled=false;
-    }
-  }
   function update_group_id_state()
   {
       if( document.getElementById('calELevel').value == 1 )
@@ -145,17 +122,11 @@
 	  var recurr_event_type_strings = new Array();
 	  recurr_event_type_strings[0] = "";
 	  recurr_event_type_strings[1] = "{L_RECURRING_EVENT_CASE_1}";
-	  recurr_event_type_strings[2] = "{L_RECURRING_EVENT_CASE_2}";
+	  recurr_event_type_strings[2] = "{L_RECURRING_EVENT_CASE_2}"; 
 	  recurr_event_type_strings[3] = "{L_RECURRING_EVENT_CASE_3}";
 	  recurr_event_type_strings[4] = "{L_RECURRING_EVENT_CASE_4}";
 	  recurr_event_type_strings[5] = "{L_RECURRING_EVENT_CASE_5}";
 	  recurr_event_type_strings[6] = "{L_RECURRING_EVENT_CASE_6}";
-	  recurr_event_type_strings[7] = "{L_RECURRING_EVENT_CASE_7}";
-	  recurr_event_type_strings[8] = "{L_RECURRING_EVENT_CASE_8}";
-	  recurr_event_type_strings[9] = "{L_RECURRING_EVENT_CASE_9}";
-	  recurr_event_type_strings[10] = "{L_RECURRING_EVENT_CASE_10}";
-	  recurr_event_type_strings[11] = "{L_RECURRING_EVENT_CASE_11}";
-	  recurr_event_type_strings[12] = "{L_RECURRING_EVENT_CASE_12}";
 
 	  function update_recurring_options()
 	  {
@@ -178,20 +149,11 @@
 			var y_string = document.getElementById('calRFrq').value;
 			var freq_type = document.getElementById('calRFrqT');
 
-			/* update this later */
 			var sel_week = selDate.getWeek();
-			var sel_week_from_end = 0;
-			var sel_week_of_full_weeks = 0;
-			var sel_week_of_full_weeks_from_end = 0;
-
 			var sel_week_string = number_strings[sel_week];
-			var sel_week_from_end_string = number_strings[sel_week_from_end];
-			var sel_week_of_full_weeks_string = number_strings[sel_week_of_full_weeks];
-			var sel_week_of_full_weeks_from_end_string = number_strings[sel_week_of_full_weeks_from_end];
-
 			var temp_recurr_event_type_strings = new Array();
 			var rtypeInx = 0;
-			for( rtypeInx = 0; rtypeInx < 13; rtypeInx++ )
+			for( rtypeInx = 0; rtypeInx < 7; rtypeInx++ )
 			{
 				temp_recurr_event_type_strings[rtypeInx] = recurr_event_type_strings[rtypeInx];
 			}
@@ -204,46 +166,19 @@
 			temp_recurr_event_type_strings[2] = temp_recurr_event_type_strings[2].replace(/\[Month Name\]/g, sel_month_string);
 			temp_recurr_event_type_strings[2] = temp_recurr_event_type_strings[2].replace(/\[Y\]/g, y_string);
 
-			temp_recurr_event_type_strings[3] = temp_recurr_event_type_strings[3].replace(/\[Xth\]/g, sel_week_of_full_weeks_string);
-			temp_recurr_event_type_strings[3] = temp_recurr_event_type_strings[3].replace(/\[Weekday Name\]/g, sel_week_day_string);
-			temp_recurr_event_type_strings[3] = temp_recurr_event_type_strings[3].replace(/\[Month Name\]/g, sel_month_string);
+			temp_recurr_event_type_strings[3] = temp_recurr_event_type_strings[3].replace(/\[Xth\]/g, sel_day_string);
 			temp_recurr_event_type_strings[3] = temp_recurr_event_type_strings[3].replace(/\[Y\]/g, y_string);
 
-			temp_recurr_event_type_strings[4] = temp_recurr_event_type_strings[4].replace(/\[Xth\]/g, sel_week_from_end_string);
+			temp_recurr_event_type_strings[4] = temp_recurr_event_type_strings[4].replace(/\[Xth\]/g, sel_week_string);
 			temp_recurr_event_type_strings[4] = temp_recurr_event_type_strings[4].replace(/\[Weekday Name\]/g, sel_week_day_string);
-			temp_recurr_event_type_strings[4] = temp_recurr_event_type_strings[4].replace(/\[Month Name\]/g, sel_month_string);
 			temp_recurr_event_type_strings[4] = temp_recurr_event_type_strings[4].replace(/\[Y\]/g, y_string);
 
-			temp_recurr_event_type_strings[5] = temp_recurr_event_type_strings[5].replace(/\[Xth\]/g, sel_week_of_full_weeks_from_end_string);
 			temp_recurr_event_type_strings[5] = temp_recurr_event_type_strings[5].replace(/\[Weekday Name\]/g, sel_week_day_string);
-			temp_recurr_event_type_strings[5] = temp_recurr_event_type_strings[5].replace(/\[Month Name\]/g, sel_month_string);
 			temp_recurr_event_type_strings[5] = temp_recurr_event_type_strings[5].replace(/\[Y\]/g, y_string);
 
-			temp_recurr_event_type_strings[6] = temp_recurr_event_type_strings[6].replace(/\[Xth\]/g, sel_day_string);
 			temp_recurr_event_type_strings[6] = temp_recurr_event_type_strings[6].replace(/\[Y\]/g, y_string);
 
-			temp_recurr_event_type_strings[7] = temp_recurr_event_type_strings[7].replace(/\[Xth\]/g, sel_week_string);
-			temp_recurr_event_type_strings[7] = temp_recurr_event_type_strings[7].replace(/\[Weekday Name\]/g, sel_week_day_string);
-			temp_recurr_event_type_strings[7] = temp_recurr_event_type_strings[7].replace(/\[Y\]/g, y_string);
-
-			temp_recurr_event_type_strings[8] = temp_recurr_event_type_strings[8].replace(/\[Xth\]/g, sel_week_of_full_weeks_string);
-			temp_recurr_event_type_strings[8] = temp_recurr_event_type_strings[8].replace(/\[Weekday Name\]/g, sel_week_day_string);
-			temp_recurr_event_type_strings[8] = temp_recurr_event_type_strings[8].replace(/\[Y\]/g, y_string);
-
-			temp_recurr_event_type_strings[9] = temp_recurr_event_type_strings[9].replace(/\[Xth\]/g, sel_week_from_end_string);
-			temp_recurr_event_type_strings[9] = temp_recurr_event_type_strings[9].replace(/\[Weekday Name\]/g, sel_week_day_string);
-			temp_recurr_event_type_strings[9] = temp_recurr_event_type_strings[9].replace(/\[Y\]/g, y_string);
-
-			temp_recurr_event_type_strings[10] = temp_recurr_event_type_strings[10].replace(/\[Xth\]/g, sel_week_of_full_weeks_from_end_string);
-			temp_recurr_event_type_strings[10] = temp_recurr_event_type_strings[10].replace(/\[Weekday Name\]/g, sel_week_day_string);
-			temp_recurr_event_type_strings[10] = temp_recurr_event_type_strings[10].replace(/\[Y\]/g, y_string);
-
-			temp_recurr_event_type_strings[11] = temp_recurr_event_type_strings[11].replace(/\[Weekday Name\]/g, sel_week_day_string);
-			temp_recurr_event_type_strings[11] = temp_recurr_event_type_strings[11].replace(/\[Y\]/g, y_string);
-
-			temp_recurr_event_type_strings[12] = temp_recurr_event_type_strings[12].replace(/\[Y\]/g, y_string);
-
-			for( rtypeInx = 1; rtypeInx < 13; rtypeInx++ )
+			for( rtypeInx = 1; rtypeInx < 7; rtypeInx++ )
 			{
 				freq_type.options[rtypeInx-1].innerHTML = temp_recurr_event_type_strings[rtypeInx];
 			}
@@ -299,41 +234,48 @@
 		<dt><label for="subject">{L_SUBJECT}:</label></dt>
 		<dd><input type="text" name="subject" id="subject" size="45" maxlength="60" tabindex="2" value="{SUBJECT}" class="inputbox autowidth" /></dd>
 	</dl>
-
 	<dl style="clear: left;">
 		<dt><label for="calEType">{L_EVENT_TYPE}:</label></dt>
-		<dd>{EVENT_TYPE_SEL}</dd>
+		<dd>
+			<select name='calEType' id='calEType'>{EVENT_TYPE_SEL}</select>
+	    </dd>
 	</dl>
 	<dl style="clear: left;">
 		<dt><label for="calELevel">{L_EVENT_ACCESS_LEVEL}:</label></dt>
-		<dd>{EVENT_ACCESS_LEVEL_SEL}</dd>
+		<dd><select name='calELevel' id='calELevel' onchange='update_group_id_state();'>
+		{EVENT_ACCESS_LEVEL_SEL}
+		</select>
+		</dd>
 	</dl>
 	<dl style="clear: left;">
 		<dt><label for="calGroupId">{L_EVENT_GROUP}:</label></dt>
 		<dd>{EVENT_GROUP_SEL}</dd>
 	</dl>
 	<hr />
+	
+	
+	
 	<!-- IF S_DATE_TIME_OPTS -->
 		<dl style="clear: left;">
 			<dt><label for="calM">{L_START_DATE}:</label></dt>
-			<dd>{MONTH_SEL} {DAY_SEL} {YEAR_SEL}</dd>
+			<dd><select name='calM' id='calM'>
+				{MONTH_SEL}
+				</select>
+				<select name='calD' id='calD'>
+		 		{DAY_SEL}
+		 		</select>
+		  		<select name='calY' id='calY'>{YEAR_SEL}
+		  		</select>
+		  	</dd>
 		</dl>
 		<dl style="clear: left;">
 			<dt><label for="calHr">{L_START_TIME}:</label></dt>
-			<dd>{START_HOUR_SEL} {START_MIN_SEL}</dd>
+			<dd>
+				<select name='calHr' id='calHr'>{START_HOUR_SEL}</select>
+				<select name='calMn' id='calMn'>{START_MIN_SEL}</select>
+			</dd>
 		</dl>
-		<dl style="clear: left;">
-			<dt><label>{L_ALL_DAY}:</label></dt>
-			<dd>{ALL_DAY_CHECK}</dd>
-		</dl>
-		<dl style="clear: left;">
-			<dt><label for="calMEnd">{L_END_DATE}:</label></dt>
-			<dd>{END_MONTH_SEL} {END_DAY_SEL} {END_YEAR_SEL}</dd>
-		</dl>
-		<dl style="clear: left;">
-			<dt><label for="calHrEnd">{L_END_TIME}:</label></dt>
-			<dd>{END_HOUR_SEL} {END_MIN_SEL}</dd>
-		</dl>
+
 			<!-- IF S_RECURRING_OPTS -->
 			<hr />
 			
@@ -359,7 +301,7 @@
 			<input type="hidden" name="calEditAll" id="calEditAll" value="1">
 	<!-- ENDIF -->
 
-	<!-- IF S_TRACK_RSVPS -->
+	<!-- IF S_TRACK_ATTENDANCE -->
 	<dl style="clear: left;">
 		<dt><label>{L_TRACK_RSVPS}:</label></dt>
 		<dd>{TRACK_RSVP_CHECK}</dd>

@@ -224,7 +224,7 @@ is created, but no new notifications for new events are sent until they re-visit
 				<find><![CDATA[// RAIDPLANNER]]></find>
 				<action type="after-add"><![CDATA[	define('RP_EVENTS_TABLE',			$table_prefix . 'rp_events');
 define('RP_RECURRING_EVENTS_TABLE',	$table_prefix . 'rp_recurring_events');
-define('RP_RSVP_TABLE',				$table_prefix . 'rp_rsvps');
+define('RP_ATTENDEE_TABLE',			$table_prefix . 'rp_invite_responses');
 define('RP_EVENTS_WATCH',			$table_prefix . 'rp_events_watch');
 define('RP_WATCH',					$table_prefix . 'rp_watch');
 define('RP_ROLES',					$table_prefix . 'rp_roles');
