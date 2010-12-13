@@ -119,7 +119,7 @@ if ($mode == 'delete')
 
 /*---------------------------------------------------------
   If in edit mode, we need to find out if we are editing
-  one event, or all events... BEFORE we start querying
+  one event, or all recurring events... BEFORE we start querying
   all the submitted data!
 ---------------------------------------------------------*/
 $s_date_time_opts = true;
