@@ -219,7 +219,7 @@
   <!-- ENDIF -->
 
   </script>
-
+  <h3>{L_POST_A}</h3>
   <fieldset class="fields1">
 	<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
 
@@ -251,17 +251,20 @@
 		<dt><label for="calGroupId">{L_EVENT_GROUP}:</label></dt>
 		<dd>{EVENT_GROUP_SEL}</dd>
 	</dl>
-
+	
+	
+	<h3>Raid roles</h3>
 	<dl style="clear: left;">
-		<dt><label for="subject">{L_SUBJECT}:</label></dt>
-		<dd><input type="text" name="subject" id="subject" size="45" maxlength="60" tabindex="2" value="{SUBJECT}" class="inputbox autowidth" /></dd>
+	<!-- BEGIN raidroles -->
+		<dt><label for="subject">{raidroles.ROLE_NAME}:</label></dt>
+		<dd><input type="hidden" name="role[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" /><input type="text" name="role_needed[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED}" class="inputbox autowidth" /></dd>
+	<!-- END raidroles -->
 	</dl>
 
-	<hr />
-	
 	
 	
 	<!-- IF S_DATE_TIME_OPTS -->
+	<h3>Raid time</h3>
 		<dl style="clear: left;">
 			<dt><label for="calM">{L_START_DATE}:</label></dt>
 			<dd><select name='calM' id='calM'>

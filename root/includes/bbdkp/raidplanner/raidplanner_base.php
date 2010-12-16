@@ -48,9 +48,9 @@ class raidplanner_base
 	
 	/*
 	 * checks if a user has right to post a new raid
-	 * 
+	 * @param byref : $event_data
 	 */
-	public function authcheck($mode, $submit, $event_data, $event_id)
+	public function authcheck($mode, $submit, &$event_data, $event_id)
 	{
 		global $user, $auth; 
 		$is_authed = false;

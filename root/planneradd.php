@@ -24,7 +24,7 @@ $newraid= new raidplanner_population();
 $user->session_begin();
 $auth->acl($user->data);
 
-// Language file (see documentation related to language files)
+// Language files 
 $user->setup('posting');
 $user->add_lang ( array ('posting', 'mods/dkp_common','mods/raidplanner'  ));
 // Grab only parameters needed here
@@ -97,7 +97,7 @@ if( $mode == 'smilies' )
 /*-------------------------------------
   begin permission checking
 -------------------------------------*/
-$newraid->authcheck($mode, $submit, &$event_data, $event_id);
+$newraid->authcheck($mode, $submit, $event_data, $event_id);
 		
 /*-------------------------------------
   Handle delete mode...
@@ -115,7 +115,6 @@ if ($mode == 'delete')
 	}
 	exit;
 }
-
 
 /*---------------------------------------------------------
   If in edit mode, we need to find out if we are editing
@@ -136,16 +135,16 @@ if( $event_id != 0 )
 if ($submit || $preview)
 {
 	
-	gather_eventdata(&$event_data, &$newraid, $s_date_time_opts);
+	$newraid->gather_eventdata($event_data, $newraid, $s_date_time_opts);
 	
 	if( $event_id > 0 )
 	{
-		edit_event(&$event_data, $newraid, $event_id );
+		$newraid->edit_event($event_data, $newraid, $event_id );
 	}
 	else 
 	{
 		//pass zero event_id by reference to get it updated
-		create_event(&$event_data, &$newraid, &$event_id);
+		$newraid->create_event($event_data, $newraid, $event_id);
 	}
 	
 	$main_calendar_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
@@ -157,7 +156,6 @@ if ($submit || $preview)
 	if( $mode == 'edit' )
 	{
 		$message = $user->lang['EVENT_EDITED'] . '<br /><br />' . sprintf($user->lang['VIEW_EVENT'], '<a href="' . $view_event_url . '">', '</a>');
-	
 	}
 	else
 	{
@@ -172,7 +170,6 @@ if ($submit || $preview)
 // Preview
 if ($preview)
 {
-
 	// translate event start and end time into user's timezone
 	$user_event_start = $event_data['event_start_time'] + $user->timezone + $user->dst;
 	
@@ -216,7 +213,6 @@ if ($preview)
 		);
 	}
 }
-
 
 /******************************************************************************************************
  * 
@@ -274,6 +270,45 @@ if( $auth->acl_get('u_raidplanner_create_private_events') )
 	$level_sel_code .= "<option value='0'>".$user->lang['EVENT_ACCESS_LEVEL_PERSONAL']."</option>\n";
 }
 
+//get raid roles needed
+if( $event_id != 0 )
+{
+	$sql_array = array(
+	    'SELECT'    => 'r.role_id, r.role_name, er.role_needed ', 
+	    'FROM'      => array(
+	        RP_ROLES   => 'r'
+	    ),
+	    'LEFT_JOIN' => array(
+	        array(
+	            'FROM'  => array( RP_EVENTROLES  => 'er'),
+	            'ON'    => 'r.role_id = er.role_id AND er.event_id = ' . $event_id  
+	        )
+	    ),
+	    'ORDER_BY'  => 'r.role_id'
+	);
+}
+else 
+{
+	$sql_array = array(
+	    'SELECT'    => 'r.role_id, r.role_name, 0 as role_needed ', 
+	    'FROM'      => array(
+	        RP_ROLES   => 'r'
+	    ),
+	    'ORDER_BY'  => 'r.role_id'
+	);
+	
+}
+$sql = $db->sql_build_query('SELECT', $sql_array);
+$result = $db->sql_query($sql);
+while ($row = $db->sql_fetchrow($result))
+{
+    $template->assign_block_vars('raidroles', array(
+        'ROLE_ID'        => $row['role_id'],
+	    'ROLE_NAME'      => $row['role_name'],
+	    'ROLE_NEEDED'    => $row['role_needed'],
+    ));
+}
+$db->sql_freeresult($result);
 
 // Raid start date
 $month_sel_code  = " ";
@@ -418,7 +453,6 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	$temp_replace_str = "name='calMEnd' id='calMEnd'";
 	$end_month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_month_sel_code );
 	$temp_find_str = "value='".gmdate('n', $event_start)."'";
-
 	$temp_replace_str = "value='".gmdate('n', $event_start)."' selected='selected'";
 	$month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $month_sel_code );
 
@@ -727,316 +761,7 @@ make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
 page_footer();
 
 
-/***
- * function to build event array used for posting new event.
- * error checking is done
- * 
- * @param : &event_data byref
- * @returns : $event_data or trigger_error
- * 
- */
-function gather_eventdata( $event_data, $newraid, $s_date_time_opts)
-{
-	global $user, $config; 
-	$error = array();
-	
-	$event_data['event_subject']= utf8_normalize_nfc(request_var('subject', '', true));
-	$event_data['event_body']	= utf8_normalize_nfc(request_var('message', '', true));
-	$event_data['etype_id']		= request_var('calEType', 0);
-	$event_data['group_id'] = 0;
-	$event_data['group_id_list'] = ",";
-	$group_id_array = request_var('calGroupId', array(0));
-	$num_group_ids = sizeof( $group_id_array );
-    if( $num_group_ids == 1 )
-    {
-		$event_data['group_id'] = $group_id_array[0];
 
-    }
-	else if( $num_group_ids > 1 )
-	{
-		$group_index = 0;
-		for( $group_index = 0; $group_index < $num_group_ids; $group_index++ )
-		{
-		    if( $group_id_array[$group_index] == "" )
-		    {
-		    	continue;
-		    }
-		    $event_data['group_id_list'] .= $group_id_array[$group_index] . ",";
-		}
-	}
-	$event_data['event_access_level']	= request_var('calELevel', 0);
-	if( $event_data['event_access_level'] == 1 && $num_group_ids < 1 )
-	{
-		$error[] = $user->lang['NO_GROUP_SELECTED'];
-	}
-
-    /*------------------------------------------------------------------
-      Begin to find start/end times
-      NOTE: if s_date_time_opts is false we are editing all events and
-            there will not be any data to get
-    -------------------------------------------------------------------*/
-	
-	if( $s_date_time_opts )
-	{
-		$start_hr = request_var('calHr', 0);
-		$start_mn = request_var('calMn', 0);
-		$event_data['event_start_time'] = gmmktime($start_hr, $start_mn, 0, $newraid->date['month_no'], $newraid->date['day'], $newraid->date['year'] ) - $user->timezone - $user->dst;
-	}
-
-	// DNSBL check
-	if ($config['check_dnsbl'] )
-	{
-		if (($dnsbl = $user->check_dnsbl('post')) !== false)
-		{
-			$error[] = sprintf($user->lang['IP_BLACKLISTED'], $user->ip, $dnsbl[1]);
-		}
-	}
-
-    /*------------------------------------------------------------------
-      Check options for recurring events
-    -------------------------------------------------------------------*/
-	if( request_var('calIsRecurr', '') == "ON" )
-	{
-	    $event_data['is_recurr'] = 1;
-		$event_data['frequency_type'] = request_var('calRFrqT', 1);
-		switch ($event_data['frequency_type'])
-		{
-			case 2:
-			case 4:
-				$event_data['week_index'] = $newraid->find_week_index( $event_data['event_start_time'], true, false, $event_data['first_day_of_week'] );
-				break;
-			default:
-				$event_data['week_index'] = 0;
-				break;
-		}
-
-
-		$event_data['frequency'] = request_var('calRFrq', 1);
-		if( $event_data['frequency'] < 1 )
-		{
-			$error[] = $user->lang['FREQUENCEY_LESS_THAN_1'];
-		}
-		$final_occ_month = request_var('calRMEnd', 0);
-		$final_occ_day = request_var('calRDEnd', 0);
-		$final_occ_year = request_var('calRYEnd', 0);
-		if( $final_occ_month == 0 || $final_occ_month == 0 || $final_occ_month == 0 )
-		{
-			$event_data['final_occ_time'] = 0;
-		}
-		else
-		{
-			// we want to use the last minute of their selected day so we will populate events
-			// on their last selected day, but not any day after
-			$event_data['final_occ_time'] = gmmktime(23, 59, 0, $final_occ_month, $final_occ_day, $final_occ_year ) - $user->timezone - $user->dst;
-			
-			if( $event_data['final_occ_time'] < $event_data['event_start_time'] )
-			{
-				$error[] = $user->lang['NEGATIVE_LENGTH_EVENT'];
-			}
-			else if( $event_data['final_occ_time'] == $event_data['event_start_time'] )
-			{
-				$error[] = $user->lang['ZERO_LENGTH_EVENT'];
-			}
-		}
-
-	}
-	else
-	{
-	    $event_data['is_recurr'] = 0;
-	}
-	
-	if (!sizeof($error))
-	{
-		return $event_data;
-	}
-	
-}
-
-
-function edit_event($event_data, $newraid, $event_id)
-{
-	global $db;
-	
-	$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
-	$allow_bbcode = $allow_urls = $allow_smilies = true;
-	generate_text_for_storage($event_data['event_body'], $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
-	
-	/*---------------------------------------------
-	   EDIT
-	---------------------------------------------*/
-	if( $event_id > 0 )
-	{
-		// we are only editing the one event
-		if( $s_date_time_opts )
-		{
-			$sql = 'UPDATE ' . RP_EVENTS_TABLE . '
-				SET ' . $db->sql_build_array('UPDATE', array(
-					'etype_id'				=> (int) $event_data['etype_id'],
-					'sort_timestamp'		=> (int) $event_data['event_start_time'],
-					'event_start_time'		=> (int) $event_data['event_start_time'],
-					'event_day'				=> (string) $event_data['event_day'],
-					'event_subject'			=> (string) $event_data['event_subject'],
-					'event_body'			=> (string) $event_data['event_body'],
-					'poster_id'				=> (int) $event_data['poster_id'],
-					'event_access_level'	=> (int) $event_data['event_access_level'],
-					'group_id'				=> (int) $event_data['group_id'],
-					'group_id_list'			=> (string) $event_data['group_id_list'],
-					'bbcode_uid'			=> (string) $uid,
-					'bbcode_bitfield'		=> (string) $bitfield,
-					'enable_bbcode'			=> $allow_bbcode,
-					'enable_magic_url'		=> (int) $allow_urls,
-					'enable_smilies'		=> (int) $allow_smilies,
-					
-					
-					)) . "
-				WHERE event_id = $event_id";
-			$db->sql_query($sql);
-		}
-		// we are editing all occurrences of this event...
-		else
-		{
-			$recurr_id = $event_data['recurr_id'];
-			//start by updating the recurring events table
-			$sql = 'UPDATE ' . RP_RECURRING_EVENTS_TABLE . '
-				SET ' . $db->sql_build_array('UPDATE', array(
-					'etype_id'				=> (int) $event_data['etype_id'],
-					'event_subject'			=> (string) $event_data['event_subject'],
-					'event_body'			=> (string) $event_data['event_body'],
-					'event_access_level'	=> (int) $event_data['event_access_level'],
-					'group_id'				=> (int) $event_data['group_id'],
-					'group_id_list'			=> (string) $event_data['group_id_list'],
-					'enable_bbcode'			=> (int) $allow_bbcode,
-					'enable_smilies'		=> (int) $allow_smilies,
-					'enable_magic_url'		=> (int) $allow_urls,
-					'bbcode_bitfield'		=> (string) $bitfield,
-					'bbcode_uid'			=> (string) $uid,
-					
-					
-					)) . "
-				WHERE recurr_id = $recurr_id";
-			$db->sql_query($sql);
-	
-			// now update all events of this occurence id
-			$sql = 'UPDATE ' . RP_EVENTS_TABLE . '
-				SET ' . $db->sql_build_array('UPDATE', array(
-					'etype_id'				=> (int) $event_data['etype_id'],
-					'event_subject'			=> (string) $event_data['event_subject'],
-					'event_body'			=> (string) $event_data['event_body'],
-					'event_access_level'	=> (int) $event_data['event_access_level'],
-					'group_id'				=> (int) $event_data['group_id'],
-					'group_id_list'			=> (string) $event_data['group_id_list'],
-					'bbcode_uid'			=> (string) $uid,
-					'bbcode_bitfield'		=> (string) $bitfield,
-					'enable_bbcode'			=> (int) $allow_bbcode,
-					'enable_magic_url'		=> (int) $allow_urls,
-					'enable_smilies'		=> (int) $allow_smilies,
-					
-					
-					)) . "
-				WHERE recurr_id = $recurr_id";
-			$db->sql_query($sql);
-		}
-		
-		$raidplanner= new displayplanner;
-		$raidplanner->calendar_add_or_update_reply($event_id, false );
-		
-	}
-	
-}
-
-
-function create_event($event_data, $newraid, $event_id)
-{
-	global $db;
-	
-	$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
-	$allow_bbcode = $allow_urls = $allow_smilies = true;
-	generate_text_for_storage($event_data['event_body'], $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
-	$event_track_attendance = 0;
-	$recurr_id = 0;
-	/*----------------------------------------------------
-	   RECURRING EVENT: add it to the recurring
-	   event table and begin populating the events
-	----------------------------------------------------*/
-	if( $event_data['is_recurr'] == 1 )
-	{
-		$event_frequency_type = $event_data['frequency_type'];
-		$event_frequency = $event_data['frequency'];
-		$event_week_index = $event_data['week_index'];
-		$event_final_occ_time = $event_data['final_occ_time'];
-		$event_duration = 0;
-		
-		$poster_timezone = $event_data['poster_timezone'];
-		$poster_dst = $event_data['poster_dst'];
-
-		$sql = 'INSERT INTO ' . RP_RECURRING_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
-				'etype_id'				=> (int) $event_data['etype_id'],
-				'frequency'				=> (int) $event_frequency,
-				'frequency_type'		=> (int) $event_frequency_type,
-				'first_occ_time'		=> (int) $event_data['event_start_time'],
-				'final_occ_time'		=> (int) $event_final_occ_time,
-				'event_duration'		=> (int) $event_duration,
-				'week_index'			=> (int) $event_week_index,
-				'first_day_of_week'		=> (int) $event_data['first_day_of_week'],
-				'last_calc_time'		=> (int) 0,
-				'next_calc_time'		=> (int) $event_data['event_start_time'],
-				'event_subject'			=> (string) $event_data['event_subject'],
-				'event_body'			=> (string) $event_data['event_body'],
-				'poster_id'				=> (int) $event_data['poster_id'],
-				'poster_timezone'		=> (int) $poster_timezone,
-				'poster_dst'			=> (int) $poster_dst,
-				'event_access_level'	=> (int) $event_data['event_access_level'],
-				'group_id'				=> (int) $event_data['group_id'],
-				'group_id_list'			=> (string) $event_data['group_id_list'],
-				'bbcode_uid'			=> (string) $uid,
-				'bbcode_bitfield'		=> (string) $bitfield,
-				'enable_bbcode'			=> (int) $allow_bbcode,
-				'enable_magic_url'		=> (int) $allow_urls,
-				'enable_smilies'		=> (int) $allow_smilies,
-				'track_rsvps'			=> (int) $event_track_attendance,
-				
-				)
-			);
-		$db->sql_query($sql);
-		$recurr_id = $db->sql_nextid();
-
-		$event_id = $newraid->populate_calendar( $recurr_id );
-
-	}
-	/*----------------------------------------------------
-	   NON-RECURRING EVENT: add it to the event table
-	----------------------------------------------------*/
-	else
-	{
-		$sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
-				'etype_id'				=> (int) $event_data['etype_id'],
-				'sort_timestamp'		=> (int) $event_data['event_start_time'],
-				'event_start_time'		=> (int) $event_data['event_start_time'],
-				
-				'event_day'				=> (string) $event_data['event_day'],
-				'event_subject'			=> (string) $event_data['event_subject'],
-				'event_body'			=> (string) $event_data['event_body'],
-				'poster_id'				=> (int) $event_data['poster_id'],
-				'event_access_level'	=> (int) $event_data['event_access_level'],
-				'group_id'				=> (int) $event_data['group_id'],
-				'group_id_list'			=> (string) $event_data['group_id_list'],
-				'bbcode_uid'			=> (string) $uid,
-				'bbcode_bitfield'		=> (string) $bitfield,
-				'enable_bbcode'			=> (int) $allow_bbcode,
-				'enable_magic_url'		=> (int) $allow_urls,
-				'enable_smilies'		=> (int) $allow_smilies,
-				'track_rsvps'			=> (int) $event_track_attendance,
-				'recurr_id'				=> (int) $recurr_id,
-				)
-			);
-		$db->sql_query($sql);
-		$event_id = $db->sql_nextid();
-	}
-	$newraid->calendar_notify_new_event( $event_id );
-
-	
-	
-}
 
 
 ?>
