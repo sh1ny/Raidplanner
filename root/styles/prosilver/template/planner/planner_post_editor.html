@@ -1,3 +1,4 @@
+
 <script type="text/javascript">
   function update_group_id_state()
   {
@@ -24,21 +25,6 @@
 	    return WN;
 	}
 
-  <!-- IF S_TRACK_RSVPS -->
-    <!-- IF S_ALLOW_GUESTS -->
-	  function update_allow_guest_state()
-	  {
-		  if( document.postform.calTrackRsvps.checked )
-		  {
-			  document.getElementById('calAllowGuests').disabled=false;
-		  }
-		  else
-		  {
-			  document.getElementById('calAllowGuests').disabled=true;
-		  }
-	  }
-    <!-- ENDIF -->
-  <!-- ENDIF -->
   <!-- IF S_RECURRING_OPTS -->
   function update_recurr_state()
   {
@@ -219,20 +205,35 @@
   <!-- ENDIF -->
 
   </script>
-  <h3>{L_POST_A}</h3>
-  <fieldset class="fields1">
-	<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
-
-	<!-- IF S_DELETE_ALLOWED -->
-	<dl>
-		<dt><label for="delete">{L_DELETE_POST}:</label></dt>
-		<dd><label for="delete"><input type="checkbox" name="delete" id="delete" /> {L_DELETE_POST_WARN}</label></dd>
+  <div>
+  <!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+  <!-- IF S_POST_ACTION -->
+ <div style="width:50%; height: 200px; float: right; ">
+	<fieldset class="fields1">
+		<dl style="clear: left;">
+	<!-- BEGIN raidroles -->
+		<dt><label for="subject">{raidroles.ROLE_NAME}:</label></dt>
+		<dd><input type="hidden" name="role[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" /><input type="text" name="role_needed[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED}" class="inputbox autowidth" /></dd>
+	<!-- END raidroles -->
 	</dl>
+	
+	<!-- IF S_TRACK_ATTENDANCE -->
+		<dl style="clear: left;">
+			<dt><label>{L_TRACK_RSVPS}:</label></dt>
+			<dd>{TRACK_RSVP_CHECK}</dd>
+		</dl>
+		<!-- ELSE -->
+		{TRACK_RSVP_CHECK_HIDDEN}{ALLOW_GUEST_CHECK_HIDDEN}
 	<!-- ENDIF -->
-	<!-- IF S_POST_ACTION -->
-	<dl style="clear: left;">
+	
+	</fieldset>
+	</div>
+  
+ <div style="width:50%; height: 200px; float: left;">
+  <fieldset class="fields1">
+  	<dl style="clear: left;">
 		<dt><label for="subject">{L_SUBJECT}:</label></dt>
-		<dd><input type="text" name="subject" id="subject" size="45" maxlength="60" tabindex="2" value="{SUBJECT}" class="inputbox autowidth" /></dd>
+		<dd><input type="text" name="subject" id="subject" size="30" maxlength="100" tabindex="2" value="{SUBJECT}" class="inputbox autowidth" /></dd>
 	</dl>
 	<dl style="clear: left;">
 		<dt><label for="calEType">{L_EVENT_TYPE}:</label></dt>
@@ -251,41 +252,13 @@
 		<dt><label for="calGroupId">{L_EVENT_GROUP}:</label></dt>
 		<dd>{EVENT_GROUP_SEL}</dd>
 	</dl>
-	
-	
-	<h3>Raid roles</h3>
-	<dl style="clear: left;">
-	<!-- BEGIN raidroles -->
-		<dt><label for="subject">{raidroles.ROLE_NAME}:</label></dt>
-		<dd><input type="hidden" name="role[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" /><input type="text" name="role_needed[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED}" class="inputbox autowidth" /></dd>
-	<!-- END raidroles -->
-	</dl>
-
-	
-	
-	<!-- IF S_DATE_TIME_OPTS -->
-	<h3>Raid time</h3>
-		<dl style="clear: left;">
-			<dt><label for="calM">{L_START_DATE}:</label></dt>
-			<dd><select name='calM' id='calM'>
-				{MONTH_SEL}
-				</select>
-				<select name='calD' id='calD'>
-		 		{DAY_SEL}
-		 		</select>
-		  		<select name='calY' id='calY'>{YEAR_SEL}
-		  		</select>
-		  	</dd>
-		</dl>
-		<dl style="clear: left;">
-			<dt><label for="calHr">{L_START_TIME}:</label></dt>
-			<dd>
-				<select name='calHr' id='calHr'>{START_HOUR_SEL}</select>
-				<select name='calMn' id='calMn'>{START_MIN_SEL}</select>
-			</dd>
-		</dl>
-
-			<!-- IF S_RECURRING_OPTS -->
+  </fieldset>
+  </div>
+  
+<!-- IF S_DATE_TIME_OPTS -->
+<div style="width:60%; height: 170px; float: right; ">
+<!-- IF S_RECURRING_OPTS -->
+	<fieldset class="fields1">
 			<hr />
 			
 			<dl style="clear: left;">
@@ -293,11 +266,11 @@
 				<dd>{RECURRING_EVENT_CHECK}</dd>
 			</dl>
 			<dl style="clear: left;">
-				<dt><label for="calRType">{L_RECURRING_EVENT_TYPE}</label><br />{L_RECURRING_EVENT_TYPE_EXPLAIN}</dt>
-				<dd>{RECURRING_EVENT_TYPE_SEL}</dd>
+				<dt title="{L_RECURRING_EVENT_TYPE_EXPLAIN}"><label for="calRType">{L_RECURRING_EVENT_TYPE}</label><br /></dt>
+				<dd ">{RECURRING_EVENT_TYPE_SEL}</dd>
 			</dl>
 			<dl style="clear: left;">
-				<dt><label for="calRFreq">{L_RECURRING_EVENT_FREQ}</label><br />{L_RECURRING_EVENT_FREQ_EXPLAIN}</dt>
+				<dt title="{L_RECURRING_EVENT_FREQ_EXPLAIN}"><label for="calRFreq">{L_RECURRING_EVENT_FREQ}</label><br /></dt>
 				<dd>{RECURRING_EVENT_FREQ_IN}</dd>
 			</dl>
 			<dl style="clear: left;">
@@ -305,55 +278,75 @@
 				<dd>{END_RECURR_MONTH_SEL} {END_RECURR_DAY_SEL} {END_RECURR_YEAR_SEL}</dd>
 			</dl>
 			<hr />
-			<!-- ENDIF -->
-	<!-- ELSE -->
-			<input type="hidden" name="calEditAll" id="calEditAll" value="1">
-	<!-- ENDIF -->
+			</fieldset>
+						
+<!-- ENDIF -->
+</div>
 
-	<!-- IF S_TRACK_ATTENDANCE -->
-	<dl style="clear: left;">
-		<dt><label>{L_TRACK_RSVPS}:</label></dt>
-		<dd>{TRACK_RSVP_CHECK}</dd>
-	</dl>
-	<!-- IF S_ALLOW_GUESTS -->
-	<dl style="clear: left;">
-			<dt><label>{L_ALLOW_GUESTS}:</label></dt>
-			<dd>{ALLOW_GUEST_CHECK}</dd>
+ <div style="width:40%; height: 170px; float: left;">
+ 
+  <fieldset class="fields1">
+ <hr />
+  <dl style="clear: right;">
+			<dt><label for="calM">{L_RAID_DATE}:</label></dt>
+			<dd><select name='calM' id='calM'>{MONTH_SEL}</select><select name='calD' id='calD'>{DAY_SEL}</select><select name='calY' id='calY'>{YEAR_SEL}</select>
+		  	</dd>
 		</dl>
-	<!-- ELSE -->{ALLOW_GUEST_CHECK_HIDDEN}
-		<!-- ENDIF -->
-	<!-- ELSE -->{TRACK_RSVP_CHECK_HIDDEN}{ALLOW_GUEST_CHECK_HIDDEN}
-	<!-- ENDIF -->
-	<!-- ENDIF -->
 
-	<!-- INCLUDE planner/planner_post_buttons.html -->
+		<dl style="clear: right;">
+			<dt><label for="calHr">{L_RAID_START_TIME}:</label></dt>
+			<dd>
+				<select name='calHr' id='calHr'>{START_HOUR_SEL}</select>
+				<select name='calMn' id='calMn'>{START_MIN_SEL}</select>
+			</dd>
+		</dl>
+    </fieldset>
+ 
+ </div>
+<!-- ELSE -->
+<div>
+	<input type="hidden" name="calEditAll" id="calEditAll" value="1">
+</div>
+<!-- ENDIF -->
 
-	<div id="smiley-box">
-		<!-- IF S_SMILIES_ALLOWED and .smiley -->
-			<strong>{L_SMILIES}</strong><br />
-			<!-- BEGIN smiley -->
-				<a href="#" onclick="insert_text('{smiley.A_SMILEY_CODE}', true); return false;"><img src="{smiley.SMILEY_IMG}" width="{smiley.SMILEY_WIDTH}" height="{smiley.SMILEY_HEIGHT}" alt="{smiley.SMILEY_CODE}" title="{smiley.SMILEY_DESC}" /></a>
-			<!-- END smiley -->
-		<!-- ENDIF -->
-		<!-- IF S_SHOW_SMILEY_LINK and S_SMILIES_ALLOWED-->
-			<br /><a href="{U_MORE_SMILIES}" onclick="window.open('{U_MORE_SMILIES}', '_phpbbsmilies', 'HEIGHT=350,resizable=yes,scrollbars=yes,WIDTH=300'); return false;">{L_MORE_SMILIES}</a>
-		<!-- ENDIF -->
+<div style="width:100%; height: 200px; clear:both;">
 
-		<!-- IF BBCODE_STATUS -->
-		<!-- IF .smiley --><hr /><!-- ENDIF -->
-		{BBCODE_STATUS}<br />
-		<!-- IF S_BBCODE_ALLOWED -->
-			{IMG_STATUS}<br />
-			{FLASH_STATUS}<br />
-			{URL_STATUS}<br />
-			{SMILIES_STATUS}
-		<!-- ENDIF -->
-		<!-- ENDIF -->
-	</div>
+<!-- INCLUDE planner/planner_post_buttons.html -->
+		<div id="smiley-box">
+			<!-- IF S_SMILIES_ALLOWED and .smiley -->
+				<strong>{L_SMILIES}</strong><br />
+				<!-- BEGIN smiley -->
+					<a href="#" onclick="insert_text('{smiley.A_SMILEY_CODE}', true); return false;"><img src="{smiley.SMILEY_IMG}" width="{smiley.SMILEY_WIDTH}" height="{smiley.SMILEY_HEIGHT}" alt="{smiley.SMILEY_CODE}" title="{smiley.SMILEY_DESC}" /></a>
+				<!-- END smiley -->
+			<!-- ENDIF -->
+			<!-- IF S_SHOW_SMILEY_LINK and S_SMILIES_ALLOWED-->
+				<br /><a href="{U_MORE_SMILIES}" onclick="window.open('{U_MORE_SMILIES}', '_phpbbsmilies', 'HEIGHT=350,resizable=yes,scrollbars=yes,WIDTH=300'); return false;">{L_MORE_SMILIES}</a>
+			<!-- ENDIF -->
+	
+			<!-- IF BBCODE_STATUS -->
+			<!-- IF .smiley --><hr /><!-- ENDIF -->
+			{BBCODE_STATUS}<br />
+			<!-- IF S_BBCODE_ALLOWED -->
+				{IMG_STATUS}<br />
+				{FLASH_STATUS}<br />
+				{URL_STATUS}<br />
+				{SMILIES_STATUS}
+			<!-- ENDIF -->
+			<!-- ENDIF -->
+		</div>
 
-	<div id="message-box">
-		<textarea name="message" id="message" rows="15" cols="76" tabindex="3" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" class="inputbox">{MESSAGE}</textarea>
-	</div>
-</fieldset>
+		<div id="message-box">
+			<textarea name="message" id="message" rows="10" cols="60" tabindex="3" onselect="storeCaret(this);" 
+			onclick="storeCaret(this);" onkeyup="storeCaret(this);" class="inputbox">{MESSAGE}</textarea>
+		</div>
 
+</div>
+
+
+
+<!-- ENDIF -->
+
+	
+
+</div>
 

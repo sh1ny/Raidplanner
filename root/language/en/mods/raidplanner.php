@@ -86,13 +86,11 @@ $lang = array_merge($lang, array(
     'TUESDAY'								=> 'Tuesday',
     'USER_CANNOT_MANAGE_CALENDAR'			=> 'You do not have permission to manage the calendar settings or event types.',
     'WEDNESDAY'								=> 'Wednesday',
-
-
 	'USER_CANNOT_MANAGE_RAIDPLANNER'		=> 'You are not authorised to manage the raidplanner settings', 
 
 	'AM'					=> 'AM',
 
-	'ALL_DAY'				=> 'All Day Event',
+	'ALL_DAY'				 	=> 'All Day Event',
 	'ALLOW_GUESTS'				=> 'Allow members to bring guests to this event',
 	'ALLOW_GUESTS_ON'			=> 'Members are allowed to bring guests to this event.',
 	'ALLOW_GUESTS_OFF'			=> 'Members are not allowed to bring guests to this event.',
@@ -100,7 +98,10 @@ $lang = array_merge($lang, array(
 
 	'CALENDAR_POST_EVENT'		=> 'Create New Event',
 	'CALENDAR_EDIT_EVENT'		=> 'Edit Event',
-	'CALENDAR_TITLE'		=> 'Calendar',
+	'CALENDAR_TITLE'			=> 'Planner',
+	'RAIDPLANNER'				=> 'Raid Planner',
+	'NEWRAID'					=> 'New Raid',
+
 	'CALENDAR_NUMBER_ATTEND'=> 'The number of people you are bringing to this event',
 	'CALENDAR_NUMBER_ATTEND_EXPLAIN'=> '(enter 1 for yourself)',
 	'CALENDAR_RESPOND'		=> 'Please register here',
@@ -113,14 +114,19 @@ $lang = array_merge($lang, array(
 	'DAY_OF'				=> 'Day of ',
 	'DELETE_ALL_EVENTS'		=> 'Delete all occurrences of this event.',
 	'DETAILS'				=> 'Details',
-	'DELETE_EVENT'				=> 'Delete event',
+	'DELETE_EVENT'			=> 'Delete event',
 
 	'EDIT'					=> 'Edit',
 	'EDIT_ALL_EVENTS'		=> 'Edit all occurrences of this event.',
-	'EMPTY_EVENT_MESSAGE'		=> 'You must enter a message when posting events.',
-	'EMPTY_EVENT_SUBJECT'		=> 'You must enter a subject when posting events.',
+	
+	'EMPTY_EVENT_MESSAGE'		=> 'You must enter a message when posting Events.',
+	'EMPTY_EVENT_SUBJECT'		=> 'You must enter a subject when posting Events.',
+	'EMPTY_EVENT_MESSAGE_RAIDS'	=> 'You must enter a message when posting Raids.',
+	'EMPTY_EVENT_SUBJECT_RAIDS'	=> 'You must enter a subject when posting Raids.',
+
+
 	'END_DATE'					=> 'End Date',
-	'END_RECURRING_EVENT_DATE'	=> 'When will this event end?',
+	'END_RECURRING_EVENT_DATE'	=> 'Last occurence:',
 	'END_TIME'					=> 'End Time',
 	'EVENT_ACCESS_LEVEL'			=> 'Who can see this event?',
 	'EVENT_ACCESS_LEVEL_GROUP'		=> 'Group',
@@ -166,10 +172,10 @@ $lang = array_merge($lang, array(
 	'PM'						=> 'PM',
 	'PRIVATE_EVENT'			=> 'This event is private.  You must be invited and logged in to view this event.',
 
-	'RECURRING_EVENT'			=> 'Recurring event',
-	'RECURRING_EVENT_TYPE'		=> 'How should the next event be calculated?',
+	'RECURRING_EVENT'				=> 'Recurring event',
+	'RECURRING_EVENT_TYPE'			=> 'Recurrence Type: ',
 	'RECURRING_EVENT_TYPE_EXPLAIN'	=> 'Tip choices begin with a letter to indicate their frequency: A - Annual, M - Monthly, W - Weekly, D - Daily',
-	'RECURRING_EVENT_FREQ'		=> 'How often should this event occur?',
+	'RECURRING_EVENT_FREQ'		=> 'Event frequency:',
 	'RECURRING_EVENT_FREQ_EXPLAIN'	=> 'This value represents [Y] in the choice above',
 	
 	'RECURRING_EVENT_CASE_1'    => 'A: [Xth] Day of [Month Name] every [Y] Year(s)',
@@ -178,20 +184,15 @@ $lang = array_merge($lang, array(
 	'RECURRING_EVENT_CASE_4'    => 'M: [Xth] [Weekday Name] of month every [Y] Month(s)',
 	'RECURRING_EVENT_CASE_5'    => 'W: [Weekday Name] every [Y] Week(s)',
 	'RECURRING_EVENT_CASE_6'    => 'D: Every [Y] Day(s)',
-	/*
-	'RECURRING_EVENT_CASE_1_STR'    => '%1$s Day of %4$s - every %5$s Year(s)',
-	'RECURRING_EVENT_CASE_2_STR'    => '%3$s %2$s of %4$s - every %5$s Year(s)',
-	'RECURRING_EVENT_CASE_6_STR'    => '%1$s Day of month - every %5$s Month(s)',
-	'RECURRING_EVENT_CASE_7_STR'    => '%3$s %2$s of month - every %5$s Month(s)',
-	'RECURRING_EVENT_CASE_11_STR'    => '%2$s - every %5$s Week(s)',
-	'RECURRING_EVENT_CASE_12_STR'    => 'Every %5$s Day(s)',
-	*/
+	
 	'RETURN_CALENDAR'			=> '%sReturn to the calendar%s',
 
 	'START_DATE'				=> 'Start Date',
+	'RAID_DATE'					=> 'Raid Date',
 	'START_TIME'				=> 'Start Time',
-	
-	'TO_TIME'				=> 'To',
+	'RAID_START_TIME'			=> 'Raid Start Time',
+
+	'TO_TIME'					=> 'To',
 
 	'TRACK_RSVPS'				=> 'Track attendance',
 	'TRACK_RSVPS_ON'			=> 'Attendance tracking is enabled.',
