@@ -219,7 +219,7 @@ class acp_raidplanner
 			   so as not to change the calculation method) */
 			
 			// delete any recurring events that are permanently over
-			$sql = 'SELECT * FROM ' . RP_RECURRING_EVENTS_TABLE . '
+			$sql = 'SELECT * FROM ' . RP_RECURRING . '
 						ORDER BY recurr_id';
 			$db->sql_query($sql);
 			$result = $db->sql_query($sql);
@@ -235,7 +235,7 @@ class acp_raidplanner
 				$next_calc_time = $row['next_calc_time'] + ($factor * 3600);
 				$poster_timezone = $row['poster_timezone'] + $factor;
 				$recurr_id = (int) $row['recurr_id'];
-				$sql = 'UPDATE ' . RP_RECURRING_EVENTS_TABLE . '
+				$sql = 'UPDATE ' . RP_RECURRING . '
 					SET ' . $db->sql_build_array('UPDATE', array(
 						'first_occ_time'	=> (int) $first_occ_time,
 						'final_occ_time'	=> (int) $final_occ_time,

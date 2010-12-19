@@ -866,99 +866,95 @@ class displayplanner extends raidplanner_base
 			}
 
 			// does this event have attendance tracking turned on?
-			if( $event_data['track_rsvps'] == 1 )
+			if( $event_data['track_signups'] == 1 )
 			{
-				$rsvp_id	= request_var('rsvp_id', 0);
+				$signup_id	= request_var('signup_id', 0);
 				$submit		= (isset($_POST['post'])) ? true : false;
-				$rsvp_data = array();
-				if( $rsvp_id !== 0 )
+				$signup_data = array();
+				if( $signup_id !== 0 )
 				{
-					$this->get_rsvp_data( $rsvp_id, $rsvp_data );
-					if( $rsvp_data['event_id'] != $event_id )
+					$this->get_signup_data( $signup_id, $signup_data );
+					if( $signup_data['event_id'] != $event_id )
 					{
-						trigger_error('NO_RSVP');
+						trigger_error('NO_SIGNUP');
 					}
 				}
 				else
 				{
-					$rsvp_data['rsvp_id'] = 0;
-					$rsvp_data['event_id'] = $event_id;
-					$rsvp_data['poster_id'] = $user->data['user_id'];
-					$rsvp_data['poster_name'] = $user->data['username'];
-					$rsvp_data['poster_colour'] = $user->data['user_colour'];
-					$rsvp_data['poster_ip'] = $user->ip;
-					$rsvp_data['post_time'] = time();
-					$rsvp_data['rsvp_val'] = 2;
-					$rsvp_data['rsvp_count'] = 1;
-					$rsvp_data['rsvp_detail'] = "";
-					$rsvp_data['rsvp_detail_edit'] = "";
+					$signup_data['signup_id'] = 0;
+					$signup_data['event_id'] = $event_id;
+					$signup_data['poster_id'] = $user->data['user_id'];
+					$signup_data['poster_name'] = $user->data['username'];
+					$signup_data['poster_colour'] = $user->data['user_colour'];
+					$signup_data['poster_ip'] = $user->ip;
+					$signup_data['post_time'] = time();
+					$signup_data['signup_val'] = 2;
+					$signup_data['signup_count'] = 1;
+					$signup_data['signup_detail'] = "";
+					$signup_data['signup_detail_edit'] = "";
 				}
 	
 	
 				// Can we edit this reply ... if we're a moderator with rights then always yes
 				// else it depends on editing times, lock status and if we're the correct user
-				if ( $rsvp_id !== 0 && !$auth->acl_get('m_raidplanner_edit_other_users_rsvps'))
+				if ( $signup_id !== 0 && !$auth->acl_get('m_raidplanner_edit_other_users_signups'))
 				{
-					if ($user->data['user_id'] != $rsvp_data['poster_id'])
+					if ($user->data['user_id'] != $signup_data['poster_id'])
 					{
-						trigger_error('USER_CANNOT_EDIT_RSVP');
+						trigger_error('USER_CANNOT_EDIT_SIGNUP');
 					}
 				}
 	
 				if( $submit )
 				{
 					// what were the old event_data head counts?
-					$old_yes_count = $event_data['rsvp_yes'];
-					$old_no_count = $event_data['rsvp_no'];
-					$old_maybe_count = $event_data['rsvp_maybe'];
+					$old_yes_count = $event_data['signup_yes'];
+					$old_no_count = $event_data['signup_no'];
+					$old_maybe_count = $event_data['signup_maybe'];
 	
 					$old_user_yes_count = 0;
 					$old_user_maybe_count = 0;
 					$old_user_no_count = 0;
 	
-					$new_rsvp_val	= request_var('rsvp_val', 2);
-					$new_rsvp_count	= request_var('rsvp_count', 1);
-					$new_rsvp_detail = utf8_normalize_nfc( request_var('rsvp_detail', '', true) );
+					$new_signup_val	= request_var('signup_val', 2);
+					$new_signup_count	= request_var('signup_count', 1);
+					$new_signup_detail = utf8_normalize_nfc( request_var('signup_detail', '', true) );
 	
 					$uid = $bitfield = $options = '';
 					$allow_bbcode = $allow_urls = $allow_smilies = true;
-					generate_text_for_storage($new_rsvp_detail, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+					generate_text_for_storage($new_signup_detail, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
 	
 					$new_user_yes_count = 0;
 					$new_user_maybe_count = 0;
 					$new_user_no_count = 0;
 	
-					if( $rsvp_id !== 0 )
+					if( $signup_id !== 0 )
 					{
-						if( $rsvp_data['rsvp_val'] == 0 )
+						if( $signup_data['signup_val'] == 0 )
 						{
-							$old_user_yes_count = $rsvp_data['rsvp_count'];
+							$old_user_yes_count = $signup_data['signup_count'];
 						}
-						else if( $rsvp_data['rsvp_val'] == 1 )
+						else if( $signup_data['signup_val'] == 1 )
 						{
-							$old_user_no_count = $rsvp_data['rsvp_count'];
+							$old_user_no_count = $signup_data['signup_count'];
 						}
 						else
 						{
-							$old_user_maybe_count = $rsvp_data['rsvp_count'];
+							$old_user_maybe_count = $signup_data['signup_count'];
 						}
 					}
-					// don't allow guests, unless the event organizer gave the OK
-					if( $event_data['allow_guests'] != 1 && $new_rsvp_count > 1 )
+					
+					if( $new_signup_val == 0 )
 					{
-					    $new_rsvp_count = 1;
+						$new_user_yes_count = $new_signup_count;
 					}
-					if( $new_rsvp_val == 0 )
+					else if( $new_signup_val == 1 )
 					{
-						$new_user_yes_count = $new_rsvp_count;
-					}
-					else if( $new_rsvp_val == 1 )
-					{
-						$new_user_no_count = $new_rsvp_count;
+						$new_user_no_count = $new_signup_count;
 					}
 					else
 					{
-						$new_user_maybe_count = $new_rsvp_count;
+						$new_user_maybe_count = $new_signup_count;
 					}
 	
 					$new_yes_count = $old_yes_count - $old_user_yes_count + $new_user_yes_count;
@@ -966,123 +962,123 @@ class displayplanner extends raidplanner_base
 					$new_maybe_count = $old_maybe_count - $old_user_maybe_count + $new_user_maybe_count;
 	
 	
-					// save the user's rsvp data...
+					// save the user's signup data...
 	
 					// update the ip address and time
-					$rsvp_data['poster_ip'] = $user->ip;
-					$rsvp_data['post_time'] = time();
-					$rsvp_data['rsvp_val'] = $new_rsvp_val;
-					$rsvp_data['rsvp_count'] = $new_rsvp_count;
-					$rsvp_data['rsvp_detail'] = $new_rsvp_detail;
-					if( $rsvp_id > 0 )
+					$signup_data['poster_ip'] = $user->ip;
+					$signup_data['post_time'] = time();
+					$signup_data['signup_val'] = $new_signup_val;
+					$signup_data['signup_count'] = $new_signup_count;
+					$signup_data['signup_detail'] = $new_signup_detail;
+					if( $signup_id > 0 )
 					{
-						$sql = 'UPDATE ' . RP_ATTENDEE_TABLE . '
+						$sql = 'UPDATE ' . RP_SIGNUPS . '
 							SET ' . $db->sql_build_array('UPDATE', array(
-								'poster_id'			=> (int) $rsvp_data['poster_id'],
-								'poster_name'		=> (string) $rsvp_data['poster_name'],
-								'poster_colour'		=> (string) $rsvp_data['poster_colour'],
-								'poster_ip'			=> (string) $rsvp_data['poster_ip'],
-								'post_time'			=> (int) $rsvp_data['post_time'],
-								'rsvp_val'				=> (int) $rsvp_data['rsvp_val'],
-								'rsvp_count'			=> (int) $rsvp_data['rsvp_count'],
-								'rsvp_detail'			=> (string) $rsvp_data['rsvp_detail'],
+								'poster_id'			=> (int) $signup_data['poster_id'],
+								'poster_name'		=> (string) $signup_data['poster_name'],
+								'poster_colour'		=> (string) $signup_data['poster_colour'],
+								'poster_ip'			=> (string) $signup_data['poster_ip'],
+								'post_time'			=> (int) $signup_data['post_time'],
+								'signup_val'				=> (int) $signup_data['signup_val'],
+								'signup_count'			=> (int) $signup_data['signup_count'],
+								'signup_detail'			=> (string) $signup_data['signup_detail'],
 								'bbcode_bitfield'	=> $bitfield,
 								'bbcode_uid'		=> $uid,
 								'bbcode_options'	=> $options,
 								)) . "
-							WHERE rsvp_id = $rsvp_id";
+							WHERE signup_id = $signup_id";
 						$db->sql_query($sql);
 					}
 					else
 					{
-						$sql = 'INSERT INTO ' . RP_ATTENDEE_TABLE . ' ' . $db->sql_build_array('INSERT', array(
-								'event_id'			=> (int) $rsvp_data['event_id'],
-								'poster_id'			=> (int) $rsvp_data['poster_id'],
-								'poster_name'		=> (string) $rsvp_data['poster_name'],
-								'poster_colour'		=> (string) $rsvp_data['poster_colour'],
-								'poster_ip'			=> (string) $rsvp_data['poster_ip'],
-								'post_time'			=> (int) $rsvp_data['post_time'],
-								'rsvp_val'				=> (int) $rsvp_data['rsvp_val'],
-								'rsvp_count'			=> (int) $rsvp_data['rsvp_count'],
-								'rsvp_detail'			=> (string) $rsvp_data['rsvp_detail'],
+						$sql = 'INSERT INTO ' . RP_SIGNUPS . ' ' . $db->sql_build_array('INSERT', array(
+								'event_id'			=> (int) $signup_data['event_id'],
+								'poster_id'			=> (int) $signup_data['poster_id'],
+								'poster_name'		=> (string) $signup_data['poster_name'],
+								'poster_colour'		=> (string) $signup_data['poster_colour'],
+								'poster_ip'			=> (string) $signup_data['poster_ip'],
+								'post_time'			=> (int) $signup_data['post_time'],
+								'signup_val'				=> (int) $signup_data['signup_val'],
+								'signup_count'			=> (int) $signup_data['signup_count'],
+								'signup_detail'			=> (string) $signup_data['signup_detail'],
 								'bbcode_bitfield'	=> $bitfield,
 								'bbcode_uid'		=> $uid,
 								'bbcode_options'	=> $options,
 								)
 							);
 						$db->sql_query($sql);
-						//$rsvp_id = $db->sql_nextid();
+						//$signup_id = $db->sql_nextid();
 					}
-					// update the event id's rsvp stats
+					// update the event id's signup stats
 						$sql = 'UPDATE ' . RP_EVENTS_TABLE . '
 							SET ' . $db->sql_build_array('UPDATE', array(
-								'rsvp_yes'		=> (int) $new_yes_count,
-								'rsvp_no'		=> (int) $new_no_count,
-								'rsvp_maybe'	=> (int) $new_maybe_count,
+								'signup_yes'		=> (int) $new_yes_count,
+								'signup_no'		=> (int) $new_no_count,
+								'signup_maybe'	=> (int) $new_maybe_count,
 								)) . "
 							WHERE event_id = $event_id";
 						$db->sql_query($sql);
-					$event_data['rsvp_yes'] = $new_yes_count;
-					$event_data['rsvp_no'] = $new_no_count;
-					$event_data['rsvp_maybe'] = $new_maybe_count;
+					$event_data['signup_yes'] = $new_yes_count;
+					$event_data['signup_no'] = $new_no_count;
+					$event_data['signup_maybe'] = $new_maybe_count;
 					
 						
 					$this->calendar_add_or_update_reply( $event_id );
 				
 				}
 	
-				$sql = 'SELECT * FROM ' . RP_ATTENDEE_TABLE . '
-						WHERE event_id = '.$db->sql_escape($event_id). ' ORDER BY rsvp_val ASC';
+				$sql = 'SELECT * FROM ' . RP_SIGNUPS . '
+						WHERE event_id = '.$db->sql_escape($event_id). ' ORDER BY signup_val ASC';
 				$result = $db->sql_query($sql);
 	
-				$edit_rsvps = 0;
-				if( $auth->acl_get('m_raidplanner_edit_other_users_rsvps') )
+				$edit_signups = 0;
+				if( $auth->acl_get('m_raidplanner_edit_other_users_signups') )
 				{
-					$edit_rsvps = 1;
-					$edit_rsvp_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$event_id.$etype_url_opts );
-					$edit_rsvp_url .="&amp;rsvp_id=";
+					$edit_signups = 1;
+					$edit_signup_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$event_id.$etype_url_opts );
+					$edit_signup_url .="&amp;signup_id=";
 				}
 	
-				while ($rsvp_row = $db->sql_fetchrow($result) )
+				while ($signup_row = $db->sql_fetchrow($result) )
 				{
-					if( ($rsvp_id == 0 && $rsvp_data['poster_id'] == $rsvp_row['poster_id']) ||
-					    ($rsvp_id != 0 && $rsvp_id == $rsvp_row['rsvp_id']) )
+					if( ($signup_id == 0 && $signup_data['poster_id'] == $signup_row['poster_id']) ||
+					    ($signup_id != 0 && $signup_id == $signup_row['signup_id']) )
 					{
-						$rsvp_data['rsvp_id'] = $rsvp_row['rsvp_id'];
-						$rsvp_data['post_time'] = $rsvp_row['post_time'];
-						$rsvp_data['rsvp_val'] = $rsvp_row['rsvp_val'];
-						$rsvp_data['rsvp_count'] = $rsvp_row['rsvp_count'];
-						$edit_text_array = generate_text_for_edit( $rsvp_row['rsvp_detail'], $rsvp_row['bbcode_uid'], $rsvp_row['bbcode_options']);
-						$rsvp_data['rsvp_detail_edit'] = $edit_text_array['text'];
+						$signup_data['signup_id'] = $signup_row['signup_id'];
+						$signup_data['post_time'] = $signup_row['post_time'];
+						$signup_data['signup_val'] = $signup_row['signup_val'];
+						$signup_data['signup_count'] = $signup_row['signup_count'];
+						$edit_text_array = generate_text_for_edit( $signup_row['signup_detail'], $signup_row['bbcode_uid'], $signup_row['bbcode_options']);
+						$signup_data['signup_detail_edit'] = $edit_text_array['text'];
 					}
-					$rsvp_out['POSTER'] = $rsvp_row['poster_name'];
-					$rsvp_out['POSTER_URL'] = get_username_string( 'full', $rsvp_row['poster_id'], $rsvp_row['poster_name'], $rsvp_row['poster_colour'] );
-					$rsvp_out['VALUE'] = $rsvp_row['rsvp_val'];
-					if( $rsvp_row['rsvp_val'] == 0 )
+					$signup_out['POSTER'] = $signup_row['poster_name'];
+					$signup_out['POSTER_URL'] = get_username_string( 'full', $signup_row['poster_id'], $signup_row['poster_name'], $signup_row['poster_colour'] );
+					$signup_out['VALUE'] = $signup_row['signup_val'];
+					if( $signup_row['signup_val'] == 0 )
 					{
-						$rsvp_out['COLOR'] = '#00ff00';
-						$rsvp_out['VALUE_TXT'] = $user->lang['YES'];
+						$signup_out['COLOR'] = '#00ff00';
+						$signup_out['VALUE_TXT'] = $user->lang['YES'];
 					}
-					else if( $rsvp_row['rsvp_val'] == 1 )
+					else if( $signup_row['signup_val'] == 1 )
 					{
-						$rsvp_out['COLOR'] = '#ff0000';
-						$rsvp_out['VALUE_TXT'] = $user->lang['NO'];
+						$signup_out['COLOR'] = '#ff0000';
+						$signup_out['VALUE_TXT'] = $user->lang['NO'];
 					}
 					else
 					{
-						$rsvp_out['COLOR'] = '#0000ff';
-						$rsvp_out['VALUE_TXT'] = $user->lang['MAYBE'];
+						$signup_out['COLOR'] = '#0000ff';
+						$signup_out['VALUE_TXT'] = $user->lang['MAYBE'];
 					}
-					$rsvp_out['U_EDIT'] = "";
-					if( $edit_rsvps === 1 )
+					$signup_out['U_EDIT'] = "";
+					if( $edit_signups === 1 )
 					{
-						$rsvp_out['U_EDIT'] = $edit_rsvp_url . $rsvp_row['rsvp_id'];
+						$signup_out['U_EDIT'] = $edit_signup_url . $signup_row['signup_id'];
 					}
-					$rsvp_out['HEADCOUNT'] = $rsvp_row['rsvp_count'];
-					$rsvp_out['DETAILS'] = generate_text_for_display($rsvp_row['rsvp_detail'], $rsvp_row['bbcode_uid'], $rsvp_row['bbcode_bitfield'], $rsvp_row['bbcode_options']);
-					$rsvp_out['POST_TIMESTAMP'] = $rsvp_row['post_time'];
-					$rsvp_out['POST_TIME'] = $user->format_date($rsvp_row['post_time']);
-					$template->assign_block_vars('rsvps', $rsvp_out);
+					$signup_out['HEADCOUNT'] = $signup_row['signup_count'];
+					$signup_out['DETAILS'] = generate_text_for_display($signup_row['signup_detail'], $signup_row['bbcode_uid'], $signup_row['bbcode_bitfield'], $signup_row['bbcode_options']);
+					$signup_out['POST_TIMESTAMP'] = $signup_row['post_time'];
+					$signup_out['POST_TIME'] = $user->format_date($signup_row['post_time']);
+					$template->assign_block_vars('signups', $signup_out);
 	
 				}
 				$db->sql_freeresult($result);
@@ -1090,33 +1086,33 @@ class displayplanner extends raidplanner_base
 				if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 				{
 					$show_current_response = 1;
-					$sel_attend_code  = "<select name='rsvp_val' id='rsvp_val''>\n";
+					$sel_attend_code  = "<select name='signup_val' id='signup_val''>\n";
 					$sel_attend_code .= "<option value='0'>".$user->lang['YES']."</option>\n";
 					$sel_attend_code .= "<option value='1'>".$user->lang['NO']."</option>\n";
 					$sel_attend_code .= "<option value='2'>".$user->lang['MAYBE']."</option>\n";
 					$sel_attend_code .= "</select>\n";
 	
-					$temp_find_str = "value='".$rsvp_data['rsvp_val']."'";
-					$temp_replace_str = "value='".$rsvp_data['rsvp_val']."' selected='selected'";
+					$temp_find_str = "value='".$signup_data['signup_val']."'";
+					$temp_replace_str = "value='".$signup_data['signup_val']."' selected='selected'";
 					$sel_attend_code = str_replace( $temp_find_str, $temp_replace_str, $sel_attend_code );
 	
 					$template->assign_vars( array(
-						'S_RSVP_MODE_ACTION'=> append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$event_id.$etype_url_opts ),
-						'S_CURRENT_RSVP'	=> $show_current_response,
-						'S_EDIT_RSVP'		=> $edit_rsvps,
-						'CURR_RSVP_ID'		=> $rsvp_data['rsvp_id'],
-						'CURR_POSTER_URL'	=> get_username_string( 'full', $rsvp_data['poster_id'], $rsvp_data['poster_name'], $rsvp_data['poster_colour'] ),
-						'CURR_RSVP_COUNT'	=> $rsvp_data['rsvp_count'],
-						'CURR_RSVP_DETAIL'	=> $rsvp_data['rsvp_detail_edit'],
+						'S_SIGNUP_MODE_ACTION'=> append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$event_id.$etype_url_opts ),
+						'S_CURRENT_SIGNUP'	=> $show_current_response,
+						'S_EDIT_SIGNUP'		=> $edit_signups,
+						'CURR_SIGNUP_ID'		=> $signup_data['signup_id'],
+						'CURR_POSTER_URL'	=> get_username_string( 'full', $signup_data['poster_id'], $signup_data['poster_name'], $signup_data['poster_colour'] ),
+						'CURR_SIGNUP_COUNT'	=> $signup_data['signup_count'],
+						'CURR_SIGNUP_DETAIL'	=> $signup_data['signup_detail_edit'],
 						'SEL_ATTEND'		=> $sel_attend_code,
 						)
 					);
 	
 				}
 				$template->assign_vars( array(
-					'CURR_YES_COUNT'	=> $event_data['rsvp_yes'],
-					'CURR_NO_COUNT'		=> $event_data['rsvp_no'],
-					'CURR_MAYBE_COUNT'	=> $event_data['rsvp_maybe'],
+					'CURR_YES_COUNT'	=> $event_data['signup_yes'],
+					'CURR_NO_COUNT'		=> $event_data['signup_no'],
+					'CURR_MAYBE_COUNT'	=> $event_data['signup_maybe'],
 					)
 				);
 			}
@@ -1131,16 +1127,12 @@ class displayplanner extends raidplanner_base
 			$week_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=week&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 			$month_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=month&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 	
-			$s_rsvp_headcount = false;
+			$s_signup_headcount = false;
 			if( ($user->data['user_id'] == $event_data['poster_id'])|| $auth->acl_get('u_raidplanner_view_headcount') )
 			{
-				$s_rsvp_headcount = true;
+				$s_signup_headcount = true;
 			}
-			$s_rsvp_details = false;
-			if( ($user->data['user_id'] == $event_data['poster_id'])|| $auth->acl_get('u_raidplanner_view_detailed_rsvps') )
-			{
-				$s_rsvp_details = true;
-			}
+			
 			$s_watching_event = array();
 			$this->calendar_init_s_watching_event_data( $event_id, $s_watching_event );
 	
@@ -1169,12 +1161,9 @@ class displayplanner extends raidplanner_base
 				'DAY_VIEW_URL'		=> $day_view_url,
 				'WEEK_VIEW_URL'		=> $week_view_url,
 				'MONTH_VIEW_URL'	=> $month_view_url,
-				'S_CALENDAR_RSVPS'	=> $event_data['track_rsvps'],
-				'S_RSVP_HEADCOUNT'	=> $s_rsvp_headcount,
-				'S_RSVP_DETAILS'	=> $s_rsvp_details,
-				'S_ALLOW_GUESTS'	=> $event_data['allow_guests'],
-	
-	
+				'S_CALENDAR_SIGNUPS'	=> $event_data['track_signups'],
+				'S_SIGNUP_HEADCOUNT'	=> $s_signup_headcount,
+				
 				'U_WATCH_EVENT' 		=> $s_watching_event['link'],
 				'L_WATCH_EVENT' 		=> $s_watching_event['title'],
 				'S_WATCHING_EVENT'		=> $s_watching_event['is_watching'],
@@ -1234,28 +1223,28 @@ class displayplanner extends raidplanner_base
 	}
 		
 	
-	/* get_rsvp_data()
+	/* get_signup_data()
 	**
-	** Gets the rsvp data for the selected rsvp id
+	** Gets the signup data for the selected signup id
 	*/
-	function get_rsvp_data( $id, &$rsvp_data )
+	function get_signup_data( $id, &$signup_data )
 	{
 		global $auth, $db, $user;
 		if( $id < 1 )
 		{
-			trigger_error('NO_RSVP');
+			trigger_error('NO_SIGNUP');
 		}
-		$sql = 'SELECT * FROM ' . RP_ATTENDEE_TABLE . '
-				WHERE rsvp_id = '.$db->sql_escape($id);
+		$sql = 'SELECT * FROM ' . RP_SIGNUPS . '
+				WHERE signup_id = '.$db->sql_escape($id);
 		$result = $db->sql_query($sql);
-		$rsvp_data = $db->sql_fetchrow($result);
-		if( !$rsvp_data )
+		$signup_data = $db->sql_fetchrow($result);
+		if( !$signup_data )
 		{
-			trigger_error('NO_RSVP');
+			trigger_error('NO_SIGNUP');
 		}
 	
 	    $db->sql_freeresult($result);
-	    $rsvp_data['rsvp_detail_edit'] = "";
+	    $signup_data['signup_detail_edit'] = "";
 	}
 		
 	
@@ -1281,7 +1270,7 @@ class displayplanner extends raidplanner_base
 			return $string;
 		}
 	
-		$sql = 'SELECT * FROM ' . RP_RECURRING_EVENTS_TABLE ."
+		$sql = 'SELECT * FROM ' . RP_RECURRING ."
 				WHERE recurr_id ='".$db->sql_escape($recurr_id)."'";
 		$result = $db->sql_query($sql);
 		if($row = $db->sql_fetchrow($result))
@@ -1303,7 +1292,7 @@ class displayplanner extends raidplanner_base
 	** recurring event
 	**
 	** INPUT
-	**   $row - the row of data from the RP_RECURRING_EVENTS_TABLE
+	**   $row - the row of data from the RP_RECURRING
 	**          describing this recurring event.
 	*/
 	private function get_recurring_event_string( $row )
@@ -2209,28 +2198,12 @@ class calendar_watch extends raidplanner_base
 			}
 			else
 			{
-				$track_replies = 0;
-				if( $auth->acl_get('u_raidplanner_view_detailed_rsvps') )
-				{
-					$track_replies = 1;
-				}
-				else
-				{
-					$event_data = array();
-					$raidevents = new raidevents();
-					$raidevents->get_event_data( $event_id, $event_data );
-					if( $user->data['user_id'] == $event_data['poster_id'] )
-					{
-						$track_replies = 1;
-					}
-				}
-	
 				$sql = 'INSERT INTO ' . RP_EVENTS_WATCH . ' ' . 
 				$db->sql_build_array('INSERT', array(
 						'event_id'		=> (int) $event_id,
 						'user_id'		=> (int) $user_id,
 						'notify_status'	=> (int) 0,
-						'track_replies' => (int) $track_replies,
+						'track_replies' => (int) 1,
 						)
 					);
 				$db->sql_query($sql);
@@ -2367,7 +2340,7 @@ class raidevents extends raidplanner_base
 		{
 		    $event_data['is_recurr'] = 1;
 	
-			$sql = 'SELECT * FROM ' . RP_RECURRING_EVENTS_TABLE . '
+			$sql = 'SELECT * FROM ' . RP_RECURRING . '
 						WHERE recurr_id = '.$db->sql_escape( $event_data['recurr_id'] );
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);

@@ -70,13 +70,12 @@ else
 	$event_data['poster_id'] = $user->data['user_id'];
 	$event_data['poster_timezone'] = $user->data['user_timezone'];
 	$event_data['poster_dst'] = $user->data['user_dst'];
-	
+	// set event tracking to 1 by default
+	$event_data['track_signups'] = 1;
 	$event_data['event_day'] = "00-00-0000";
-	$event_data['track_rsvps'] = 0;
-	$event_data['allow_guests'] = 0;
-	$event_data['rsvp_yes'] = 0;
-	$event_data['rsvp_no'] = 0;
-	$event_data['rsvp_maybe'] = 0;
+	$event_data['signup_yes'] = 0;
+	$event_data['signup_no'] = 0;
+	$event_data['signup_maybe'] = 0;
 	$event_data['recurr_id'] = 0;
 	$event_data['is_recurr'] = 0;
 	$event_data['frequency_type'] = 0;
@@ -191,8 +190,7 @@ if ($preview)
 	
 	$revents = new raidevents;
 	$revents->get_event_invite_list_and_poster_url($event_data, $poster_url, $invite_list );
-	$preview_track_rsvps = $event_data['track_rsvps'];
-	$preview_allow_guests = $event_data['allow_guests'];
+	
 
 	if (!sizeof($error))
 	{
@@ -208,8 +206,8 @@ if ($preview)
 			'PREVIEW_INVITED'		=> $invite_list,
 			
 			'S_DISPLAY_PREVIEW'		=> true,
-			'PREVIEW_TRACK_RSVPS'	=> $preview_track_rsvps,
-			'PREVIEW_ALLOW_GUESTS'	=> $preview_allow_guests )
+			'PREVIEW_TRACK_SIGNUPS'	=> $event_data['track_signups'],
+			  )
 		);
 	}
 }
@@ -696,9 +694,7 @@ $template->assign_vars(array(
 	'DAY_VIEW_URL'				=> $day_view_url,
 	'WEEK_VIEW_URL'				=> $week_view_url,
 	'MONTH_VIEW_URL'			=> $month_view_url,
-
-	//'S_TRACK_ATTENDANCE'		=> $event_data['s_track_attendance'],
-
+ 	'TRACK_RSVP_CHECK'			=> ($event_data['track_signups'] == 1) ? ' checked="checked"' : '',
 	'S_RECURRING_OPTS'			=> $event_data['s_recurring_opts'],
 	'S_UPDATE_RECURRING_OPTIONS'=> $event_data['s_update_recurring_options'],
 	'RECURRING_EVENT_CHECK'		=> $recurr_event_check,

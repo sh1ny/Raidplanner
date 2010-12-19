@@ -75,7 +75,7 @@ class raidplanner_population extends raidplanner_base
 		{
 			$error[] = $user->lang['NO_GROUP_SELECTED'];
 		}
-	
+		$event_data['track_signups'] = request_var('calTrackRsvps', 0);
 	    /*------------------------------------------------------------------
 	      Begin to find start/end times
 	      NOTE: if s_date_time_opts is false we are editing all events and
@@ -170,7 +170,7 @@ class raidplanner_population extends raidplanner_base
 		$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
 		generate_text_for_storage($event_data['event_body'], $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
-		$event_track_attendance = 0;
+		
 		$recurr_id = 0;
 		/*----------------------------------------------------
 		   RECURRING EVENT: add it to the recurring
@@ -187,7 +187,7 @@ class raidplanner_population extends raidplanner_base
 			$poster_timezone = $event_data['poster_timezone'];
 			$poster_dst = $event_data['poster_dst'];
 	
-			$sql = 'INSERT INTO ' . RP_RECURRING_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+			$sql = 'INSERT INTO ' . RP_RECURRING . ' ' . $db->sql_build_array('INSERT', array(
 					'etype_id'				=> (int) $event_data['etype_id'],
 					'frequency'				=> (int) $event_frequency,
 					'frequency_type'		=> (int) $event_frequency_type,
@@ -211,7 +211,7 @@ class raidplanner_population extends raidplanner_base
 					'enable_bbcode'			=> (int) $allow_bbcode,
 					'enable_magic_url'		=> (int) $allow_urls,
 					'enable_smilies'		=> (int) $allow_smilies,
-					'track_rsvps'			=> (int) $event_track_attendance,
+					'track_signups'			=> (int) $event_data['track_signups'],
 					
 					)
 				);
@@ -243,7 +243,7 @@ class raidplanner_population extends raidplanner_base
 					'enable_bbcode'			=> (int) $allow_bbcode,
 					'enable_magic_url'		=> (int) $allow_urls,
 					'enable_smilies'		=> (int) $allow_smilies,
-					'track_rsvps'			=> (int) $event_track_attendance,
+					'track_signups'			=> (int) $event_data['track_signups'],
 					'recurr_id'				=> (int) $recurr_id,
 					)
 				);
@@ -308,7 +308,7 @@ class raidplanner_population extends raidplanner_base
 			{
 				$recurr_id = $event_data['recurr_id'];
 				//start by updating the recurring events table
-				$sql = 'UPDATE ' . RP_RECURRING_EVENTS_TABLE . '
+				$sql = 'UPDATE ' . RP_RECURRING . '
 					SET ' . $db->sql_build_array('UPDATE', array(
 						'etype_id'				=> (int) $event_data['etype_id'],
 						'event_subject'			=> (string) $event_data['event_subject'],
@@ -731,8 +731,8 @@ class raidplanner_population extends raidplanner_base
 	
 		if (confirm_box(true))
 		{
-			// delete all the rsvps for this event before deleting the event
-			$sql = 'DELETE FROM ' . RP_ATTENDEE_TABLE . ' WHERE event_id = ' .$db->sql_escape($event_id);
+			// delete all the signups for this event before deleting the event
+			$sql = 'DELETE FROM ' . RP_SIGNUPS . ' WHERE event_id = ' .$db->sql_escape($event_id);
 			$db->sql_query($sql);
 	
 			$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE event_id = ' .$db->sql_escape($event_id);
@@ -786,15 +786,15 @@ class raidplanner_population extends raidplanner_base
 	
 			if (confirm_box(true))
 			{
-				// find all of the events in this recurring event string so we can delete their rsvps
+				// find all of the events in this recurring event string so we can delete their signups
 				$sql = 'SELECT event_id FROM ' . RP_EVENTS_TABLE . '
 							WHERE recurr_id = '. $event_data['recurr_id'];
 				$result = $db->sql_query($sql);
 	
-				// delete all the rsvps for this event before deleting the event
+				// delete all the signups for this event before deleting the event
 				while ($row = $db->sql_fetchrow($result))
 				{
-					$sql = 'DELETE FROM ' . RP_ATTENDEE_TABLE . ' WHERE event_id = ' .$db->sql_escape($row['event_id']);
+					$sql = 'DELETE FROM ' . RP_SIGNUPS . ' WHERE event_id = ' .$db->sql_escape($row['event_id']);
 					$db->sql_query($sql);
 	
 					$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE event_id = ' .$db->sql_escape($row['event_id']);
@@ -803,7 +803,7 @@ class raidplanner_population extends raidplanner_base
 				$db->sql_freeresult($result);
 	
 				// delete the recurring event
-				$sql = 'DELETE FROM ' . RP_RECURRING_EVENTS_TABLE . '
+				$sql = 'DELETE FROM ' . RP_RECURRING . '
 						WHERE recurr_id = '.$db->sql_escape($event_data['recurr_id']);
 				$db->sql_query($sql);
 	
@@ -948,13 +948,13 @@ class raidplanner_population extends raidplanner_base
 		$first_pop_event_id = 0;
 		if( $recurr_id_to_pop > 0 )
 		{
-			$sql = 'SELECT * FROM ' . RP_RECURRING_EVENTS_TABLE . '
+			$sql = 'SELECT * FROM ' . RP_RECURRING . '
 					WHERE recurr_id = '.$recurr_id_to_pop;
 		}
 		else
 		{
 			// find all day events that need new events occurrences
-			$sql = 'SELECT * FROM ' . RP_RECURRING_EVENTS_TABLE . '
+			$sql = 'SELECT * FROM ' . RP_RECURRING . '
 					WHERE ( (last_calc_time = 0) OR
 							((next_calc_time < '. $end_populate_limit .') AND
 							((next_calc_time < final_occ_time) OR (final_occ_time = 0)) ))';
@@ -1027,8 +1027,8 @@ class raidplanner_population extends raidplanner_base
 								'enable_bbcode'			=> (int) $row['enable_bbcode'],
 								'enable_magic_url'		=> (int) $row['enable_magic_url'],
 								'enable_smilies'		=> (int) $row['enable_smilies'],
-								'track_rsvps'			=> (int) $row['track_rsvps'],
-								'allow_guests'			=> (int) $row['allow_guests'],
+								'track_signups'			=> (int) $row['track_signups'],
+								
 								'recurr_id'				=> (int) $row['recurr_id']
 								)
 							);
@@ -1103,8 +1103,8 @@ class raidplanner_population extends raidplanner_base
 								'enable_bbcode'			=> (int) $row['enable_bbcode'],
 								'enable_magic_url'		=> (int) $row['enable_magic_url'],
 								'enable_smilies'		=> (int) $row['enable_smilies'],
-								'track_rsvps'			=> (int) $row['track_rsvps'],
-								'allow_guests'			=> (int) $row['allow_guests'],
+								'track_signups'			=> (int) $row['track_signups'],
+								
 								'recurr_id'				=> (int) $row['recurr_id']
 								)
 							);
@@ -1186,8 +1186,8 @@ class raidplanner_population extends raidplanner_base
 								'enable_bbcode'			=> (int) $row['enable_bbcode'],
 								'enable_magic_url'		=> (int) $row['enable_magic_url'],
 								'enable_smilies'		=> (int) $row['enable_smilies'],
-								'track_rsvps'			=> (int) $row['track_rsvps'],
-								'allow_guests'			=> (int) $row['allow_guests'],
+								'track_signups'			=> (int) $row['track_signups'],
+								
 								'recurr_id'				=> (int) $row['recurr_id']
 								)
 							);
@@ -1274,8 +1274,8 @@ class raidplanner_population extends raidplanner_base
 								'enable_bbcode'			=> (int) $row['enable_bbcode'],
 								'enable_magic_url'		=> (int) $row['enable_magic_url'],
 								'enable_smilies'		=> (int) $row['enable_smilies'],
-								'track_rsvps'			=> (int) $row['track_rsvps'],
-								'allow_guests'			=> (int) $row['allow_guests'],
+								'track_signups'			=> (int) $row['track_signups'],
+								
 								'recurr_id'				=> (int) $row['recurr_id']
 								)
 							);
@@ -1324,8 +1324,8 @@ class raidplanner_population extends raidplanner_base
 								'enable_bbcode'			=> (int) $row['enable_bbcode'],
 								'enable_magic_url'		=> (int) $row['enable_magic_url'],
 								'enable_smilies'		=> (int) $row['enable_smilies'],
-								'track_rsvps'			=> (int) $row['track_rsvps'],
-								'allow_guests'			=> (int) $row['allow_guests'],
+								'track_signups'			=> (int) $row['track_signups'],
+								
 								'recurr_id'				=> (int) $row['recurr_id']
 								)
 							);
@@ -1373,8 +1373,7 @@ class raidplanner_population extends raidplanner_base
 								'enable_bbcode'			=> (int) $row['enable_bbcode'],
 								'enable_magic_url'		=> (int) $row['enable_magic_url'],
 								'enable_smilies'		=> (int) $row['enable_smilies'],
-								'track_rsvps'			=> (int) $row['track_rsvps'],
-								'allow_guests'			=> (int) $row['allow_guests'],
+								'track_signups'			=> (int) $row['track_signups'],
 								'recurr_id'				=> (int) $row['recurr_id']
 								)
 							);
@@ -1389,7 +1388,7 @@ class raidplanner_population extends raidplanner_base
 				default:
 					break;
 			}
-			$sql = 'UPDATE ' . RP_RECURRING_EVENTS_TABLE . '
+			$sql = 'UPDATE ' . RP_RECURRING . '
 					SET ' . $db->sql_build_array('UPDATE', array(
 						'last_calc_time'		=> (int) $row['last_calc_time'],
 						'next_calc_time'		=> (int) $row['next_calc_time'],
@@ -1612,7 +1611,7 @@ class raidplanner_population extends raidplanner_base
 	/* prune_calendar()
 	**
 	** Cron job used to delete old events (and all of their related data:
-	** rsvps, recurring event data, etc) after they've expired.
+	** signups, recurring event data, etc) after they've expired.
 	**
 	** The expiration date of an event = when the event ends + the prune_limit
 	** specified in the calendar ACP.
@@ -1636,10 +1635,10 @@ class raidplanner_population extends raidplanner_base
 					OR (event_all_day = 0 AND event_end_time < '.$db->sql_escape($end_temp_date).') )';
 		$result = $db->sql_query($sql);
 	
-		// delete all the rsvps for this event before deleting the event
+		// delete all the signups for this event before deleting the event
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$sql = 'DELETE FROM ' . RP_ATTENDEE_TABLE . ' WHERE event_id = ' .$row['event_id'];
+			$sql = 'DELETE FROM ' . RP_SIGNUPS . ' WHERE event_id = ' .$row['event_id'];
 			$db->sql_query($sql);
 	
 			$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE event_id = ' .$row['event_id'];
@@ -1655,7 +1654,7 @@ class raidplanner_population extends raidplanner_base
 		$db->sql_query($sql);
 	
 		// delete any recurring events that are permanently over
-		$sql = 'DELETE FROM ' . RP_RECURRING_EVENTS_TABLE . '
+		$sql = 'DELETE FROM ' . RP_RECURRING . '
 					WHERE (final_occ_time > 0) AND
 					      (final_occ_time < '. $end_temp_date .')';
 		$db->sql_query($sql);

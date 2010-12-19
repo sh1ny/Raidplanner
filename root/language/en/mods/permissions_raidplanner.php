@@ -80,8 +80,6 @@ $lang = array_merge($lang, array(
 	'acl_u_raidplanner_view_headcount'			=> array('lang' => 'Can view the headcount for events created by other users', 'cat' => 'raidplanner'),
 	// allows viewing raids
 	'acl_u_raidplanner_view_events'			=> array('lang' => 'Can view events', 'cat' => 'raidplanner'),
-	// view rsvps
-	'acl_u_raidplanner_view_detailed_rsvps'	=> array('lang' => 'Can view the detailed rsvps for events created by other users', 'cat' => 'raidplanner'),
 	// allows creating raids
 	'acl_u_raidplanner_create_events'			=> array('lang' => 'Can create events', 'cat' => 'raidplanner'),
 	// allows public events where every member can subscribe 
@@ -100,7 +98,7 @@ $lang = array_merge($lang, array(
 	/* moderator permissions */
 	'acl_m_raidplanner_edit_other_users_events'	=> array('lang' => 'Can edit events created by other users', 'cat' => 'raidplanner'),
 	'acl_m_raidplanner_delete_other_users_events'	=> array('lang' => 'Can delete events created by other users', 'cat' => 'raidplanner'),
-	'acl_m_raidplanner_edit_other_users_rsvps'	=> array('lang' => 'Can edit responses created by other users', 'cat' => 'raidplanner'),
+	'acl_m_raidplanner_edit_other_users_signups'	=> array('lang' => 'Can edit responses created by other users', 'cat' => 'raidplanner'),
 
 	/* Admin Permissions */
 	'acl_a_raid_config'		=> array('lang' => 'Can manage ACP Raidplanner settings and event types', 'cat' => 'raidplanner'),

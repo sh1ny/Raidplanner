@@ -78,20 +78,16 @@ img_icon_raidplanner_delete_all = planner/icon_calendar_delete_all.gif*20*40]]><
 		]]></action>
 			</edit>
 		</open>
-		<open src="styles/prosilver/template/overall_header.html">
-			<edit>
-				<comment lang="en"><![CDATA[Add sorttable script when displaying rsvps]]></comment>
-				<find><![CDATA[<script type="text/javascript" src="{T_TEMPLATE_PATH}/forum_fn.js"></script>]]></find>
-				<action type="after-add"><![CDATA[<!-- IF S_CALENDAR_RSVPS -->
-		<script src="{T_TEMPLATE_PATH}/planner/sorttable.js"></script>
-		<!-- ENDIF -->]]></action>
-			</edit>
-			<edit>
-				<comment lang="en"><![CDATA[Add Planner link to the top of all pages]]></comment>
-				<find><![CDATA[<!-- IF not S_IS_BOT -->]]></find>
-				<action type="after-add"><![CDATA[<li class="icon-pages"><a href="{U_PLANNER}">{L_PLANNER}</a></li>]]></action>
-			</edit>
+
+		<open src="styles/prosilver/template/dkp/dkpmenu.html">
+		<edit>
+		<comment lang="en"><![CDATA[Add Planner link to the dkp menu]]></comment>
+		<find><![CDATA[	&nbsp; &nbsp;<a class="dkpmenu" href="{U_BP}">{L_MENU_BOSS}</a>]]></find>
+		<action type="after-add"><![CDATA[
+		&nbsp; &nbsp;<a class="dkpmenu" href="{U_PLANNER}">{L_PLANNER}</a>]]></action>
+		</edit>
 		</open>
+		
 		<open src="styles/prosilver/theme/buttons.css">
 			<edit>
 				<comment lang="en"><![CDATA[Add calendar icon buttons]]></comment>

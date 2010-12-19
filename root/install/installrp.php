@@ -94,12 +94,12 @@ $versions = array(
 			/* mod */
             array('m_raidplanner_edit_other_users_events', true),
             array('m_raidplanner_delete_other_users_events', true),
-            array('m_raidplanner_edit_other_users_rsvps', true),
+            array('m_raidplanner_edit_other_users_signups', true),
             
             /* user */
             array('u_raidplanner_view_events', true),
             array('u_raidplanner_view_headcount', true),
-            array('u_raidplanner_view_detailed_rsvps', true),
+            
             array('u_raidplanner_signup_events', true), 		            
             array('u_raidplanner_create_events', true),
             array('u_raidplanner_create_public_events', true),
@@ -127,9 +127,9 @@ $versions = array(
 			array('ADMINISTRATORS', 'm_raidplanner_delete_other_users_events', 'group', true),
 			array('GLOBAL_MODERATORS', 'm_raidplanner_edit_other_users_events', 'group', true),
 							
-			// allows editing other peoples rsvp
-			array('ADMINISTRATORS', 'm_raidplanner_edit_other_users_rsvps', 'group', true),
-			array('GLOBAL_MODERATORS', 'm_raidplanner_edit_other_users_rsvps', 'group', true),
+			// allows editing other peoples signup
+			array('ADMINISTRATORS', 'm_raidplanner_edit_other_users_signups', 'group', true),
+			array('GLOBAL_MODERATORS', 'm_raidplanner_edit_other_users_signups', 'group', true),
 			
 			/*set user permissions */
 			// allows viewing raids
@@ -143,11 +143,6 @@ $versions = array(
 			array('ADMINISTRATORS', 'u_raidplanner_view_headcount', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_view_headcount', 'group', true),
 			array('REGISTERED', 'u_raidplanner_view_headcount', 'group', true),
-
-			// allows viewing who signed up
-			array('ADMINISTRATORS', 'u_raidplanner_view_detailed_rsvps', 'group', true),
-			array('GLOBAL_MODERATORS', 'u_raidplanner_view_detailed_rsvps', 'group', true),
-			array('REGISTERED', 'u_raidplanner_view_detailed_rsvps', 'group', true),
 			
 			// allows signing up for an event or raid
 			array('ADMINISTRATORS', 'u_raidplanner_signup_events', 'group', true),
@@ -254,17 +249,16 @@ $versions = array(
 					   'enable_magic_url' 	=> array('BOOL', 1),
 					   'bbcode_bitfield' 	=> array('VCHAR:255', ''),
 					   'bbcode_uid' 		=> array('VCHAR:8', ''),
-					   'track_rsvps' 		=> array('BOOL', 0),
-					   'allow_guests' 		=> array('BOOL', 0),
-					   'rsvp_yes' 			=> array('UINT', 0),
-					   'rsvp_no' 			=> array('UINT', 0),
-					   'rsvp_maybe' 		=> array('UINT', 0),
+					   'track_signups' 		=> array('BOOL', 0),
+					   'signup_yes' 		=> array('UINT', 0),
+					   'signup_no' 			=> array('UINT', 0),
+					   'signup_maybe' 		=> array('UINT', 0),
 					   'recurr_id' 			=> array('UINT', 0),
 					),
                     'PRIMARY_KEY'	=> array('event_id')), 
               ),
 
-			array('phpbb_rp_recurring_events', array(
+			array('phpbb_rp_recurring', array(
 			         'COLUMNS'			=> array(
 			           'recurr_id'			=> array('INT:8', NULL, 'auto_increment' ),
 					   'etype_id' 			=> array('INT:8', 0),
@@ -291,29 +285,28 @@ $versions = array(
 					   'enable_magic_url' 	=> array('BOOL', 1),
 					   'bbcode_bitfield' 	=> array('VCHAR:255', ''),
 					   'bbcode_uid' 		=> array('VCHAR:8', ''),
-					   'track_rsvps' 		=> array('BOOL', 0),
-					   'allow_guests' 		=> array('BOOL', 0),
+					   'track_signups' 		=> array('BOOL', 0),
 					),
 			             'PRIMARY_KEY'	=> array('recurr_id')), 
 			        ),
                             
-			array( 'phpbb_rp_invite_responses', array(
+			array( 'phpbb_rp_signups', array(
                     'COLUMNS'			=> array(
-                       'rsvp_id'			=> array('INT:8', NULL, 'auto_increment' ),
+                       'signup_id'			=> array('INT:8', NULL, 'auto_increment' ),
 					   'event_id' 			=> array('INT:8', 0),
 		  			   'poster_id' 			=> array('INT:8', 0),
 		  			   'poster_name' 		=> array('VCHAR:255', ''),
 			 		   'poster_colour' 		=> array('VCHAR:6', ''),
 					   'poster_ip'   		=> array('VCHAR:40', ''),
 					   'post_time'   		=> array('TIMESTAMP', 0),
-					   'rsvp_val'   		=> array('BOOL', 0),
-					   'rsvp_count'   		=> array('USINT', 0),
-					   'rsvp_detail'		=> array('MTEXT', ''),
+					   'signup_val'   		=> array('BOOL', 0),
+					   'signup_count'   	=> array('USINT', 0),
+					   'signup_detail'		=> array('MTEXT', ''),
 					   'bbcode_bitfield' 	=> array('VCHAR:255', ''),
 					   'bbcode_uid' 		=> array('VCHAR:8', ''),
 					   'bbcode_options' 	=> array('UINT', 7),
 					),
-                    'PRIMARY_KEY'	=> array('rsvp_id'),
+                    'PRIMARY_KEY'	=> array('signup_id'),
 					 'KEYS'            => array(
     				     'event_id'   => array('INDEX', 'event_id'),
 				 		 'poster_id'  => array('INDEX', 'poster_id'), 

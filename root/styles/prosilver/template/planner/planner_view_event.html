@@ -1,7 +1,10 @@
 <!-- INCLUDE overall_header.html -->
-
-	<h2><a href="{U_CALENDAR}">{L_CALENDAR_TITLE}</a></h2>
-
+<!-- INCLUDE dkp/dkpmenu.html -->
+<div class="forabg" >
+<span class="corners-top"><span></span></span>
+	<h2 style = "color:#dfc065"><a href="{U_CALENDAR}">{L_CALENDAR_TITLE}</a></h2>
+<span class="corners-bottom"><span></span></span>
+</div>
 <div class="post bg2" id="preview">
 	<div class="inner"><span class="corners-top"><span></span></span>
 			<!-- IF U_DELETE or U_EDIT -->
@@ -35,8 +38,8 @@
 		<div class="content">{MESSAGE}</div><br />
 		<div class="content">{L_INVITE_INFO}: {INVITED}</div><br />
 
-		<!-- IF S_CALENDAR_RSVPS -->
-			<!-- IF S_RSVP_HEADCOUNT -->
+		<!-- IF S_CALENDAR_SIGNUPS -->
+			<!-- IF S_SIGNUP_HEADCOUNT -->
 			<h3>{L_HOW_MANY_PEOPLE}</h3>
 			<table>
 				<tr style="font-weight: bold;"><td align="center" width="60">{L_YES}</td><td align="center" width="60">{L_NO}</td><td align="center" width="60">{L_MAYBE}</td></tr>
@@ -44,29 +47,29 @@
 			</table>
 			<br />
 			<!-- ENDIF -->
-			<!-- IF S_RSVP_DETAILS -->
+			
 			<h3>{L_DETAILS}</h3>
 			<table class="sortable" >
 				<tr id='head' style="font-weight: bold;">
 					<td valign="bottom" style="border-bottom-style: solid; border-bottom-width: 1px;" align="left" width="17%"><a >{L_USERNAME}</a></td>
-					<!-- IF S_ALLOW_GUESTS --><td valign="bottom" style="border-bottom-style: solid; border-bottom-width: 1px;" align="left" width="6%"><a >{L_COL_HEADCOUNT}</a></td><!-- ENDIF -->
+					
 					<td valign="bottom" style="border-bottom-style: solid; border-bottom-width: 1px;" align="left" width="9%"><a >{L_COL_WILL_ATTEND}</a></td>
 					<td valign="bottom" style="border-bottom-style: solid; border-bottom-width: 1px;" align="left" width="35%"><a >{L_COMMENTS}</a></td>
 					<td valign="bottom" style="border-bottom-style: solid; border-bottom-width: 1px;" align="left" width="25%"><a >{L_POST_TIME}</a></td>
-					<!-- IF S_EDIT_RSVP --><td valign="bottom" style="border-bottom-style: solid; border-bottom-width: 1px;" align="left" width="8%"><a >{L_EDIT}</a></td><!-- ENDIF -->
+					<!-- IF S_EDIT_SIGNUP --><td valign="bottom" style="border-bottom-style: solid; border-bottom-width: 1px;" align="left" width="8%"><a >{L_EDIT}</a></td><!-- ENDIF -->
 				</tr>
-				<!-- BEGIN rsvps -->
+				<!-- BEGIN signups -->
 				<tr>
-					<td align="left"><span style="display: none">{rsvps.POSTER}</span>{rsvps.POSTER_URL}</td>
-					<!-- IF S_ALLOW_GUESTS --><td align="left">{rsvps.HEADCOUNT}</td><!-- ENDIF -->
-					<td align="left">{rsvps.VALUE_TXT}</td>
-					<td align="left">{rsvps.DETAILS}</td>
-					<td align="left"><span style="display: none">{rsvps.POST_TIMESTAMP}</span>{rsvps.POST_TIME}</td>
-					<!-- IF S_EDIT_RSVP --><td align="left"><a href="{rsvps.U_EDIT}">{L_EDIT}</a></td><!-- ENDIF -->
+					<td align="left"><span style="display: none">{signups.POSTER}</span>{signups.POSTER_URL}</td>
+					
+					<td align="left">{signups.VALUE_TXT}</td>
+					<td align="left">{signups.DETAILS}</td>
+					<td align="left"><span style="display: none">{signups.POST_TIMESTAMP}</span>{signups.POST_TIME}</td>
+					<!-- IF S_EDIT_SIGNUP --><td align="left"><a href="{signups.U_EDIT}">{L_EDIT}</a></td><!-- ENDIF -->
 				</tr>
-				<!-- END rsvps -->
+				<!-- END signups -->
 			</table><br />
-			<!-- ENDIF -->&nbsp;<br />
+			&nbsp;<br />
     	<!-- ENDIF -->
 		<div class="content">{L_EVENT_CREATED_BY} {POSTER}</div>
 
@@ -81,8 +84,8 @@
 	</div>
 	<span class="corners-bottom"><span></span></span></div>
 </div>
-<!-- IF S_CURRENT_RSVP -->
-<form method="post" action="{S_RSVP_MODE_ACTION}" name="rsvp_form" id="rsvp_form">
+<!-- IF S_CURRENT_SIGNUP -->
+<form method="post" action="{S_SIGNUP_MODE_ACTION}" name="signup_form" id="signup_form">
 <h2 class="solo">{L_CALENDAR_RESPOND} : {CURR_POSTER_URL}</h2>
 <div class="panel bg3">
 	<div class="inner"><span class="corners-top"><span></span></span>
@@ -90,15 +93,12 @@
 	<dl>
 	<dt>{L_CALENDAR_WILL_ATTEND}</dt>
 	<dd>{SEL_ATTEND}</dd>
-	<!-- IF S_ALLOW_GUESTS -->
-	<dt>{L_CALENDAR_NUMBER_ATTEND}<br />{L_CALENDAR_NUMBER_ATTEND_EXPLAIN}</dt>
-	<dd><input type="number" name="rsvp_count" id="rsvp_count" value="{CURR_RSVP_COUNT}"></dd>
-	<!-- ENDIF -->
+	
 	<dt>&nbsp;<br>{L_COMMENTS}</dt>
-	<dd><textarea name="rsvp_detail" id="rsvp_detail" rows="4" cols="25">{CURR_RSVP_DETAIL}</textarea></dd>
+	<dd><textarea name="signup_detail" id="signup_detail" rows="4" cols="25">{CURR_SIGNUP_DETAIL}</textarea></dd>
 	<dt>&nbsp;</dt>
-	<dd><!-- IF !S_ALLOW_GUESTS --><input type="hidden" name="rsvp_count" id="rsvp_count" value="1"><!-- ENDIF -->
-	<input type="hidden" name="rsvp_id" id="rsvp_id" value="{CURR_RSVP_ID}" /><input type="submit" name="post" value="{L_SUBMIT}" class="button1" /></dd>
+	<dd>
+	<input type="hidden" name="signup_id" id="signup_id" value="{CURR_SIGNUP_ID}" /><input type="submit" name="post" value="{L_SUBMIT}" class="button1" /></dd>
 	</dl>
 	</fieldset>
 	<span class="corners-bottom"><span></span></span></div>

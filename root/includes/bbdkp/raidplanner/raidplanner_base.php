@@ -166,21 +166,14 @@ class raidplanner_base
 		
 		/*-------------------------------------------
 		  Does the user have permission for
-		  rsvps allowing guests, & recurring events?
+		  signups allowing guests, & recurring events?
 		---------------------------------------------*/
-		$event_data['s_track_rsvps'] = false;
-		if( $auth->acl_get('u_raidplanner_track_rsvps'))
+		$event_data['s_track_signups'] = false;
+		if( $auth->acl_get('u_raidplanner_track_signups'))
 		{
-			$event_data['s_track_rsvps'] = true;
+			$event_data['s_track_signups'] = true;
 		}
 		
-		
-		$event_data['s_allow_guests'] = false;
-		if( $auth->acl_get('u_raidplanner_allow_guests'))
-		{
-			$event_data['s_allow_guests'] = true;
-		}
-
 		$event_data['s_recurring_opts'] = false;
 		if( $event_id == 0 )
 		{

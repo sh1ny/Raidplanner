@@ -217,14 +217,10 @@
 	<!-- END raidroles -->
 	</dl>
 	
-	<!-- IF S_TRACK_ATTENDANCE -->
-		<dl style="clear: left;">
-			<dt><label>{L_TRACK_RSVPS}:</label></dt>
-			<dd>{TRACK_RSVP_CHECK}</dd>
-		</dl>
-		<!-- ELSE -->
-		{TRACK_RSVP_CHECK_HIDDEN}{ALLOW_GUEST_CHECK_HIDDEN}
-	<!-- ENDIF -->
+	<dl style="clear: left;">
+		<dt><label>{L_TRACK_SIGNUPS}:</label></dt>
+		<dd><input type='checkbox' name='calTrackRsvps' value='1' {TRACK_RSVP_CHECK} /></dd>
+	</dl>
 	
 	</fieldset>
 	</div>

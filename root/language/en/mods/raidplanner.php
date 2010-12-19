@@ -194,9 +194,9 @@ $lang = array_merge($lang, array(
 
 	'TO_TIME'					=> 'To',
 
-	'TRACK_RSVPS'				=> 'Track attendance',
-	'TRACK_RSVPS_ON'			=> 'Attendance tracking is enabled.',
-	'TRACK_RSVPS_OFF'			=> 'Attendance tracking is disabled.',
+	'TRACK_SIGNUPS'				=> 'Track attendance',
+	'TRACK_SIGNUPS_ON'			=> 'Attendance tracking is enabled.',
+	'TRACK_SIGNUPS_OFF'			=> 'Attendance tracking is disabled.',
 
 	'UPCOMING_EVENTS'		=> 'Upcoming Events',
 	'USER_CANNOT_VIEW_EVENT'=> 'You do not have permission to view this event.',
