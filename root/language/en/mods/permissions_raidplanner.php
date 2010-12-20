@@ -75,17 +75,19 @@ $lang['permission_cat']['raidplanner'] = 'Raidplanner';
 $lang['permission_type']['raidplanner_'] = 'Raidplanner Permissions';
 
 $lang = array_merge($lang, array(
+	/* Admin Permissions */
+	'acl_a_raid_config'		=> array('lang' => 'Can manage ACP Raidplanner settings and event types', 'cat' => 'raidplanner'),
+	/* moderator permissions */
+	'acl_m_raidplanner_edit_other_users_events'	=> array('lang' => 'Can edit events created by other users', 'cat' => 'raidplanner'),
+	'acl_m_raidplanner_delete_other_users_events'	=> array('lang' => 'Can delete events created by other users', 'cat' => 'raidplanner'),
+	'acl_m_raidplanner_edit_other_users_signups'	=> array('lang' => 'Can edit responses created by other users', 'cat' => 'raidplanner'),
 	/* User Permissions */
-	// view raid participation
-	'acl_u_raidplanner_view_headcount'			=> array('lang' => 'Can view the headcount for events created by other users', 'cat' => 'raidplanner'),
-	// allows viewing raids
-	'acl_u_raidplanner_view_events'			=> array('lang' => 'Can view events', 'cat' => 'raidplanner'),
 	// allows creating raids
 	'acl_u_raidplanner_create_events'			=> array('lang' => 'Can create events', 'cat' => 'raidplanner'),
-	// allows public events where every member can subscribe 
-	'acl_u_raidplanner_create_public_events'	=> array('lang' => 'Can create public events', 'cat' => 'raidplanner'),
 	// allows group events where only usergroups can subscribe
 	'acl_u_raidplanner_create_group_events'	=> array('lang' => 'Can create group events', 'cat' => 'raidplanner'),
+	// allows public events where every member can subscribe 
+	'acl_u_raidplanner_create_public_events'	=> array('lang' => 'Can create public events', 'cat' => 'raidplanner'),
 	// allows private events - only for you - eg hairdresser
 	'acl_u_raidplanner_create_private_events'	=> array('lang' => 'Can create private events', 'cat' => 'raidplanner'),
 	// can create events that recur
@@ -94,14 +96,13 @@ $lang = array_merge($lang, array(
 	'acl_u_raidplanner_delete_events'			=> array('lang' => 'Can delete events', 'cat' => 'raidplanner'),
 	// allows editing raids that you created
 	'acl_u_raidplanner_edit_events'			=> array('lang' => 'Can edit events', 'cat' => 'raidplanner'),
+	// allows signing up to raids
+	'acl_u_raidplanner_signup_events'			=> array('lang' => 'Can sign up to events', 'cat' => 'raidplanner'),
+	// allows viewing raids
+	'acl_u_raidplanner_view_events'			=> array('lang' => 'Can view events', 'cat' => 'raidplanner'),
+	// view raid participation
+	'acl_u_raidplanner_view_headcount'			=> array('lang' => 'Can view the headcount for events created by other users', 'cat' => 'raidplanner'),
 
-	/* moderator permissions */
-	'acl_m_raidplanner_edit_other_users_events'	=> array('lang' => 'Can edit events created by other users', 'cat' => 'raidplanner'),
-	'acl_m_raidplanner_delete_other_users_events'	=> array('lang' => 'Can delete events created by other users', 'cat' => 'raidplanner'),
-	'acl_m_raidplanner_edit_other_users_signups'	=> array('lang' => 'Can edit responses created by other users', 'cat' => 'raidplanner'),
-
-	/* Admin Permissions */
-	'acl_a_raid_config'		=> array('lang' => 'Can manage ACP Raidplanner settings and event types', 'cat' => 'raidplanner'),
 
 ));
 
