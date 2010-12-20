@@ -25,7 +25,6 @@ class ucp_planner_info
 			'version'	=> '0.0.1',
 			'modes'		=> array(
 				'raidplanner_registration'	=> array('title' => 'UCP_MAIN_RAIDPLANNER_REGISTRATION', 'auth' => 'acl_u_raidplanner_signup_events', 'cat' => array('UCP_DKP')),
-				'raidplanner_myevents'	=> array('title' => 'UCP_MAIN_RAIDPLANNER_MYEVENTS', 'auth' => 'acl_u_raidplanner_view_events', 'cat' => array('UCP_DKP')),
 				),
 			);
 	}
