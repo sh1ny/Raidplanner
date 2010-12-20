@@ -1,14 +1,14 @@
 <!-- INCLUDE ucp_header.html -->
-
+<h2>{L_UPCOMING_EVENTS}</h2>
 <div class="panel">
 	<div class="inner"><span class="corners-top"><span></span></span>
-		
+	<!-- IF .raids -->	
 			<ul class="topiclist">
 				<li class="header">
 					<dl class="icon">
-						<dt>{L_UPCOMING_EVENTS}</dt>
-						<dd style="width:16%">{L_COL_WILL_ATTEND}</dd>
-						<dd style="width:16%">{L_INVITE_INFO}</dd>
+						<dt style="color: #115098;">{L_UPCOMING_EVENTS}</dt>
+						<dd style="color: #115098; width:16%">{L_COL_WILL_ATTEND}</dd>
+						<dd style="color: #115098; width:16%">{L_INVITE_INFO}</dd>
 					</dl>
 				</li>
 			</ul>
@@ -56,7 +56,16 @@
 				</li>
 			<!-- END raids -->
 			</ul>
-
+	<!-- ELSE -->	
+				<ul class="topiclist">
+				<li class="header">
+					<dl class="icon">
+						<h3>{L_UPCOMING_EVENTS}</h3>
+					</dl>
+				</li>
+				</ul>
+			<p class="error">{L_NO_RAIDS_SCHEDULED}</p><p><br /></p>
+	<!-- ENDIF -->
 	<span class="corners-bottom"><span></span></span></div>
 </div>
 <!-- INCLUDE ucp_footer.html -->
