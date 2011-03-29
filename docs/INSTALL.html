@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-language" content="en" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="copyright" content="2009 bbdkp" />
+<meta name="keywords" content="" />
+<meta name="description" content="Raidplanner Installation information" />
+<title>Raidplanner &bull; Install Readme</title>
+
+<link href="stylesheet.css" rel="stylesheet" type="text/css" media="screen, projection" />
+
+</head>
+
+<body id="phpbb" class="section-docs">
+
+<div id="wrap">
+	<a id="top" name="top" accesskey="t"></a>
+	<div id="page-header">
+		<div class="headerbar">
+			<div class="inner"><span class="corners-top"><span></span></span>
+
+			<div id="doc-description">
+				<img src="logo.png" alt="" />
+				
+				<p style="display: none;"><a href="#start_here">Skip</a></p>
+			</div>
+
+			<span class="corners-bottom"><span></span></span></div>
+		</div>
+	</div>
+
+	<a name="start_here"></a>
+
+	<div id="page-body">
+
+<h1>Raidplanner</h1>
+	<hr />
+
+	<div class="paragraph">
+		<div class="inner"><span class="corners-top"><span></span></span></div>
+		
+		<div class="content">
+<p>A Raid planner for your phpBB3 / bbDKP forum. </p>
+<p>The base code was forked from Alightners Calendar mod, 
+refactored into functional classes and reworked for integration with bbDKP. an Umil script was added and the modX was updated for Automod.</p>
+
+<h2>bbDKP Integration Feature list</h2>
+<ul>
+<li>hooks into the bbDKP event and guildmembers Table</li>
+<li>It has an UMIL Database installer, and so is database independent.</li>
+<li>Raid Events pick up new Raid icons from DKP event. </li>
+<li>Sign up with your Guild characters for raids or as your forum account.</li>
+<li>Follow up to which raid(s) you signed up from your UCP</li>
+</ul>
+<h2>Calendar Feature list</h2>
+<ul>
+<li>Includes both All Day and Timed Events</li>
+<li>Event View - filled with all event details (who's invited, who created the event, BBCode, Smilies, start and end times, edit & delete buttons if applicable etc) </li>
+<li>Month View - can jump to any month via next and prev links, or jump randomly via pulldown menus. Lists birthdays, event types and event names only. Click on the day's number to add a new event on that day</li>
+<li>Week View - can jump to any week via next and prev links, or jump randomly via pulldown menus. Lists birthdays, event types, names, and times. Click on the day's number to add a new event on that day.</li>
+<li>Day View - can jump to any day via next and prev links, or jump randomly via pulldown menus. Includes a Graphical display of events on a timeline - lets you quickly see schedule conflicts etc. Lists birthdays, event types, names, and times. Click on the day's number to add a new event on that day.</li>
+<li>Support for BBCode and Smilies </li>
+<li>Birthday Support - Using phpBB3 Birthdays </li>
+<li>3 Event types exist : Public events (no signup), Raid events (Signup), and personal events. Events are created in bbDKP. </li>
+<li>Public events and Personal events are set up in Raidplanner.</li>
+<li>Make events bold if you are event creator - Let's you quickly see events most important to you.</li>
+<li>List of Upcoming Events on index - in the ACP you can specify whether or not you want to display </li>
+<li>the upcoming events on the index (and if so how many events to list). You also have the option to list the current week view on the index.</li>
+<li>Detailed Permissions - You can control who has permission to view, create, edit, delete, and moderate events. </li>
+<li>Auto pruning of past events - From the ACP you control how often events are pruned, and how old they have to be before they are added to the delete list. </li>
+<li>Recurring events - events will be occurrenceable with 12 different options:
+<ol>
+<li> A: Day [X] of [Month Name] every [Y] Year(s)</li>
+<li> A: [Xth] [Weekday Name] of [Month Name] every [Y] Year(s)</li>
+<li> A: [Xth] [Weekday Name] of full weeks in [Month Name] every [Y] Year(s)</li>
+<li> A: [Xth from last] [Weekday Name] of [Month Name] every [Y] Year(s)</li>
+<li> A: [Xth from last] [Weekday Name] of full weeks in [Month Name] every [Y] Year(s)</li>
+<li> M: Day [X] of month every [Y] Month(s)</li>
+<li> M: [Xth] [Weekday Name] of month every [Y] Month(s)</li>
+<li> M: [Xth] [Weekday Name] of full weeks in month every [Y] Month(s)</li>
+<li> M: [Xth from last] [Weekday Name] of month every [Y] Month(s)</li>
+<li> M: [Xth from last] [Weekday Name] of full weeks in month every [Y] Month(s)</li>
+<li> W: [Weekday Name] every [Y] Week(s)</li>
+<li> D: Every [Y] Day(s)</li>
+</ol>
+</li>
+<li>The user gets to enter the frequency [Y] value, and the other value's in []'s are interpolated 
+from the user's selected start date. </li>
+<li>There is a new user permission setting to determine which users have permission to create recurring events.  </li>
+
+<li>Recurring events can be deleted individually, or all events of the recurring group can be deleted together. 
+Recurring events can be edited individually (including start/end time settings, but not recurring event settings) 
+or you can edit the whole group of events altogether. If you're editing the whole group of recurring events - 
+you will not be able to edit any of the scheduling data, you'll only have access to the subject, body, i
+nvite list, and registration (signup) settings. </li>
+
+<li>When creating a recurring event you can specify the last day of the event group, or you can specify 
+the recurring event as never ending. </li>
+<li>Recurring events are populated by a cron job, and you can edit how often the cron job runs in the ACP. 
+You can also specify in the ACP how many days into the future you want to have populated in the calendar at a time.</li>
+<li>Event Registration - When creating new events, users have the option to enable attendance tracking 
+which allows users to register for the event. The event creator can also specify whether forum members are allowed 
+to bring guests to this event. When viewing the event, users are prompted to register for the event, and if guests 
+are allowed they can specify how many people they are bringing to the event so the calendar can track the total 
+headcount for the event. Permissions can be used to control who has permission to create events with attendance 
+tracking, and who is able to see what information gathered from users registering for the event.
+ Users are allowed to leave comments with their "yes", "no", or"maybe" reply, and the comments support smilies, bbcode, etc.</li>
+
+<li>Ability to invite multiple groups to an event</li>
+<li> Custom date/time formatting controlled in calendar ACP - this overwrites the user's preferred
+ date/time format, so you can display just the time in hours where it makes sense (like in the week view) 
+ or the whole date+time (like in the display event)</li>
+<li>Ability to display events only on their start date - obviously the day view is a graphical display of 
+all things going on, and events will display in the day view even if not on the start date with this
+ setting turned on. However it's great for things like a week view with an event that starts at
+  10pm and ends at 2am the next day, because it will only display on the first day.</li>
+
+<li>Ability to display a list of upcoming events for the next X days </li>
+<li> Detailed display for calendar on who is online page </li>
+
+<li> New permission option to invite groups you're not a member of - if this is turned on, you'll be able to create events for groups 
+you don't belong to, but the author of the event will always be able to see their own events - even if they don't belong to the invite list.</li>
+
+<li>Detailed permissions for ability to create private, group, or public events - now you can give some users the power to
+ create public events, and others only permission to create private events, or whatever combination makes sense for your forum.</li>
+
+<li>Utility in ACP to move all events +/- one hour (helps when changing forum's dst setting). When you create an event 
+it's stored in an absolute time, and if the forum (and/or users) change their dst settings they may suddenly
+ see all the events appear off by one hour, now there's a utility to move ALL events in the calendar forward or
+  back by one hour to help correct things when you change your DST..</li>
+
+
+<li>Ability to filter the calendar for events of a specific type - currently there's no UI for this, 
+it's simply a matter of adding a calEType argument to the URL. The user who requested this feature 
+sounded like they would create links to "different" calendars on their forum, where each 
+calendar only displayed events of the specified type.</li>
+
+<li>UCP module that displays upcoming events (that the user has registered for) for the next X days.</li>
+
+<li>UCP module that displays upcoming events (that the user has created) for the next X days.</li>
+
+<li>Ability to "Watch" the calendar - users can elect to watch the calendar for email notifications when new 
+events are created (that they are invited to).  The user is sent one notification when a new event 
+is created, but no new notifications for new events are sent until they re-visit the calendar
+ (much like how notifications are sent for forums you "subscribe" to).</li>
+ 
+ 
+<li> Ability to "Watch" a specific event for updates and/or replies.  Users can elect to watch a specific event
+ for update notifications whenever the event creator updates the event information or other users update thier reply 
+ (registration) for the event.  Note if the user doesn't have permission to view detailed event replies - they will not
+  receive the email notifications when other users reply to an event, but they will still recieve the email notifications
+  when the event poster updates the event information.</li>
+ 
+</ul>
+
+		</div>
+		
+		
+		<div class="back2top"><a href="#wrap" class="top">Back to Top</a></div>
+		<div class="inner"><span class="corners-bottom"><span></span></span></div>
+		
+	</div>	
+	
+<h1>Requirements</h1>
+	<hr />
+
+	<div class="paragraph">
+		<div class="inner"><span class="corners-top"><span></span></span></div>
+		
+		<div class="content">
+			<ol>
+			<li>bbdkp 1.2 or higher</li>
+			<li>phpbb3.0.7-PL1 or higher</li>
+			<li>ftp and founder admin access on your phpbb installation. </li>
+			</ol>
+		</div>
+		<div class="back2top"><a href="#wrap" class="top">Back to Top</a></div>
+		<div class="inner"><span class="corners-bottom"><span></span></span></div>
+	</div>	
+
+<h1>Installation</h1>
+	<hr />
+
+	<div class="paragraph">
+		<div class="inner"><span class="corners-top"><span></span></span></div>
+		<div class="content">
+			<h2>Quick install guide</h2>
+			<ol>
+			<li>Unzip the zip file into /store/mods/</li>
+			<li>Launch automod, choose the install link. this will copy all the files, perform the necessary edits. </li>
+			<li>Then surf to /install/installbbtips.php, and you will see the database installer. This will install the acp module, and clear the caches (template, theme, imagesets)</li>
+			<li>Once installed, you will find the ACP tab added next to the bbdkp Tab </li>
+			</ol>
+			
+		</div>
+		
+		<div class="back2top"><a href="#wrap" class="top">Back to Top</a></div>
+		<div class="inner"><span class="corners-bottom"><span></span></span></div>
+		
+	</div>	
+
+<h1>Support</h1>
+	<hr />
+
+	<div class="paragraph">
+		<div class="inner"><span class="corners-top"><span></span></span></div>
+		
+		<div class="content">
+			<ol>
+			<li><a href="http://www.bbdkp.com/viewforum.php?f=8">Plugin support</a></li>
+			<li><a href="http://www.bbdkp.com/tracker.php">Bug reports</a></li>
+			<li>IRC channel : visit #bbdkp on Freenode. <a href="http://webchat.freenode.net">webchat</a><br/> </li>
+			</ol>
+		</div>
+		
+		<div class="back2top"><a href="#wrap" class="top">Back to Top</a></div>
+		<div class="inner"><span class="corners-bottom"><span></span></span></div>
+	</div>	
+
+<h1>Copyright and disclaimer</h1>
+	<hr />
+
+	<div class="paragraph">
+		<div class="inner"><span class="corners-top"><span></span></span></div>
+		
+		<div class="content">
+			<p>This application is opensource software released under the <a href="http://opensource.org/licenses/gpl-license.php">GPL</a>. Please see source code and the docs directory for more details. 	
+			
+			
+			 If you use this software and find it to be useful, we ask that you retain the copyright notice below. 
+			 While not required for free use, it will help build interest in the bbDKP project and is required 
+			 for obtaining support at  <a href="http://www.bbdkp.com/">Supportforum</a><br/>
+
+			 bbdkp SVN : <a href="https://github.com/bbDKP/Raidplanner">https://github.com/bbDKP/Raidplanner</a><br/>
+			 (c) 2011 Sajaki<br/>
+			 (c) 2007, 2008, 2009 Alightner<br/>
+			
+			<h2>Donation</h2>
+			
+			bbDkp is freeware, but you can support our development efforts by making a contribution. <br/>
+			 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+">
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="">
+<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+
+		</div>
+			
+		<div class="back2top"><a href="#wrap" class="top">Back to Top</a></div>
+		<div class="inner"><span class="corners-bottom"><span></span></span></div>
+    </div>
+
+	<div id="page-footer">
+		<div class="version">&nbsp;</div>
+	</div>
+</div></div>
+
+<div>
+	<a id="bottom" name="bottom" accesskey="z"></a>
+</div>
+
+</body>
+</html>
