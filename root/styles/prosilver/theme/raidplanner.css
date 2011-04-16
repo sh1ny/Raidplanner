@@ -1,0 +1,106 @@
+/* -------------------------
+   raidplanner css
+  ------------------------- */
+/* uses border-top-color = .bg3 background-color
+ (the line between events in the month display) */
+hr.hrCal 
+{
+	border-top-color: #cadceb;
+}
+
+/* uses color from h1
+		   (calendar header previous and next links) */
+.calH1
+{
+	color: #FFFFFF;
+	font-weight: bold;
+	font-size: 200%
+}
+
+/* The from and to times take up a lot of 
+		  space in the calendar display.
+		  Use this to shrink them */
+.smCalText 
+{
+	font-size: 85%
+}
+
+/* bg4 is just slightly darker then bg3 
+		  (used in calendar headers) */
+.bg4
+{
+	background-color: #8DB8DE;
+}
+
+/* uses background-color of .bg3
+		    (used to display the numbers and icons for 
+		    each day in the month and week view displays ) */
+table tbody td.bg3_calMonH 
+{
+	background-color: #cadceb;
+	font-size: 85%
+}
+
+/* uses background-color of .bg4
+		    (used to display the numbers and icons for 
+		    each day in the month and week view displays ) */
+table tbody td.bg4_calMonH 
+{
+	background-color: #8DB8DE;
+	font-size: 85%
+}
+
+/* uses background-color of .bg1
+		   (used to display days in calendar month/week view) */
+table.table1 tbody td.bg1_calMon 
+{
+	background-color: #ECF3F7;
+	padding-top: 2px;
+	padding-bottom: 5px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+/* uses background-color of .bg2
+		   (used to display days in calendar month/week view) */
+table.table1 tbody td.bg2_calMon 
+{
+	background-color: #e1ebf2;
+	padding-top: 2px;
+	padding-bottom: 5px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+/* uses background-color of .bg3
+		   (used to display days in calendar month/week view) */
+table.table1 tbody td.bg3_calMon 
+{
+	background-color: #cadceb;
+	padding-top: 2px;
+	padding-bottom: 5px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+/* uses background-color of .bg1
+		   uses border-top-color = .forumbg background-color
+		   (used to display events in calendar day view) */
+table.table1 tbody td.bg1_calDay 
+{
+	background-color: #ECF3F7;
+	border-top-color: #12A3EB;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 3px;
+	padding-right: 3px;
+}
+
+/* uses background-color of .bg3
+		   uses border-top-color = .forumbg background-color
+		   (used to display negative space in calendar day view) */
+table.table1 tbody td.bg3_calDay 
+{
+	background-color: #cadceb;
+	border-top-color: #12A3EB;
+}

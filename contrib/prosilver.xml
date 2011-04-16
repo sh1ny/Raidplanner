@@ -8,7 +8,7 @@
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[RaidPlanner 0.0.1]]></title>
+		<title lang="en"><![CDATA[RaidPlanner 0.2.0b]]></title>
 		<description lang="en"><![CDATA[The Prosilver Style for the phpbb Raidplanner mod.]]></description>
 		<author-notes lang="en"><![CDATA[English language installation files]]></author-notes>
 		<author-group>
@@ -30,7 +30,7 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>0.0.1</mod-version>
+		<mod-version>0.2.0b</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>60</time>
@@ -44,6 +44,7 @@
 		<copy>
 			<file from="root/styles/prosilver/imageset/en/planner/*.*" to="styles/prosilver/imageset/en/planner/*.*"/>
 			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
+			<file from="root/styles/prosilver/theme/raidplanner.css" to="styles/prosilver/theme/raidplanner.css"/>
 		</copy>
 		<open src="styles/prosilver/imageset/en/imageset.cfg">
 			<edit>
@@ -78,16 +79,6 @@ img_icon_raidplanner_delete_all = planner/icon_calendar_delete_all.gif*20*40]]><
 		]]></action>
 			</edit>
 		</open>
-
-		<open src="styles/prosilver/template/dkp/dkpmenu.html">
-		<edit>
-		<comment lang="en"><![CDATA[Add Planner link to the dkp menu]]></comment>
-		<find><![CDATA[	&nbsp; &nbsp;<a class="dkpmenu" href="{U_BP}">{L_MENU_BOSS}</a>]]></find>
-		<action type="after-add"><![CDATA[
-		&nbsp; &nbsp;<a class="dkpmenu" href="{U_PLANNER}">{L_PLANNER}</a>]]></action>
-		</edit>
-		</open>
-		
 		<open src="styles/prosilver/theme/buttons.css">
 			<edit>
 				<comment lang="en"><![CDATA[Add calendar icon buttons]]></comment>
@@ -125,108 +116,17 @@ img_icon_raidplanner_delete_all = planner/icon_calendar_delete_all.gif*20*40]]><
 		ul.profile-icons li.delete-all-icon	{ width: {IMG_ICON_RAIDPLANNER_DELETE_ALL_WIDTH}px; height: {IMG_ICON_RAIDPLANNER_DELETE_ALL_HEIGHT}px; }]]></action>
 			</edit>
 		</open>
-		<open src="styles/prosilver/theme/colours.css">
+		<open src="/styles/prosilver/theme/stylesheet.css">
 			<edit>
-				<comment lang="en"><![CDATA[Add some additional colors for the calendar.]]></comment>
-				<find><![CDATA[.bg3	{ background-color: #cadceb; }]]></find>
-				<action type="after-add"><![CDATA[/* -------------------------
-		   calendar mod additions... 
-		   ------------------------- */
-		   
-		/* uses border-top-color = .bg3 background-color
-		 (the line between events in the month display) */
-		hr.hrCal { 
-			border-top-color: #cadceb;
-		}
-		
-		/* uses color from h1
-		   (calendar header previous and next links) */
-		.calH1 {
-			color: #FFFFFF;
-			font-weight: bold;
-			font-size:200%
-		}
-		
-		/* The from and to times take up a lot of 
-		  space in the calendar display.
-		  Use this to shrink them */
-		.smCalText{font-size:85%}
-		
-		/* bg4 is just slightly darker then bg3 
-		  (used in calendar headers) */
-		.bg4	{ background-color: #8DB8DE; }
-		
-		/* uses background-color of .bg3
-		    (used to display the numbers and icons for 
-		    each day in the month and week view displays ) */
-		table tbody td.bg3_calMonH{ 
-			background-color: #cadceb;
-			font-size:85%
-		}
-		
-		/* uses background-color of .bg4
-		    (used to display the numbers and icons for 
-		    each day in the month and week view displays ) */
-		table tbody td.bg4_calMonH{ 
-			background-color: #8DB8DE;
-			font-size:85%
-		}
-		
-		/* uses background-color of .bg1
-		   (used to display days in calendar month/week view) */ 
-		table.table1 tbody td.bg1_calMon {
-			background-color: #ECF3F7;
-			padding-top: 2px;
-			padding-bottom: 5px;
-			padding-left: 4px;
-			padding-right: 4px;
-		}
-		/* uses background-color of .bg2
-		   (used to display days in calendar month/week view) */ 
-		table.table1 tbody td.bg2_calMon {
-			background-color: #e1ebf2;
-			padding-top: 2px;
-			padding-bottom: 5px;
-			padding-left: 4px;
-			padding-right: 4px;
-		}
-		/* uses background-color of .bg3
-		   (used to display days in calendar month/week view) */ 
-		table.table1 tbody td.bg3_calMon {
-			background-color: #cadceb;
-			padding-top: 2px;
-			padding-bottom: 5px;
-			padding-left: 4px;
-			padding-right: 4px;
-		}
-		
-		
-		/* uses background-color of .bg1
-		   uses border-top-color = .forumbg background-color
-		   (used to display events in calendar day view) */ 
-		table.table1 tbody td.bg1_calDay {
-			background-color: #ECF3F7;
-			border-top-color: #12A3EB;
-			padding-top: 10px;
-			padding-bottom: 10px;
-			padding-left: 3px;
-			padding-right: 3px;
-		}
-		
-		/* uses background-color of .bg3
-		   uses border-top-color = .forumbg background-color
-		   (used to display negative space in calendar day view) */ 
-		table.table1 tbody td.bg3_calDay {
-			background-color: #cadceb;
-			border-top-color: #12A3EB;
-		}
-		
-		/* -------------------------
-		   calendar mod end
-		   ------------------------- */
-		
-		]]></action>
+				<comment lang="en"><![CDATA[raidplanner css]]></comment>
+				<comment lang="fr"><![CDATA[raidplanner css]]></comment>
+				<comment lang="de"><![CDATA[raidplanner css]]></comment>								
+				<find><![CDATA[@import url("colours.css");]]></find>
+				<action type="before-add"><![CDATA[@import url("raidplanner.css");
+]]></action>
 			</edit>
+		</open>
+		<open src="styles/prosilver/theme/colours.css">
 			<edit>
 				<comment lang="en"><![CDATA[Define main calendar icon data]]></comment>
 				<find><![CDATA[.forwardpm-icon span	{ background-image: url("{IMG_BUTTON_PM_FORWARD_SRC}") ;}]]></find>

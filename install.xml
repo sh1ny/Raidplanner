@@ -19,11 +19,9 @@
 			content="MODX file generated with PP MODX Creator by tumba25 (online version)" />
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)" />
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[bbDKP Raidplanner plugin 0.1.0]]></title>
-		<description lang="en"><![CDATA[Raidplanner Plugin Installer. 
-		
-* forked from Alightner's Calendar mod, modified to work with bbDKP. 
-
+		<title lang="en"><![CDATA[bbDKP Raidplanner 0.2.0b]]></title>
+		<description lang="en"><![CDATA[Raidplanner Installer. 
+		see /docs/install.html and /docs/changelog.html
 ]]></description>
 		<author-notes lang="en"><![CDATA[We hope you get everything working. further development requests, 
 		support questions are welcome at www.bbdkp.com]]></author-notes>
@@ -56,31 +54,15 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>0.1.0</mod-version>
+		<mod-version>0.2.0b</mod-version>
 		<installation>
-			<level>advanced</level>
-			<time>1200</time>
+			<level>easy</level>
+			<time>600</time>
 			<target-version>3.0.8</target-version>
 		</installation>
-		<history>
-			<entry>
-				<date>2010-12-01</date>
-				<rev-version>0.0.1</rev-version>
-				<changelog lang="en">
-					<change><![CDATA[[CHG] Raid Events picked up from bbDKP.]]></change>
-					<change><![CDATA[[CHG] UCP module is no longer optional, is installed with umil not in modx]]></change>
-					<change><![CDATA[[CHG] Removed config table, now uses phpbb config table.]]></change>
-					<change><![CDATA[[CHG] changed tablenames, appends table constants to bbDKP constants file]]></change>
-					<change><![CDATA[[CHG] split backend /includes code and refactored into php5 classes]]></change>
-					<change><![CDATA[[CHG] added UMIF installer script, removed sql portions from modx]]></change>
-					<change><![CDATA[[CHG] split modx file into main, template and language]]></change>
-					<change><![CDATA[[CHG] mod renamed and version number back to 0.0.1]]></change>
-				</changelog>
-			</entry>
-		</history>
 		<link-group>
 			<link type="dependency" href="http://www.bbdkp.com/downloads.php"
-				lang="en">bbDKP 1.2.1</link>
+				lang="en">bbDKP 1.2.2</link>
 			<link type="language" href="contrib/en.xml" lang="en">English
 			</link>
 			<link type="template" href="contrib/prosilver.xml" lang="en">
@@ -89,7 +71,20 @@
 	</header>
 	<action-group>
 		<copy>
-			<file from="root/*.*" to="*.*" />
+			<file from="root/includes/ucp/info/ucp_planner.php" to="includes/ucp/info/ucp_planner.php" />
+			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php" />
+			<file from="root/includes/bbdkp/raidplanner/raidplanner_population.php" to="includes/bbdkp/raidplanner/raidplanner_population.php" />
+			<file from="root/includes/bbdkp/raidplanner/raidplanner_display.php" to="includes/bbdkp/raidplanner/raidplanner_display.php" />
+			<file from="root/includes/bbdkp/raidplanner/raidplanner_base.php" to="includes/bbdkp/raidplanner/raidplanner_base.php" />		
+			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php" />
+			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php" />
+			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html" />
+			<file from="root/adm/style/dkp/acp_rp_eventsettings.html" to="adm/style/dkp/acp_rp_eventsettings.html" />
+			<file from="root/umil/*.*" to="umil/*.*" />
+			<file from="root/install/installrp.php" to="install/installrp.php" />
+			<file from="root/planner.php" to="planner.php" />
+			<file from="root/planneradd.php" to="planneradd.php" />						
+	
 		</copy>
 		<open src="includes/bbdkp/constants_bbdkp.php">
 			<edit>
