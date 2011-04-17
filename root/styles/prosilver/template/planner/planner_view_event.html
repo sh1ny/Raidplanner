@@ -1,10 +1,27 @@
 <!-- INCLUDE overall_header.html -->
 <!-- INCLUDE dkp/dkpmenu.html -->
 <div class="forabg"><span class="corners-top"><span></span></span>
+<div style="width:50%; float: left;">
 <h1 style="color: #dfc065">{L_CALENDAR_TITLE}</h1>
+</div>
+<div style="width:50%; float: right;">
+<div class="buttons" style="float: right;"><!-- IF ADD_LINK -->
+<div class="calendar-new-icon"><a href="{ADD_LINK}"
+	title="{L_NEW_EVENT}"><span></span></a></div>
+<!-- ENDIF -->
+<div class="calendar-day-icon"><a href="{DAY_VIEW_URL}"
+	title="{L_DAY}"><span></span></a></div>
+<div class="calendar-week-icon"><a href="{WEEK_VIEW_URL}"
+	title="{L_WEEK}"><span></span></a></div>
+<div class="calendar-month-icon"><a href="{MONTH_VIEW_URL}"
+	title="{L_MONTH}"><span></span></a></div>
+</div>
+</div>
+<br />
+
 <span class="corners-bottom"><span></span></span></div>
 
-<h2><!-- IF EVENT_COLOR --><span style="color: #{ EVENT_COLOR"><!-- ENDIF -->
+<h2><!-- IF EVENT_COLOR --><span style="color: #{EVENT_COLOR}"><!-- ENDIF -->
 <!-- IF EVENT_IMAGE --><img src="{EVENT_IMAGE}" /> <!-- ENDIF --> <!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}:
 <!-- ENDIF -->{SUBJECT} <!-- IF EVENT_COLOR --></span><!-- ENDIF --></h2>
 <br />
@@ -107,26 +124,13 @@
 </table>
 <br />
 &nbsp;<br />
-<!-- ENDIF --> <br />
-<div class="buttons"><!-- IF ADD_LINK -->
-<div class="calendar-new-icon"><a href="{ADD_LINK}"
-	title="{L_NEW_EVENT}"><span></span></a></div>
 <!-- ENDIF -->
-<div class="calendar-day-icon"><a href="{DAY_VIEW_URL}"
-	title="{L_DAY}"><span></span></a></div>
-<div class="calendar-week-icon"><a href="{WEEK_VIEW_URL}"
-	title="{L_WEEK}"><span></span></a></div>
-<div class="calendar-month-icon"><a href="{MONTH_VIEW_URL}"
-	title="{L_MONTH}"><span></span></a></div>
-</div>
-<br />
+
 
 </div>
 </div>
 
 </div>
-
-<div></div>
 
 <span class="corners-bottom"><span></span></span></div>
 </div>
@@ -134,9 +138,9 @@
 <!-- IF S_CURRENT_SIGNUP -->
 <form method="post" action="{S_SIGNUP_MODE_ACTION}" name="signup_form"
 	id="signup_form">
-<h2 class="solo">{L_CALENDAR_RESPOND} : {CURR_POSTER_URL}</h2>
-<div class="panel bg3">
+<div class="panel bg2">
 <div class="inner"><span class="corners-top"><span></span></span>
+<h3 class="solo">{L_CALENDAR_RESPOND} : {CURR_POSTER_URL}</h3>
 <fieldset>
 <dl>
 	<dt>{L_CALENDAR_WILL_ATTEND}</dt>

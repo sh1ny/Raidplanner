@@ -208,18 +208,22 @@
   <div>
   <!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
   <!-- IF S_POST_ACTION -->
-  <div style="width:40%; float: left; height: 220px;"><legend><h4>{L_RAIDINFO}</h4></legend>
+  
+  <div style="width:400px; float: left; height: 230px;"><legend><h4>{L_RAIDINFO}</h4></legend>
   <fieldset class="fields1">
+  	<br/>
   	<dl style="clear: left;">
 		<dt><label for="subject">{L_SUBJECT}:</label></dt>
 		<dd><input type="text" name="subject" id="subject" size="30" maxlength="100" tabindex="2" value="{SUBJECT}" class="inputbox autowidth" /></dd>
 	</dl>
+	<!-- fetch the events from bbDKP -->
 	<dl style="clear: left;">
 		<dt><label for="calEType">{L_EVENT_TYPE}:</label></dt>
 		<dd>
 			<select name='calEType' id='calEType'>{EVENT_TYPE_SEL}</select>
 	    </dd>
 	</dl>
+	
 	<dl style="clear: left;">
 		<dt><label for="calELevel">{L_EVENT_ACCESS_LEVEL}:</label></dt>
 		<dd><select name='calELevel' id='calELevel' onchange='update_group_id_state();'>
@@ -234,12 +238,23 @@
   </fieldset>
   </div>
   
- <div style="width:60%; float: right; height: 220px;">
+  
+ <div style="width:400px; float: left; position: relative;  height: 230px;">
 	<fieldset class="fields1"><legend><h4>{L_RAIDROLES}</h4></legend>
+		<br/>
 		<dl style="clear: left;">
+		<dt><label>{L_CHOOSEPROFILE}</label>  </dt>
+		<dd>
+		<input type="radio" name="raidcomposition" value="1"{R1_CHECKED} /> {L_RAIDPROFILE1}
+     	<input type="radio" name="raidcomposition" value="2"{R2_CHECKED} /> {L_RAIDPROFILE2}
+		</dd>
+		
 	<!-- BEGIN raidroles -->
 		<dt><label for="subject">{raidroles.ROLE_NAME}:</label></dt>
-		<dd><input type="hidden" name="role[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" /><input type="text" name="role_needed[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED}" class="inputbox autowidth" /></dd>
+		<dd><input type="hidden" name="role1[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" />
+		<input type="text" name="role_needed1[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED1}" class="inputbox autowidth" />
+		<input type="hidden" name="role2[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" />
+		<input type="text" name="role_needed2[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED2}" class="inputbox autowidth" /></dd>
 	<!-- END raidroles -->
 	</dl>
 	
@@ -253,10 +268,10 @@
   
 
   <hr/><!-- IF S_DATE_TIME_OPTS -->
- <div style="width:40%; clear: all;  float: left;">
+ <div style="width:400px; clear: all;  float: left;">
  
   <fieldset class="fields1"><legend><h4>{L_RAIDWHEN}</h4></legend> 
- 
+ <br/>
   <dl style="clear: right;">
 			<dt><label for="calM">{L_RAID_DATE}:</label></dt>
 			<dd><select name='calM' id='calM'>{MONTH_SEL}</select><select name='calD' id='calD'>{DAY_SEL}</select><select name='calY' id='calY'>{YEAR_SEL}</select>
@@ -273,18 +288,14 @@
     </fieldset>
  </div>
  
-<div style="width:60%; float: right; ">
+<div style="width:400px; float: left; ">
 <!-- IF S_RECURRING_OPTS -->
 	<fieldset class="fields1"><legend><h4>{L_RAIDREPEAT}</h4></legend> 
-			
+		<br/>			
 			
 			<dl style="clear: left;">
 				<dt><label>{L_RECURRING_EVENT}:</label></dt>
 				<dd>{RECURRING_EVENT_CHECK}</dd>
-			</dl>
-			<dl style="clear: left;">
-				<dt title="{L_RECURRING_EVENT_TYPE_EXPLAIN}"><label for="calRType">{L_RECURRING_EVENT_TYPE}</label><br /></dt>
-				<dd ">{RECURRING_EVENT_TYPE_SEL}</dd>
 			</dl>
 			<dl style="clear: left;">
 				<dt title="{L_RECURRING_EVENT_FREQ_EXPLAIN}"><label for="calRFreq">{L_RECURRING_EVENT_FREQ}</label><br /></dt>
@@ -293,6 +304,10 @@
 			<dl style="clear: left;">
 				<dt><label for="calMEnd">{L_END_RECURRING_EVENT_DATE}</label></dt>
 				<dd>{END_RECURR_MONTH_SEL} {END_RECURR_DAY_SEL} {END_RECURR_YEAR_SEL}</dd>
+			</dl>
+			<dl style="clear: left;">
+				<dt title="{L_RECURRING_EVENT_TYPE_EXPLAIN}"><label for="calRType">{L_RECURRING_EVENT_TYPE}</label><br /></dt>
+				<dd ">{RECURRING_EVENT_TYPE_SEL}</dd>
 			</dl>
 			
 			</fieldset>

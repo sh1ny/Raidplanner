@@ -133,8 +133,8 @@ if( $event_id != 0 )
 // in submit or preview we need to gather the posted data...
 if ($submit || $preview)
 {
-	
-	$newraid->gather_eventdata($event_data, $newraid, $s_date_time_opts);
+	//complete the event array by calling the gather function
+	$newraid->gather_raiddata($event_data, $newraid, $s_date_time_opts);
 	
 	if( $event_id > 0 )
 	{
@@ -142,6 +142,7 @@ if ($submit || $preview)
 	}
 	else 
 	{
+		// we have all data, now go create the raid
 		//pass zero event_id by reference to get it updated
 		$newraid->create_event($event_data, $newraid, $event_id);
 	}
@@ -268,45 +269,7 @@ if( $auth->acl_get('u_raidplanner_create_private_events') )
 	$level_sel_code .= "<option value='0'>".$user->lang['EVENT_ACCESS_LEVEL_PERSONAL']."</option>\n";
 }
 
-//get raid roles needed
-if( $event_id != 0 )
-{
-	$sql_array = array(
-	    'SELECT'    => 'r.role_id, r.role_name, er.role_needed ', 
-	    'FROM'      => array(
-	        RP_ROLES   => 'r'
-	    ),
-	    'LEFT_JOIN' => array(
-	        array(
-	            'FROM'  => array( RP_EVENTROLES  => 'er'),
-	            'ON'    => 'r.role_id = er.role_id AND er.event_id = ' . $event_id  
-	        )
-	    ),
-	    'ORDER_BY'  => 'r.role_id'
-	);
-}
-else 
-{
-	$sql_array = array(
-	    'SELECT'    => 'r.role_id, r.role_name, 0 as role_needed ', 
-	    'FROM'      => array(
-	        RP_ROLES   => 'r'
-	    ),
-	    'ORDER_BY'  => 'r.role_id'
-	);
-	
-}
-$sql = $db->sql_build_query('SELECT', $sql_array);
-$result = $db->sql_query($sql);
-while ($row = $db->sql_fetchrow($result))
-{
-    $template->assign_block_vars('raidroles', array(
-        'ROLE_ID'        => $row['role_id'],
-	    'ROLE_NAME'      => $row['role_name'],
-	    'ROLE_NEEDED'    => $row['role_needed'],
-    ));
-}
-$db->sql_freeresult($result);
+
 
 // Raid start date
 $month_sel_code  = " ";
@@ -438,6 +401,36 @@ $cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".$newraid->date
 // check to see if we're editing an existing event
 if( sizeof($error) || $preview || $event_id > 0 )
 {
+	
+	// get profile for this raid
+	$sql_array = array(
+		    'SELECT'    => 'r.role_id, r.role_name, er.role_needed ', 
+		    'FROM'      => array(
+		        RP_ROLES   => 'r'
+		    ),
+		    'LEFT_JOIN' => array(
+		        array(
+		            'FROM'  => array( RP_EVENTROLES  => 'er'),
+		            'ON'    => 'r.role_id = er.role_id AND er.event_id = ' . $event_id  
+		        )
+		    ),
+		    'ORDER_BY'  => 'r.role_id'
+	);
+	
+	$sql = $db->sql_build_query('SELECT', $sql_array);
+	$result = $db->sql_query($sql);
+	while ($row = $db->sql_fetchrow($result))
+	{
+	    $template->assign_block_vars('raidroles', array(
+	        'ROLE_ID'        => $row['role_id'],
+		    'ROLE_NAME'      => $row['role_name'],
+		    'ROLE_NEEDED1'    => $row['role_needed10'],
+	    	'ROLE_NEEDED2'    => $row['role_needed25'],
+	    ));
+	}
+	$db->sql_freeresult($result);
+	
+
 	// translate event start and end time into user's timezone
 	$event_start = $event_data['event_start_time'] + $user->timezone + $user->dst;
 	$cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".gmdate('n', $event_start)."&amp;y=".gmdate('Y', $event_start) );
@@ -589,6 +582,28 @@ if( sizeof($error) || $preview || $event_id > 0 )
 }
 else // we are creating a new event
 {
+	
+	// make raid composition proposal
+	$sql_array = array(
+	    'SELECT'    => 'r.role_id, r.role_name, role_needed10, role_needed25 ', 
+	    'FROM'      => array(
+	        RP_ROLES   => 'r'
+	    ),
+	    'ORDER_BY'  => 'r.role_id'
+	);
+	$sql = $db->sql_build_query('SELECT', $sql_array);
+	$result = $db->sql_query($sql);
+	while ($row = $db->sql_fetchrow($result))
+	{
+	    $template->assign_block_vars('raidroles', array(
+	        'ROLE_ID'        => $row['role_id'],
+		    'ROLE_NAME'      => $row['role_name'],
+		    'ROLE_NEEDED1'    => $row['role_needed10'],
+	    	'ROLE_NEEDED2'    => $row['role_needed25'],
+	    ));
+	}
+	$db->sql_freeresult($result);
+	
 	//-----------------------------------------
 	// month selection data
 	//-----------------------------------------

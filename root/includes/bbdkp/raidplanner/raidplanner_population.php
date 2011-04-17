@@ -33,7 +33,7 @@ class raidplanner_population extends raidplanner_base
 {
 	
 	/***
-	 * function to build event array used for posting new event.
+	 * function to build event array used for posting new event. called from planneradd
 	 * error checking is done
 	 * 
 	 * @param byref : $event_data, $newraid
@@ -41,7 +41,7 @@ class raidplanner_population extends raidplanner_base
 	 * @returns : $event_data or trigger_error
 	 * 
 	 */
-	public function gather_eventdata( &$event_data, &$newraid, $s_date_time_opts)
+	public function gather_raiddata( &$event_data, &$newraid, $s_date_time_opts)
 	{
 		global $user, $config; 
 		$error = array();
@@ -51,15 +51,30 @@ class raidplanner_population extends raidplanner_base
 		$event_data['etype_id']		= request_var('calEType', 0);
 		$event_data['group_id'] = 0;
 		$event_data['group_id_list'] = ",";
+		
+		// get raidsize from form, this is 1 or 2
+		$raidsize = request_var('raidcomposition', 99);
+		if ($raidsize == 1)
+		{
+			$event_data['roles_needed'] = request_var('role_needed1', array(0=> 0)); 
+		}
+		elseif  ($raidsize == 2)
+		{
+			$event_data['roles_needed'] = request_var('role_needed2', array(0=> 0));
+		}
+		
+		// get member group id
 		$group_id_array = request_var('calGroupId', array(0));
 		$num_group_ids = sizeof( $group_id_array );
 	    if( $num_group_ids == 1 )
 	    {
+	    	// if only one group pass the groupid
 			$event_data['group_id'] = $group_id_array[0];
 	
 	    }
-		else if( $num_group_ids > 1 )
+		elseif( $num_group_ids > 1 )
 		{
+			// if we want multiple groups then pass the array 
 			$group_index = 0;
 			for( $group_index = 0; $group_index < $num_group_ids; $group_index++ )
 			{
@@ -70,18 +85,24 @@ class raidplanner_population extends raidplanner_base
 			    $event_data['group_id_list'] .= $group_id_array[$group_index] . ",";
 			}
 		}
+		
 		$event_data['event_access_level']	= request_var('calELevel', 0);
+		
+		// if we selected group but didn't actually a group then throw error
 		if( $event_data['event_access_level'] == 1 && $num_group_ids < 1 )
 		{
 			$error[] = $user->lang['NO_GROUP_SELECTED'];
 		}
+		
+		//do we track signups ?
 		$event_data['track_signups'] = request_var('calTrackRsvps', 0);
-	    /*------------------------------------------------------------------
+	    
+
+		/*------------------------------------------------------------------
 	      Begin to find start/end times
 	      NOTE: if s_date_time_opts is false we are editing all events and
 	            there will not be any data to get
 	    -------------------------------------------------------------------*/
-		
 		if( $s_date_time_opts )
 		{
 			$start_hr = request_var('calHr', 0);
@@ -97,7 +118,7 @@ class raidplanner_population extends raidplanner_base
 				$error[] = sprintf($user->lang['IP_BLACKLISTED'], $user->ip, $dnsbl[1]);
 			}
 		}
-	
+		
 	    /*------------------------------------------------------------------
 	      Check options for recurring events
 	    -------------------------------------------------------------------*/
@@ -153,6 +174,7 @@ class raidplanner_population extends raidplanner_base
 		
 		if (!sizeof($error))
 		{
+			//return the parsed event data
 			return $event_data;
 		}
 		
@@ -174,7 +196,7 @@ class raidplanner_population extends raidplanner_base
 		$recurr_id = 0;
 		/*----------------------------------------------------
 		   RECURRING EVENT: add it to the recurring
-		   event table and begin populating the events
+		   event table and begin populating the future raids
 		----------------------------------------------------*/
 		if( $event_data['is_recurr'] == 1 )
 		{
@@ -222,15 +244,16 @@ class raidplanner_population extends raidplanner_base
 	
 		}
 		/*----------------------------------------------------
-		   NON-RECURRING EVENT: add it to the event table
+		   NON-RECURRING EVENT: add it to the raids table
 		----------------------------------------------------*/
 		else
 		{
-			$sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+
+			// insert raid
+			$data = array(
 					'etype_id'				=> (int) $event_data['etype_id'],
 					'sort_timestamp'		=> (int) $event_data['event_start_time'],
 					'event_start_time'		=> (int) $event_data['event_start_time'],
-					
 					'event_day'				=> (string) $event_data['event_day'],
 					'event_subject'			=> (string) $event_data['event_subject'],
 					'event_body'			=> (string) $event_data['event_body'],
@@ -245,12 +268,30 @@ class raidplanner_population extends raidplanner_base
 					'enable_smilies'		=> (int) $allow_smilies,
 					'track_signups'			=> (int) $event_data['track_signups'],
 					'recurr_id'				=> (int) $recurr_id,
-					)
-				);
+			);
+			
+			
+			$sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', $data  );
 			$db->sql_query($sql);
 			$event_id = $db->sql_nextid();
+			
+			unset($data);
+			$data = array();
+			// populate roles needed for this raid
+			foreach($event_data['roles_needed'] as $key => $slots)
+			{
+				$data[] = array(
+					'event_id' 		=> $event_id,
+					'role_id'		=> $key,
+					'role_needed'	=> $slots,
+				);
+			}
+			$db->sql_multi_insert(RP_EVENTROLES, $data);
+			
 		}
-		$newraid->calendar_notify_new_event( $event_id );
+		
+		// notify
+		$this->calendar_notify_new_event( $event_id );
 	
 		
 		

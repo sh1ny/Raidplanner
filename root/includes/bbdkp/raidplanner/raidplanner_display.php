@@ -727,6 +727,12 @@ class displayplanner extends raidplanner_base
 
 	}
 	
+	
+	/**
+	 * displays a planned raid
+	 * called from planner.php
+	 *
+	 */
 	public function display_plannedraid()
 	{
 		global $auth, $db, $user, $config, $template, $phpEx, $phpbb_root_path;
@@ -747,7 +753,7 @@ class displayplanner extends raidplanner_base
 		$back_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calD=".$this->date['day']."&amp;calM=".
 				$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts );
 		
-		if( $event_id > 0 )
+		if( $event_id > 0)
 		{
 			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 					WHERE event_id = '.$db->sql_escape($event_id);
