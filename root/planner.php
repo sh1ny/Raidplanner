@@ -70,7 +70,7 @@ switch( $view_mode )
 	case "event":
 		// display a single event
 		$template_body = "planner/planner_view_event.html";
-		$cal->display_event();
+		$cal->display_plannedraid();
 		break;
 	case "day":
 		// display all of the events on this day

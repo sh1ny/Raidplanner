@@ -226,7 +226,7 @@ class raidplanner_population extends raidplanner_base
 		----------------------------------------------------*/
 		else
 		{
-			$sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+			$sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 					'etype_id'				=> (int) $event_data['etype_id'],
 					'sort_timestamp'		=> (int) $event_data['event_start_time'],
 					'event_start_time'		=> (int) $event_data['event_start_time'],
@@ -280,7 +280,7 @@ class raidplanner_population extends raidplanner_base
 			// we are only editing the one event
 			if( $s_date_time_opts )
 			{
-				$sql = 'UPDATE ' . RP_EVENTS_TABLE . '
+				$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
 					SET ' . $db->sql_build_array('UPDATE', array(
 						'etype_id'				=> (int) $event_data['etype_id'],
 						'sort_timestamp'		=> (int) $event_data['event_start_time'],
@@ -328,7 +328,7 @@ class raidplanner_population extends raidplanner_base
 				$db->sql_query($sql);
 		
 				// now update all events of this occurence id
-				$sql = 'UPDATE ' . RP_EVENTS_TABLE . '
+				$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
 					SET ' . $db->sql_build_array('UPDATE', array(
 						'etype_id'				=> (int) $event_data['etype_id'],
 						'event_subject'			=> (string) $event_data['event_subject'],
@@ -739,7 +739,7 @@ class raidplanner_population extends raidplanner_base
 			$db->sql_query($sql);
 	
 			// Delete event
-			$sql = 'DELETE FROM ' . RP_EVENTS_TABLE . '
+			$sql = 'DELETE FROM ' . RP_RAIDS_TABLE . '
 					WHERE event_id = '.$db->sql_escape($event_id);
 			$db->sql_query($sql);
 	
@@ -787,7 +787,7 @@ class raidplanner_population extends raidplanner_base
 			if (confirm_box(true))
 			{
 				// find all of the events in this recurring event string so we can delete their signups
-				$sql = 'SELECT event_id FROM ' . RP_EVENTS_TABLE . '
+				$sql = 'SELECT event_id FROM ' . RP_RAIDS_TABLE . '
 							WHERE recurr_id = '. $event_data['recurr_id'];
 				$result = $db->sql_query($sql);
 	
@@ -808,7 +808,7 @@ class raidplanner_population extends raidplanner_base
 				$db->sql_query($sql);
 	
 				// finally delete all of the events
-				$sql = 'DELETE FROM ' . RP_EVENTS_TABLE . '
+				$sql = 'DELETE FROM ' . RP_RAIDS_TABLE . '
 						WHERE recurr_id = '.$db->sql_escape($event_data['recurr_id']);
 				$db->sql_query($sql);
 	
@@ -1010,7 +1010,7 @@ class raidplanner_population extends raidplanner_base
 							$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 					    }
 	
-					    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+					    $sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 								'etype_id'				=> (int) $row['etype_id'],
 								'sort_timestamp'		=> (int) $r_sort_timestamp,
 								'event_start_time'		=> (int) $r_event_start,
@@ -1086,7 +1086,7 @@ class raidplanner_population extends raidplanner_base
 							$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 					    }
 	
-					    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+					    $sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 								'etype_id'				=> (int) $row['etype_id'],
 								'sort_timestamp'		=> (int) $r_sort_timestamp,
 								'event_start_time'		=> (int) $r_event_start,
@@ -1169,7 +1169,7 @@ class raidplanner_population extends raidplanner_base
 							$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 					    }
 	
-					    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+					    $sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 								'etype_id'				=> (int) $row['etype_id'],
 								'sort_timestamp'		=> (int) $r_sort_timestamp,
 								'event_start_time'		=> (int) $r_event_start,
@@ -1257,7 +1257,7 @@ class raidplanner_population extends raidplanner_base
 							$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 					    }
 	
-					    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+					    $sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 								'etype_id'				=> (int) $row['etype_id'],
 								'sort_timestamp'		=> (int) $r_sort_timestamp,
 								'event_start_time'		=> (int) $r_event_start,
@@ -1307,7 +1307,7 @@ class raidplanner_population extends raidplanner_base
 							$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 					    }
 	
-					    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+					    $sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 								'etype_id'				=> (int) $row['etype_id'],
 								'sort_timestamp'		=> (int) $r_sort_timestamp,
 								'event_start_time'		=> (int) $r_event_start,
@@ -1356,7 +1356,7 @@ class raidplanner_population extends raidplanner_base
 							$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 					    }
 	
-					    $sql = 'INSERT INTO ' . RP_EVENTS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+					    $sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 								'etype_id'				=> (int) $row['etype_id'],
 								'sort_timestamp'		=> (int) $r_sort_timestamp,
 								'event_start_time'		=> (int) $r_event_start,
@@ -1630,7 +1630,7 @@ class raidplanner_population extends raidplanner_base
 	
 		// find all day events that finished before the prune limit
 		$sort_timestamp_cutoff = $end_temp_date - 86400;
-		$sql = 'SELECT event_id FROM ' . RP_EVENTS_TABLE . '
+		$sql = 'SELECT event_id FROM ' . RP_RAIDS_TABLE . '
 					WHERE ( (event_all_day = 1 AND sort_timestamp < '.$db->sql_escape($sort_timestamp_cutoff).')
 					OR (event_all_day = 0 AND event_end_time < '.$db->sql_escape($end_temp_date).') )';
 		$result = $db->sql_query($sql);
@@ -1648,7 +1648,7 @@ class raidplanner_population extends raidplanner_base
 		$db->sql_freeresult($result);
 	
 		// now delete the old events
-		$sql = 'DELETE FROM ' . RP_EVENTS_TABLE . '
+		$sql = 'DELETE FROM ' . RP_RAIDS_TABLE . '
 					WHERE ( (event_all_day = 1 AND sort_timestamp < '.$db->sql_escape($sort_timestamp_cutoff).')
 					OR (event_all_day = 0 AND event_end_time < '.$db->sql_escape($end_temp_date).') )';
 		$db->sql_query($sql);

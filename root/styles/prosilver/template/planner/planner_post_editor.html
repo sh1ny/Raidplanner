@@ -80,7 +80,7 @@
 	  number_strings[29] = "29th";
 	  number_strings[30] = "30th";
 	  number_strings[31] = "31st";
-
+	/* these are already localised, see common.php datetime array */
 	  var month_strings = new Array();
 	  month_strings[0] = "";
 	  month_strings[1] = "January";
@@ -208,24 +208,7 @@
   <div>
   <!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
   <!-- IF S_POST_ACTION -->
- <div style="width:50%; height: 200px; float: right; ">
-	<fieldset class="fields1">
-		<dl style="clear: left;">
-	<!-- BEGIN raidroles -->
-		<dt><label for="subject">{raidroles.ROLE_NAME}:</label></dt>
-		<dd><input type="hidden" name="role[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" /><input type="text" name="role_needed[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED}" class="inputbox autowidth" /></dd>
-	<!-- END raidroles -->
-	</dl>
-	
-	<dl style="clear: left;">
-		<dt><label>{L_TRACK_SIGNUPS}:</label></dt>
-		<dd><input type='checkbox' name='calTrackRsvps' value='1' {TRACK_RSVP_CHECK} /></dd>
-	</dl>
-	
-	</fieldset>
-	</div>
-  
- <div style="width:50%; height: 200px; float: left;">
+  <div style="width:40%; float: left; height: 220px;"><legend><h4>{L_RAIDINFO}</h4></legend>
   <fieldset class="fields1">
   	<dl style="clear: left;">
 		<dt><label for="subject">{L_SUBJECT}:</label></dt>
@@ -251,11 +234,49 @@
   </fieldset>
   </div>
   
-<!-- IF S_DATE_TIME_OPTS -->
-<div style="width:60%; height: 170px; float: right; ">
+ <div style="width:60%; float: right; height: 220px;">
+	<fieldset class="fields1"><legend><h4>{L_RAIDROLES}</h4></legend>
+		<dl style="clear: left;">
+	<!-- BEGIN raidroles -->
+		<dt><label for="subject">{raidroles.ROLE_NAME}:</label></dt>
+		<dd><input type="hidden" name="role[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" /><input type="text" name="role_needed[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED}" class="inputbox autowidth" /></dd>
+	<!-- END raidroles -->
+	</dl>
+	
+	<dl style="clear: left;">
+		<dt><label>{L_TRACK_SIGNUPS}:</label></dt>
+		<dd><input type='checkbox' name='calTrackRsvps' value='1' {TRACK_RSVP_CHECK} /></dd>
+	</dl>
+	
+	</fieldset>
+	</div>
+  
+
+  <hr/><!-- IF S_DATE_TIME_OPTS -->
+ <div style="width:40%; clear: all;  float: left;">
+ 
+  <fieldset class="fields1"><legend><h4>{L_RAIDWHEN}</h4></legend> 
+ 
+  <dl style="clear: right;">
+			<dt><label for="calM">{L_RAID_DATE}:</label></dt>
+			<dd><select name='calM' id='calM'>{MONTH_SEL}</select><select name='calD' id='calD'>{DAY_SEL}</select><select name='calY' id='calY'>{YEAR_SEL}</select>
+		  	</dd>
+		</dl>
+
+		<dl style="clear: right;">
+			<dt><label for="calHr">{L_RAID_START_TIME}:</label></dt>
+			<dd>
+				<select name='calHr' id='calHr'>{START_HOUR_SEL}</select>
+				<select name='calMn' id='calMn'>{START_MIN_SEL}</select>
+			</dd>
+		</dl>
+    </fieldset>
+ </div>
+ 
+<div style="width:60%; float: right; ">
 <!-- IF S_RECURRING_OPTS -->
-	<fieldset class="fields1">
-			<hr />
+	<fieldset class="fields1"><legend><h4>{L_RAIDREPEAT}</h4></legend> 
+			
 			
 			<dl style="clear: left;">
 				<dt><label>{L_RECURRING_EVENT}:</label></dt>
@@ -273,38 +294,18 @@
 				<dt><label for="calMEnd">{L_END_RECURRING_EVENT_DATE}</label></dt>
 				<dd>{END_RECURR_MONTH_SEL} {END_RECURR_DAY_SEL} {END_RECURR_YEAR_SEL}</dd>
 			</dl>
-			<hr />
+			
 			</fieldset>
 						
 <!-- ENDIF -->
 </div>
 
- <div style="width:40%; height: 170px; float: left;">
- 
-  <fieldset class="fields1">
- <hr />
-  <dl style="clear: right;">
-			<dt><label for="calM">{L_RAID_DATE}:</label></dt>
-			<dd><select name='calM' id='calM'>{MONTH_SEL}</select><select name='calD' id='calD'>{DAY_SEL}</select><select name='calY' id='calY'>{YEAR_SEL}</select>
-		  	</dd>
-		</dl>
-
-		<dl style="clear: right;">
-			<dt><label for="calHr">{L_RAID_START_TIME}:</label></dt>
-			<dd>
-				<select name='calHr' id='calHr'>{START_HOUR_SEL}</select>
-				<select name='calMn' id='calMn'>{START_MIN_SEL}</select>
-			</dd>
-		</dl>
-    </fieldset>
- 
- </div>
 <!-- ELSE -->
 <div>
 	<input type="hidden" name="calEditAll" id="calEditAll" value="1">
 </div>
 <!-- ENDIF -->
-
+<hr />
 <div style="width:100%; height: 200px; clear:both;">
 
 <!-- INCLUDE planner/planner_post_buttons.html -->

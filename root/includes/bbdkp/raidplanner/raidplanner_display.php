@@ -159,7 +159,7 @@ class displayplanner extends raidplanner_base
 				if( $disp_events_only_on_start == 0 )
 				{
 	
-					$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
+					$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 							WHERE ( (event_access_level = 2) OR
 								(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 								(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -171,7 +171,7 @@ class displayplanner extends raidplanner_base
 				else
 				{
 	
-					$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
+					$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 							WHERE ( (event_access_level = 2) OR
 								(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 								(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -420,7 +420,7 @@ class displayplanner extends raidplanner_base
 	
 				if( $disp_events_only_on_start == 0 )
 				{
-					$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
+					$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 							WHERE ( (event_access_level = 2) OR
 									(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 									(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -432,7 +432,7 @@ class displayplanner extends raidplanner_base
 				else
 				{
 	
-					$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
+					$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 							WHERE ( (event_access_level = 2) OR
 									(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 									(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -600,7 +600,7 @@ class displayplanner extends raidplanner_base
 			$etype_options = $this->get_etype_filter();
 			if( $disp_events_only_on_start == 0 )
 			{
-				$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
+				$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 						WHERE ( (event_access_level = 2) OR
 								(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 								(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -611,7 +611,7 @@ class displayplanner extends raidplanner_base
 			}
 			else
 			{
-				$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
+				$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 						WHERE ( (event_access_level = 2) OR
 								(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 								(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -727,7 +727,7 @@ class displayplanner extends raidplanner_base
 
 	}
 	
-	public function display_event()
+	public function display_plannedraid()
 	{
 		global $auth, $db, $user, $config, $template, $phpEx, $phpbb_root_path;
 	
@@ -749,7 +749,7 @@ class displayplanner extends raidplanner_base
 		
 		if( $event_id > 0 )
 		{
-			$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
+			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 					WHERE event_id = '.$db->sql_escape($event_id);
 			$result = $db->sql_query($sql);
 			$event_data = $db->sql_fetchrow($result);
@@ -961,7 +961,6 @@ class displayplanner extends raidplanner_base
 					$new_no_count = $old_no_count - $old_user_no_count + $new_user_no_count;
 					$new_maybe_count = $old_maybe_count - $old_user_maybe_count + $new_user_maybe_count;
 	
-	
 					// save the user's signup data...
 	
 					// update the ip address and time
@@ -1010,7 +1009,7 @@ class displayplanner extends raidplanner_base
 						//$signup_id = $db->sql_nextid();
 					}
 					// update the event id's signup stats
-						$sql = 'UPDATE ' . RP_EVENTS_TABLE . '
+						$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
 							SET ' . $db->sql_build_array('UPDATE', array(
 								'signup_yes'		=> (int) $new_yes_count,
 								'signup_no'		=> (int) $new_no_count,
@@ -1393,7 +1392,7 @@ class displayplanner extends raidplanner_base
 		    $disp_date_time_format = $config['rp_date_time_format'];
 	
 			// don't list events that are more than 1 year in the future
-			$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
+			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 					WHERE poster_id = '.$user_id.' AND( (event_access_level = 2) OR
 					(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 					(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -1540,7 +1539,7 @@ class displayplanner extends raidplanner_base
 		    $disp_date_time_format = $config['date_time_format']; 
 	
 			// don't list events that are more than 1 year in the future
-			$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
+			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 					WHERE ( (event_access_level = 2) OR
 						(poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR
 						(event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' AND
@@ -1621,7 +1620,7 @@ class displayplanner extends raidplanner_base
 		    $disp_date_time_format = $config['rp_date_time_format'];
 	
 			// don't list events that are more than 1 year in the future
-			$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
+			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 					WHERE ( (event_access_level = 2) OR
 						(poster_id = '.$db->sql_escape($user->data['user_id']).' ) 
 						OR (event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' 
@@ -2324,7 +2323,7 @@ class raidevents extends raidplanner_base
 		{
 			trigger_error('NO_EVENT');
 		}
-		$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
+		$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 				WHERE event_id = '.$db->sql_escape($id);
 		$result = $db->sql_query($sql);
 		$event_data = $db->sql_fetchrow($result);
