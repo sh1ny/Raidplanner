@@ -101,9 +101,28 @@ class acp_raidplanner
 				//used pressed red cross to delete role
 				if ($deleterole) 
 				{
-					// @todo check if there are scheduled raids with this role, ask permission
-					$sql = 'delete from ' . RP_ROLES . ' where role_id = ' . request_var('delrole_id', 0);
-					$db->sql_query($sql);
+						// ask for permission
+						if (confirm_box(true))
+						{
+							// @todo check if there are scheduled raids with this role, ask permission
+							$sql = 'delete from ' . RP_ROLES . ' where role_id = ' . request_var('hiddenroleid', 0) ;
+							$db->sql_query($sql);
+							
+							trigger_error(sprintf($user->lang['ROLE_DELETE_SUCCESS'], request_var('hiddenroleid', 0)), E_USER_WARNING);
+						}
+						else
+						{
+							// get field content
+							$s_hidden_fields = build_hidden_fields(array(
+								// set roledelete to 1. so when this gets in the $_POST output, the $deleterole becomes true
+								'roledelete'	=> 1,
+								'hiddenroleid'	=> request_var('delrole_id', 0),
+								)
+							);
+							confirm_box(false, sprintf($user->lang['CONFIRM_DELETE_ROLE'], request_var('delrole_id', 0)), $s_hidden_fields);
+						}
+						
+						
 				}
 				
 				

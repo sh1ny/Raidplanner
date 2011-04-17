@@ -88,6 +88,11 @@ $lang = array_merge($lang, array(
     'WEDNESDAY'								=> 'Wednesday',
 	'USER_CANNOT_MANAGE_RAIDPLANNER'		=> 'You are not authorised to manage the raidplanner settings', 
 	'RPADVANCEDOPTIONS'						=> 'Advanced options', 
+	
+	//confirms
+	'ROLE_DELETE_SUCCESS'	=> 'The role %s was deleted.', 
+	'CONFIRM_DELETE_ROLE'	=> 'Please confirm you want to delete the raid role %s. If there are scheduled raids with this role then it can‘t be deleted.', 
+	
 	'AM'					=> 'AM',
 	
 	'RAIDROLES'				=> 'Raid Roles', 
