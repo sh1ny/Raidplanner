@@ -424,8 +424,8 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	    $template->assign_block_vars('raidroles', array(
 	        'ROLE_ID'        => $row['role_id'],
 		    'ROLE_NAME'      => $row['role_name'],
-		    'ROLE_NEEDED1'    => $row['role_needed10'],
-	    	'ROLE_NEEDED2'    => $row['role_needed25'],
+		    'ROLE_NEEDED1'    => $row['role_needed1'],
+	    	'ROLE_NEEDED2'    => $row['role_needed2'],
 	    ));
 	}
 	$db->sql_freeresult($result);
@@ -585,7 +585,7 @@ else // we are creating a new event
 	
 	// make raid composition proposal
 	$sql_array = array(
-	    'SELECT'    => 'r.role_id, r.role_name, role_needed10, role_needed25 ', 
+	    'SELECT'    => 'r.role_id, r.role_name, role_needed1, role_needed2 ', 
 	    'FROM'      => array(
 	        RP_ROLES   => 'r'
 	    ),
@@ -598,8 +598,8 @@ else // we are creating a new event
 	    $template->assign_block_vars('raidroles', array(
 	        'ROLE_ID'        => $row['role_id'],
 		    'ROLE_NAME'      => $row['role_name'],
-		    'ROLE_NEEDED1'    => $row['role_needed10'],
-	    	'ROLE_NEEDED2'    => $row['role_needed25'],
+		    'ROLE_NEEDED1'    => $row['role_needed1'],
+	    	'ROLE_NEEDED2'    => $row['role_needed2'],
 	    ));
 	}
 	$db->sql_freeresult($result);

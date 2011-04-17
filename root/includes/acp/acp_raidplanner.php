@@ -67,14 +67,14 @@ class acp_raidplanner
 				if( $updateroles)
 				{
 					$rolenames = utf8_normalize_nfc(request_var('rolename', array( 0 => ''), true));
-					$roleneed10 = request_var('role_need10', array( 0 => 0));
-					$roleneed25 = request_var('role_need25', array( 0 => 0));
+					$roleneed1 = request_var('role_need1', array( 0 => 0));
+					$roleneed2 = request_var('role_need2', array( 0 => 0));
 					foreach ( $rolenames as $role_id => $role_name )
 					{
 						$data = array(
 						    'role_name'     	=> $role_name,
-						    'role_needed10'     => $roleneed10[$role_id],
-						 	'role_needed25'     => $roleneed25[$role_id],
+						    'role_needed1'     => $roleneed1[$role_id],
+						 	'role_needed2'     => $roleneed2[$role_id],
 						);
 
 						 $sql = 'UPDATE ' . RP_ROLES . ' SET ' . $db->sql_build_array('UPDATE', $data) . '
@@ -89,8 +89,8 @@ class acp_raidplanner
 				{
 					$data = array(
 					    'role_name'     => utf8_normalize_nfc(request_var('newrole', 'New role', true)),
-						'role_needed10'     => request_var('newrole_need10', 0),
-						'role_needed25'     => request_var('newrole_need25', 0),
+						'role_needed1'     => request_var('newrole_need1', 0),
+						'role_needed2'     => request_var('newrole_need2', 0),
 					);
 
 					$sql = 'INSERT INTO ' . RP_ROLES . $db->sql_build_array('INSERT', $data);
@@ -227,8 +227,8 @@ class acp_raidplanner
                     $template->assign_block_vars('role_row', array(
                     	'ROLE_ID' 		=> $row['role_id'],
                         'ROLENAME' 		=> $row['role_name'],
-	                    'ROLENEED10' 	=> $row['role_needed10'],
-	                    'ROLENEED25' 	=> $row['role_needed25'],
+	                    'ROLENEED1' 	=> $row['role_needed1'],
+	                    'ROLENEED2' 	=> $row['role_needed2'],
                     	'U_DELETE' 		=> $this->u_action. '&roledelete=1&delrole_id=' . $row['role_id'],
                     	));
                 }

@@ -38,8 +38,8 @@ else
 <table style="width:300px">
 <thead>
 	<th>{L_RAIDROLE}</th>
-	<th>{L_RAIDPROFILE10}</th>
-	<th>{L_RAIDPROFILE25}</th>
+	<th>{L_RAIDPROFILE1}</th>
+	<th>{L_RAIDPROFILE2}</th>
     <th style="text-align: center" width="5%">{L_ACTION}</th>
   </tr>
 </thead>
@@ -47,8 +47,8 @@ else
   <!-- BEGIN role_row -->
   <tr class="row1">
     <td><input type="text" name="rolename[{role_row.ROLE_ID}]" value="{role_row.ROLENAME}" class="input" /></td>
-    <td><input type="text" name="role_need10[{role_row.ROLE_ID}]" value="{role_row.ROLENEED10}" class="input" /></td>
-    <td><input type="text" name="role_need25[{role_row.ROLE_ID}]" value="{role_row.ROLENEED25}" class="input" /></td>
+    <td><input type="text" name="role_need1[{role_row.ROLE_ID}]" value="{role_row.ROLENEED1}" class="input" /></td>
+    <td><input type="text" name="role_need2[{role_row.ROLE_ID}]" value="{role_row.ROLENEED2}" class="input" /></td>
     <td style="text-align: center" ><a href="{role_row.U_DELETE}">{ICON_DELETE}</a></td>
   </tr>
   <!-- END role_row -->
@@ -66,8 +66,8 @@ else
   </tr>
     <tr class="row2">
     <td><input type="text" name="newrole" value="" class="input" /></td>
-    <td><input type="text" name="newrole_need10" value="" class="input" /></td>
-    <td><input type="text" name="newrole_need25" value="" class="input" /></td>    
+    <td><input type="text" name="newrole_need1" value="" class="input" /></td>
+    <td><input type="text" name="newrole_need2" value="" class="input" /></td>    
     <td style="text-align: center"> <input class="button2" name="roleadd" type="submit" value="{L_ADD}" /></td>
   </tr>
   </tfoot>
