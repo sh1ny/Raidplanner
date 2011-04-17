@@ -87,8 +87,11 @@ $lang = array_merge($lang, array(
     'USER_CANNOT_MANAGE_CALENDAR'			=> 'You do not have permission to manage the calendar settings or raid types.',
     'WEDNESDAY'								=> 'Wednesday',
 	'USER_CANNOT_MANAGE_RAIDPLANNER'		=> 'You are not authorised to manage the raidplanner settings', 
-
+	'RPADVANCEDOPTIONS'						=> 'Advanced options', 
 	'AM'					=> 'AM',
+	
+	'RAIDROLES'				=> 'Raid Roles', 
+	'RAIDROLE'					=> 'Role', 
 
 	'ALL_DAY'				 	=> 'All Day Raid',
 	'ALLOW_GUESTS'				=> 'Allow members to bring guests to this raid',

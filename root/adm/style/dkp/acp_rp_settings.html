@@ -6,11 +6,76 @@
  @license http://opensource.org/licenses/gpl-license.php GNU Public License
  @version $Id$
 //-->
+<script type="text/javascript">
+// <![CDATA[
+function toggle_rpsettings()
+{
+	if (document.getElementById('rpsettingsdisplay'))
+	{
+		document.getElementById('rpsettingsdisplay').style.display = (document.getElementById('rpsettingsdisplay').style.display == 'none') ? 'block' : 'none';
+	}
+}
+
+if (document.addEventListener)
+{
+	document.addEventListener('DOMContentLoaded', toggle_rpsettings, false);
+}
+else
+{
+	window.onload = toggle_rpsettings;
+}
+// ]]>
+</script>
 
 <h1>{L_ACP_RAIDPLANNER_SETTINGS}</h1>
 <p>{L_ACP_RAIDPLANNER_SETTINGS_EXPLAIN}</p>
-<fieldset>
 
+<fieldset><legend>{L_RAIDROLES}</legend>
+
+
+<form id="rproles" name="rproles" method="post" action="{U_ACTION}" >
+
+<table style="width:300px">
+<thead>
+	<th>{L_RAIDROLE}</th>
+    <th style="text-align: center" width="5%">{L_ACTION}</th>
+  </tr>
+</thead>
+<tbody>
+  <!-- BEGIN role_row -->
+  <!-- IF role_row.S_ROW_COUNT is even -->
+  <tr class="row1">
+  <!-- ELSE -->
+  <tr class="row2">
+  <!-- ENDIF -->
+    <td><input type="text" name="role[{role_row.ROLE_ID}]" value="{role_row.ROLENAME}" class="input" /></td>
+    <td style="text-align: center" ><a href="{role_row.U_DELETE}">{ICON_DELETE}</a></td>
+  </tr>
+  <!-- END role_row -->
+  </tbody>
+  
+  <tfoot>
+  <tr>
+  <td>{L_EDIT}</td>
+  <td style="text-align: center">
+	<input class="button2" name="roleupdate" type="submit" value="{L_EDIT}" />
+  </td>
+  </tr>
+    <tr class="row1">
+    <td><input type="text" name="newrole" value="" class="input" /></td>
+    <td style="text-align: center"> <input class="button2" name="roleadd" type="submit" value="{L_ADD}" /></td>
+  </tr>
+  </tfoot>
+  
+</table>
+{S_FORM_TOKEN}
+</form>
+
+</fieldset>
+
+
+<fieldset><legend><a href="javascript:toggle_rpsettings();">{L_RPADVANCEDOPTIONS}</a></legend>
+<div id="rpsettingsdisplay">
 <form id="rpsettings" name="rpsettings" method="post" action="{U_ACTION}" >
 <div class="tablewrap">
 	<dl>
@@ -95,6 +160,6 @@
 {S_FORM_TOKEN}
 </div>
 </form>
-
+</div>
 </fieldset>
 <!-- INCLUDE dkp/overall_footer.html -->

@@ -17,7 +17,10 @@ if (!defined('IN_PHPBB'))
 {
 	exit;
 }
-
+/**
+ * This class manages the Raidplanner settings
+ *
+ */
 class acp_raidplanner 
 {
 	public $u_action;
@@ -25,7 +28,7 @@ class acp_raidplanner
 	{
 		global $db, $user, $auth, $template, $sid, $cache;
 		global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
-		$user->add_lang ( array ('mods/raidplanner' ));
+		$user->add_lang ( array ('mods/raidplanner', 'mods/dkp_common' ));
 		if (!$auth->acl_get('a_raid_config'))
 		{
 			trigger_error($user->lang['USER_CANNOT_MANAGE_RAIDPLANNER'] );
@@ -37,32 +40,44 @@ class acp_raidplanner
 		$this->u_action = append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=".$mode );
 		$action	= request_var('action', '');
 		
-		$etype_id = 0;
-		$etype_index = request_var('etype_index', 0);
-		if( $etype_index > 0 )
-		{
-			// find the event_id for this item
-			$sql = 'SELECT etype_id, etype_index FROM ' . RP_EVENT_TYPES_TABLE .'
-			WHERE etype_index = ' . $db->sql_escape($etype_index);
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
-			$db->sql_freeresult($result);
-			if( $row )
-			{
-				$etype_id = $row['etype_id'];
-			}
-		}
 		
         switch ($mode) 
 		{
 			case 'rp_settings' :
 
+				// move the calendar for daylight savings
 				if( request_var('calPlusHour', 0) == 1)
 				{
 					$this->move_all_events_by_one_hour( request_var('plusVal', 1) );
 					exit;
 				}
 				
+				$updateroles = (isset($_POST['roleupdate'])) ? true : false;
+				//user pressed edit button
+				if( $updateroles)
+				{
+					$roles = request_var('role', array( 0 => ''));	
+					foreach ( $roles as $role_id => $role_name )
+					{
+						 $sql = 'UPDATE ' . RP_ROLES . " SET role_name = '" . $db->sql_escape($role_name). "'
+					   	     WHERE role_id=" . (int) $role_id; 
+   						 $db->sql_query($sql); 		
+						
+					}
+				}
+				
+				$addrole = (isset($_POST['roleadd'])) ? true : false;
+				if($addrole)
+				{
+					$data = array(
+					    'role_name'     => utf8_normalize_nfc(request_var('newrole', 'New role', true)),
+					);
+
+					$sql = 'INSERT INTO ' . RP_ROLES . $db->sql_build_array('INSERT', $data);
+   					$db->sql_query($sql); 			
+				}				
+				
+				// update all advanced settings
 				$update	= (isset($_POST['update_rp_settings'])) ? true : false;
 				if( $update )
 				{
@@ -151,7 +166,24 @@ class acp_raidplanner
 						$sel_sunday = "selected='selected'";
 						break;
 				}
-
+				
+				// select raid roles
+				$sql = 'SELECT * FROM ' . RP_ROLES . '
+						ORDER BY role_id';
+				$db->sql_query($sql);
+				$result = $db->sql_query($sql);
+				$total_roles = 0;
+				while ( $row = $db->sql_fetchrow($result) )
+                {
+                	$total_roles++;
+                    $template->assign_block_vars('role_row', array(
+                    	'ROLE_ID' 		=> $row['role_id'],
+                        'ROLENAME' 		=> $row['role_name'],
+                    	'U_DELETE' 		=> $this->u_action. '&roledelete=1&role_id=' . $row['role_id'],
+                    	));
+                }
+                $db->sql_freeresult($result);
+			
 				$template->assign_vars(array(
 					'SEL_MONDAY'		=> $sel_monday,
 					'SEL_TUESDAY'		=> $sel_tuesday,
@@ -188,7 +220,7 @@ class acp_raidplanner
 		}
 	}
 
-	public function move_all_events_by_one_hour( $plusVal )
+	private function move_all_events_by_one_hour( $plusVal )
 	{
 		global $auth, $db, $user, $config, $phpEx, $phpbb_root_path;
 	
@@ -249,7 +281,7 @@ class acp_raidplanner
 			$db->sql_freeresult($result);
 	
 			/* finally move each individual event by one hour */
-			$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
+			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 						ORDER BY event_id';
 			$db->sql_query($sql);
 			$result = $db->sql_query($sql);
@@ -259,7 +291,7 @@ class acp_raidplanner
 				$event_start_time = $row['event_start_time'] + ($factor * 3600);
 				$event_end_time = $row['event_end_time'] + ($factor * 3600);
 				$event_id = $row['event_id'];
-				$sql = 'UPDATE ' . RP_EVENTS_TABLE . '
+				$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
 					SET ' . $db->sql_build_array('UPDATE', array(
 						'sort_timestamp'	=> (int) $sort_timestamp,
 						'event_start_time'	=> (int) $event_start_time,

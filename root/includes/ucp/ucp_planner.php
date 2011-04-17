@@ -87,7 +87,7 @@ class ucp_planner
 			$etype_options = " AND etype_id = ".$db->sql_escape($calEType)." ";
 		}
 		
-		$sql = 'SELECT * FROM ' . RP_EVENTS_TABLE . '
+		$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 				WHERE poster_id = '. $user->data['user_id'].' 
 				AND ( (event_access_level = 2) OR
 				(poster_id = '. $db->sql_escape($user->data['user_id']) .' ) 

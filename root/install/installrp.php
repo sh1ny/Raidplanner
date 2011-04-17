@@ -85,7 +85,7 @@ $options = array(
 ****************************************************************/
 $versions = array(
     
-    '0.0.1'    => array(
+    '0.2.0'    => array(
 
       	// raid permission
 	   'permission_add' => array(
@@ -229,7 +229,7 @@ $versions = array(
 			//adding some tables
 			'table_add' => array(
 						
-			array( 'phpbb_rp_events', array(
+			array( 'phpbb_rp_raids', array(
                     'COLUMNS'			=> array(
                        'event_id'			=> array('INT:8', NULL, 'auto_increment' ),
 					   'etype_id' 			=> array('INT:8', 0),
@@ -349,54 +349,28 @@ $versions = array(
                     'PRIMARY_KEY'	=> array('eventdet_id')), 
               ),              
 
-              array('phpbb_rp_roles' , array(
+              array(
+              		'phpbb_rp_roles' , array(
                     'COLUMNS'        => array(
-                        'r_index'    		=> array('INT:8', NULL, 'auto_increment'),
-                        'role_id'   		=> array('INT:8', 0),
+                        'role_id'    		=> array('INT:8', NULL, 'auto_increment'),
                         'role_name'     	=> array('VCHAR_UNI', ''),
                     ),
-                    'PRIMARY_KEY'    => 'r_index', 
-                    'KEYS'         => array('role_id'    => array('UNIQUE', 'role_id')),                  
-                    
+                    'PRIMARY_KEY'    => 'role_id'), 
                 ),
-            ),
+            
 		),
 
 		 'table_row_insert'	=> array(
 		// inserting roles
 		array('phpbb_rp_roles',
            array(
-           		  // ranged DPS
-                  array(
-                      'role_id' => 1,
-                      'role_name' => 'Ranged DPS', 
-                  		),
-                  
-           		  // Melee DPS                  
-                  array(
-                      'role_id' => 2,
-                      'role_name' => 'Melee DPS', 
-                  		),
-                  
-                  array(
-                      'role_id' => 3,
-                      'role_name' => 'Tank', 
-                  		),
-                  
-                  array(
-                      'role_id' => 4,
-                      'role_name' => 'Healer', 
-                  		),
-                  
-                  array(
-                      'role_id' => 5,
-                      'role_name' => 'Hybrid DPS/Heal', 
-                  		),
-                  
-                  array(
-                      'role_id' => 6,
-                      'role_name' => 'Hybrid Tank/Heal', 
-                  		),
+                  array('role_name' => 'Ranged DPS'),              
+                  array('role_name' => 'Melee DPS' ),
+                  array('role_name' => 'Tank' ),
+                  array('role_name' => 'Off Tank'),
+                  array('role_name' => 'Healer'),
+                  array('role_name' => 'Hybrid DPS/Heal'),
+                  array('role_name' => 'Hybrid Tank/Heal'),
            ))),
            
         'custom' => array('purgecaches'),
