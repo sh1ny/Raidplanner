@@ -126,7 +126,8 @@ $lang = array_merge($lang, array(
 	'EMPTY_EVENT_SUBJECT'		=> 'You must enter a subject when posting Raids.',
 	'EMPTY_EVENT_MESSAGE_RAIDS'	=> 'You must enter a message when posting Raids.',
 	'EMPTY_EVENT_SUBJECT_RAIDS'	=> 'You must enter a subject when posting Raids.',
-
+	
+	'EDITRAIDROLES'				=> 'Edit Raid Roles' ,
 
 	'END_DATE'					=> 'End Date',
 	'END_RECURRING_EVENT_DATE'	=> 'Last occurence:',
@@ -194,6 +195,9 @@ $lang = array_merge($lang, array(
 	'RECURRING_EVENT_CASE_6'    => 'D: Every [Y] Day(s)',
 	
 	'RETURN_CALENDAR'			=> '%sReturn to the calendar%s',
+
+	'RAIDPROFILE10'				=> '10-man', 
+	'RAIDPROFILE25'				=> '25-man', 
 
 	'START_DATE'				=> 'Start Date',
 	'RAID_DATE'					=> 'Raid Date',

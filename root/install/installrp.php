@@ -354,6 +354,8 @@ $versions = array(
                     'COLUMNS'        => array(
                         'role_id'    		=> array('INT:8', NULL, 'auto_increment'),
                         'role_name'     	=> array('VCHAR_UNI', ''),
+              			'role_needed10'     => array('INT:8', 0),
+              			'role_needed25'     => array('INT:8', 0),
                     ),
                     'PRIMARY_KEY'    => 'role_id'), 
                 ),
@@ -364,13 +366,13 @@ $versions = array(
 		// inserting roles
 		array('phpbb_rp_roles',
            array(
-                  array('role_name' => 'Ranged DPS'),              
-                  array('role_name' => 'Melee DPS' ),
-                  array('role_name' => 'Tank' ),
-                  array('role_name' => 'Off Tank'),
-                  array('role_name' => 'Healer'),
-                  array('role_name' => 'Hybrid DPS/Heal'),
-                  array('role_name' => 'Hybrid Tank/Heal'),
+                  array('role_name' => 'Ranged DPS', 'role_needed10' => 3, 'role_needed25' => 7),          
+                  array('role_name' => 'Melee DPS', 'role_needed10' => 1, 'role_needed25' => 3),
+                  array('role_name' => 'Tank' , 'role_needed10' => 1,  'role_needed25' => 2),
+                  array('role_name' => 'Off Tank', 'role_needed10' => 1,  'role_needed25' => 2),
+                  array('role_name' => 'Healer', 'role_needed10' => 2,  'role_needed25' => 5),
+                  array('role_name' => 'Hybrid DPS/Heal' , 'role_needed10' => 1,  'role_needed25' => 3),
+                  array('role_name' => 'Hybrid Tank/Heal' , 'role_needed10' => 1,  'role_needed25' => 3),
            ))),
            
         'custom' => array('purgecaches'),

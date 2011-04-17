@@ -34,9 +34,6 @@ class acp_raidplanner
 			trigger_error($user->lang['USER_CANNOT_MANAGE_RAIDPLANNER'] );
 		}
 		
-		$form_key = 'acp_raidplanner';
-		add_form_key($form_key);
-
 		$this->u_action = append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=".$mode );
 		$action	= request_var('action', '');
 		
@@ -45,40 +42,72 @@ class acp_raidplanner
 		{
 			case 'rp_settings' :
 
+				$updateroles = (isset($_POST['roleupdate'])) ? true : false;
+				$deleterole = (request_var('roledelete', '') != '') ? true : false;
+				$addrole = (isset($_POST['roleadd'])) ? true : false;
+				$update	= (isset($_POST['update_rp_settings'])) ? true : false;
+
+				// check the form key
+				if ($updateroles || $addrole || $update )
+				{
+					if (!check_form_key('acp_raidplanner'))
+					{
+						trigger_error('FORM_INVALID');
+					}
+				}
+				
 				// move the calendar for daylight savings
 				if( request_var('calPlusHour', 0) == 1)
 				{
-					$this->move_all_events_by_one_hour( request_var('plusVal', 1) );
+					$this->move_all_events_by_one_hour( request_var('plusVal', 1));
 					exit;
 				}
 				
-				$updateroles = (isset($_POST['roleupdate'])) ? true : false;
 				//user pressed edit button
 				if( $updateroles)
 				{
-					$roles = request_var('role', array( 0 => ''));	
-					foreach ( $roles as $role_id => $role_name )
+					$rolenames = utf8_normalize_nfc(request_var('rolename', array( 0 => ''), true));
+					$roleneed10 = request_var('role_need10', array( 0 => 0));
+					$roleneed25 = request_var('role_need25', array( 0 => 0));
+					foreach ( $rolenames as $role_id => $role_name )
 					{
-						 $sql = 'UPDATE ' . RP_ROLES . " SET role_name = '" . $db->sql_escape($role_name). "'
-					   	     WHERE role_id=" . (int) $role_id; 
+						$data = array(
+						    'role_name'     	=> $role_name,
+						    'role_needed10'     => $roleneed10[$role_id],
+						 	'role_needed25'     => $roleneed25[$role_id],
+						);
+
+						 $sql = 'UPDATE ' . RP_ROLES . ' SET ' . $db->sql_build_array('UPDATE', $data) . '
+					   	     WHERE role_id=' . (int) $role_id; 
    						 $db->sql_query($sql); 		
 						
 					}
 				}
 				
-				$addrole = (isset($_POST['roleadd'])) ? true : false;
+				//user pressed add
 				if($addrole)
 				{
 					$data = array(
 					    'role_name'     => utf8_normalize_nfc(request_var('newrole', 'New role', true)),
+						'role_needed10'     => request_var('newrole_need10', 0),
+						'role_needed25'     => request_var('newrole_need25', 0),
 					);
 
 					$sql = 'INSERT INTO ' . RP_ROLES . $db->sql_build_array('INSERT', $data);
    					$db->sql_query($sql); 			
-				}				
+				}		
+
+				
+				//used pressed red cross to delete role
+				if ($deleterole) 
+				{
+					// @todo check if there are scheduled raids with this role, ask permission
+					$sql = 'delete from ' . RP_ROLES . ' where role_id = ' . request_var('delrole_id', 0);
+					$db->sql_query($sql);
+				}
+				
 				
 				// update all advanced settings
-				$update	= (isset($_POST['update_rp_settings'])) ? true : false;
 				if( $update )
 				{
 					$first_day	= request_var('first_day', 0);
@@ -179,7 +208,9 @@ class acp_raidplanner
                     $template->assign_block_vars('role_row', array(
                     	'ROLE_ID' 		=> $row['role_id'],
                         'ROLENAME' 		=> $row['role_name'],
-                    	'U_DELETE' 		=> $this->u_action. '&roledelete=1&role_id=' . $row['role_id'],
+	                    'ROLENEED10' 	=> $row['role_needed10'],
+	                    'ROLENEED25' 	=> $row['role_needed25'],
+                    	'U_DELETE' 		=> $this->u_action. '&roledelete=1&delrole_id=' . $row['role_id'],
                     	));
                 }
                 $db->sql_freeresult($result);
@@ -215,6 +246,9 @@ class acp_raidplanner
 				$this->tpl_name = 'dkp/acp_' . $mode;
 				$this->page_title = $user->lang ['ACP_RAIDPLANNER_SETTINGS'];
 				
+				$form_key = 'acp_raidplanner';
+				add_form_key($form_key);
+		
 				break;
 			
 		}
