@@ -26,7 +26,7 @@ $auth->acl($user->data);
 
 // Language files 
 $user->setup('posting');
-$user->add_lang ( array ('posting', 'mods/dkp_common','mods/raidplanner'  ));
+$user->add_lang ( array ('posting', 'mods/dkp_admin','mods/raidplanner'  ));
 // Grab only parameters needed here
 //----------------------------
 $event_id	= request_var('calEid', 0);
@@ -424,8 +424,7 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	    $template->assign_block_vars('raidroles', array(
 	        'ROLE_ID'        => $row['role_id'],
 		    'ROLE_NAME'      => $row['role_name'],
-		    'ROLE_NEEDED1'    => $row['role_needed1'],
-	    	'ROLE_NEEDED2'    => $row['role_needed2'],
+	    	'ROLE_NEEDED2'    => $row['role_needed'],
 	    ));
 	}
 	$db->sql_freeresult($result);
@@ -718,9 +717,16 @@ $template->assign_vars(array(
 	'END_RECURR_MONTH_SEL'		=> $end_recurr_month_sel_code,
 	'END_RECURR_DAY_SEL'		=> $end_recurr_day_sel_code,
 	'END_RECURR_YEAR_SEL'		=> $end_recurr_year_sel_code,
+	
 
-	'S_POST_ACTION'			=> $s_action,
-	'S_HIDDEN_FIELDS'		=> $s_hidden_fields)
+	'S_POST_ACTION'				=> $s_action,
+	'S_HIDDEN_FIELDS'			=> $s_hidden_fields, 
+
+	//javascript alerts
+	'LA_ALERT_OLDBROWSER' 		=> $user->lang['ALERT_OLDBROWSER'],
+	//'UA_AJAXHANDLER1'		  	=> append_sid($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/planner/plannerajax.'. $phpEx),
+	'UA_AJAXHANDLER1'		  	=> 'plannerajax.'. $phpEx
+)
 );
 
 // HTML, BBCode, Smilies, Images and Flash status

@@ -204,6 +204,78 @@
 	}
   <!-- ENDIF -->
 
+
+  /*  make a XMLHTTP Request object */
+  function GetXmlHttpObject() 
+  { 
+  	var xmlhttp=false;	
+  	
+  	try
+  	{ 
+  		//  IE7+, Firefox, Chrome, Opera, Safari
+  		xmlhttp=new XMLHttpRequest();
+  	}
+  	catch(e)	
+  	{	// activex code for IE6, IE5
+  		try
+  		{			
+  			xmlhttp= new ActiveXObject("Microsoft.XMLHTTP");
+  		}
+  		catch(e)
+  		{
+  			try
+  			{
+  				xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+  			}
+  			catch(e1)
+  			{
+  				xmlhttp=false;
+  			}
+  		}
+  	}
+  	return xmlhttp;
+  }
+
+  /* ajax function to fill profile, sends call to server */ 
+  var xmlhttp; 
+  function update_roles(role)
+  {
+	  xmlhttp = GetXmlHttpObject();
+	  if (xmlhttp == null)
+	  {
+		  return;  
+	  }
+	   var strURL="{UA_AJAXHANDLER1}?role="+role;
+	   xmlhttp.onreadystatechange=stateChanged;
+	   xmlhttp.open("GET", strURL, true);
+	   // send to server
+	   xmlhttp.send(null);
+  }
+
+
+  /* called from update_roles when state changed */
+  
+  function stateChanged()
+  {
+  	if (xmlhttp.readyState==4) //request complete
+  	{
+  		if (xmlhttp.status == 200)
+  		{
+  			//receive xml
+  			xmlDoc=xmlhttp.responseXML;
+  	  		/* now change the html */
+
+  			
+  		}
+  		else 
+  		{
+     	   		alert("{LA_ALERT_AJAX}:\n" + xmlhttp.statusText);
+  	 	}
+  	}
+  }
+  
+
+  
   </script>
   <div>
   <!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
@@ -245,17 +317,18 @@
 		<dl style="clear: left;">
 		<dt><label>{L_CHOOSEPROFILE}</label>  </dt>
 		<dd>
-		<input type="radio" name="raidcomposition" value="1"{R1_CHECKED} /> {L_RAIDPROFILE1}
-     	<input type="radio" name="raidcomposition" value="2"{R2_CHECKED} /> {L_RAIDPROFILE2}
+		<input type="radio" name="raidcomposition" onclick="update_roles(1);" value="1"/> {L_RAIDPROFILE1}
+     	<input type="radio" name="raidcomposition" onclick="update_roles(2);" value="2"/> {L_RAIDPROFILE2}
 		</dd>
-		
+		<div id="raidroles">
 	<!-- BEGIN raidroles -->
 		<dt><label for="subject">{raidroles.ROLE_NAME}:</label></dt>
-		<dd><input type="hidden" name="role1[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" />
-		<input type="text" name="role_needed1[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED1}" class="inputbox autowidth" />
-		<input type="hidden" name="role2[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" />
-		<input type="text" name="role_needed2[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED2}" class="inputbox autowidth" /></dd>
+		<dd>
+			<input type="hidden" name="role[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" />
+			<input type="text" name="role_needed[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED}" class="inputbox autowidth" />
+		</dd>
 	<!-- END raidroles -->
+		</div>
 	</dl>
 	
 	<dl style="clear: left;">
