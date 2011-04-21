@@ -265,7 +265,7 @@
   			xmlDoc=xmlhttp.responseXML;
   			var root = xmlDoc.getElementsByTagName('rolelist')[0];
   			var roles = root.getElementsByTagName("role")
-  			
+  			document.getElementById('raidroles').innerHTML = "";
   			for (var i = 0; i < roles.length; i++)
   			{
 				var role = roles[i];
@@ -274,10 +274,11 @@
 				var role_needed = role.getElementsByTagName("role_needed")[0].firstChild.nodeValue;
 
   				var otitle = document.createElement('dt');
+
   				var oLabel = document.createElement('label');
 				oLabel.innerHTML = role_name;
 				oLabel.setAttribute("for","subject");
-				otitle.appendChild(label1);
+				otitle.appendChild(oLabel);
 				
 				var odef = document.createElement('dd');
 				var oInput1 = document.createElement('input');
@@ -292,11 +293,13 @@
   				oInput2.setAttribute("tabindex", "2");
   				oInput2.setAttribute("value", role_needed);
   				oInput2.setAttribute("class", "inputbox autowidth");
-  				oDef.appendChild(oInput1);
-  				oDef.appendChild(oInput2);
-  				/* now insert it in the dom. raidroles in the div anchor */
-  				raidroles.appendChild(otitle);
-  				raidroles.appendChild(odef);
+
+  				odef.appendChild(oInput1);
+  				odef.appendChild(oInput2);
+
+  	  			/* now insert it in the dom. raidroles in the div anchor */
+  				document.getElementById("raidroles").appendChild(otitle);
+  				document.getElementById("raidroles").appendChild(odef);
   			}
   			
 

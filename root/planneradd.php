@@ -582,9 +582,9 @@ if( sizeof($error) || $preview || $event_id > 0 )
 else // we are creating a new event
 {
 	
-	// make raid composition proposal
+	// make raid composition proposal, always choose primary role first
 	$sql_array = array(
-	    'SELECT'    => 'r.role_id, r.role_name, role_needed1, role_needed2 ', 
+	    'SELECT'    => 'r.role_id, r.role_name, role_needed1 ', 
 	    'FROM'      => array(
 	        RP_ROLES   => 'r'
 	    ),
@@ -597,8 +597,7 @@ else // we are creating a new event
 	    $template->assign_block_vars('raidroles', array(
 	        'ROLE_ID'        => $row['role_id'],
 		    'ROLE_NAME'      => $row['role_name'],
-		    'ROLE_NEEDED1'    => $row['role_needed1'],
-	    	'ROLE_NEEDED2'    => $row['role_needed2'],
+	    	'ROLE_NEEDED'    => $row['role_needed'],
 	    ));
 	}
 	$db->sql_freeresult($result);
