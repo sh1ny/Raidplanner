@@ -105,8 +105,8 @@ $lang = array_merge($lang, array(
 	'ALLOW_GUESTS_OFF'			=> 'Members are not allowed to bring guests to this raid.',
 	'AM'						=> 'AM',
 
-	'CALENDAR_POST_EVENT'		=> 'Create New Raid',
-	'CALENDAR_EDIT_EVENT'		=> 'Edit Raid',
+	'CALENDAR_POST_RAIDPLAN'		=> 'Create New Raid',
+	'CALENDAR_EDIT_RAIDPLAN'		=> 'Edit Raid',
 	'CALENDAR_TITLE'			=> 'Planner',
 	'RAIDPLANNER'				=> 'Raid Planner',
 	'NEWRAID'					=> 'New Raid',
@@ -123,7 +123,7 @@ $lang = array_merge($lang, array(
 	'DAY_OF'				=> 'Day of ',
 	'DELETE_ALL_EVENTS'		=> 'Delete all occurrences of this raid.',
 	'DETAILS'				=> 'Details',
-	'DELETE_EVENT'			=> 'Delete raid',
+	'DELETE_RAIDPLAN'			=> 'Delete raid',
 
 	'EDIT'					=> 'Edit',
 	'EDIT_ALL_EVENTS'		=> 'Edit all occurrences of this raid.',
@@ -155,7 +155,7 @@ $lang = array_merge($lang, array(
 
 	'HOW_MANY_PEOPLE'		=> 'Quick Headcount',
 
-	'INVALID_EVENT'			=> 'The raid you are trying to view does not exist.',
+	'INVALID_RAIDPLAN'			=> 'The raid you are trying to view does not exist.',
 	'INVITE_INFO'			=> 'Invited',
 
 	'MESSAGE_BODY_EXPLAIN'		=> 'Enter your message here, it may contain no more than <strong>%d</strong> characters.',
@@ -165,12 +165,12 @@ $lang = array_merge($lang, array(
 	'MY_EVENTS'				=> 'My Raids',
 
 	'LOCAL_DATE_FORMAT'		=> '%1$s %2$s, %3$s',
-	'LOGIN_EXPLAIN_POST_EVENT'	=> 'You need to login in order to add/edit/delete raids.',
+	'LOGIN_EXPLAIN_POST_RAIDPLAN'	=> 'You need to login in order to add/edit/delete raids.',
 
-	'NEGATIVE_LENGTH_EVENT'		=> 'The raid cannot end before it starts.',
+	'NEGATIVE_LENGTH_RAIDPLAN'		=> 'The raid cannot end before it starts.',
 	'NEVER'						=> 'Never',
-	'NEW_EVENT'					=> 'New Raid',
-	'NO_EVENT'					=> 'The requested raid does not exist.',
+	'NEW_RAIDPLAN'					=> 'New Raid',
+	'NO_RAIDPLAN'					=> 'The requested raid does not exist.',
 	'NO_EVENT_TYPES'			=> 'The site administrator has not set up raid types for this calendar.  Calendar raid creation has been disabled.',
 	'NO_GROUP_SELECTED'			=> 'There are no groups selected for this group raid.',
 	'NO_POST_EVENT_MODE'		=> 'No post mode specified.',
@@ -180,7 +180,7 @@ $lang = array_merge($lang, array(
 	
 	'PAGE_TITLE'			=> 'Calendar',
 	'PM'						=> 'PM',
-	'PRIVATE_EVENT'			=> 'This raid is private.  You must be invited and logged in to view this raid.',
+	'PRIVATE_RAIDPLAN'			=> 'This raid is private.  You must be invited and logged in to view this raid.',
 
 	'RAIDROLES'				=> 'Raid Roles' ,
 	'RAIDROLE'				=> 'Raid Role' ,
@@ -188,7 +188,7 @@ $lang = array_merge($lang, array(
 	'RAIDWHEN'				=> 'When ?' ,
 	'RAIDREPEAT'			=> 'Repeat ?' ,
 
-	'RECURRING_EVENT'				=> 'Recurring raid',
+	'RECURRING_RAIDPLAN'				=> 'Recurring raid',
 	'RECURRING_EVENT_TYPE'			=> 'Recurrence Type: ',
 	'RECURRING_EVENT_TYPE_EXPLAIN'	=> 'Tip choices begin with a letter to indicate their frequency: A - Annual, M - Monthly, W - Weekly, D - Daily',
 	'RECURRING_EVENT_FREQ'		=> 'Raid frequency:',
@@ -218,13 +218,13 @@ $lang = array_merge($lang, array(
 	'TRACK_SIGNUPS_OFF'			=> 'Attendance tracking is disabled.',
 
 	'UPCOMING_EVENTS'		=> 'Upcoming Raids',
-	'USER_CANNOT_VIEW_EVENT'=> 'You do not have permission to view this raid.',
-	'USER_CANNOT_DELETE_EVENT'	=> 'You do not have permission to delete raids.',
-	'USER_CANNOT_EDIT_EVENT'	=> 'You do not have permission to edit raids.',
-	'USER_CANNOT_POST_EVENT'	=> 'You do not have permission to create raids.',
-	'USER_CANNOT_VIEW_EVENT'	=> 'You do not have permission to view raids.',
+	'USER_CANNOT_VIEW_RAIDPLAN'=> 'You do not have permission to view this raid.',
+	'USER_CANNOT_DELETE_RAIDPLAN'	=> 'You do not have permission to delete raids.',
+	'USER_CANNOT_EDIT_RAIDPLAN'	=> 'You do not have permission to edit raids.',
+	'USER_CANNOT_POST_RAIDPLAN'	=> 'You do not have permission to create raids.',
+	'USER_CANNOT_VIEW_RAIDPLAN'	=> 'You do not have permission to view raids.',
 
-	'VIEW_EVENT'				=> '%sView your submitted raid%s',
+	'VIEW_RAIDPLAN'				=> '%sView your submitted raid%s',
 	'WEEK'						=> 'Week',
 
 	'WATCH_CALENDAR_TURN_ON'	=> 'Watch the calendar',
@@ -234,7 +234,7 @@ $lang = array_merge($lang, array(
 	'WEEK'						=> 'Week',
 	'WEEK_OF'					=> 'Week of ',
 	
-	'ZERO_LENGTH_EVENT'			=> 'The raid cannot end at the same time it starts.',
+	'ZERO_LENGTH_RAIDPLAN'			=> 'The raid cannot end at the same time it starts.',
 	'ZEROTH_FROM'				=> '0th from ',
 	'numbertext'			=> array(
 		'0'		=> '0th',

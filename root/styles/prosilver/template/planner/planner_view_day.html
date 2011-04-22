@@ -27,31 +27,31 @@
     </tr>
     <!-- ENDIF -->
     <!-- IF EVENT_COUNT -->
-	    <!-- BEGIN events -->
+	    <!-- BEGIN raidplans -->
 
 	    <tr>
-	      <!-- IF events.PRE_PADDING --><td colspan="{events.PRE_PADDING}" class="bg3_calDay">&nbsp;</td><!-- ENDIF -->
-	      <td colspan="{events.PADDING}" class="bg1_calDay" style="text-align: center;">
-	      		<!-- IF events.EVENT_URL -->
-          		<a href="{events.EVENT_URL}" title="<!-- IF events.ETYPE_DISPLAY_NAME -->{events.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{events.FULL_SUBJECT}">
-          			<!-- IF events.COLOR --><span style="color:#{events.COLOR}"><!-- ENDIF -->
-          			<!-- IF events.DISPLAY_BOLD --><strong><!-- ENDIF -->
-          			<!-- IF events.IMAGE --><img src="{events.IMAGE}" alt="{events.ETYPE_DISPLAY_NAME}" /> <!-- ENDIF -->
-          			<!-- IF events.ETYPE_DISPLAY_NAME -->{events.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{events.EVENT_SUBJECT}
-          			<!-- IF events.DISPLAY_BOLD --></strong><!-- ENDIF --><br /><span class="smCalText">
-          					<!-- IF events.ALL_DAY -->{L_ALL_DAY}
-          					<!-- ELSE -->{L_FROM_TIME}: {events.START_TIME}
-          					<br />{L_TO_TIME}: {events.END_TIME}
+	      <!-- IF raidplans.PRE_PADDING --><td colspan="{raidplans.PRE_PADDING}" class="bg3_calDay">&nbsp;</td><!-- ENDIF -->
+	      <td colspan="{raidplans.PADDING}" class="bg1_calDay" style="text-align: center;">
+	      		<!-- IF raidplans.EVENT_URL -->
+          		<a href="{raidplans.EVENT_URL}" title="<!-- IF raidplans.ETYPE_DISPLAY_NAME -->{raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{raidplans.FULL_SUBJECT}">
+          			<!-- IF raidplans.COLOR --><span style="color:#{raidplans.COLOR}"><!-- ENDIF -->
+          			<!-- IF raidplans.DISPLAY_BOLD --><strong><!-- ENDIF -->
+          			<!-- IF raidplans.IMAGE --><img src="{raidplans.IMAGE}" alt="{raidplans.ETYPE_DISPLAY_NAME}" /> <!-- ENDIF -->
+          			<!-- IF raidplans.ETYPE_DISPLAY_NAME -->{raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{raidplans.EVENT_SUBJECT}
+          			<!-- IF raidplans.DISPLAY_BOLD --></strong><!-- ENDIF --><br /><span class="smCalText">
+          					<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}
+          					<!-- ELSE -->{L_FROM_TIME}: {raidplans.START_TIME}
+          					<br />{L_TO_TIME}: {raidplans.END_TIME}
           					<!-- ENDIF --></span>
-          			<!-- IF events.COLOR --></span><!-- ENDIF -->
+          			<!-- IF raidplans.COLOR --></span><!-- ENDIF -->
           		</a>
           		<!-- ELSE -->
-          		{events.DATA}
+          		{raidplans.DATA}
           		<!-- ENDIF -->
 	      </td>
-	      <!-- IF events.POST_PADDING --><td colspan="{events.POST_PADDING}" class="bg3_calDay">&nbsp;</td><!-- ENDIF -->
+	      <!-- IF raidplans.POST_PADDING --><td colspan="{raidplans.POST_PADDING}" class="bg3_calDay">&nbsp;</td><!-- ENDIF -->
 	    </tr>
-	    <!-- END events -->
+	    <!-- END raidplans -->
     <!-- ELSE -->
 	    <tr>
 	      <td colspan="96" class="bg1_calDay" style="text-align: center">&nbsp;<br />{L_NO_EVENTS_TODAY}<br />&nbsp;</td>

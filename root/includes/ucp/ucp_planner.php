@@ -24,7 +24,7 @@ class ucp_planner
 	{
 		global $db, $user, $auth, $template, $config, $phpbb_root_path, $phpEx;
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
-		$raidevents = new raidevents();
+		$raidplans = new raidplans();
 		$displayplanner = new displayplanner();
 		$user->add_lang(array('mods/raidplanner', 'mods/dkp_common'));
 		
@@ -89,50 +89,50 @@ class ucp_planner
 		
 		$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
 				WHERE poster_id = '. $user->data['user_id'].' 
-				AND ( (event_access_level = 2) OR
+				AND ( (raidplan_access_level = 2) OR
 				(poster_id = '. $db->sql_escape($user->data['user_id']) .' ) 
-				OR (event_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' 
-				AND event_start_time >= '.$db->sql_escape($start_temp_date).' and event_start_time <= '.$db->sql_escape($sort_timestamp_cutoff).'  
+				OR (raidplan_access_level = 1 AND ('.$group_options.') ) ) '.$etype_options.' 
+				AND raidplan_start_time >= '.$db->sql_escape($start_temp_date).' and raidplan_start_time <= '.$db->sql_escape($sort_timestamp_cutoff).'  
 				ORDER BY sort_timestamp ASC';
 		$result = $db->sql_query($sql);
 		
 		while ($row = $db->sql_fetchrow($result))
 		{
 			
-			$events['EVENT_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$row['event_id'].$etype_url_opts);
-			$events['IMAGE'] = $raidevents->raid_event_images[$row['etype_id']];
-			$events['COLOR'] = $raidevents->raid_event_colors[$row['etype_id']];
-			$events['ETYPE_DISPLAY_NAME'] = $raidevents->raid_event_displaynames[$row['etype_id']];
-			$events['FULL_SUBJECT'] = censor_text($row['event_subject']);
-			$events['SUBJECT'] = $events['FULL_SUBJECT'];
+			$raidplans['EVENT_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$row['raidplan_id'].$etype_url_opts);
+			$raidplans['IMAGE'] = $raidplans->raid_plan_images[$row['etype_id']];
+			$raidplans['COLOR'] = $raidplans->raid_plan_colors[$row['etype_id']];
+			$raidplans['ETYPE_DISPLAY_NAME'] = $raidplans->raid_plan_displaynames[$row['etype_id']];
+			$raidplans['FULL_SUBJECT'] = censor_text($row['raidplan_subject']);
+			$raidplans['SUBJECT'] = $raidplans['FULL_SUBJECT'];
 			if( $subject_limit > 0 )
 			{
-				if(utf8_strlen($events['SUBJECT']) > $subject_limit)
+				if(utf8_strlen($raidplans['SUBJECT']) > $subject_limit)
 				{
-					$events['SUBJECT'] = truncate_string($events['SUBJECT'], $subject_limit) . '...';
+					$raidplans['SUBJECT'] = truncate_string($raidplans['SUBJECT'], $subject_limit) . '...';
 				}
 			}
 
-			$events['IS_RECURRING'] = $row['recurr_id'];
+			$raidplans['IS_RECURRING'] = $row['recurr_id'];
 			$string = '';
 			$sql = 'SELECT * FROM ' . RP_RECURRING ."
 					WHERE recurr_id ='".$db->sql_escape($row['recurr_id'])."'";
 			$result2 = $db->sql_query($sql);
 			if($row2 = $db->sql_fetchrow($result))
 			{
-				$string = $displayplanner->get_recurring_event_string( $row2 );
+				$string = $displayplanner->get_recurring_raidplan_string( $row2 );
 			}
 			$db->sql_freeresult($result2);
-			$events['RECURRING_TXT'] = $string;
+			$raidplans['RECURRING_TXT'] = $string;
 
 			$poster_url = '';
 			$invite_list = '';
 			 
-			$raidevents->get_event_invite_list_and_poster_url($row, $poster_url, $invite_list );
-			$events['POSTER'] = $poster_url;
-			$events['INVITED'] = $invite_list;
-			$events['ALL_DAY'] = 0;
-			$events['START_TIME'] = $user->format_date($row['event_start_time'], $disp_date_time_format, true);
+			$raidplans->get_raidplan_invite_list_and_poster_url($row, $poster_url, $invite_list );
+			$raidplans['POSTER'] = $poster_url;
+			$raidplans['INVITED'] = $invite_list;
+			$raidplans['ALL_DAY'] = 0;
+			$raidplans['START_TIME'] = $user->format_date($row['raidplan_start_time'], $disp_date_time_format, true);
 
 			$delete_url = "";	
 			$delete_all_url = "";
@@ -141,43 +141,43 @@ class ucp_planner
 			if($user->data['is_registered'])
 			{
 				// can user edit ?
-				if( $auth->acl_get('u_raidplanner_edit_events') &&
-					(($user->data['user_id'] == $row['poster_id']) || $auth->acl_get('m_raidplanner_edit_other_users_events') ))
+				if( $auth->acl_get('u_raidplanner_edit_raidplans') &&
+					(($user->data['user_id'] == $row['poster_id']) || $auth->acl_get('m_raidplanner_edit_other_users_raidplans') ))
 				    {
-					 $edit_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=edit&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
+					 $edit_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=edit&amp;calEid=".$row['raidplan_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
 					 if( $row['recurr_id'] > 0 )
 					 {
-						$edit_all_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=edit&amp;calEditAll=1&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
+						$edit_all_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=edit&amp;calEditAll=1&amp;calEid=".$row['raidplan_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
 					 }
 				}
 				
 				//can user delete ?
-				if( $auth->acl_get('u_raidplanner_delete_events') &&
-					(($user->data['user_id'] == $row['poster_id'])|| $auth->acl_get('m_raidplanner_delete_other_users_events') ))
+				if( $auth->acl_get('u_raidplanner_delete_raidplans') &&
+					(($user->data['user_id'] == $row['poster_id'])|| $auth->acl_get('m_raidplanner_delete_other_users_raidplans') ))
 				{
-					$delete_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=delete&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
+					$delete_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=delete&amp;calEid=".$row['raidplan_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 					if( $row['recurr_id'] > 0 )
 					{
-						$delete_all_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=delete&amp;calDelAll=1&amp;calEid=".$row['event_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
+						$delete_all_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=delete&amp;calDelAll=1&amp;calEid=".$row['raidplan_id']."&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 					}
 				}
 			}
-			$events['U_DELETE'] = $delete_url;
-			$events['U_DELETE_ALL'] = $delete_all_url;
-			$events['U_EDIT'] = $edit_url;
-			$events['U_EDIT_ALL'] = $edit_all_url;
+			$raidplans['U_DELETE'] = $delete_url;
+			$raidplans['U_DELETE_ALL'] = $delete_all_url;
+			$raidplans['U_EDIT'] = $edit_url;
+			$raidplans['U_EDIT_ALL'] = $edit_all_url;
 			
 			
 
-			$template->assign_block_vars('raids', $events);
+			$template->assign_block_vars('raids', $raidplans);
 		}
 		$db->sql_freeresult($result);
 			
 		switch ($mode)
 		{
 			
-			case 'raidplanner_myevents':
-			$this->tpl_name 	= 'planner/ucp_planner_myevents';
+			case 'raidplanner_myraidplans':
+			$this->tpl_name 	= 'planner/ucp_planner_myraidplans';
 			$template->assign_vars(array(
 					'U_COUNT_ACTION'	=> $this->u_action,
 					'DAYCOUNT'			=> $daycount ));

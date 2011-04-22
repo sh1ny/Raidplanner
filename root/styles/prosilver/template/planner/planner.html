@@ -45,23 +45,23 @@
 
           <!-- IF calendar_days.BIRTHDAYS -->{calendar_days.BIRTHDAYS}<!-- ENDIF -->
 
- 			<!-- BEGIN events -->
-          		<!-- IF calendar_days.events.S_FIRST_ROW --><!-- IF calendar_days.BIRTHDAYS --><hr class="hrCal"><!-- ENDIF --><!-- ELSE --><hr class="hrCal"><!-- ENDIF -->
-          		<a href="{calendar_days.events.EVENT_URL}" title="<!-- IF calendar_days.events.ETYPE_DISPLAY_NAME -->{calendar_days.events.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{calendar_days.events.FULL_SUBJECT}">
-          			<!-- IF calendar_days.events.COLOR --><span style="color:#{calendar_days.events.COLOR}"><!-- ENDIF -->
-          			<!-- IF calendar_days.events.DISPLAY_BOLD --><strong><!-- ENDIF -->
-          			<!-- IF calendar_days.events.IMAGE --><img src="{calendar_days.events.IMAGE}" alt="{calendar_days.events.ETYPE_DISPLAY_NAME}" /> <!-- ENDIF -->
-          			<!-- IF calendar_days.events.ETYPE_DISPLAY_NAME -->{calendar_days.events.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{calendar_days.events.EVENT_SUBJECT}
-          			<!-- IF calendar_days.events.DISPLAY_BOLD --></strong><!-- ENDIF -->
-          				<!-- IF calendar_days.events.SHOW_TIME --><br /><span class="smCalText">
-          					<!-- IF calendar_days.events.ALL_DAY -->{L_ALL_DAY}
-          					<!-- ELSE -->{L_FROM_TIME}: {calendar_days.events.START_TIME}
-          					<br />{L_TO_TIME}: {calendar_days.events.END_TIME}
+ 			<!-- BEGIN raidplans -->
+          		<!-- IF calendar_days.raidplans.S_FIRST_ROW --><!-- IF calendar_days.BIRTHDAYS --><hr class="hrCal"><!-- ENDIF --><!-- ELSE --><hr class="hrCal"><!-- ENDIF -->
+          		<a href="{calendar_days.raidplans.EVENT_URL}" title="<!-- IF calendar_days.raidplans.ETYPE_DISPLAY_NAME -->{calendar_days.raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{calendar_days.raidplans.FULL_SUBJECT}">
+          			<!-- IF calendar_days.raidplans.COLOR --><span style="color:#{calendar_days.raidplans.COLOR}"><!-- ENDIF -->
+          			<!-- IF calendar_days.raidplans.DISPLAY_BOLD --><strong><!-- ENDIF -->
+          			<!-- IF calendar_days.raidplans.IMAGE --><img src="{calendar_days.raidplans.IMAGE}" alt="{calendar_days.raidplans.ETYPE_DISPLAY_NAME}" /> <!-- ENDIF -->
+          			<!-- IF calendar_days.raidplans.ETYPE_DISPLAY_NAME -->{calendar_days.raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{calendar_days.raidplans.EVENT_SUBJECT}
+          			<!-- IF calendar_days.raidplans.DISPLAY_BOLD --></strong><!-- ENDIF -->
+          				<!-- IF calendar_days.raidplans.SHOW_TIME --><br /><span class="smCalText">
+          					<!-- IF calendar_days.raidplans.ALL_DAY -->{L_ALL_DAY}
+          					<!-- ELSE -->{L_FROM_TIME}: {calendar_days.raidplans.START_TIME}
+          					<br />{L_TO_TIME}: {calendar_days.raidplans.END_TIME}
           					<!-- ENDIF --></span>
           				<!-- ENDIF -->
-          			<!-- IF calendar_days.events.COLOR --></span><!-- ENDIF -->
+          			<!-- IF calendar_days.raidplans.COLOR --></span><!-- ENDIF -->
           		</a>
-          	<!-- END events -->
+          	<!-- END raidplans -->
       </td>
       <!-- ENDIF -->
     <!-- IF calendar_days.END_WEEK --></tr><!-- ENDIF -->

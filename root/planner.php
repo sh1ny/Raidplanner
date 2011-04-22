@@ -26,7 +26,7 @@ $user->setup('viewforum');
 $user->add_lang ( array ('mods/dkp_common','mods/raidplanner'  ));
 
 //get permissions
-if ( !$auth->acl_get('u_raidplanner_view_events') )
+if ( !$auth->acl_get('u_raidplanner_view_raidplans') )
 {
 	trigger_error( 'NO_AUTH_OPERATION' );
 }
@@ -53,27 +53,27 @@ switch( $view_mode )
 {
 
    case "next":
-      // display next events for specified number of days
-      $template_body = "calendar_next_events_for_x_days.html";
+      // display next raidplans for specified number of days
+      $template_body = "calendar_next_raidplans_for_x_days.html";
       $daycount = request_var('daycount', 60 );
       $user_id = request_var('u', 0);
       if( $user_id == 0 )
       {
-      	$cal->display_next_events_for_x_days( $daycount );
+      	$cal->display_next_raidplans_for_x_days( $daycount );
       }
       else
       {
-      	$cal->display_users_next_events_for_x_days($daycount, $user_id);
+      	$cal->display_users_next_raidplans_for_x_days($daycount, $user_id);
       }
       break;
 
-	case "event":
-		// display a single event
-		$template_body = "planner/planner_view_event.html";
+	case "raidplan":
+		// display a single raidplan
+		$template_body = "planner/planner_view_raidplan.html";
 		$cal->display_plannedraid();
 		break;
 	case "day":
-		// display all of the events on this day
+		// display all of the raidplans on this day
 		$cal->display_day(0);
 		$template_body = "planner/planner_view_day.html";
 		break;

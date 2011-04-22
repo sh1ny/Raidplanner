@@ -105,14 +105,14 @@
 	  weekday_strings[5] = "Friday";
 	  weekday_strings[6] = "Saturday";
 
-	  var recurr_event_type_strings = new Array();
-	  recurr_event_type_strings[0] = "";
-	  recurr_event_type_strings[1] = "{L_RECURRING_EVENT_CASE_1}";
-	  recurr_event_type_strings[2] = "{L_RECURRING_EVENT_CASE_2}"; 
-	  recurr_event_type_strings[3] = "{L_RECURRING_EVENT_CASE_3}";
-	  recurr_event_type_strings[4] = "{L_RECURRING_EVENT_CASE_4}";
-	  recurr_event_type_strings[5] = "{L_RECURRING_EVENT_CASE_5}";
-	  recurr_event_type_strings[6] = "{L_RECURRING_EVENT_CASE_6}";
+	  var recurr_raidplan_type_strings = new Array();
+	  recurr_raidplan_type_strings[0] = "";
+	  recurr_raidplan_type_strings[1] = "{L_RECURRING_EVENT_CASE_1}";
+	  recurr_raidplan_type_strings[2] = "{L_RECURRING_EVENT_CASE_2}"; 
+	  recurr_raidplan_type_strings[3] = "{L_RECURRING_EVENT_CASE_3}";
+	  recurr_raidplan_type_strings[4] = "{L_RECURRING_EVENT_CASE_4}";
+	  recurr_raidplan_type_strings[5] = "{L_RECURRING_EVENT_CASE_5}";
+	  recurr_raidplan_type_strings[6] = "{L_RECURRING_EVENT_CASE_6}";
 
 	  function update_recurring_options()
 	  {
@@ -137,36 +137,36 @@
 
 			var sel_week = selDate.getWeek();
 			var sel_week_string = number_strings[sel_week];
-			var temp_recurr_event_type_strings = new Array();
+			var temp_recurr_raidplan_type_strings = new Array();
 			var rtypeInx = 0;
 			for( rtypeInx = 0; rtypeInx < 7; rtypeInx++ )
 			{
-				temp_recurr_event_type_strings[rtypeInx] = recurr_event_type_strings[rtypeInx];
+				temp_recurr_raidplan_type_strings[rtypeInx] = recurr_raidplan_type_strings[rtypeInx];
 			}
-			temp_recurr_event_type_strings[1] = temp_recurr_event_type_strings[1].replace(/\[Xth\]/g, sel_day_string);
-			temp_recurr_event_type_strings[1] = temp_recurr_event_type_strings[1].replace(/\[Month Name\]/g, sel_month_string);
-			temp_recurr_event_type_strings[1] = temp_recurr_event_type_strings[1].replace(/\[Y\]/g, y_string);
+			temp_recurr_raidplan_type_strings[1] = temp_recurr_raidplan_type_strings[1].replace(/\[Xth\]/g, sel_day_string);
+			temp_recurr_raidplan_type_strings[1] = temp_recurr_raidplan_type_strings[1].replace(/\[Month Name\]/g, sel_month_string);
+			temp_recurr_raidplan_type_strings[1] = temp_recurr_raidplan_type_strings[1].replace(/\[Y\]/g, y_string);
 
-			temp_recurr_event_type_strings[2] = temp_recurr_event_type_strings[2].replace(/\[Xth\]/g, sel_week_string);
-			temp_recurr_event_type_strings[2] = temp_recurr_event_type_strings[2].replace(/\[Weekday Name\]/g, sel_week_day_string);
-			temp_recurr_event_type_strings[2] = temp_recurr_event_type_strings[2].replace(/\[Month Name\]/g, sel_month_string);
-			temp_recurr_event_type_strings[2] = temp_recurr_event_type_strings[2].replace(/\[Y\]/g, y_string);
+			temp_recurr_raidplan_type_strings[2] = temp_recurr_raidplan_type_strings[2].replace(/\[Xth\]/g, sel_week_string);
+			temp_recurr_raidplan_type_strings[2] = temp_recurr_raidplan_type_strings[2].replace(/\[Weekday Name\]/g, sel_week_day_string);
+			temp_recurr_raidplan_type_strings[2] = temp_recurr_raidplan_type_strings[2].replace(/\[Month Name\]/g, sel_month_string);
+			temp_recurr_raidplan_type_strings[2] = temp_recurr_raidplan_type_strings[2].replace(/\[Y\]/g, y_string);
 
-			temp_recurr_event_type_strings[3] = temp_recurr_event_type_strings[3].replace(/\[Xth\]/g, sel_day_string);
-			temp_recurr_event_type_strings[3] = temp_recurr_event_type_strings[3].replace(/\[Y\]/g, y_string);
+			temp_recurr_raidplan_type_strings[3] = temp_recurr_raidplan_type_strings[3].replace(/\[Xth\]/g, sel_day_string);
+			temp_recurr_raidplan_type_strings[3] = temp_recurr_raidplan_type_strings[3].replace(/\[Y\]/g, y_string);
 
-			temp_recurr_event_type_strings[4] = temp_recurr_event_type_strings[4].replace(/\[Xth\]/g, sel_week_string);
-			temp_recurr_event_type_strings[4] = temp_recurr_event_type_strings[4].replace(/\[Weekday Name\]/g, sel_week_day_string);
-			temp_recurr_event_type_strings[4] = temp_recurr_event_type_strings[4].replace(/\[Y\]/g, y_string);
+			temp_recurr_raidplan_type_strings[4] = temp_recurr_raidplan_type_strings[4].replace(/\[Xth\]/g, sel_week_string);
+			temp_recurr_raidplan_type_strings[4] = temp_recurr_raidplan_type_strings[4].replace(/\[Weekday Name\]/g, sel_week_day_string);
+			temp_recurr_raidplan_type_strings[4] = temp_recurr_raidplan_type_strings[4].replace(/\[Y\]/g, y_string);
 
-			temp_recurr_event_type_strings[5] = temp_recurr_event_type_strings[5].replace(/\[Weekday Name\]/g, sel_week_day_string);
-			temp_recurr_event_type_strings[5] = temp_recurr_event_type_strings[5].replace(/\[Y\]/g, y_string);
+			temp_recurr_raidplan_type_strings[5] = temp_recurr_raidplan_type_strings[5].replace(/\[Weekday Name\]/g, sel_week_day_string);
+			temp_recurr_raidplan_type_strings[5] = temp_recurr_raidplan_type_strings[5].replace(/\[Y\]/g, y_string);
 
-			temp_recurr_event_type_strings[6] = temp_recurr_event_type_strings[6].replace(/\[Y\]/g, y_string);
+			temp_recurr_raidplan_type_strings[6] = temp_recurr_raidplan_type_strings[6].replace(/\[Y\]/g, y_string);
 
 			for( rtypeInx = 1; rtypeInx < 7; rtypeInx++ )
 			{
-				freq_type.options[rtypeInx-1].innerHTML = temp_recurr_event_type_strings[rtypeInx];
+				freq_type.options[rtypeInx-1].innerHTML = temp_recurr_raidplan_type_strings[rtypeInx];
 			}
 	  }
 	<!-- ELSE -->
@@ -325,7 +325,7 @@
 		<dt><label for="subject">{L_SUBJECT}:</label></dt>
 		<dd><input type="text" name="subject" id="subject" size="30" maxlength="100" tabindex="2" value="{SUBJECT}" class="inputbox autowidth" /></dd>
 	</dl>
-	<!-- fetch the events from bbDKP -->
+	<!-- fetch the raidplans from bbDKP -->
 	<dl style="clear: left;">
 		<dt><label for="calEType">{L_EVENT_TYPE}:</label></dt>
 		<dd>

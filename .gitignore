@@ -3,3 +3,4 @@
 # ignore eclipse directories
 .project
 .settings
+.cache

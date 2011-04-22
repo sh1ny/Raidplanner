@@ -33,12 +33,12 @@ class raidplanner_base
 	
 	public $date = array();
 	public $month_names = array();
-	public $raid_event_count = 0;
-	public $raid_event_ids = array();
-	public $raid_event_names = array();
-	public $raid_event_displaynames = array();
-	public $raid_event_colors = array();
-	public $raid_event_images = array();
+	public $raid_plan_count = 0;
+	public $raid_plan_ids = array();
+	public $raid_plan_names = array();
+	public $raid_plan_displaynames = array();
+	public $raid_plan_colors = array();
+	public $raid_plan_images = array();
 	public $month_sel_code = "";
 	public $day_sel_code = "";
 	public $year_sel_code = "";
@@ -48,27 +48,27 @@ class raidplanner_base
 	
 	/*
 	 * checks if a user has right to post a new raid
-	 * @param byref : $event_data
+	 * @param byref : $raidplan_data
 	 */
-	public function authcheck($mode, $submit, &$event_data, $event_id)
+	public function authcheck($mode, $submit, &$raidplan_data, $raidplan_id)
 	{
 		global $user, $auth; 
 		$is_authed = false;
 		
-		// Bots can't post events in the calendar
+		// Bots can't post raidplans in the calendar
 		if ($user->data['is_bot'])
 		{
 			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
 		}
 	
-		// Is the user able to view events?
-		if ( !$auth->acl_get('u_raidplanner_view_events') )
+		// Is the user able to view raidplans?
+		if ( !$auth->acl_get('u_raidplanner_view_raidplans') )
 		{
 			if ($user->data['user_id'] != ANONYMOUS)
 			{
-				trigger_error('USER_CANNOT_VIEW_EVENT');
+				trigger_error('USER_CANNOT_VIEW_RAIDPLAN');
 			}
-			trigger_error('LOGIN_EXPLAIN_POST_EVENT');
+			trigger_error('LOGIN_EXPLAIN_POST_RAIDPLAN');
 		}
 	
 		// Permission to do the action asked?
@@ -76,27 +76,27 @@ class raidplanner_base
 		{
 			case 'post':
 				if ( $auth->acl_gets(
-					'u_raidplanner_create_public_events', 
-					'u_raidplanner_create_group_events', 
-					'u_raidplanner_create_private_events'))
+					'u_raidplanner_create_public_raidplans', 
+					'u_raidplanner_create_group_raidplans', 
+					'u_raidplanner_create_private_raidplans'))
 					{
 						$is_authed = true;
 						if( $submit )
 						{	
-							// on submit we need to double check that they have permission to create the selected type of event
+							// on submit we need to double check that they have permission to create the selected type of raidplan
 							$is_authed = false;
-							$test_event_level = request_var('calELevel', 0);
-							switch ($test_event_level)
+							$test_raidplan_level = request_var('calELevel', 0);
+							switch ($test_raidplan_level)
 							{
 								case 2:
-									if ( $auth->acl_get('u_raidplanner_create_public_events') )
+									if ( $auth->acl_get('u_raidplanner_create_public_raidplans') )
 									{
 										$is_authed = true;
 									}
 								break;
 			
 								case 1:
-									if ( $auth->acl_get('u_raidplanner_create_group_events') )
+									if ( $auth->acl_get('u_raidplanner_create_group_raidplans') )
 									{
 										$is_authed = true;
 									}
@@ -104,7 +104,7 @@ class raidplanner_base
 			
 								case 0:
 								default:
-									if ( $auth->acl_get('u_raidplanner_create_private_events') )
+									if ( $auth->acl_get('u_raidplanner_create_private_raidplans') )
 									{
 										$is_authed = true;
 									}
@@ -115,14 +115,14 @@ class raidplanner_base
 			break;
 		
 			case 'edit':
-				if ($user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_events') )
+				if ($user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_raidplans') )
 				{
 					$is_authed = true;
 				}
 			break;
 		
 			case 'delete':
-				if ($user->data['is_registered'] && $auth->acl_get('u_raidplanner_delete_events') )
+				if ($user->data['is_registered'] && $auth->acl_get('u_raidplanner_delete_raidplans') )
 				{
 					$is_authed = true;
 				}
@@ -135,61 +135,61 @@ class raidplanner_base
 			{
 				if( strtoupper($mode) == "" )
 				{
-					$error_string = 'USER_CANNOT_POST_EVENT';
+					$error_string = 'USER_CANNOT_POST_RAIDPLAN';
 				}
 				else
 				{
-					$error_string = 'USER_CANNOT_' . strtoupper($mode) . '_EVENT';
+					$error_string = 'USER_CANNOT_' . strtoupper($mode) . '_RAIDPLAN';
 				}
 				trigger_error($error_string);
 			}
 		
-			login_box('', $user->lang['LOGIN_EXPLAIN_POST_EVENT']);
+			login_box('', $user->lang['LOGIN_EXPLAIN_POST_RAIDPLAN']);
 		}
 		
 		// Can we edit this post ... if we're a moderator with rights then always yes
 		// else it depends on editing times, lock status and if we're the correct user
-		if ($mode == 'edit' && !$auth->acl_get('m_raidplanner_edit_other_users_events'))
+		if ($mode == 'edit' && !$auth->acl_get('m_raidplanner_edit_other_users_raidplans'))
 		{
-			if ($user->data['user_id'] != $event_data['poster_id'])
+			if ($user->data['user_id'] != $raidplan_data['poster_id'])
 			{
-				trigger_error('USER_CANNOT_EDIT_EVENT');
+				trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
 			}
 		}
-		if ($mode == 'delete' && !$auth->acl_get('m_raidplanner_delete_other_users_events'))
+		if ($mode == 'delete' && !$auth->acl_get('m_raidplanner_delete_other_users_raidplans'))
 		{
-			if ($user->data['user_id'] != $event_data['poster_id'])
+			if ($user->data['user_id'] != $raidplan_data['poster_id'])
 			{
-				trigger_error('USER_CANNOT_DELETE_EVENT');
+				trigger_error('USER_CANNOT_DELETE_RAIDPLAN');
 			}
 		}
 		
 		/*-------------------------------------------
 		  Does the user have permission for
-		  signups allowing guests, & recurring events?
+		  signups allowing guests, & recurring raidplans?
 		---------------------------------------------*/
-		$event_data['s_track_signups'] = false;
+		$raidplan_data['s_track_signups'] = false;
 		if( $auth->acl_get('u_raidplanner_track_signups'))
 		{
-			$event_data['s_track_signups'] = true;
+			$raidplan_data['s_track_signups'] = true;
 		}
 		
-		$event_data['s_recurring_opts'] = false;
-		if( $event_id == 0 )
+		$raidplan_data['s_recurring_opts'] = false;
+		if( $raidplan_id == 0 )
 		{
-			if( $auth->acl_get('u_raidplanner_create_recurring_events') )
+			if( $auth->acl_get('u_raidplanner_create_recurring_raidplans') )
 			{
-				$event_data['s_recurring_opts'] = true;
+				$raidplan_data['s_recurring_opts'] = true;
 			}
 		}
 			
-		$event_data['s_update_recurring_options'] = false;
+		$raidplan_data['s_update_recurring_options'] = false;
 		if( $user->data['user_lang'] == 'en' )
 		{
-			$event_data['s_update_recurring_options'] = true;
+			$raidplan_data['s_update_recurring_options'] = true;
 		}
 		
-		return $event_data;
+		return $raidplan_data;
 	}
 	
 	
@@ -217,18 +217,18 @@ class raidplanner_base
 			$this->month_names[11] = "November";
 			$this->month_names[12] = "December";
 	
-			//find the available event types:
-			$sql = 'SELECT * FROM ' . EVENTS_TABLE . ' ORDER BY event_id';
+			//find the available raidplan types:
+			$sql = 'SELECT * FROM ' . EVENTS_TABLE . ' ORDER BY raidplan_id';
 			$result = $db->sql_query($sql);
-			$this->raid_event_count = 0;
+			$this->raid_plan_count = 0;
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$this->raid_event_ids[$this->raid_event_count] = $row['event_id'];
-				$this->raid_event_names[$this->raid_event_count] = $row['event_name'];
-				$this->raid_event_colors[$row['event_id']] = $row['event_color'];
-				$this->raid_event_images[$row['event_id']] = $row['event_imagename'];
-				$this->raid_event_displaynames[$row['event_id']] = $row['event_name'];
-				$this->raid_event_count++;
+				$this->raid_plan_ids[$this->raid_plan_count] = $row['raidplan_id'];
+				$this->raid_plan_names[$this->raid_plan_count] = $row['raidplan_name'];
+				$this->raid_plan_colors[$row['raidplan_id']] = $row['raidplan_color'];
+				$this->raid_plan_images[$row['raidplan_id']] = $row['raidplan_imagename'];
+				$this->raid_plan_displaynames[$row['raidplan_id']] = $row['raidplan_name'];
+				$this->raid_plan_count++;
 			}
 			$db->sql_freeresult($result);
 		}
@@ -278,7 +278,7 @@ class raidplanner_base
 	
 	/*------------------------------------------------------
 	  Begin helper functions for filtering the calendar
-	  display based on a specified event type.
+	  display based on a specified raidplan type.
 	------------------------------------------------------*/
 	public function get_etype_filter()
 	{
@@ -315,7 +315,7 @@ class raidplanner_base
 	/* calendar_watch_calendar()
 	**
 	** Adds/removes the current user into the RP_WATCH table
-	** so that they can start/stop recieving notifications about new events
+	** so that they can start/stop recieving notifications about new raidplans
 	**
 	** INPUT
 	**    $turn_on = 1 - the user wants to START watching the calendar

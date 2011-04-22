@@ -33,27 +33,27 @@ class raidplanner_population extends raidplanner_base
 {
 	
 	/***
-	 * function to build event array used for posting new event. called from planneradd
+	 * function to build raidplan array used for posting new raidplan. called from planneradd
 	 * error checking is done
 	 * 
-	 * @param byref : $event_data, $newraid
+	 * @param byref : $raidplan_data, $newraid
  	 * @param byval : $s_date_time_opts 
-	 * @returns : $event_data or trigger_error
+	 * @returns : $raidplan_data or trigger_error
 	 * 
 	 */
-	public function gather_raiddata( &$event_data, &$newraid, $s_date_time_opts)
+	public function gather_raiddata( &$raidplan_data, &$newraid, $s_date_time_opts)
 	{
 		global $user, $config; 
 		$error = array();
 		
-		$event_data['event_subject']= utf8_normalize_nfc(request_var('subject', '', true));
-		$event_data['event_body']	= utf8_normalize_nfc(request_var('message', '', true));
-		$event_data['etype_id']		= request_var('calEType', 0);
-		$event_data['group_id'] = 0;
-		$event_data['group_id_list'] = ",";
+		$raidplan_data['raidplan_subject']= utf8_normalize_nfc(request_var('subject', '', true));
+		$raidplan_data['raidplan_body']	= utf8_normalize_nfc(request_var('message', '', true));
+		$raidplan_data['etype_id']		= request_var('calEType', 0);
+		$raidplan_data['group_id'] = 0;
+		$raidplan_data['group_id_list'] = ",";
 		
 		// get raidsize from form
-		$event_data['roles_needed'] = request_var('role_needed', array(0=> 0));
+		$raidplan_data['roles_needed'] = request_var('role_needed', array(0=> 0));
 		
 		// get member group id
 		$group_id_array = request_var('calGroupId', array(0));
@@ -61,7 +61,7 @@ class raidplanner_population extends raidplanner_base
 	    if( $num_group_ids == 1 )
 	    {
 	    	// if only one group pass the groupid
-			$event_data['group_id'] = $group_id_array[0];
+			$raidplan_data['group_id'] = $group_id_array[0];
 	
 	    }
 		elseif( $num_group_ids > 1 )
@@ -74,32 +74,32 @@ class raidplanner_population extends raidplanner_base
 			    {
 			    	continue;
 			    }
-			    $event_data['group_id_list'] .= $group_id_array[$group_index] . ",";
+			    $raidplan_data['group_id_list'] .= $group_id_array[$group_index] . ",";
 			}
 		}
 		
-		$event_data['event_access_level']	= request_var('calELevel', 0);
+		$raidplan_data['raidplan_access_level']	= request_var('calELevel', 0);
 		
 		// if we selected group but didn't actually a group then throw error
-		if( $event_data['event_access_level'] == 1 && $num_group_ids < 1 )
+		if( $raidplan_data['raidplan_access_level'] == 1 && $num_group_ids < 1 )
 		{
 			$error[] = $user->lang['NO_GROUP_SELECTED'];
 		}
 		
 		//do we track signups ?
-		$event_data['track_signups'] = request_var('calTrackRsvps', 0);
+		$raidplan_data['track_signups'] = request_var('calTrackRsvps', 0);
 	    
 
 		/*------------------------------------------------------------------
 	      Begin to find start/end times
-	      NOTE: if s_date_time_opts is false we are editing all events and
+	      NOTE: if s_date_time_opts is false we are editing all raidplans and
 	            there will not be any data to get
 	    -------------------------------------------------------------------*/
 		if( $s_date_time_opts )
 		{
 			$start_hr = request_var('calHr', 0);
 			$start_mn = request_var('calMn', 0);
-			$event_data['event_start_time'] = gmmktime($start_hr, $start_mn, 0, $newraid->date['month_no'], $newraid->date['day'], $newraid->date['year'] ) - $user->timezone - $user->dst;
+			$raidplan_data['raidplan_start_time'] = gmmktime($start_hr, $start_mn, 0, $newraid->date['month_no'], $newraid->date['day'], $newraid->date['year'] ) - $user->timezone - $user->dst;
 		}
 	
 		// DNSBL check
@@ -112,26 +112,26 @@ class raidplanner_population extends raidplanner_base
 		}
 		
 	    /*------------------------------------------------------------------
-	      Check options for recurring events
+	      Check options for recurring raidplans
 	    -------------------------------------------------------------------*/
 		if( request_var('calIsRecurr', '') == "ON" )
 		{
-		    $event_data['is_recurr'] = 1;
-			$event_data['frequency_type'] = request_var('calRFrqT', 1);
-			switch ($event_data['frequency_type'])
+		    $raidplan_data['is_recurr'] = 1;
+			$raidplan_data['frequency_type'] = request_var('calRFrqT', 1);
+			switch ($raidplan_data['frequency_type'])
 			{
 				case 2:
 				case 4:
-					$event_data['week_index'] = $newraid->find_week_index( $event_data['event_start_time'], true, false, $event_data['first_day_of_week'] );
+					$raidplan_data['week_index'] = $newraid->find_week_index( $raidplan_data['raidplan_start_time'], true, false, $raidplan_data['first_day_of_week'] );
 					break;
 				default:
-					$event_data['week_index'] = 0;
+					$raidplan_data['week_index'] = 0;
 					break;
 			}
 	
 	
-			$event_data['frequency'] = request_var('calRFrq', 1);
-			if( $event_data['frequency'] < 1 )
+			$raidplan_data['frequency'] = request_var('calRFrq', 1);
+			if( $raidplan_data['frequency'] < 1 )
 			{
 				$error[] = $user->lang['FREQUENCEY_LESS_THAN_1'];
 			}
@@ -140,99 +140,99 @@ class raidplanner_population extends raidplanner_base
 			$final_occ_year = request_var('calRYEnd', 0);
 			if( $final_occ_month == 0 || $final_occ_month == 0 || $final_occ_month == 0 )
 			{
-				$event_data['final_occ_time'] = 0;
+				$raidplan_data['final_occ_time'] = 0;
 			}
 			else
 			{
-				// we want to use the last minute of their selected day so we will populate events
+				// we want to use the last minute of their selected day so we will populate raidplans
 				// on their last selected day, but not any day after
-				$event_data['final_occ_time'] = gmmktime(23, 59, 0, $final_occ_month, $final_occ_day, $final_occ_year ) - $user->timezone - $user->dst;
+				$raidplan_data['final_occ_time'] = gmmktime(23, 59, 0, $final_occ_month, $final_occ_day, $final_occ_year ) - $user->timezone - $user->dst;
 				
-				if( $event_data['final_occ_time'] < $event_data['event_start_time'] )
+				if( $raidplan_data['final_occ_time'] < $raidplan_data['raidplan_start_time'] )
 				{
-					$error[] = $user->lang['NEGATIVE_LENGTH_EVENT'];
+					$error[] = $user->lang['NEGATIVE_LENGTH_RAIDPLAN'];
 				}
-				else if( $event_data['final_occ_time'] == $event_data['event_start_time'] )
+				else if( $raidplan_data['final_occ_time'] == $raidplan_data['raidplan_start_time'] )
 				{
-					$error[] = $user->lang['ZERO_LENGTH_EVENT'];
+					$error[] = $user->lang['ZERO_LENGTH_RAIDPLAN'];
 				}
 			}
 	
 		}
 		else
 		{
-		    $event_data['is_recurr'] = 0;
+		    $raidplan_data['is_recurr'] = 0;
 		}
 		
 		if (!sizeof($error))
 		{
-			//return the parsed event data
-			return $event_data;
+			//return the parsed raidplan data
+			return $raidplan_data;
 		}
 		
 	}
 		
 	/*
 	 * inserts new planned raid in DB
-	 * @param byref : $event_data, $newraid, $event_id
+	 * @param byref : $raidplan_data, $newraid, $raidplan_id
 	 * 
 	 */
-	public function create_event(&$event_data, &$newraid, &$event_id)
+	public function create_raidplan(&$raidplan_data, &$newraid, &$raidplan_id)
 	{
 		global $db;
 		
 		$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
-		generate_text_for_storage($event_data['event_body'], $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+		generate_text_for_storage($raidplan_data['raidplan_body'], $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
 		
 		$recurr_id = 0;
 		/*----------------------------------------------------
 		   RECURRING EVENT: add it to the recurring
-		   event table and begin populating the future raids
+		   raidplan table and begin populating the future raids
 		----------------------------------------------------*/
-		if( $event_data['is_recurr'] == 1 )
+		if( $raidplan_data['is_recurr'] == 1 )
 		{
-			$event_frequency_type = $event_data['frequency_type'];
-			$event_frequency = $event_data['frequency'];
-			$event_week_index = $event_data['week_index'];
-			$event_final_occ_time = $event_data['final_occ_time'];
-			$event_duration = 0;
+			$raidplan_frequency_type = $raidplan_data['frequency_type'];
+			$raidplan_frequency = $raidplan_data['frequency'];
+			$raidplan_week_index = $raidplan_data['week_index'];
+			$raidplan_final_occ_time = $raidplan_data['final_occ_time'];
+			$raidplan_duration = 0;
 			
-			$poster_timezone = $event_data['poster_timezone'];
-			$poster_dst = $event_data['poster_dst'];
+			$poster_timezone = $raidplan_data['poster_timezone'];
+			$poster_dst = $raidplan_data['poster_dst'];
 	
 			$sql = 'INSERT INTO ' . RP_RECURRING . ' ' . $db->sql_build_array('INSERT', array(
-					'etype_id'				=> (int) $event_data['etype_id'],
-					'frequency'				=> (int) $event_frequency,
-					'frequency_type'		=> (int) $event_frequency_type,
-					'first_occ_time'		=> (int) $event_data['event_start_time'],
-					'final_occ_time'		=> (int) $event_final_occ_time,
-					'event_duration'		=> (int) $event_duration,
-					'week_index'			=> (int) $event_week_index,
-					'first_day_of_week'		=> (int) $event_data['first_day_of_week'],
+					'etype_id'				=> (int) $raidplan_data['etype_id'],
+					'frequency'				=> (int) $raidplan_frequency,
+					'frequency_type'		=> (int) $raidplan_frequency_type,
+					'first_occ_time'		=> (int) $raidplan_data['raidplan_start_time'],
+					'final_occ_time'		=> (int) $raidplan_final_occ_time,
+					'raidplan_duration'		=> (int) $raidplan_duration,
+					'week_index'			=> (int) $raidplan_week_index,
+					'first_day_of_week'		=> (int) $raidplan_data['first_day_of_week'],
 					'last_calc_time'		=> (int) 0,
-					'next_calc_time'		=> (int) $event_data['event_start_time'],
-					'event_subject'			=> (string) $event_data['event_subject'],
-					'event_body'			=> (string) $event_data['event_body'],
-					'poster_id'				=> (int) $event_data['poster_id'],
+					'next_calc_time'		=> (int) $raidplan_data['raidplan_start_time'],
+					'raidplan_subject'			=> (string) $raidplan_data['raidplan_subject'],
+					'raidplan_body'			=> (string) $raidplan_data['raidplan_body'],
+					'poster_id'				=> (int) $raidplan_data['poster_id'],
 					'poster_timezone'		=> (int) $poster_timezone,
 					'poster_dst'			=> (int) $poster_dst,
-					'event_access_level'	=> (int) $event_data['event_access_level'],
-					'group_id'				=> (int) $event_data['group_id'],
-					'group_id_list'			=> (string) $event_data['group_id_list'],
+					'raidplan_access_level'	=> (int) $raidplan_data['raidplan_access_level'],
+					'group_id'				=> (int) $raidplan_data['group_id'],
+					'group_id_list'			=> (string) $raidplan_data['group_id_list'],
 					'bbcode_uid'			=> (string) $uid,
 					'bbcode_bitfield'		=> (string) $bitfield,
 					'enable_bbcode'			=> (int) $allow_bbcode,
 					'enable_magic_url'		=> (int) $allow_urls,
 					'enable_smilies'		=> (int) $allow_smilies,
-					'track_signups'			=> (int) $event_data['track_signups'],
+					'track_signups'			=> (int) $raidplan_data['track_signups'],
 					
 					)
 				);
 			$db->sql_query($sql);
 			$recurr_id = $db->sql_nextid();
 	
-			$event_id = $newraid->populate_calendar( $recurr_id );
+			$raidplan_id = $newraid->populate_calendar( $recurr_id );
 	
 		}
 		/*----------------------------------------------------
@@ -243,37 +243,37 @@ class raidplanner_population extends raidplanner_base
 
 			// insert raid
 			$data = array(
-					'etype_id'				=> (int) $event_data['etype_id'],
-					'sort_timestamp'		=> (int) $event_data['event_start_time'],
-					'event_start_time'		=> (int) $event_data['event_start_time'],
-					'event_day'				=> (string) $event_data['event_day'],
-					'event_subject'			=> (string) $event_data['event_subject'],
-					'event_body'			=> (string) $event_data['event_body'],
-					'poster_id'				=> (int) $event_data['poster_id'],
-					'event_access_level'	=> (int) $event_data['event_access_level'],
-					'group_id'				=> (int) $event_data['group_id'],
-					'group_id_list'			=> (string) $event_data['group_id_list'],
+					'etype_id'				=> (int) $raidplan_data['etype_id'],
+					'sort_timestamp'		=> (int) $raidplan_data['raidplan_start_time'],
+					'raidplan_start_time'		=> (int) $raidplan_data['raidplan_start_time'],
+					'raidplan_day'				=> (string) $raidplan_data['raidplan_day'],
+					'raidplan_subject'			=> (string) $raidplan_data['raidplan_subject'],
+					'raidplan_body'			=> (string) $raidplan_data['raidplan_body'],
+					'poster_id'				=> (int) $raidplan_data['poster_id'],
+					'raidplan_access_level'	=> (int) $raidplan_data['raidplan_access_level'],
+					'group_id'				=> (int) $raidplan_data['group_id'],
+					'group_id_list'			=> (string) $raidplan_data['group_id_list'],
 					'bbcode_uid'			=> (string) $uid,
 					'bbcode_bitfield'		=> (string) $bitfield,
 					'enable_bbcode'			=> (int) $allow_bbcode,
 					'enable_magic_url'		=> (int) $allow_urls,
 					'enable_smilies'		=> (int) $allow_smilies,
-					'track_signups'			=> (int) $event_data['track_signups'],
+					'track_signups'			=> (int) $raidplan_data['track_signups'],
 					'recurr_id'				=> (int) $recurr_id,
 			);
 			
 			
 			$sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', $data  );
 			$db->sql_query($sql);
-			$event_id = $db->sql_nextid();
+			$raidplan_id = $db->sql_nextid();
 			
 			unset($data);
 			$data = array();
 			// populate roles needed for this raid
-			foreach($event_data['roles_needed'] as $key => $slots)
+			foreach($raidplan_data['roles_needed'] as $key => $slots)
 			{
 				$data[] = array(
-					'event_id' 		=> $event_id,
+					'raidplan_id' 		=> $raidplan_id,
 					'role_id'		=> $key,
 					'role_needed'	=> $slots,
 				);
@@ -283,7 +283,7 @@ class raidplanner_population extends raidplanner_base
 		}
 		
 		// notify
-		$this->calendar_notify_new_event( $event_id );
+		$this->calendar_notify_new_raidplan( $raidplan_id );
 	
 		
 		
@@ -292,40 +292,40 @@ class raidplanner_population extends raidplanner_base
 
 	
 	/*
-	 * Edits an event
+	 * Edits an raidplan
 	 * 
-	 * @param byref : &event_data 
-	 * @param byval : $newraid, $event_id
+	 * @param byref : &raidplan_data 
+	 * @param byval : $newraid, $raidplan_id
 	 */
-	public function edit_event(&$event_data, $newraid, $event_id, $s_date_time_opts)
+	public function edit_raidplan(&$raidplan_data, $newraid, $raidplan_id, $s_date_time_opts)
 	{
 		global $db;
 		
 		$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
-		generate_text_for_storage($event_data['event_body'], $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+		generate_text_for_storage($raidplan_data['raidplan_body'], $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
 		
 		/*---------------------------------------------
 		   EDIT
 		---------------------------------------------*/
-		if( $event_id > 0 )
+		if( $raidplan_id > 0 )
 		{
-			// we are only editing the one event
+			// we are only editing the one raidplan
 			if($s_date_time_opts )
 			{
 				// update schedule table
 				$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
 					SET ' . $db->sql_build_array('UPDATE', array(
-						'etype_id'				=> (int) $event_data['etype_id'],
-						'sort_timestamp'		=> (int) $event_data['event_start_time'],
-						'event_start_time'		=> (int) $event_data['event_start_time'],
-						'event_day'				=> (string) $event_data['event_day'],
-						'event_subject'			=> (string) $event_data['event_subject'],
-						'event_body'			=> (string) $event_data['event_body'],
-						'poster_id'				=> (int) $event_data['poster_id'],
-						'event_access_level'	=> (int) $event_data['event_access_level'],
-						'group_id'				=> (int) $event_data['group_id'],
-						'group_id_list'			=> (string) $event_data['group_id_list'],
+						'etype_id'				=> (int) $raidplan_data['etype_id'],
+						'sort_timestamp'		=> (int) $raidplan_data['raidplan_start_time'],
+						'raidplan_start_time'		=> (int) $raidplan_data['raidplan_start_time'],
+						'raidplan_day'				=> (string) $raidplan_data['raidplan_day'],
+						'raidplan_subject'			=> (string) $raidplan_data['raidplan_subject'],
+						'raidplan_body'			=> (string) $raidplan_data['raidplan_body'],
+						'poster_id'				=> (int) $raidplan_data['poster_id'],
+						'raidplan_access_level'	=> (int) $raidplan_data['raidplan_access_level'],
+						'group_id'				=> (int) $raidplan_data['group_id'],
+						'group_id_list'			=> (string) $raidplan_data['group_id_list'],
 						'bbcode_uid'			=> (string) $uid,
 						'bbcode_bitfield'		=> (string) $bitfield,
 						'enable_bbcode'			=> $allow_bbcode,
@@ -334,39 +334,39 @@ class raidplanner_population extends raidplanner_base
 						
 						
 						)) . "
-					WHERE event_id = $event_id";
+					WHERE raidplan_id = $raidplan_id";
 				$db->sql_query($sql);
 				
 				// delete old roles
-				$sql = 'delete from ' . RP_EVENTROLES . ' where event_id  = ' .  $event_id ; 
+				$sql = 'delete from ' . RP_EVENTROLES . ' where raidplan_id  = ' .  $raidplan_id ; 
 				$db->sql_query($sql);
 				
 				unset($data);
 				$data = array();
 				// populate new roles
-				foreach($event_data['roles_needed'] as $key => $slots)
+				foreach($raidplan_data['roles_needed'] as $key => $slots)
 				{
 					$data[] = array(
-						'event_id' 		=> $event_id,
+						'raidplan_id' 		=> $raidplan_id,
 						'role_id'		=> $key,
 						'role_needed'	=> $slots,
 					);
 				}
 				$db->sql_multi_insert(RP_EVENTROLES, $data);
 			}
-			// we are editing all occurrences of this event...
+			// we are editing all occurrences of this raidplan...
 			else
 			{
-				$recurr_id = $event_data['recurr_id'];
-				//start by updating the recurring events table
+				$recurr_id = $raidplan_data['recurr_id'];
+				//start by updating the recurring raidplans table
 				$sql = 'UPDATE ' . RP_RECURRING . '
 					SET ' . $db->sql_build_array('UPDATE', array(
-						'etype_id'				=> (int) $event_data['etype_id'],
-						'event_subject'			=> (string) $event_data['event_subject'],
-						'event_body'			=> (string) $event_data['event_body'],
-						'event_access_level'	=> (int) $event_data['event_access_level'],
-						'group_id'				=> (int) $event_data['group_id'],
-						'group_id_list'			=> (string) $event_data['group_id_list'],
+						'etype_id'				=> (int) $raidplan_data['etype_id'],
+						'raidplan_subject'			=> (string) $raidplan_data['raidplan_subject'],
+						'raidplan_body'			=> (string) $raidplan_data['raidplan_body'],
+						'raidplan_access_level'	=> (int) $raidplan_data['raidplan_access_level'],
+						'group_id'				=> (int) $raidplan_data['group_id'],
+						'group_id_list'			=> (string) $raidplan_data['group_id_list'],
 						'enable_bbcode'			=> (int) $allow_bbcode,
 						'enable_smilies'		=> (int) $allow_smilies,
 						'enable_magic_url'		=> (int) $allow_urls,
@@ -378,15 +378,15 @@ class raidplanner_population extends raidplanner_base
 					WHERE recurr_id = $recurr_id";
 				$db->sql_query($sql);
 		
-				// now update all events of this occurence id
+				// now update all raidplans of this occurence id
 				$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
 					SET ' . $db->sql_build_array('UPDATE', array(
-						'etype_id'				=> (int) $event_data['etype_id'],
-						'event_subject'			=> (string) $event_data['event_subject'],
-						'event_body'			=> (string) $event_data['event_body'],
-						'event_access_level'	=> (int) $event_data['event_access_level'],
-						'group_id'				=> (int) $event_data['group_id'],
-						'group_id_list'			=> (string) $event_data['group_id_list'],
+						'etype_id'				=> (int) $raidplan_data['etype_id'],
+						'raidplan_subject'			=> (string) $raidplan_data['raidplan_subject'],
+						'raidplan_body'			=> (string) $raidplan_data['raidplan_body'],
+						'raidplan_access_level'	=> (int) $raidplan_data['raidplan_access_level'],
+						'group_id'				=> (int) $raidplan_data['group_id'],
+						'group_id_list'			=> (string) $raidplan_data['group_id_list'],
 						'bbcode_uid'			=> (string) $uid,
 						'bbcode_bitfield'		=> (string) $bitfield,
 						'enable_bbcode'			=> (int) $allow_bbcode,
@@ -400,25 +400,25 @@ class raidplanner_population extends raidplanner_base
 			}
 			
 			$raidplanner= new displayplanner;
-			$raidplanner->calendar_add_or_update_reply($event_id, false );
+			$raidplanner->calendar_add_or_update_reply($raidplan_id, false );
 			
 		}
 		
 	}
 	
 
-/* calendar_notify_new_event()
+/* calendar_notify_new_raidplan()
 	**
-	** send email to users who are watching the calendar of the new event
-	** (if the event is one the user has permission to see).
+	** send email to users who are watching the calendar of the new raidplan
+	** (if the raidplan is one the user has permission to see).
 	**
 	** INPUT
-	**   $event_id - the id of the newly created event
+	**   $raidplan_id - the id of the newly created raidplan
 	** OUTPUT
 	* 
 	**   
 	*/
-	public function calendar_notify_new_event( $event_id )
+	public function calendar_notify_new_raidplan( $raidplan_id )
 	{
 		global $auth, $db, $user, $config;
 		global $phpEx, $phpbb_root_path;
@@ -428,19 +428,19 @@ class raidplanner_population extends raidplanner_base
 		$user_id = $user->data['user_id'];
 		$user_notify = $user->data['user_notify'];
 	
-		$event_data = array();
-		$raidevents = new raidevents;
-		$raidevents->get_event_data( $event_id, $event_data );
+		$raidplan_data = array();
+		$raidplans = new raidplans;
+		$raidplans->get_raidplan_data( $raidplan_id, $raidplan_data );
 
-		switch ($event_data['event_access_level']) 
+		switch ($raidplan_data['raidplan_access_level']) 
 		{
 		    case 0:
-			   /* don't worry about notifications for private events
-			   (ie event_data['event_access_level'] == 0) */
+			   /* don't worry about notifications for private raidplans
+			   (ie raidplan_data['raidplan_access_level'] == 0) */
 				return;
 		        break;
 		    case 1:
-				// group event
+				// group raidplan
 				$sql_array = array(
 				    'SELECT'    => 'w.*, u.username, u.username_clean, u.user_email, u.user_notify_type, u.user_jabber, u.user_lang  ', 
 				 
@@ -455,20 +455,20 @@ class raidplanner_population extends raidplanner_base
 				    				AND u.user_id = ug.user_id AND g.group_id = ug.group_id ',
 				);
 				
-				if( $event_data['group_id'] != 0)
+				if( $raidplan_data['group_id'] != 0)
 				{
-					$sql_array['WHERE'] .= " AND ( g.group_id = ". $event_data['group_id'].") ";
+					$sql_array['WHERE'] .= " AND ( g.group_id = ". $raidplan_data['group_id'].") ";
 				}
 				
-				elseif ($event_data['group_id_list'] )
+				elseif ($raidplan_data['group_id_list'] )
 				{
-					$group_list = explode( ',', $event_data['group_id_list'] );
+					$group_list = explode( ',', $raidplan_data['group_id_list'] );
 					$sql_array['WHERE'] .= ' AND ' . $db->sql_in_set('g.group_id', $group_list);
 				}
 		        
 		        break;
 		    case 2:
-				// public event
+				// public raidplan
 				$sql_array = array(
 				    'SELECT'    => 'w.*, u.username, u.username_clean, u.user_email, u.user_notify_type, u.user_jabber, u.user_lang  ', 
 				 
@@ -503,19 +503,19 @@ class raidplanner_population extends raidplanner_base
 			{
 				// track the list of users we've notified, so we only send the email once
 				// this should only be an issue if the user is a member of multiple groups
-				// that were all invited to the same event, but still it should be avoided.
+				// that were all invited to the same raidplan, but still it should be avoided.
 				$notified_users[$notify_user_index] = $row['user_id'];
 				$notify_user_index++;
 
-				$messenger->template('calendar_new_event', $row['user_lang']);
+				$messenger->template('calendar_new_raidplan', $row['user_lang']);
 				$messenger->to($row['user_email'], $row['username']);
 				$messenger->im($row['user_jabber'], $row['username']);
 				$messenger->assign_vars(array(
 					'USERNAME'			=> htmlspecialchars_decode($row['username']),
-					'EVENT_SUBJECT'		=> $event_data['event_subject'],
+					'EVENT_SUBJECT'		=> $raidplan_data['raidplan_subject'],
 					'U_CALENDAR'		=> generate_board_url() . "/planner.$phpEx",
 					'U_UNWATCH_CALENDAR'=> generate_board_url() . "/planner.$phpEx?calWatch=0",
-					'U_EVENT'			=> generate_board_url() . "/planner.$phpEx?view=event&calEid=$event_id", )
+					'U_RAIDPLAN'			=> generate_board_url() . "/planner.$phpEx?view=raidplan&calEid=$raidplan_id", )
 				);
 
 				$messenger->send($row['user_notify_type']);
@@ -658,17 +658,17 @@ class raidplanner_population extends raidplanner_base
 		
 	
 	/**
-	* Do the various checks required for removing event as well as removing it
+	* Do the various checks required for removing raidplan as well as removing it
 	* Note the caller of this function must make sure that the user has
-	* permission to delete the event before calling this function
+	* permission to delete the raidplan before calling this function
 	*/
-	public function handle_event_delete($event_id, &$event_data)
+	public function handle_raidplan_delete($raidplan_id, &$raidplan_data)
 	{
 		global $user, $db, $auth, $date;
 		global $phpbb_root_path, $phpEx;
 	
 		$s_hidden_fields = build_hidden_fields(array(
-				'calEid'=> $event_id,
+				'calEid'=> $raidplan_id,
 				'mode'	=> 'delete',
 				'calEType' => request_var('calEType', 0),
 				)
@@ -677,16 +677,16 @@ class raidplanner_population extends raidplanner_base
 	
 		if (confirm_box(true))
 		{
-			// delete all the signups for this event before deleting the event
-			$sql = 'DELETE FROM ' . RP_SIGNUPS . ' WHERE event_id = ' .$db->sql_escape($event_id);
+			// delete all the signups for this raidplan before deleting the raidplan
+			$sql = 'DELETE FROM ' . RP_SIGNUPS . ' WHERE raidplan_id = ' .$db->sql_escape($raidplan_id);
 			$db->sql_query($sql);
 	
-			$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE event_id = ' .$db->sql_escape($event_id);
+			$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE raidplan_id = ' .$db->sql_escape($raidplan_id);
 			$db->sql_query($sql);
 	
-			// Delete event
+			// Delete raidplan
 			$sql = 'DELETE FROM ' . RP_RAIDS_TABLE . '
-					WHERE event_id = '.$db->sql_escape($event_id);
+					WHERE raidplan_id = '.$db->sql_escape($raidplan_id);
 			$db->sql_query($sql);
 	
 			$etype_url_opts = $this->get_etype_url_opts();
@@ -699,31 +699,31 @@ class raidplanner_population extends raidplanner_base
 		}
 		else
 		{
-			confirm_box(false, $user->lang['DELETE_EVENT'], $s_hidden_fields);
+			confirm_box(false, $user->lang['DELETE_RAIDPLAN'], $s_hidden_fields);
 		}
 	}
 	
 	
 	
 	/**
-	* Do the various checks required for removing event as well as removing it
+	* Do the various checks required for removing raidplan as well as removing it
 	* Note the caller of this function must make sure that the user has
-	* permission to delete the event before calling this function
+	* permission to delete the raidplan before calling this function
 	*/
-	function handle_event_delete_all($event_id, &$event_data)
+	function handle_raidplan_delete_all($raidplan_id, &$raidplan_data)
 	{
 		global $user, $db, $auth, $date;
 		global $phpbb_root_path, $phpEx;
 	
 	
-		if( $event_data['recurr_id'] == 0 )
+		if( $raidplan_data['recurr_id'] == 0 )
 		{
-			handle_event_delete($event_id, $event_data);
+			handle_raidplan_delete($raidplan_id, $raidplan_data);
 		}
 		else
 		{
 			$s_hidden_fields = build_hidden_fields(array(
-					'calEid'	=> $event_id,
+					'calEid'	=> $raidplan_id,
 					'mode'		=> 'delete',
 					'calDelAll'	=> 1,
 					'calEType' => request_var('calEType', 0),
@@ -732,30 +732,30 @@ class raidplanner_population extends raidplanner_base
 	
 			if (confirm_box(true))
 			{
-				// find all of the events in this recurring event string so we can delete their signups
-				$sql = 'SELECT event_id FROM ' . RP_RAIDS_TABLE . '
-							WHERE recurr_id = '. $event_data['recurr_id'];
+				// find all of the raidplans in this recurring raidplan string so we can delete their signups
+				$sql = 'SELECT raidplan_id FROM ' . RP_RAIDS_TABLE . '
+							WHERE recurr_id = '. $raidplan_data['recurr_id'];
 				$result = $db->sql_query($sql);
 	
-				// delete all the signups for this event before deleting the event
+				// delete all the signups for this raidplan before deleting the raidplan
 				while ($row = $db->sql_fetchrow($result))
 				{
-					$sql = 'DELETE FROM ' . RP_SIGNUPS . ' WHERE event_id = ' .$db->sql_escape($row['event_id']);
+					$sql = 'DELETE FROM ' . RP_SIGNUPS . ' WHERE raidplan_id = ' .$db->sql_escape($row['raidplan_id']);
 					$db->sql_query($sql);
 	
-					$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE event_id = ' .$db->sql_escape($row['event_id']);
+					$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE raidplan_id = ' .$db->sql_escape($row['raidplan_id']);
 					$db->sql_query($sql);
 				}
 				$db->sql_freeresult($result);
 	
-				// delete the recurring event
+				// delete the recurring raidplan
 				$sql = 'DELETE FROM ' . RP_RECURRING . '
-						WHERE recurr_id = '.$db->sql_escape($event_data['recurr_id']);
+						WHERE recurr_id = '.$db->sql_escape($raidplan_data['recurr_id']);
 				$db->sql_query($sql);
 	
-				// finally delete all of the events
+				// finally delete all of the raidplans
 				$sql = 'DELETE FROM ' . RP_RAIDS_TABLE . '
-						WHERE recurr_id = '.$db->sql_escape($event_data['recurr_id']);
+						WHERE recurr_id = '.$db->sql_escape($raidplan_data['recurr_id']);
 				$db->sql_query($sql);
 	
 				$etype_url_opts = $this->get_etype_url_opts();
@@ -857,23 +857,23 @@ class raidplanner_population extends raidplanner_base
 	
 	/* populate_calendar()
 	**
-	** Populates occurrences of recurring events in the calendar
+	** Populates occurrences of recurring raidplans in the calendar
 	**
 	** INPUT
 	**   $recurr_id_to_pop - if this is 0, then we are running a
 	**       cron job, and need to populate occurrences of all
-	**       recurring events - up till the end population limit
+	**       recurring raidplans - up till the end population limit
 	**
 	**       If this is non-zero, then it is the id of a newly
-	**       created recurring event, and we need to populate
-	**       all of the instances of this event immediately up to
+	**       created recurring raidplan, and we need to populate
+	**       all of the instances of this raidplan immediately up to
 	**       the end population limit, and if its first occurrence
 	**       is way into the future (past the population limit)
 	**       populate at least one occurrence anyway, so the
-	**       user has at least one event to view now.
+	**       user has at least one raidplan to view now.
 	**
 	** RETURNS
-	**   the first populated event_id (if $recurr_id_to_pop was > 0 )
+	**   the first populated raidplan_id (if $recurr_id_to_pop was > 0 )
 	*/
 	function populate_calendar( $recurr_id_to_pop = 0 )
 	{
@@ -887,11 +887,11 @@ class raidplanner_population extends raidplanner_base
 	    	$cache->destroy('config');
 		}
 	
-		// create events that occur between now and $populate_limit seconds.
+		// create raidplans that occur between now and $populate_limit seconds.
 		$end_populate_limit = time() + $populate_limit;
 	
 		$first_pop = 0;
-		$first_pop_event_id = 0;
+		$first_pop_raidplan_id = 0;
 		if( $recurr_id_to_pop > 0 )
 		{
 			$sql = 'SELECT * FROM ' . RP_RECURRING . '
@@ -899,7 +899,7 @@ class raidplanner_population extends raidplanner_base
 		}
 		else
 		{
-			// find all day events that need new events occurrences
+			// find all day raidplans that need new raidplans occurrences
 			$sql = 'SELECT * FROM ' . RP_RECURRING . '
 					WHERE ( (last_calc_time = 0) OR
 							((next_calc_time < '. $end_populate_limit .') AND
@@ -923,9 +923,9 @@ class raidplanner_population extends raidplanner_base
 					    $first_pop = ($row['last_calc_time'] == 0) ?  1: 0;
 					    $row['last_calc_time'] = $row['next_calc_time'];
 	
-					    // convert to poster's time - if not all day event
+					    // convert to poster's time - if not all day raidplan
 					    $poster_start_time = $row['next_calc_time'];
-					    if( $row['event_all_day'] == 0 )
+					    if( $row['raidplan_all_day'] == 0 )
 					    {
 					    	$poster_start_time = $row['next_calc_time'] + (($row['poster_timezone'] + $row['poster_dst'])*3600);
 					    }
@@ -935,38 +935,38 @@ class raidplanner_population extends raidplanner_base
 					    $start_hour = gmdate('G',$poster_start_time);
 					    $start_minute = gmdate('i',$poster_start_time);
 					    $poster_new_start_time = gmmktime($start_hour, $start_minute, 0, $start_month, $start_day, ($start_year+$row['frequency']));
-					    // convert back to poster's time - if not all day event
-					    if( $row['event_all_day'] == 0 )
+					    // convert back to poster's time - if not all day raidplan
+					    if( $row['raidplan_all_day'] == 0 )
 					    {
 					    	$poster_new_start_time = $poster_new_start_time - (($row['poster_timezone'] + $row['poster_dst'])*3600);
 					    }
 	
 					    $row['next_calc_time'] = $poster_new_start_time;
 	
-					    $r_event_all_day = $row['event_all_day'];
-					    $r_event_day = "";
+					    $r_raidplan_all_day = $row['raidplan_all_day'];
+					    $r_raidplan_day = "";
 					    $r_sort_timestamp = $row['last_calc_time'];
-					    $r_event_start = $row['last_calc_time'];
-					    $r_event_end = $row['last_calc_time'] + $row['event_duration'];
+					    $r_raidplan_start = $row['last_calc_time'];
+					    $r_raidplan_end = $row['last_calc_time'] + $row['raidplan_duration'];
 	
-					    if( $r_event_all_day == 1 )
+					    if( $r_raidplan_all_day == 1 )
 					    {
-					    	$r_event_start = 0;
-					    	$r_event_end = 0;
-							$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
+					    	$r_raidplan_start = 0;
+					    	$r_raidplan_end = 0;
+							$r_raidplan_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 					    }
 	
 					    $sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 								'etype_id'				=> (int) $row['etype_id'],
 								'sort_timestamp'		=> (int) $r_sort_timestamp,
-								'event_start_time'		=> (int) $r_event_start,
-								'event_end_time'		=> (int) $r_event_end,
-								'event_all_day'			=> (int) $r_event_all_day,
-								'event_day'				=> (string) $r_event_day,
-								'event_subject'			=> (string) $row['event_subject'],
-								'event_body'			=> (string) $row['event_body'],
+								'raidplan_start_time'		=> (int) $r_raidplan_start,
+								'raidplan_end_time'		=> (int) $r_raidplan_end,
+								'raidplan_all_day'			=> (int) $r_raidplan_all_day,
+								'raidplan_day'				=> (string) $r_raidplan_day,
+								'raidplan_subject'			=> (string) $row['raidplan_subject'],
+								'raidplan_body'			=> (string) $row['raidplan_body'],
 								'poster_id'				=> (int) $row['poster_id'],
-								'event_access_level'	=> (int) $row['event_access_level'],
+								'raidplan_access_level'	=> (int) $row['raidplan_access_level'],
 								'group_id'				=> (int) $row['group_id'],
 								'bbcode_uid'			=> (string) $row['bbcode_uid'],
 								'bbcode_bitfield'		=> (string) $row['bbcode_bitfield'],
@@ -981,7 +981,7 @@ class raidplanner_population extends raidplanner_base
 						$db->sql_query($sql);
 						if( $first_pop == 1 )
 						{
-							$first_pop_event_id = $db->sql_nextid();
+							$first_pop_raidplan_id = $db->sql_nextid();
 						}
 					}
 					break;
@@ -992,9 +992,9 @@ class raidplanner_population extends raidplanner_base
 					    $first_pop = ($row['last_calc_time'] == 0) ?  1: 0;
 					    $row['last_calc_time'] = $row['next_calc_time'];
 	
-					    // convert to poster's time - if not all day event
+					    // convert to poster's time - if not all day raidplan
 					    $poster_start_time = $row['next_calc_time'];
-					    if( $row['event_all_day'] == 0 )
+					    if( $row['raidplan_all_day'] == 0 )
 					    {
 					    	$poster_start_time = $row['next_calc_time'] + (($row['poster_timezone'] + $row['poster_dst'])*3600);
 					    }
@@ -1012,37 +1012,37 @@ class raidplanner_population extends raidplanner_base
 					    $start_minute = gmdate('i',$poster_start_time);
 					    $poster_new_start_time = gmmktime($start_hour, $start_minute, 0, $start_month, $start_day, $start_year);
 	
-					    // convert back to poster's time - if not all day event
-					    if( $row['event_all_day'] == 0 )
+					    // convert back to poster's time - if not all day raidplan
+					    if( $row['raidplan_all_day'] == 0 )
 					    {
 					    	$poster_new_start_time = $poster_new_start_time - (($row['poster_timezone'] + $row['poster_dst'])*3600);
 					    }
 	
 					    $row['next_calc_time'] = $poster_new_start_time;
 	
-					    $r_event_all_day = $row['event_all_day'];
-					    $r_event_day = "";
+					    $r_raidplan_all_day = $row['raidplan_all_day'];
+					    $r_raidplan_day = "";
 					    $r_sort_timestamp = $row['last_calc_time'];
-					    $r_event_start = $row['last_calc_time'];
-					    $r_event_end = $row['last_calc_time'] + $row['event_duration'];
-					    if( $r_event_all_day == 1 )
+					    $r_raidplan_start = $row['last_calc_time'];
+					    $r_raidplan_end = $row['last_calc_time'] + $row['raidplan_duration'];
+					    if( $r_raidplan_all_day == 1 )
 					    {
-					    	$r_event_start = 0;
-					    	$r_event_end = 0;
-							$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
+					    	$r_raidplan_start = 0;
+					    	$r_raidplan_end = 0;
+							$r_raidplan_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 					    }
 	
 					    $sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 								'etype_id'				=> (int) $row['etype_id'],
 								'sort_timestamp'		=> (int) $r_sort_timestamp,
-								'event_start_time'		=> (int) $r_event_start,
-								'event_end_time'		=> (int) $r_event_end,
-								'event_all_day'			=> (int) $r_event_all_day,
-								'event_day'				=> (string) $r_event_day,
-								'event_subject'			=> (string) $row['event_subject'],
-								'event_body'			=> (string) $row['event_body'],
+								'raidplan_start_time'		=> (int) $r_raidplan_start,
+								'raidplan_end_time'		=> (int) $r_raidplan_end,
+								'raidplan_all_day'			=> (int) $r_raidplan_all_day,
+								'raidplan_day'				=> (string) $r_raidplan_day,
+								'raidplan_subject'			=> (string) $row['raidplan_subject'],
+								'raidplan_body'			=> (string) $row['raidplan_body'],
 								'poster_id'				=> (int) $row['poster_id'],
-								'event_access_level'	=> (int) $row['event_access_level'],
+								'raidplan_access_level'	=> (int) $row['raidplan_access_level'],
 								'group_id'				=> (int) $row['group_id'],
 								'bbcode_uid'			=> (string) $row['bbcode_uid'],
 								'bbcode_bitfield'		=> (string) $row['bbcode_bitfield'],
@@ -1057,7 +1057,7 @@ class raidplanner_population extends raidplanner_base
 						$db->sql_query($sql);
 						if( $first_pop == 1 )
 						{
-							$first_pop_event_id = $db->sql_nextid();
+							$first_pop_raidplan_id = $db->sql_nextid();
 						}
 					}
 					break;
@@ -1069,9 +1069,9 @@ class raidplanner_population extends raidplanner_base
 					    $first_pop = ($row['last_calc_time'] == 0) ?  1: 0;
 					    $row['last_calc_time'] = $row['next_calc_time'];
 	
-					    // convert to poster's time - if not all day event
+					    // convert to poster's time - if not all day raidplan
 					    $poster_start_time = $row['next_calc_time'];
-					    if( $row['event_all_day'] == 0 )
+					    if( $row['raidplan_all_day'] == 0 )
 					    {
 					    	$poster_start_time = $row['next_calc_time'] + (($row['poster_timezone'] + $row['poster_dst'])*3600);
 					    }
@@ -1095,37 +1095,37 @@ class raidplanner_population extends raidplanner_base
 					    	$start_year = $start_year + 1;
 					    }
 					    $poster_new_start_time = gmmktime($start_hour, $start_minute, 0, $start_month, $start_day, $start_year);
-					    // convert back to poster's time - if not all day event
-					    if( $row['event_all_day'] == 0 )
+					    // convert back to poster's time - if not all day raidplan
+					    if( $row['raidplan_all_day'] == 0 )
 					    {
 					    	$poster_new_start_time = $poster_new_start_time - (($row['poster_timezone'] + $row['poster_dst'])*3600);
 					    }
 	
 					    $row['next_calc_time'] = $poster_new_start_time;
 	
-					    $r_event_all_day = $row['event_all_day'];
-					    $r_event_day = "";
+					    $r_raidplan_all_day = $row['raidplan_all_day'];
+					    $r_raidplan_day = "";
 					    $r_sort_timestamp = $row['last_calc_time'];
-					    $r_event_start = $row['last_calc_time'];
-					    $r_event_end = $row['last_calc_time'] + $row['event_duration'];
-					    if( $r_event_all_day == 1 )
+					    $r_raidplan_start = $row['last_calc_time'];
+					    $r_raidplan_end = $row['last_calc_time'] + $row['raidplan_duration'];
+					    if( $r_raidplan_all_day == 1 )
 					    {
-					    	$r_event_start = 0;
-					    	$r_event_end = 0;
-							$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
+					    	$r_raidplan_start = 0;
+					    	$r_raidplan_end = 0;
+							$r_raidplan_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 					    }
 	
 					    $sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 								'etype_id'				=> (int) $row['etype_id'],
 								'sort_timestamp'		=> (int) $r_sort_timestamp,
-								'event_start_time'		=> (int) $r_event_start,
-								'event_end_time'		=> (int) $r_event_end,
-								'event_all_day'			=> (int) $r_event_all_day,
-								'event_day'				=> (string) $r_event_day,
-								'event_subject'			=> (string) $row['event_subject'],
-								'event_body'			=> (string) $row['event_body'],
+								'raidplan_start_time'		=> (int) $r_raidplan_start,
+								'raidplan_end_time'		=> (int) $r_raidplan_end,
+								'raidplan_all_day'			=> (int) $r_raidplan_all_day,
+								'raidplan_day'				=> (string) $r_raidplan_day,
+								'raidplan_subject'			=> (string) $row['raidplan_subject'],
+								'raidplan_body'			=> (string) $row['raidplan_body'],
 								'poster_id'				=> (int) $row['poster_id'],
-								'event_access_level'	=> (int) $row['event_access_level'],
+								'raidplan_access_level'	=> (int) $row['raidplan_access_level'],
 								'group_id'				=> (int) $row['group_id'],
 								'bbcode_uid'			=> (string) $row['bbcode_uid'],
 								'bbcode_bitfield'		=> (string) $row['bbcode_bitfield'],
@@ -1140,7 +1140,7 @@ class raidplanner_population extends raidplanner_base
 						$db->sql_query($sql);
 						if( $first_pop == 1 )
 						{
-							$first_pop_event_id = $db->sql_nextid();
+							$first_pop_raidplan_id = $db->sql_nextid();
 						}
 					}
 					break;
@@ -1151,9 +1151,9 @@ class raidplanner_population extends raidplanner_base
 					    $first_pop = ($row['last_calc_time'] == 0) ?  1: 0;
 					    $row['last_calc_time'] = $row['next_calc_time'];
 	
-					    // convert to poster's time - if not all day event
+					    // convert to poster's time - if not all day raidplan
 					    $poster_start_time = $row['next_calc_time'];
-					    if( $row['event_all_day'] == 0 )
+					    if( $row['raidplan_all_day'] == 0 )
 					    {
 					    	$poster_start_time = $row['next_calc_time'] + (($row['poster_timezone'] + $row['poster_dst'])*3600);
 					    }
@@ -1183,37 +1183,37 @@ class raidplanner_population extends raidplanner_base
 					    $start_minute = gmdate('i',$poster_start_time);
 					    $poster_new_start_time = gmmktime($start_hour, $start_minute, 0, $start_month, $start_day, $start_year);
 	
-					    // convert back to poster's time - if not all day event
-					    if( $row['event_all_day'] == 0 )
+					    // convert back to poster's time - if not all day raidplan
+					    if( $row['raidplan_all_day'] == 0 )
 					    {
 					    	$poster_new_start_time = $poster_new_start_time - (($row['poster_timezone'] + $row['poster_dst'])*3600);
 					    }
 	
 					    $row['next_calc_time'] = $poster_new_start_time;
 	
-					    $r_event_all_day = $row['event_all_day'];
-					    $r_event_day = "";
+					    $r_raidplan_all_day = $row['raidplan_all_day'];
+					    $r_raidplan_day = "";
 					    $r_sort_timestamp = $row['last_calc_time'];
-					    $r_event_start = $row['last_calc_time'];
-					    $r_event_end = $row['last_calc_time'] + $row['event_duration'];
-					    if( $r_event_all_day == 1 )
+					    $r_raidplan_start = $row['last_calc_time'];
+					    $r_raidplan_end = $row['last_calc_time'] + $row['raidplan_duration'];
+					    if( $r_raidplan_all_day == 1 )
 					    {
-					    	$r_event_start = 0;
-					    	$r_event_end = 0;
-							$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
+					    	$r_raidplan_start = 0;
+					    	$r_raidplan_end = 0;
+							$r_raidplan_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 					    }
 	
 					    $sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 								'etype_id'				=> (int) $row['etype_id'],
 								'sort_timestamp'		=> (int) $r_sort_timestamp,
-								'event_start_time'		=> (int) $r_event_start,
-								'event_end_time'		=> (int) $r_event_end,
-								'event_all_day'			=> (int) $r_event_all_day,
-								'event_day'				=> (string) $r_event_day,
-								'event_subject'			=> (string) $row['event_subject'],
-								'event_body'			=> (string) $row['event_body'],
+								'raidplan_start_time'		=> (int) $r_raidplan_start,
+								'raidplan_end_time'		=> (int) $r_raidplan_end,
+								'raidplan_all_day'			=> (int) $r_raidplan_all_day,
+								'raidplan_day'				=> (string) $r_raidplan_day,
+								'raidplan_subject'			=> (string) $row['raidplan_subject'],
+								'raidplan_body'			=> (string) $row['raidplan_body'],
 								'poster_id'				=> (int) $row['poster_id'],
-								'event_access_level'	=> (int) $row['event_access_level'],
+								'raidplan_access_level'	=> (int) $row['raidplan_access_level'],
 								'group_id'				=> (int) $row['group_id'],
 								'bbcode_uid'			=> (string) $row['bbcode_uid'],
 								'bbcode_bitfield'		=> (string) $row['bbcode_bitfield'],
@@ -1228,7 +1228,7 @@ class raidplanner_population extends raidplanner_base
 						$db->sql_query($sql);
 						if( $first_pop == 1 )
 						{
-							$first_pop_event_id = $db->sql_nextid();
+							$first_pop_raidplan_id = $db->sql_nextid();
 						}
 					}
 					break;
@@ -1241,29 +1241,29 @@ class raidplanner_population extends raidplanner_base
 					    $row['last_calc_time'] = $row['next_calc_time'];
 					    $row['next_calc_time'] = $row['next_calc_time'] + ($row['frequency'] * 7 * 86400);
 	
-					    $r_event_all_day = $row['event_all_day'];
-					    $r_event_day = "";
+					    $r_raidplan_all_day = $row['raidplan_all_day'];
+					    $r_raidplan_day = "";
 					    $r_sort_timestamp = $row['last_calc_time'];
-					    $r_event_start = $row['last_calc_time'];
-					    $r_event_end = $row['last_calc_time'] + $row['event_duration'];
-					    if( $r_event_all_day == 1 )
+					    $r_raidplan_start = $row['last_calc_time'];
+					    $r_raidplan_end = $row['last_calc_time'] + $row['raidplan_duration'];
+					    if( $r_raidplan_all_day == 1 )
 					    {
-					    	$r_event_start = 0;
-					    	$r_event_end = 0;
-							$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
+					    	$r_raidplan_start = 0;
+					    	$r_raidplan_end = 0;
+							$r_raidplan_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 					    }
 	
 					    $sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 								'etype_id'				=> (int) $row['etype_id'],
 								'sort_timestamp'		=> (int) $r_sort_timestamp,
-								'event_start_time'		=> (int) $r_event_start,
-								'event_end_time'		=> (int) $r_event_end,
-								'event_all_day'			=> (int) $r_event_all_day,
-								'event_day'				=> (string) $r_event_day,
-								'event_subject'			=> (string) $row['event_subject'],
-								'event_body'			=> (string) $row['event_body'],
+								'raidplan_start_time'		=> (int) $r_raidplan_start,
+								'raidplan_end_time'		=> (int) $r_raidplan_end,
+								'raidplan_all_day'			=> (int) $r_raidplan_all_day,
+								'raidplan_day'				=> (string) $r_raidplan_day,
+								'raidplan_subject'			=> (string) $row['raidplan_subject'],
+								'raidplan_body'			=> (string) $row['raidplan_body'],
 								'poster_id'				=> (int) $row['poster_id'],
-								'event_access_level'	=> (int) $row['event_access_level'],
+								'raidplan_access_level'	=> (int) $row['raidplan_access_level'],
 								'group_id'				=> (int) $row['group_id'],
 								'bbcode_uid'			=> (string) $row['bbcode_uid'],
 								'bbcode_bitfield'		=> (string) $row['bbcode_bitfield'],
@@ -1278,7 +1278,7 @@ class raidplanner_population extends raidplanner_base
 						$db->sql_query($sql);
 						if( $first_pop == 1 )
 						{
-							$first_pop_event_id = $db->sql_nextid();
+							$first_pop_raidplan_id = $db->sql_nextid();
 						}
 					}
 					break;
@@ -1290,29 +1290,29 @@ class raidplanner_population extends raidplanner_base
 					    $row['last_calc_time'] = $row['next_calc_time'];
 					    $row['next_calc_time'] = $row['next_calc_time'] + ($row['frequency'] * 86400);
 	
-					    $r_event_all_day = $row['event_all_day'];
-					    $r_event_day = "";
+					    $r_raidplan_all_day = $row['raidplan_all_day'];
+					    $r_raidplan_day = "";
 					    $r_sort_timestamp = $row['last_calc_time'];
-					    $r_event_start = $row['last_calc_time'];
-					    $r_event_end = $row['last_calc_time'] + $row['event_duration'];
-					    if( $r_event_all_day == 1 )
+					    $r_raidplan_start = $row['last_calc_time'];
+					    $r_raidplan_end = $row['last_calc_time'] + $row['raidplan_duration'];
+					    if( $r_raidplan_all_day == 1 )
 					    {
-					    	$r_event_start = 0;
-					    	$r_event_end = 0;
-							$r_event_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
+					    	$r_raidplan_start = 0;
+					    	$r_raidplan_end = 0;
+							$r_raidplan_day = sprintf('%2d-%2d-%4d', gmdate('j',$r_sort_timestamp), gmdate('n',$r_sort_timestamp), gmdate('Y',$r_sort_timestamp));
 					    }
 	
 					    $sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 								'etype_id'				=> (int) $row['etype_id'],
 								'sort_timestamp'		=> (int) $r_sort_timestamp,
-								'event_start_time'		=> (int) $r_event_start,
-								'event_end_time'		=> (int) $r_event_end,
-								'event_all_day'			=> (int) $r_event_all_day,
-								'event_day'				=> (string) $r_event_day,
-								'event_subject'			=> (string) $row['event_subject'],
-								'event_body'			=> (string) $row['event_body'],
+								'raidplan_start_time'		=> (int) $r_raidplan_start,
+								'raidplan_end_time'		=> (int) $r_raidplan_end,
+								'raidplan_all_day'			=> (int) $r_raidplan_all_day,
+								'raidplan_day'				=> (string) $r_raidplan_day,
+								'raidplan_subject'			=> (string) $row['raidplan_subject'],
+								'raidplan_body'			=> (string) $row['raidplan_body'],
 								'poster_id'				=> (int) $row['poster_id'],
-								'event_access_level'	=> (int) $row['event_access_level'],
+								'raidplan_access_level'	=> (int) $row['raidplan_access_level'],
 								'group_id'				=> (int) $row['group_id'],
 								'bbcode_uid'			=> (string) $row['bbcode_uid'],
 								'bbcode_bitfield'		=> (string) $row['bbcode_bitfield'],
@@ -1327,7 +1327,7 @@ class raidplanner_population extends raidplanner_base
 						
 						if( $first_pop == 1 )
 						{
-							$first_pop_event_id = $db->sql_nextid();
+							$first_pop_raidplan_id = $db->sql_nextid();
 						}
 					}
 					break;
@@ -1343,18 +1343,18 @@ class raidplanner_population extends raidplanner_base
 			$db->sql_query($sql);
 		}
 		$db->sql_freeresult($result);
-		return $first_pop_event_id;
+		return $first_pop_raidplan_id;
 	}
 
 	
 	/* must_find_next_occ()
 	**
-	** Given the current recurring event row_data, and the current
+	** Given the current recurring raidplan row_data, and the current
 	** populate limit date, do we still need to create the next
-	** occurrence of this event in the calendar?
+	** occurrence of this raidplan in the calendar?
 	**
 	** INPUT
-	**   $row_data - the current recurring event data
+	**   $row_data - the current recurring raidplan data
 	**   $end_populate_limit - how far into the future are we
 	**                         supposed to generate occurrences?
 	**
@@ -1366,10 +1366,10 @@ class raidplanner_population extends raidplanner_base
 	{
 		if( $row_data['last_calc_time'] == 0 )
 		{
-			/* no matter how far into the future this event
+			/* no matter how far into the future this raidplan
 			may be, we must create at least the first occurrence
-			so the user will have an event to look at to make sure everything
-			looks ok after creating this string of recurring events */
+			so the user will have an raidplan to look at to make sure everything
+			looks ok after creating this string of recurring raidplans */
 			return true;
 		}
 		if( $row_data['next_calc_time'] < $end_populate_limit )
@@ -1377,12 +1377,12 @@ class raidplanner_population extends raidplanner_base
 		    /* if we are under the populate limit check the final occ time */
 		    if( $row_data['final_occ_time'] == 0 )
 		    {
-		    	// this recurring event has no end date
+		    	// this recurring raidplan has no end date
 		    	return true;
 		    }
 		    if( $row_data['next_calc_time'] < $row_data['final_occ_time'] )
 		    {
-		    	// this recurring event has not yet reached its end date
+		    	// this recurring raidplan has not yet reached its end date
 		    	return true;
 		    }
 		}
@@ -1556,10 +1556,10 @@ class raidplanner_population extends raidplanner_base
 	
 	/* prune_calendar()
 	**
-	** Cron job used to delete old events (and all of their related data:
-	** signups, recurring event data, etc) after they've expired.
+	** Cron job used to delete old raidplans (and all of their related data:
+	** signups, recurring raidplan data, etc) after they've expired.
 	**
-	** The expiration date of an event = when the event ends + the prune_limit
+	** The expiration date of an raidplan = when the raidplan ends + the prune_limit
 	** specified in the calendar ACP.
 	*/
 	function prune_calendar()
@@ -1571,35 +1571,35 @@ class raidplanner_population extends raidplanner_base
 		set_config ('rp_last_prune', time() ,0);
 	    $cache->destroy('config');
 	    	
-		// delete events that have been over for $prune_limit seconds.
+		// delete raidplans that have been over for $prune_limit seconds.
 		$end_temp_date = time() - $prune_limit;
 	
-		// find all day events that finished before the prune limit
+		// find all day raidplans that finished before the prune limit
 		$sort_timestamp_cutoff = $end_temp_date - 86400;
-		$sql = 'SELECT event_id FROM ' . RP_RAIDS_TABLE . '
-					WHERE ( (event_all_day = 1 AND sort_timestamp < '.$db->sql_escape($sort_timestamp_cutoff).')
-					OR (event_all_day = 0 AND event_end_time < '.$db->sql_escape($end_temp_date).') )';
+		$sql = 'SELECT raidplan_id FROM ' . RP_RAIDS_TABLE . '
+					WHERE ( (raidplan_all_day = 1 AND sort_timestamp < '.$db->sql_escape($sort_timestamp_cutoff).')
+					OR (raidplan_all_day = 0 AND raidplan_end_time < '.$db->sql_escape($end_temp_date).') )';
 		$result = $db->sql_query($sql);
 	
-		// delete all the signups for this event before deleting the event
+		// delete all the signups for this raidplan before deleting the raidplan
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$sql = 'DELETE FROM ' . RP_SIGNUPS . ' WHERE event_id = ' .$row['event_id'];
+			$sql = 'DELETE FROM ' . RP_SIGNUPS . ' WHERE raidplan_id = ' .$row['raidplan_id'];
 			$db->sql_query($sql);
 	
-			$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE event_id = ' .$row['event_id'];
+			$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE raidplan_id = ' .$row['raidplan_id'];
 			$db->sql_query($sql);
 	
 		}
 		$db->sql_freeresult($result);
 	
-		// now delete the old events
+		// now delete the old raidplans
 		$sql = 'DELETE FROM ' . RP_RAIDS_TABLE . '
-					WHERE ( (event_all_day = 1 AND sort_timestamp < '.$db->sql_escape($sort_timestamp_cutoff).')
-					OR (event_all_day = 0 AND event_end_time < '.$db->sql_escape($end_temp_date).') )';
+					WHERE ( (raidplan_all_day = 1 AND sort_timestamp < '.$db->sql_escape($sort_timestamp_cutoff).')
+					OR (raidplan_all_day = 0 AND raidplan_end_time < '.$db->sql_escape($end_temp_date).') )';
 		$db->sql_query($sql);
 	
-		// delete any recurring events that are permanently over
+		// delete any recurring raidplans that are permanently over
 		$sql = 'DELETE FROM ' . RP_RECURRING . '
 					WHERE (final_occ_time > 0) AND
 					      (final_occ_time < '. $end_temp_date .')';

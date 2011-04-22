@@ -60,7 +60,7 @@ $language_file = 'mods/raidplanner';
 /*
 * Optionally we may specify our own logo image to show in the upper corner instead of the default logo.
 * $phpbb_root_path will get prepended to the path specified
-* Image height should be 50px to prevent cut-off or stretching.
+* Image height should be 50px to prraidplan cut-off or stretching.
 */
 //$logo_img = 'images/bbdkp.png';
 
@@ -92,22 +92,22 @@ $versions = array(
             /* admin */
         	 array('a_raid_config', true),
 			/* mod */
-            array('m_raidplanner_edit_other_users_events', true),
-            array('m_raidplanner_delete_other_users_events', true),
+            array('m_raidplanner_edit_other_users_raidplans', true),
+            array('m_raidplanner_delete_other_users_raidplans', true),
             array('m_raidplanner_edit_other_users_signups', true),
             
             /* user */
-            array('u_raidplanner_view_events', true),
+            array('u_raidplanner_view_raidplans', true),
             array('u_raidplanner_view_headcount', true),
             
-            array('u_raidplanner_signup_events', true), 		            
-            array('u_raidplanner_create_events', true),
-            array('u_raidplanner_create_public_events', true),
-            array('u_raidplanner_create_group_events', true),
-            array('u_raidplanner_create_private_events', true),
-            array('u_raidplanner_create_recurring_events', true),
-            array('u_raidplanner_edit_events', true),
-            array('u_raidplanner_delete_events', true),
+            array('u_raidplanner_signup_raidplans', true), 		            
+            array('u_raidplanner_create_raidplans', true),
+            array('u_raidplanner_create_public_raidplans', true),
+            array('u_raidplanner_create_group_raidplans', true),
+            array('u_raidplanner_create_private_raidplans', true),
+            array('u_raidplanner_create_recurring_raidplans', true),
+            array('u_raidplanner_edit_raidplans', true),
+            array('u_raidplanner_delete_raidplans', true),
 
       	),
       	
@@ -119,13 +119,13 @@ $versions = array(
 			array('ADMINISTRATORS', 'a_raid_config', 'group', true),
 
 			/*set moderator pemissions */
-			// allows editing other peoples events
-			array('ADMINISTRATORS', 'm_raidplanner_edit_other_users_events', 'group', true),
-			array('GLOBAL_MODERATORS', 'm_raidplanner_edit_other_users_events', 'group', true),
+			// allows editing other peoples raidplans
+			array('ADMINISTRATORS', 'm_raidplanner_edit_other_users_raidplans', 'group', true),
+			array('GLOBAL_MODERATORS', 'm_raidplanner_edit_other_users_raidplans', 'group', true),
 
-			// allows deleting other peoples events
-			array('ADMINISTRATORS', 'm_raidplanner_delete_other_users_events', 'group', true),
-			array('GLOBAL_MODERATORS', 'm_raidplanner_edit_other_users_events', 'group', true),
+			// allows deleting other peoples raidplans
+			array('ADMINISTRATORS', 'm_raidplanner_delete_other_users_raidplans', 'group', true),
+			array('GLOBAL_MODERATORS', 'm_raidplanner_edit_other_users_raidplans', 'group', true),
 							
 			// allows editing other peoples signup
 			array('ADMINISTRATORS', 'm_raidplanner_edit_other_users_signups', 'group', true),
@@ -133,58 +133,58 @@ $versions = array(
 			
 			/*set user permissions */
 			// allows viewing raids
-			array('ADMINISTRATORS', 'u_raidplanner_view_events', 'group', true),
-			array('GLOBAL_MODERATORS', 'u_raidplanner_view_events', 'group', true),
-			array('REGISTERED', 'u_raidplanner_view_events', 'group', true),
-			array('NEWLY_REGISTERED', 'u_raidplanner_view_events', 'group', true),
-			array('GUESTS', 'u_raidplanner_view_events', 'group', true),
+			array('ADMINISTRATORS', 'u_raidplanner_view_raidplans', 'group', true),
+			array('GLOBAL_MODERATORS', 'u_raidplanner_view_raidplans', 'group', true),
+			array('REGISTERED', 'u_raidplanner_view_raidplans', 'group', true),
+			array('NEWLY_REGISTERED', 'u_raidplanner_view_raidplans', 'group', true),
+			array('GUESTS', 'u_raidplanner_view_raidplans', 'group', true),
 			
 			// view raid participation		
 			array('ADMINISTRATORS', 'u_raidplanner_view_headcount', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_view_headcount', 'group', true),
 			array('REGISTERED', 'u_raidplanner_view_headcount', 'group', true),
 			
-			// allows signing up for an event or raid
-			array('ADMINISTRATORS', 'u_raidplanner_signup_events', 'group', true),
-			array('GLOBAL_MODERATORS', 'u_raidplanner_signup_events', 'group', true),
-			array('REGISTERED', 'u_raidplanner_signup_events', 'group', true),
-			array('NEWLY_REGISTERED', 'u_raidplanner_signup_events', 'group', true),
-			array('GUESTS', 'u_raidplanner_signup_events', 'group', true),
+			// allows signing up for an raidplan or raid
+			array('ADMINISTRATORS', 'u_raidplanner_signup_raidplans', 'group', true),
+			array('GLOBAL_MODERATORS', 'u_raidplanner_signup_raidplans', 'group', true),
+			array('REGISTERED', 'u_raidplanner_signup_raidplans', 'group', true),
+			array('NEWLY_REGISTERED', 'u_raidplanner_signup_raidplans', 'group', true),
+			array('GUESTS', 'u_raidplanner_signup_raidplans', 'group', true),
 			
 			// allows creating raids
-			array('ADMINISTRATORS', 'u_raidplanner_create_events', 'group', true),
-			array('GLOBAL_MODERATORS', 'u_raidplanner_create_events', 'group', true),
-			array('REGISTERED', 'u_raidplanner_create_events', 'group', true),
+			array('ADMINISTRATORS', 'u_raidplanner_create_raidplans', 'group', true),
+			array('GLOBAL_MODERATORS', 'u_raidplanner_create_raidplans', 'group', true),
+			array('REGISTERED', 'u_raidplanner_create_raidplans', 'group', true),
 					
-			// allows public events where every member can subscribe 
-			array('ADMINISTRATORS', 'u_raidplanner_create_public_events', 'group', true),
-			array('GLOBAL_MODERATORS', 'u_raidplanner_create_public_events', 'group', true),
-			array('REGISTERED', 'u_raidplanner_create_public_events', 'group', true),
+			// allows public raidplans where every member can subscribe 
+			array('ADMINISTRATORS', 'u_raidplanner_create_public_raidplans', 'group', true),
+			array('GLOBAL_MODERATORS', 'u_raidplanner_create_public_raidplans', 'group', true),
+			array('REGISTERED', 'u_raidplanner_create_public_raidplans', 'group', true),
 			
-			// allows group events where only usergroups can subscribe
-			array('ADMINISTRATORS', 'u_raidplanner_create_group_events', 'group', true),
-			array('GLOBAL_MODERATORS', 'u_raidplanner_create_group_events', 'group', true),
-			array('REGISTERED', 'u_raidplanner_create_group_events', 'group', true),
+			// allows group raidplans where only usergroups can subscribe
+			array('ADMINISTRATORS', 'u_raidplanner_create_group_raidplans', 'group', true),
+			array('GLOBAL_MODERATORS', 'u_raidplanner_create_group_raidplans', 'group', true),
+			array('REGISTERED', 'u_raidplanner_create_group_raidplans', 'group', true),
 			
-			// allows private events - only for you - eg hairdresser
-			array('ADMINISTRATORS', 'u_raidplanner_create_private_events', 'group', true),
-			array('GLOBAL_MODERATORS', 'u_raidplanner_create_private_events', 'group', true),
-			array('REGISTERED', 'u_raidplanner_create_private_events', 'group', true),
+			// allows private raidplans - only for you - eg hairdresser
+			array('ADMINISTRATORS', 'u_raidplanner_create_private_raidplans', 'group', true),
+			array('GLOBAL_MODERATORS', 'u_raidplanner_create_private_raidplans', 'group', true),
+			array('REGISTERED', 'u_raidplanner_create_private_raidplans', 'group', true),
 
-			// can create events that recur
-			array('ADMINISTRATORS', 'u_raidplanner_create_recurring_events', 'group', true),
-			array('GLOBAL_MODERATORS', 'u_raidplanner_create_recurring_events', 'group', true),
-			array('REGISTERED', 'u_raidplanner_create_recurring_events', 'group', true),
+			// can create raidplans that recur
+			array('ADMINISTRATORS', 'u_raidplanner_create_recurring_raidplans', 'group', true),
+			array('GLOBAL_MODERATORS', 'u_raidplanner_create_recurring_raidplans', 'group', true),
+			array('REGISTERED', 'u_raidplanner_create_recurring_raidplans', 'group', true),
 			
 			// allows editing raids
-			array('ADMINISTRATORS', 'u_raidplanner_edit_events', 'group', true),
-			array('GLOBAL_MODERATORS', 'u_raidplanner_edit_events', 'group', true),
-			array('REGISTERED', 'u_raidplanner_edit_events', 'group', true),
+			array('ADMINISTRATORS', 'u_raidplanner_edit_raidplans', 'group', true),
+			array('GLOBAL_MODERATORS', 'u_raidplanner_edit_raidplans', 'group', true),
+			array('REGISTERED', 'u_raidplanner_edit_raidplans', 'group', true),
 					
-			// allows deleting your own events
-			array('ADMINISTRATORS', 'u_raidplanner_delete_events', 'group', true),
-			array('GLOBAL_MODERATORS', 'u_raidplanner_delete_events', 'group', true),
-			array('REGISTERED', 'u_raidplanner_delete_events', 'group', true),
+			// allows deleting your own raidplans
+			array('ADMINISTRATORS', 'u_raidplanner_delete_raidplans', 'group', true),
+			array('GLOBAL_MODERATORS', 'u_raidplanner_delete_raidplans', 'group', true),
+			array('REGISTERED', 'u_raidplanner_delete_raidplans', 'group', true),
 			
 
         ),
@@ -210,7 +210,7 @@ $versions = array(
 		'config_add' => array(
 			array('rp_first_day_of_week', 0, true),
 			array('rp_index_display_week', 0, true),
-			array('rp_index_display_next_events', 5),
+			array('rp_index_display_next_raidplans', 5),
 			array('rp_hour_mode', 24),
 			array('rp_display_truncated_name', 0, true),
 			array('rp_prune_frequency', 0, true),
@@ -220,7 +220,7 @@ $versions = array(
 			array('rp_time_format', 'H:i', true),
 			array('rp_date_format', 'M d, Y', true),
 			array('rp_date_time_format', 'M d, Y H:i', true),
-			array('rp_disp_events_only_on_start', 0, true),
+			array('rp_disp_raidplans_only_on_start', 0, true),
 			array('rp_populate_frequency', 86400, true),
 			array('rp_last_populate', 0, true),
 			array('rp_populate_limit', 94608000, true),
@@ -231,17 +231,17 @@ $versions = array(
 						
 			array( 'phpbb_rp_raids', array(
                     'COLUMNS'			=> array(
-                       'event_id'			=> array('INT:8', NULL, 'auto_increment' ),
+                       'raidplan_id'			=> array('INT:8', NULL, 'auto_increment' ),
 					   'etype_id' 			=> array('INT:8', 0),
 		  			   'sort_timestamp' 	=> array('BINT', 0),
-		  			   'event_start_time' 	=> array('BINT', 0),
-			 		   'event_end_time' 	=> array('BINT', 0),
-					   'event_all_day'   	=> array('UINT', 0),
-					   'event_day'   		=> array('VCHAR:10', ''),
-					   'event_subject'   	=> array('VCHAR_UNI:255', ''),
-					   'event_body'   		=> array('MTEXT', ''),
+		  			   'raidplan_start_time' 	=> array('BINT', 0),
+			 		   'raidplan_end_time' 	=> array('BINT', 0),
+					   'raidplan_all_day'   	=> array('UINT', 0),
+					   'raidplan_day'   		=> array('VCHAR:10', ''),
+					   'raidplan_subject'   	=> array('VCHAR_UNI:255', ''),
+					   'raidplan_body'   		=> array('MTEXT', ''),
 					   'poster_id'		 	=> array('UINT', 0),
-					   'event_access_level' => array('BOOL', 0),
+					   'raidplan_access_level' => array('BOOL', 0),
 					   'group_id' 			=> array('UINT', 0),
 					   'group_id_list' 		=> array('VCHAR_UNI:255', ''),
 					   'enable_bbcode' 		=> array('BOOL', 1),
@@ -255,7 +255,7 @@ $versions = array(
 					   'signup_maybe' 		=> array('UINT', 0),
 					   'recurr_id' 			=> array('UINT', 0),
 					),
-                    'PRIMARY_KEY'	=> array('event_id')), 
+                    'PRIMARY_KEY'	=> array('raidplan_id')), 
               ),
 
 			array('phpbb_rp_recurring', array(
@@ -266,18 +266,18 @@ $versions = array(
 			 		   'frequency_type' 	=> array('USINT', 0),
 					   'first_occ_time' 	=> array('BINT', 0),
 					   'final_occ_time'   	=> array('BINT', 0),
-					   'event_all_day'   	=> array('USINT', 0),
-					   'event_duration'   	=> array('BINT', 0),
+					   'raidplan_all_day'   	=> array('USINT', 0),
+					   'raidplan_duration'   	=> array('BINT', 0),
 					   'week_index'   		=> array('USINT', 0),
 					   'first_day_of_week'	=> array('USINT', 0),
 					   'last_calc_time' 	=> array('BINT', 0),
 					   'next_calc_time' 	=> array('BINT', 0),
-					   'event_subject' 		=> array('VCHAR_UNI:255', ''),
-					   'event_body' 		=> array('MTEXT', ''),
+					   'raidplan_subject' 		=> array('VCHAR_UNI:255', ''),
+					   'raidplan_body' 		=> array('MTEXT', ''),
 					   'poster_id' 			=> array('UINT', 0),
 					   'poster_timezone' 	=> array('DECIMAL', 0.00),
 					   'poster_dst' 		=> array('BOOL', 0),
-					   'event_access_level' => array('BOOL', 0),
+					   'raidplan_access_level' => array('BOOL', 0),
 					   'group_id' 			=> array('UINT', 0),
 					   'group_id_list' 		=> array('VCHAR_UNI:255', ''),
 					   'enable_bbcode' 		=> array('BOOL', 1),
@@ -293,7 +293,7 @@ $versions = array(
 			array( 'phpbb_rp_signups', array(
                     'COLUMNS'			=> array(
                        'signup_id'			=> array('INT:8', NULL, 'auto_increment' ),
-					   'event_id' 			=> array('INT:8', 0),
+					   'raidplan_id' 			=> array('INT:8', 0),
 		  			   'poster_id' 			=> array('INT:8', 0),
 		  			   'poster_name' 		=> array('VCHAR:255', ''),
 			 		   'poster_colour' 		=> array('VCHAR:6', ''),
@@ -308,21 +308,21 @@ $versions = array(
 					),
                     'PRIMARY_KEY'	=> array('signup_id'),
 					 'KEYS'            => array(
-    				     'event_id'   => array('INDEX', 'event_id'),
+    				     'raidplan_id'   => array('INDEX', 'raidplan_id'),
 				 		 'poster_id'  => array('INDEX', 'poster_id'), 
-						 'eid_post_time' => array('INDEX', array('event_id', 'post_time'))
+						 'eid_post_time' => array('INDEX', array('raidplan_id', 'post_time'))
 						)
 					)),
 			
-			array( 'phpbb_rp_events_watch', array(
+			array( 'phpbb_rp_raidplans_watch', array(
                     'COLUMNS'			=> array(
-					   'event_id' 			=> array('INT:8', 0),
+					   'raidplan_id' 			=> array('INT:8', 0),
 		  			   'user_id' 			=> array('INT:8', 0),
 		  			   'notify_status' 		=> array('BOOL', 0),
 			 		   'track_replies' 		=> array('BOOL', 0),
 					),
 					 'KEYS'       => array(
-    				     'event_id'     => array('INDEX', 'event_id'),
+    				     'raidplan_id'     => array('INDEX', 'raidplan_id'),
 				 		 'user_id'  	=> array('INDEX', 'user_id'), 
 						 'notify_stat'  => array('INDEX', 'notify_status'),
 						)
@@ -339,14 +339,14 @@ $versions = array(
 						)
 					)),
 					
-			array( 'phpbb_rp_eventroles', array(
+			array( 'phpbb_rp_raidplanroles', array(
                     'COLUMNS'			=> array(
-                       'eventdet_id'		=> array('INT:8', NULL, 'auto_increment' ),
-					   'event_id' 			=> array('INT:8', 0),
+                       'raidplandet_id'		=> array('INT:8', NULL, 'auto_increment' ),
+					   'raidplan_id' 			=> array('INT:8', 0),
 					   'role_id' 			=> array('INT:8', 0),
 					   'role_needed' 		=> array('INT:8', 0),
 					),
-                    'PRIMARY_KEY'	=> array('eventdet_id')), 
+                    'PRIMARY_KEY'	=> array('raidplandet_id')), 
               ),              
 
               array(

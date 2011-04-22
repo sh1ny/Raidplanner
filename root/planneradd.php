@@ -16,7 +16,7 @@ $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
-$raidevents = new raidevents();
+$raidplans = new raidplans();
 include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_population.' . $phpEx);
 $newraid= new raidplanner_population();
 
@@ -29,7 +29,7 @@ $user->setup('posting');
 $user->add_lang ( array ('posting', 'mods/dkp_admin','mods/raidplanner'  ));
 // Grab only parameters needed here
 //----------------------------
-$event_id	= request_var('calEid', 0);
+$raidplan_id	= request_var('calEid', 0);
 $lastclick	= request_var('lastclick', 0);  // time of last click
 $submit		= (isset($_POST['post'])) ? true : false;
 $preview	= (isset($_POST['preview'])) ? true : false;
@@ -39,8 +39,8 @@ $cancel		= (isset($_POST['cancel'])) ? true : false;
 // mode: post, edit, delete, or smilies
 $mode = ($delete && !$preview && $submit) ? 'delete' : request_var('mode', '');
 $error = array();
-// get the number of events : of none defined throw error..
-if( $newraid->raid_event_count < 1 )
+// get the number of raidplans : of none defined throw error..
+if( $newraid->raid_plan_count < 1 )
 {
 	trigger_error('NO_EVENT_TYPES');
 }
@@ -48,41 +48,41 @@ if( $newraid->raid_event_count < 1 )
 $current_time = $user->time_now;
 
 /*-----------------------------------
-  begin event_data initialization
+  begin raidplan_data initialization
 -------------------------------------*/
-$event_data = array();
-if( $event_id !== 0 )
+$raidplan_data = array();
+if( $raidplan_id !== 0 )
 {
-	$raidevents->get_event_data( $event_id, $event_data );
+	$raidplans->get_raidplan_data( $raidplan_id, $raidplan_data );
 }
 else
 {
-	if( $auth->acl_get('u_raidplanner_create_recurring_events') )
+	if( $auth->acl_get('u_raidplanner_create_recurring_raidplans') )
 	{
-		$event_data['s_recurring_opts'] = true;
+		$raidplan_data['s_recurring_opts'] = true;
 	}
-	$event_data['event_id'] = 0;
-	$event_data['event_start_time'] = 0;
+	$raidplan_data['raidplan_id'] = 0;
+	$raidplan_data['raidplan_start_time'] = 0;
 	
-	$event_data['etype_id'] = 0;
-	$event_data['event_subject'] = "";
-	$event_data['event_body'] = "";
-	$event_data['poster_id'] = $user->data['user_id'];
-	$event_data['poster_timezone'] = $user->data['user_timezone'];
-	$event_data['poster_dst'] = $user->data['user_dst'];
-	// set event tracking to 1 by default
-	$event_data['track_signups'] = 1;
-	$event_data['event_day'] = "00-00-0000";
-	$event_data['signup_yes'] = 0;
-	$event_data['signup_no'] = 0;
-	$event_data['signup_maybe'] = 0;
-	$event_data['recurr_id'] = 0;
-	$event_data['is_recurr'] = 0;
-	$event_data['frequency_type'] = 0;
-	$event_data['frequency'] = 0;
-	$event_data['final_occ_time'] = 0;
-	$event_data['week_index'] = 0;
-	$event_data['first_day_of_week'] = $config["rp_first_day_of_week"];
+	$raidplan_data['etype_id'] = 0;
+	$raidplan_data['raidplan_subject'] = "";
+	$raidplan_data['raidplan_body'] = "";
+	$raidplan_data['poster_id'] = $user->data['user_id'];
+	$raidplan_data['poster_timezone'] = $user->data['user_timezone'];
+	$raidplan_data['poster_dst'] = $user->data['user_dst'];
+	// set raidplan tracking to 1 by default
+	$raidplan_data['track_signups'] = 1;
+	$raidplan_data['raidplan_day'] = "00-00-0000";
+	$raidplan_data['signup_yes'] = 0;
+	$raidplan_data['signup_no'] = 0;
+	$raidplan_data['signup_maybe'] = 0;
+	$raidplan_data['recurr_id'] = 0;
+	$raidplan_data['is_recurr'] = 0;
+	$raidplan_data['frequency_type'] = 0;
+	$raidplan_data['frequency'] = 0;
+	$raidplan_data['final_occ_time'] = 0;
+	$raidplan_data['week_index'] = 0;
+	$raidplan_data['first_day_of_week'] = $config["rp_first_day_of_week"];
 
 }
 
@@ -96,7 +96,7 @@ if( $mode == 'smilies' )
 /*-------------------------------------
   begin permission checking
 -------------------------------------*/
-$newraid->authcheck($mode, $submit, $event_data, $event_id);
+$newraid->authcheck($mode, $submit, $raidplan_data, $raidplan_id);
 		
 /*-------------------------------------
   Handle delete mode...
@@ -106,22 +106,22 @@ if ($mode == 'delete')
     $delete_all = request_var('calDelAll', 0);
     if( $delete_all == 0 )
     {
-		$newraid->handle_event_delete($event_id, $event_data);
+		$newraid->handle_raidplan_delete($raidplan_id, $raidplan_data);
 	}
 	else
 	{
-		$newraid->handle_event_delete_all($event_id, $event_data);
+		$newraid->handle_raidplan_delete_all($raidplan_id, $raidplan_data);
 	}
 	exit;
 }
 
 /*---------------------------------------------------------
   If in edit mode, we need to find out if we are editing
-  one event, or all recurring events... BEFORE we start querying
+  one raidplan, or all recurring raidplans... BEFORE we start querying
   all the submitted data!
 ---------------------------------------------------------*/
 $s_date_time_opts = true;
-if( $event_id != 0 )
+if( $raidplan_id != 0 )
 {
     $edit_all = request_var('calEditAll', 0);
     if( $edit_all != 0 )
@@ -133,33 +133,33 @@ if( $event_id != 0 )
 // in submit or preview we need to gather the posted data...
 if ($submit || $preview)
 {
-	//complete the event array by calling the gather function
-	$newraid->gather_raiddata($event_data, $newraid, $s_date_time_opts);
+	//complete the raidplan array by calling the gather function
+	$newraid->gather_raiddata($raidplan_data, $newraid, $s_date_time_opts);
 	
-	if( $event_id > 0 )
+	if( $raidplan_id > 0 )
 	{
-		$newraid->edit_event($event_data, $newraid, $event_id,$s_date_time_opts );
+		$newraid->edit_raidplan($raidplan_data, $newraid, $raidplan_id,$s_date_time_opts );
 	}
 	else 
 	{
 		// we have all data, now go create the raid
-		//pass zero event_id by reference to get it updated
-		$newraid->create_event($event_data, $newraid, $event_id);
+		//pass zero raidplan_id by reference to get it updated
+		$newraid->create_raidplan($raidplan_data, $newraid, $raidplan_id);
 	}
 	
 	$main_calendar_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
-	$view_event_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$event_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+	$view_raidplan_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$raidplan_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
 	
-	// by default you should show the user the newly created event - not the main calendar page
-	meta_refresh(3, $view_event_url);
+	// by default you should show the user the newly created raidplan - not the main calendar page
+	meta_refresh(3, $view_raidplan_url);
 	
 	if( $mode == 'edit' )
 	{
-		$message = $user->lang['EVENT_EDITED'] . '<br /><br />' . sprintf($user->lang['VIEW_EVENT'], '<a href="' . $view_event_url . '">', '</a>');
+		$message = $user->lang['EVENT_EDITED'] . '<br /><br />' . sprintf($user->lang['VIEW_RAIDPLAN'], '<a href="' . $view_raidplan_url . '">', '</a>');
 	}
 	else
 	{
-		$message = $user->lang['EVENT_STORED'] . '<br /><br />' . sprintf($user->lang['VIEW_EVENT'], '<a href="' . $view_event_url . '">', '</a>');
+		$message = $user->lang['EVENT_STORED'] . '<br /><br />' . sprintf($user->lang['VIEW_RAIDPLAN'], '<a href="' . $view_raidplan_url . '">', '</a>');
 	}
 	
 	$message .= '<br /><br />' . sprintf($user->lang['RETURN_CALENDAR'], '<a href="' . $main_calendar_url . '">', '</a>');
@@ -170,27 +170,27 @@ if ($submit || $preview)
 // Preview
 if ($preview)
 {
-	// translate event start and end time into user's timezone
-	$user_event_start = $event_data['event_start_time'] + $user->timezone + $user->dst;
+	// translate raidplan start and end time into user's timezone
+	$user_raidplan_start = $raidplan_data['raidplan_start_time'] + $user->timezone + $user->dst;
 	
 
-	// Convert event comment into preview version with bbcode and all
-	$event_body = $event_data['event_body'];
+	// Convert raidplan comment into preview version with bbcode and all
+	$raidplan_body = $raidplan_data['raidplan_body'];
 	$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
 	$allow_bbcode = $allow_urls = $allow_smilies = true;
-	generate_text_for_storage($event_body, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
-	$preview_message = generate_text_for_display($event_body, $uid, $bitfield, $options);
+	generate_text_for_storage($raidplan_body, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+	$preview_message = generate_text_for_display($raidplan_body, $uid, $bitfield, $options);
 
-	$preview_etype_display_name = $newraid->raid_event_displaynames[$event_data['etype_id']];
-	$preview_event_color = $newraid->raid_event_colors[$event_data['etype_id']];
-	$preview_event_image = $newraid->raid_event_images[$event_data['etype_id']];
-	$preview_subject = censor_text($event_data['event_subject']);
+	$preview_etype_display_name = $newraid->raid_plan_displaynames[$raidplan_data['etype_id']];
+	$preview_raidplan_color = $newraid->raid_plan_colors[$raidplan_data['etype_id']];
+	$preview_raidplan_image = $newraid->raid_plan_images[$raidplan_data['etype_id']];
+	$preview_subject = censor_text($raidplan_data['raidplan_subject']);
 
 	$poster_url = '';
 	$invite_list = '';
 	
-	$revents = new raidevents;
-	$revents->get_event_invite_list_and_poster_url($event_data, $poster_url, $invite_list );
+	$rraidplans = new raidplans;
+	$rraidplans->get_raidplan_invite_list_and_poster_url($raidplan_data, $poster_url, $invite_list );
 	
 
 	if (!sizeof($error))
@@ -198,16 +198,16 @@ if ($preview)
 		$template->assign_vars(array(
 			'PREVIEW_SUBJECT'		=> $preview_subject,
 			'PREVIEW_ETYPE_DISPLAY_NAME'=> $preview_etype_display_name,
-			'PREVIEW_EVENT_COLOR'	=> $preview_event_color,
-			'PREVIEW_EVENT_IMAGE'	=> $preview_event_image,
+			'PREVIEW_EVENT_COLOR'	=> $preview_raidplan_color,
+			'PREVIEW_EVENT_IMAGE'	=> $preview_raidplan_image,
 			'PREVIEW_MESSAGE'		=> $preview_message,
-			'PREVIEW_START_DATE'	=> $user->format_date($event_data['event_start_time']),
+			'PREVIEW_START_DATE'	=> $user->format_date($raidplan_data['raidplan_start_time']),
 		
 			'PREVIEW_POSTER'		=> $poster_url,
 			'PREVIEW_INVITED'		=> $invite_list,
 			
 			'S_DISPLAY_PREVIEW'		=> true,
-			'PREVIEW_TRACK_SIGNUPS'	=> $event_data['track_signups'],
+			'PREVIEW_TRACK_SIGNUPS'	=> $raidplan_data['track_signups'],
 			  )
 		);
 	}
@@ -226,45 +226,45 @@ $s_action = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=$mode", true
 switch ($mode)
 {
 	case 'post':
-		$page_title = $user->lang['CALENDAR_POST_EVENT'];
+		$page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
 	break;
 
 	case 'delete':
 	case 'edit':
-		$page_title = $user->lang['CALENDAR_EDIT_EVENT'];
+		$page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
 		// Decode text for message editing
-		decode_message($event_data['event_body'], $event_data['bbcode_uid']);
+		decode_message($raidplan_data['raidplan_body'], $raidplan_data['bbcode_uid']);
 	break;
 }
 
 $temp_find_str = "<br />";
 $temp_replace_str = "\n";
-$event_data['event_body'] = str_replace( $temp_find_str, $temp_replace_str, $event_data['event_body'] );
+$raidplan_data['raidplan_body'] = str_replace( $temp_find_str, $temp_replace_str, $raidplan_data['raidplan_body'] );
 
 //-----------------------------------------
 // populate form options...
 //-----------------------------------------
 
-//count events from bbdkp, put them in a pulldown...
+//count raidplans from bbdkp, put them in a pulldown...
 $e_type_sel_code  = "";
-for( $i = 0; $i < $newraid->raid_event_count; $i++ )
+for( $i = 0; $i < $newraid->raid_plan_count; $i++ )
 {
-	$e_type_sel_code .= "<option value='".$newraid->raid_event_ids[$i]."'>".$newraid->raid_event_names[$i]."</option>\n";
+	$e_type_sel_code .= "<option value='".$newraid->raid_plan_ids[$i]."'>".$newraid->raid_plan_names[$i]."</option>\n";
 }
 
-// event acces level
+// raidplan acces level
 $level_sel_code ="";	
 // Find what groups this user is a member of and add them to the list of groups to invite
-$group_sel_code = $newraid->posting_generate_group_selection_code( $event_data['poster_id'] );
-if( $auth->acl_get('u_raidplanner_create_public_events') )
+$group_sel_code = $newraid->posting_generate_group_selection_code( $raidplan_data['poster_id'] );
+if( $auth->acl_get('u_raidplanner_create_public_raidplans') )
 {
 	$level_sel_code .= "<option value='2'>".$user->lang['EVENT_ACCESS_LEVEL_PUBLIC']."</option>\n";
 }
-if( $auth->acl_get('u_raidplanner_create_group_events') )
+if( $auth->acl_get('u_raidplanner_create_group_raidplans') )
 {
 	$level_sel_code .= "<option value='1'>".$user->lang['EVENT_ACCESS_LEVEL_GROUP']."</option>\n";
 }
-if( $auth->acl_get('u_raidplanner_create_private_events') )
+if( $auth->acl_get('u_raidplanner_create_private_raidplans') )
 {
 	$level_sel_code .= "<option value='0'>".$user->lang['EVENT_ACCESS_LEVEL_PERSONAL']."</option>\n";
 }
@@ -338,25 +338,25 @@ for( $i = 0; $i < 12; $i++ )
 /**
  * Event recurrance
  */
-$recurr_event_check = "";
-$recurr_event_freq_sel_code = "";
-$recurr_event_freq_val_code = "";
+$recurr_raidplan_check = "";
+$recurr_raidplan_freq_sel_code = "";
+$recurr_raidplan_freq_val_code = "";
 $end_recurr_month_sel_code = "";
 $end_recurr_day_sel_code = "";
 $end_recurr_year_sel_code = "";
 
-if( $event_data['s_recurring_opts'] )
+if( $raidplan_data['s_recurring_opts'] )
 {
-	$recurr_event_check = "<input type='checkbox' name='calIsRecurr' value='ON' onclick='update_recurr_state();update_recurring_options();' />";
-	$recurr_event_freq_sel_code  = "<select name='calRFrqT' id='calRFrqT' disabled='disabled'>\n";
-	$recurr_event_freq_sel_code .= "<option value='1'>".$user->lang['RECURRING_EVENT_CASE_1']."</option>\n";
-	$recurr_event_freq_sel_code .= "<option value='2'>".$user->lang['RECURRING_EVENT_CASE_2']."</option>\n";
-	$recurr_event_freq_sel_code .= "<option value='3'>".$user->lang['RECURRING_EVENT_CASE_3']."</option>\n";
-	$recurr_event_freq_sel_code .= "<option value='4'>".$user->lang['RECURRING_EVENT_CASE_4']."</option>\n";
-	$recurr_event_freq_sel_code .= "<option value='5'>".$user->lang['RECURRING_EVENT_CASE_5']."</option>\n";
-	$recurr_event_freq_sel_code .= "<option value='6'>".$user->lang['RECURRING_EVENT_CASE_6']."</option>\n";
-	$recurr_event_freq_sel_code .= "</select>\n";
-	$recurr_event_freq_val_code = "<input type='number' name='calRFrq' id='calRFrq' value='1' onchange='update_recurring_options()' disabled='disabled' />";
+	$recurr_raidplan_check = "<input type='checkbox' name='calIsRecurr' value='ON' onclick='update_recurr_state();update_recurring_options();' />";
+	$recurr_raidplan_freq_sel_code  = "<select name='calRFrqT' id='calRFrqT' disabled='disabled'>\n";
+	$recurr_raidplan_freq_sel_code .= "<option value='1'>".$user->lang['RECURRING_EVENT_CASE_1']."</option>\n";
+	$recurr_raidplan_freq_sel_code .= "<option value='2'>".$user->lang['RECURRING_EVENT_CASE_2']."</option>\n";
+	$recurr_raidplan_freq_sel_code .= "<option value='3'>".$user->lang['RECURRING_EVENT_CASE_3']."</option>\n";
+	$recurr_raidplan_freq_sel_code .= "<option value='4'>".$user->lang['RECURRING_EVENT_CASE_4']."</option>\n";
+	$recurr_raidplan_freq_sel_code .= "<option value='5'>".$user->lang['RECURRING_EVENT_CASE_5']."</option>\n";
+	$recurr_raidplan_freq_sel_code .= "<option value='6'>".$user->lang['RECURRING_EVENT_CASE_6']."</option>\n";
+	$recurr_raidplan_freq_sel_code .= "</select>\n";
+	$recurr_raidplan_freq_val_code = "<input type='number' name='calRFrq' id='calRFrq' value='1' onchange='update_recurring_options()' disabled='disabled' />";
 
 	$temp_find_str = "id='calM'";
 	$temp_replace_str = "id='calM' onchange='update_recurring_options()'";
@@ -398,8 +398,8 @@ if( $event_data['s_recurring_opts'] )
   
 $cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".$newraid->date['month_no']."&amp;y=".$newraid->date['year']);
 
-// check to see if we're editing an existing event
-if( sizeof($error) || $preview || $event_id > 0 )
+// check to see if we're editing an existing raidplan
+if( sizeof($error) || $preview || $raidplan_id > 0 )
 {
 	
 	// get profile for this raid
@@ -411,7 +411,7 @@ if( sizeof($error) || $preview || $event_id > 0 )
 		    'LEFT_JOIN' => array(
 		        array(
 		            'FROM'  => array( RP_EVENTROLES  => 'er'),
-		            'ON'    => 'r.role_id = er.role_id AND er.event_id = ' . $event_id  
+		            'ON'    => 'r.role_id = er.role_id AND er.raidplan_id = ' . $raidplan_id  
 		        )
 		    ),
 		    'ORDER_BY'  => 'r.role_id'
@@ -430,9 +430,9 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	$db->sql_freeresult($result);
 	
 
-	// translate event start and end time into user's timezone
-	$event_start = $event_data['event_start_time'] + $user->timezone + $user->dst;
-	$cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".gmdate('n', $event_start)."&amp;y=".gmdate('Y', $event_start) );
+	// translate raidplan start and end time into user's timezone
+	$raidplan_start = $raidplan_data['raidplan_start_time'] + $user->timezone + $user->dst;
+	$cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".gmdate('n', $raidplan_start)."&amp;y=".gmdate('Y', $raidplan_start) );
 
 	//-----------------------------------------
 	// month selection data
@@ -442,8 +442,8 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	$temp_find_str = "name='calM' id='calM'";
 	$temp_replace_str = "name='calMEnd' id='calMEnd'";
 	$end_month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_month_sel_code );
-	$temp_find_str = "value='".gmdate('n', $event_start)."'";
-	$temp_replace_str = "value='".gmdate('n', $event_start)."' selected='selected'";
+	$temp_find_str = "value='".gmdate('n', $raidplan_start)."'";
+	$temp_replace_str = "value='".gmdate('n', $raidplan_start)."' selected='selected'";
 	$month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $month_sel_code );
 
 	//-----------------------------------------
@@ -454,8 +454,8 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	$temp_find_str = "name='calD' id='calD'";
 	$temp_replace_str = "name='calDEnd' id='calDEnd'";
 	$end_day_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_day_sel_code );
-	$temp_find_str = "value='".gmdate('j', $event_start)."'";
-	$temp_replace_str = "value='".gmdate('j', $event_start)."' selected='selected'";
+	$temp_find_str = "value='".gmdate('j', $raidplan_start)."'";
+	$temp_replace_str = "value='".gmdate('j', $raidplan_start)."' selected='selected'";
 	$day_sel_code = str_replace( $temp_find_str, $temp_replace_str, $day_sel_code );
 
 	//-----------------------------------------
@@ -466,8 +466,8 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	$temp_find_str = "name='calY' id='calY'";
 	$temp_replace_str = "name='calYEnd' id='calYEnd'";
 	$end_year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_year_sel_code );
-	$temp_find_str = "value='".gmdate('Y', $event_start)."'";
-	$temp_replace_str = "value='".gmdate('Y', $event_start)."' selected='selected'";
+	$temp_find_str = "value='".gmdate('Y', $raidplan_start)."'";
+	$temp_replace_str = "value='".gmdate('Y', $raidplan_start)."' selected='selected'";
 	$year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $year_sel_code );
 
 	//-----------------------------------------
@@ -478,8 +478,8 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	$temp_find_str = "name='calHr' id='calHr'";
 	$temp_replace_str = "name='calHrEnd' id='calHrEnd'";
 	$end_hour_code = str_replace( $temp_find_str, $temp_replace_str, $end_hour_code );
-	$temp_find_str = "value='".gmdate('G', $event_start)."'";
-	$temp_replace_str = "value='".gmdate('G', $event_start)."' selected='selected'";
+	$temp_find_str = "value='".gmdate('G', $raidplan_start)."'";
+	$temp_replace_str = "value='".gmdate('G', $raidplan_start)."' selected='selected'";
 	$start_hour_code = str_replace( $temp_find_str, $temp_replace_str, $hour_sel_code );
 
 	//-----------------------------------------
@@ -490,33 +490,33 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	$temp_find_str = "name='calMn' id='calMn'";
 	$temp_replace_str = "name='calMnEnd' id='calMnEnd'";
 	$end_min_code = str_replace( $temp_find_str, $temp_replace_str, $end_min_code );
-	$temp_find_str = "value='".gmdate('i', $event_start)."'";
-	$temp_replace_str = "value='".gmdate('i', $event_start)."' selected='selected'";
+	$temp_find_str = "value='".gmdate('i', $raidplan_start)."'";
+	$temp_replace_str = "value='".gmdate('i', $raidplan_start)."' selected='selected'";
 	$start_min_code = str_replace( $temp_find_str, $temp_replace_str, $min_sel_code );
 
 	//-----------------------------------------
-	// event type data
+	// raidplan type data
 	//-----------------------------------------
-	$temp_find_str = "value='".$event_data['etype_id']."'";
-	$temp_replace_str = "value='".$event_data['etype_id']."' selected='selected'";
+	$temp_find_str = "value='".$raidplan_data['etype_id']."'";
+	$temp_replace_str = "value='".$raidplan_data['etype_id']."' selected='selected'";
 	$e_type_sel_code = str_replace( $temp_find_str, $temp_replace_str, $e_type_sel_code );
 
 	//-----------------------------------------
-	// event levels
+	// raidplan levels
 	//-----------------------------------------
-	$temp_find_str = "value='".$event_data['event_access_level']."'";
-	$temp_replace_str = "value='".$event_data['event_access_level']."' selected='selected'";
+	$temp_find_str = "value='".$raidplan_data['raidplan_access_level']."'";
+	$temp_replace_str = "value='".$raidplan_data['raidplan_access_level']."' selected='selected'";
 	$level_sel_code = str_replace( $temp_find_str, $temp_replace_str, $level_sel_code );
 
-	if( $event_data['group_id'] != 0 )
+	if( $raidplan_data['group_id'] != 0 )
 	{
-		$temp_find_str = "value='".$event_data['group_id']."'";
-		$temp_replace_str = "value='".$event_data['group_id']."' selected='selected'";
+		$temp_find_str = "value='".$raidplan_data['group_id']."'";
+		$temp_replace_str = "value='".$raidplan_data['group_id']."' selected='selected'";
 		$group_sel_code = str_replace( $temp_find_str, $temp_replace_str, $group_sel_code );
 	}
 	else
 	{
-		$group_list = explode( ',', $event_data['group_id_list'] );
+		$group_list = explode( ',', $raidplan_data['group_id_list'] );
 		$num_groups = sizeof( $group_list );
 		for( $group_index = 0; $group_index < $num_groups; $group_index++ )
 		{
@@ -530,7 +530,7 @@ if( sizeof($error) || $preview || $event_id > 0 )
 		}
 	}
 
-	if( $event_data['event_access_level'] == 1 )
+	if( $raidplan_data['raidplan_access_level'] == 1 )
 	{
 		$temp_find_str = "disabled='disabled'";
 		$temp_replace_str = "";
@@ -538,33 +538,33 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	}
 
 	//-----------------------------------------
-	// recurring events
+	// recurring raidplans
 	//-----------------------------------------
-	if( $event_data['is_recurr'] == 1 )
+	if( $raidplan_data['is_recurr'] == 1 )
 	{
 		$temp_find_str = "value='ON'";
 		$temp_replace_str = "value='ON' checked='checked'";
-		$recurr_event_check = str_replace( $temp_find_str, $temp_replace_str, $recurr_event_check );
+		$recurr_raidplan_check = str_replace( $temp_find_str, $temp_replace_str, $recurr_raidplan_check );
 
 		$temp_find_str = "disabled='disabled'";
 		$temp_replace_str = "";
-		$recurr_event_freq_sel_code = str_replace( $temp_find_str, $temp_replace_str, $recurr_event_freq_sel_code );
-		$recurr_event_freq_val_code = str_replace( $temp_find_str, $temp_replace_str, $recurr_event_freq_val_code );
+		$recurr_raidplan_freq_sel_code = str_replace( $temp_find_str, $temp_replace_str, $recurr_raidplan_freq_sel_code );
+		$recurr_raidplan_freq_val_code = str_replace( $temp_find_str, $temp_replace_str, $recurr_raidplan_freq_val_code );
 		$end_recurr_month_sel_code  = str_replace( $temp_find_str, $temp_replace_str, $end_recurr_month_sel_code );
 		$end_recurr_day_sel_code    = str_replace( $temp_find_str, $temp_replace_str, $end_recurr_day_sel_code );
 		$end_recurr_year_sel_code   = str_replace( $temp_find_str, $temp_replace_str, $end_recurr_year_sel_code );
 
-		$temp_find_str = "value='".$event_data['frequency_type']."'";
-		$temp_replace_str = "value='".$event_data['frequency_type']."' selected='selected'";
-		$recurr_event_freq_sel_code = str_replace( $temp_find_str, $temp_replace_str, $recurr_event_freq_sel_code );
+		$temp_find_str = "value='".$raidplan_data['frequency_type']."'";
+		$temp_replace_str = "value='".$raidplan_data['frequency_type']."' selected='selected'";
+		$recurr_raidplan_freq_sel_code = str_replace( $temp_find_str, $temp_replace_str, $recurr_raidplan_freq_sel_code );
 
 		$temp_find_str = "value='1'";
-		$temp_replace_str = "value='".$event_data['frequency']."'";
-		$recurr_event_freq_val_code = str_replace( $temp_find_str, $temp_replace_str, $recurr_event_freq_val_code );
+		$temp_replace_str = "value='".$raidplan_data['frequency']."'";
+		$recurr_raidplan_freq_val_code = str_replace( $temp_find_str, $temp_replace_str, $recurr_raidplan_freq_val_code );
 
-		if( $event_data['final_occ_time'] > 0 )
+		if( $raidplan_data['final_occ_time'] > 0 )
 		{
-			$temp_final_time = $event_data['final_occ_time'] + $user->timezone + $user->dst;
+			$temp_final_time = $raidplan_data['final_occ_time'] + $user->timezone + $user->dst;
 			$temp_find_str = "value='".gmdate('n', $temp_final_time )."'";
 			$temp_replace_str = "value='".gmdate('n', $temp_final_time)."' selected='selected'";
 			$end_recurr_month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_recurr_month_sel_code );
@@ -667,7 +667,7 @@ else //  new raid
 }
 
 
-$s_hidden_fields = '<input type="hidden" name="calEid" value="' . $event_data['event_id'] . '" />';
+$s_hidden_fields = '<input type="hidden" name="calEid" value="' . $raidplan_data['raidplan_id'] . '" />';
 $s_hidden_fields .= '<input type="hidden" name="lastclick" value="' . $current_time . '" />';
 
 $day_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=day&amp;calD=".$newraid->date['day']."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
@@ -676,8 +676,8 @@ $month_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=month&amp
 
 $allow_delete = false;
 if( ($mode == 'edit') &&
-	( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_delete_events')) &&
-	(($user->data['user_id'] == $event_data['poster_id'])|| $auth->acl_get('m_raidplanner_delete_other_users_events') ))
+	( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_delete_raidplans')) &&
+	(($user->data['user_id'] == $raidplan_data['poster_id'])|| $auth->acl_get('m_raidplanner_delete_other_users_raidplans') ))
 {
 	$allow_delete = true;
 }
@@ -686,8 +686,8 @@ if( ($mode == 'edit') &&
 $template->assign_vars(array(
 	'L_POST_A'					=> $page_title,
 	'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
-	'SUBJECT'					=> $event_data['event_subject'],
-	'MESSAGE'					=> $event_data['event_body'],
+	'SUBJECT'					=> $raidplan_data['raidplan_subject'],
+	'MESSAGE'					=> $raidplan_data['raidplan_body'],
 	'MINI_POST_IMG'				=> $user->img('icon_post_target', $user->lang['POST']),
 	'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
 	'U_CALENDAR'				=> append_sid("{$phpbb_root_path}planner.$phpEx"),
@@ -705,12 +705,12 @@ $template->assign_vars(array(
 	'DAY_VIEW_URL'				=> $day_view_url,
 	'WEEK_VIEW_URL'				=> $week_view_url,
 	'MONTH_VIEW_URL'			=> $month_view_url,
- 	'TRACK_RSVP_CHECK'			=> ($event_data['track_signups'] == 1) ? ' checked="checked"' : '',
-	'S_RECURRING_OPTS'			=> $event_data['s_recurring_opts'],
-	'S_UPDATE_RECURRING_OPTIONS'=> $event_data['s_update_recurring_options'],
-	'RECURRING_EVENT_CHECK'		=> $recurr_event_check,
-	'RECURRING_EVENT_TYPE_SEL'	=> $recurr_event_freq_sel_code,
-	'RECURRING_EVENT_FREQ_IN'	=> $recurr_event_freq_val_code,
+ 	'TRACK_RSVP_CHECK'			=> ($raidplan_data['track_signups'] == 1) ? ' checked="checked"' : '',
+	'S_RECURRING_OPTS'			=> $raidplan_data['s_recurring_opts'],
+	'S_UPDATE_RECURRING_OPTIONS'=> $raidplan_data['s_update_recurring_options'],
+	'RECURRING_EVENT_CHECK'		=> $recurr_raidplan_check,
+	'RECURRING_EVENT_TYPE_SEL'	=> $recurr_raidplan_freq_sel_code,
+	'RECURRING_EVENT_FREQ_IN'	=> $recurr_raidplan_freq_val_code,
 	'END_RECURR_MONTH_SEL'		=> $end_recurr_month_sel_code,
 	'END_RECURR_DAY_SEL'		=> $end_recurr_day_sel_code,
 	'END_RECURR_YEAR_SEL'		=> $end_recurr_year_sel_code,

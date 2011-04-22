@@ -59,7 +59,7 @@ class acp_raidplanner
 				// move the calendar for daylight savings
 				if( request_var('calPlusHour', 0) == 1)
 				{
-					$this->move_all_events_by_one_hour( request_var('plusVal', 1));
+					$this->move_all_raidplans_by_one_hour( request_var('plusVal', 1));
 					exit;
 				}
 				
@@ -135,8 +135,8 @@ class acp_raidplanner
 					$disp_week	= request_var('disp_week', 0);
 					set_config  ( 'rp_index_display_week',  $disp_week,0);  
 					
-					$disp_next_events	= request_var('disp_next_events', 0);
-					set_config  ( 'rp_index_display_next_events',  $disp_next_events,0);
+					$disp_next_raidplans	= request_var('disp_next_raidplans', 0);
+					set_config  ( 'rp_index_display_next_raidplans',  $disp_next_raidplans,0);
 					
 					$hour_mode = request_var('hour_mode', 12);
 					set_config  ( 'rp_hour_mode',  $hour_mode,0);
@@ -147,8 +147,8 @@ class acp_raidplanner
 					$disp_hidden_groups	= request_var('disp_hidden_groups', 0);
 					set_config  ( 'rp_display_hidden_groups',  $disp_hidden_groups,0);
 					
-					$disp_events_1_day = request_var('disp_events_1_day', 0);
-					set_config  ( 'rp_disp_events_only_on_start',  $disp_events_1_day,0);
+					$disp_raidplans_1_day = request_var('disp_raidplans_1_day', 0);
+					set_config  ( 'rp_disp_raidplans_only_on_start',  $disp_raidplans_1_day,0);
 
 					$date_format = request_var('date_format', 'M d, Y');
 					set_config  ( 'rp_date_format',  $date_format,0);
@@ -169,7 +169,7 @@ class acp_raidplanner
 					$prune_limit = 86400 * $prune_limit;
 					set_config  ( 'rp_prune_limit',  $prune_limit,0);
 
-					// auto populate recurring event settings
+					// auto populate recurring raidplan settings
 					// populate_freq is entered in days by user, but stored in seconds
 					$populate_freq = request_var('populate_freq', '0');
 					$populate_freq = 86400 * $populate_freq;
@@ -244,12 +244,12 @@ class acp_raidplanner
 					'SEL_SUNDAY'		=> $sel_sunday,
 					'DISP_WEEK_CHECKED'	=> ( $config['rp_index_display_week'] == '1' ) ? "checked='checked'" : '',
 					'DISP_NEXT_EVENTS_DISABLED'	=> ( $config['rp_index_display_week'] == '1' ) ? "disabled='disabled'" : '',
-					'DISP_NEXT_EVENTS'	=> $config['rp_index_display_next_events'],
+					'DISP_NEXT_EVENTS'	=> $config['rp_index_display_next_raidplans'],
 					'SEL_12_HOURS'		=> ($config['rp_hour_mode'] == 12) ? "selected='selected'" :'',
 					'SEL_24_HOURS'		=> ($config['rp_hour_mode'] != 12) ? "selected='selected'" :'' ,
 					'DISP_TRUNCATED'	=> $config['rp_display_truncated_name'],
 					'DISP_HIDDEN_GROUPS_CHECKED'	=> ($config['rp_display_hidden_groups'] == '1' ) ? "checked='checked'" : '',
-					'DISP_EVENTS_1_DAY_CHECKED'	=> ( $config['rp_disp_events_only_on_start'] == '1' ) ? "checked='checked'" : '',
+					'DISP_EVENTS_1_DAY_CHECKED'	=> ( $config['rp_disp_raidplans_only_on_start'] == '1' ) ? "checked='checked'" : '',
 					'DATE_FORMAT'		=> $config['rp_date_format'],
 					'DATE_TIME_FORMAT'	=> $config['rp_date_time_format'],
 					'TIME_FORMAT'		=> $config['rp_time_format'],
@@ -273,7 +273,7 @@ class acp_raidplanner
 		}
 	}
 
-	private function move_all_events_by_one_hour( $plusVal )
+	private function move_all_raidplans_by_one_hour( $plusVal )
 	{
 		global $auth, $db, $user, $config, $phpEx, $phpbb_root_path;
 	
@@ -294,16 +294,16 @@ class acp_raidplanner
 		if (confirm_box(true))
 		{
 	
-			/* first populate all recurring events to make sure
+			/* first populate all recurring raidplans to make sure
 			   the cron job does not run again while we are working. */
 			include_once($phpbb_root_path . 'includes/bbdkp/raidplanner/functions_rp.' . $phpEx);
 			populate_calendar(0);
 	
-			/* next move all recurring events by one hour
+			/* next move all recurring raidplans by one hour
 			   (note we will also edit the poster_timezone by one hour
 			   so as not to change the calculation method) */
 			
-			// delete any recurring events that are permanently over
+			// delete any recurring raidplans that are permanently over
 			$sql = 'SELECT * FROM ' . RP_RECURRING . '
 						ORDER BY recurr_id';
 			$db->sql_query($sql);
@@ -333,24 +333,24 @@ class acp_raidplanner
 			}
 			$db->sql_freeresult($result);
 	
-			/* finally move each individual event by one hour */
+			/* finally move each individual raidplan by one hour */
 			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
-						ORDER BY event_id';
+						ORDER BY raidplan_id';
 			$db->sql_query($sql);
 			$result = $db->sql_query($sql);
 			while ($row = $db->sql_fetchrow($result))
 			{
 				$sort_timestamp = $row['sort_timestamp'] + ($factor * 3600);
-				$event_start_time = $row['event_start_time'] + ($factor * 3600);
-				$event_end_time = $row['event_end_time'] + ($factor * 3600);
-				$event_id = $row['event_id'];
+				$raidplan_start_time = $row['raidplan_start_time'] + ($factor * 3600);
+				$raidplan_end_time = $row['raidplan_end_time'] + ($factor * 3600);
+				$raidplan_id = $row['raidplan_id'];
 				$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
 					SET ' . $db->sql_build_array('UPDATE', array(
 						'sort_timestamp'	=> (int) $sort_timestamp,
-						'event_start_time'	=> (int) $event_start_time,
-						'event_end_time'	=> (int) $event_end_time,
+						'raidplan_start_time'	=> (int) $raidplan_start_time,
+						'raidplan_end_time'	=> (int) $raidplan_end_time,
 						)) . "
-					WHERE event_id = $event_id";
+					WHERE raidplan_id = $raidplan_id";
 				$db->sql_query($sql);
 			}
 			$db->sql_freeresult($result);
