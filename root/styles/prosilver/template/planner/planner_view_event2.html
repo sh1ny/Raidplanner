@@ -1,7 +1,6 @@
 <!-- INCLUDE overall_header.html -->
 <!-- INCLUDE dkp/dkpmenu.html -->
-<div class="forabg">
-<span class="corners-top"><span></span></span>
+<div class="forabg"><span class="corners-top"><span></span></span>
 <div style="width:50%; float: left;">
 <h1> <span style="color:#<!-- IF EVENT_COLOR -->{EVENT_COLOR}<!--ELSE -->dfc065<!-- ENDIF -->">
 <!-- IF EVENT_IMAGE --><img src="{EVENT_IMAGE}" /> <!-- ENDIF --> <!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}:
@@ -25,15 +24,9 @@
 
 <span class="corners-bottom"><span></span></span></div>
 
-
-
-
-
 <div class="panel">
-<div class="inner">
-<span class="corners-top"><span></span></span>
+<div class="inner"><span class="corners-top"><span></span></span>
 
-<!-- raid message -->
 <div class="postbody" style="width: 100%">
 	<!-- IF U_DELETE or U_EDIT -->
 	<ul class="profile-icons">
@@ -54,19 +47,12 @@
 		<!-- ENDIF -->
 	</ul>
 	<!-- ENDIF -->
-<div class="content">
-{MESSAGE}
-</div>
-</div>
-<span class="corners-bottom"><span></span></span>
-</div>
-</div>
 
+<h4>{MESSAGE}</h4>
 
-
-<!--  raid information -->
 <div class="panel">
 <div class="inner"><span class="corners-top"><span></span></span>
+
 <!-- IF IS_RECURRING --><h4><br />&nbsp;<br />{L_OCCURS_EVERY}: {RECURRING_TXT}</h4><!-- ENDIF -->
 
 <table class="table1" style="width:90%; margin-left:auto;margin-right:auto;text-align:left" ">
@@ -153,16 +139,70 @@
 </tbody>
 </table>
 
+
+</div>
+</div>
+
+<div class="panel">
+<div class="inner"><span class="corners-top"><span></span></span>
+
+<br />
+
+
+
+<!-- IF S_CALENDAR_SIGNUPS -->
+
+<h3>{L_DETAILS}</h3>
+<table class="sortable">
+	<tr id='head' style="font-weight: bold;">
+		<th valign="bottom"
+			style="border-bottom-style: solid; border-bottom-width: 1px;"
+			align="left" width="17%"><a>{L_USERNAME}</a></th>
+
+		<th valign="bottom"
+			style="border-bottom-style: solid; border-bottom-width: 1px;"
+			align="left" width="9%"><a>{L_COL_WILL_ATTEND}</a></th>
+		<th valign="bottom"
+			style="border-bottom-style: solid; border-bottom-width: 1px;"
+			align="left" width="35%"><a>{L_COMMENTS}</a></th>
+		<th valign="bottom"
+			style="border-bottom-style: solid; border-bottom-width: 1px;"
+			align="left" width="25%"><a>{L_POST_TIME}</a></th>
+		<!-- IF S_EDIT_SIGNUP -->
+		<th valign="bottom"
+			style="border-bottom-style: solid; border-bottom-width: 1px;"
+			align="left" width="8%"><a>{L_EDIT}</a></th>
+		<!-- ENDIF -->
+	</tr>
+	<!-- BEGIN signups -->
+	<tr>
+		<td align="left"><span style="display: none">{signups.POSTER}</span>{signups.POSTER_URL}</td>
+
+		<td align="left">{signups.VALUE_TXT}</td>
+		<td align="left">{signups.DETAILS}</td>
+		<td align="left"><span style="display: none">{signups.POST_TIMESTAMP}</span>{signups.POST_TIME}</td>
+		<!-- IF S_EDIT_SIGNUP -->
+		<td align="left"><a href="{signups.U_EDIT}">{L_EDIT}</a></td>
+		<!-- ENDIF -->
+	</tr>
+	<!-- END signups -->
+</table>
+<br />
+&nbsp;<br />
+<!-- ENDIF -->
+
+
+</div>
+</div>
+
+</div>
+
 <span class="corners-bottom"><span></span></span></div>
 </div>
 
-
-
-
-
-
 <!-- IF S_CURRENT_SIGNUP -->
-<form method="post" action="{S_SIGNUP_MODE_ACTION}" name="signup_form" id="signup_form">
+<form method="post" action="{S_SIGNUP_MODE_ACTION}" name="signup_form"
+	id="signup_form">
 <div class="panel bg2">
 <div class="inner"><span class="corners-top"><span></span></span>
 <h3 class="solo">{L_CALENDAR_RESPOND} : {CURR_POSTER_URL}</h3>
@@ -170,9 +210,6 @@
 <dl>
 	<dt>{L_CALENDAR_WILL_ATTEND}</dt>
 	<dd>{SEL_ATTEND}</dd>
-
-	<dt>{L_RAIDROLE}</dt>
-	<dd>{SEL_ROLE}</dd>
 
 	<dt>&nbsp;<br>
 	{L_COMMENTS}</dt>

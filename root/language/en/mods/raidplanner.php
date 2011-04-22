@@ -95,7 +95,8 @@ $lang = array_merge($lang, array(
 	
 	'AM'					=> 'AM',
 	
-	'RAIDROLES'				=> 'Raid Roles', 
+	'CHOOSEPROFILE'				=> 'Choose Raidprofile', 
+	'RAIDROLES'					=> 'Raid Roles', 
 	'RAIDROLE'					=> 'Role', 
 
 	'ALL_DAY'				 	=> 'All Day Raid',
@@ -182,6 +183,7 @@ $lang = array_merge($lang, array(
 	'PRIVATE_EVENT'			=> 'This raid is private.  You must be invited and logged in to view this raid.',
 
 	'RAIDROLES'				=> 'Raid Roles' ,
+	'RAIDROLE'				=> 'Raid Role' ,
 	'RAIDINFO'				=> 'Raid Info' ,
 	'RAIDWHEN'				=> 'When ?' ,
 	'RAIDREPEAT'			=> 'Repeat ?' ,
@@ -201,8 +203,8 @@ $lang = array_merge($lang, array(
 	
 	'RETURN_CALENDAR'			=> '%sReturn to the calendar%s',
 
-	'RAIDPROFILE10'				=> '10-man', 
-	'RAIDPROFILE25'				=> '25-man', 
+	'RAIDPROFILE1'				=> '10-man', 
+	'RAIDPROFILE2'				=> '25-man', 
 
 	'START_DATE'				=> 'Start Date',
 	'RAID_DATE'					=> 'Raid Date',

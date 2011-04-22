@@ -100,9 +100,9 @@ class ucp_planner
 		{
 			
 			$events['EVENT_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=event&amp;calEid=".$row['event_id'].$etype_url_opts);
-			$events['IMAGE'] = $raidevents->available_etype_images[$row['etype_id']];
-			$events['COLOR'] = $raidevents->available_etype_colors[$row['etype_id']];
-			$events['ETYPE_DISPLAY_NAME'] = $raidevents->available_etype_display_names[$row['etype_id']];
+			$events['IMAGE'] = $raidevents->raid_event_images[$row['etype_id']];
+			$events['COLOR'] = $raidevents->raid_event_colors[$row['etype_id']];
+			$events['ETYPE_DISPLAY_NAME'] = $raidevents->raid_event_displaynames[$row['etype_id']];
 			$events['FULL_SUBJECT'] = censor_text($row['event_subject']);
 			$events['SUBJECT'] = $events['FULL_SUBJECT'];
 			if( $subject_limit > 0 )

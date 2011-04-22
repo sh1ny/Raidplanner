@@ -40,7 +40,7 @@ $cancel		= (isset($_POST['cancel'])) ? true : false;
 $mode = ($delete && !$preview && $submit) ? 'delete' : request_var('mode', '');
 $error = array();
 // get the number of events : of none defined throw error..
-if( $newraid->available_etype_count < 1 )
+if( $newraid->raid_event_count < 1 )
 {
 	trigger_error('NO_EVENT_TYPES');
 }
@@ -138,7 +138,7 @@ if ($submit || $preview)
 	
 	if( $event_id > 0 )
 	{
-		$newraid->edit_event($event_data, $newraid, $event_id );
+		$newraid->edit_event($event_data, $newraid, $event_id,$s_date_time_opts );
 	}
 	else 
 	{
@@ -181,9 +181,9 @@ if ($preview)
 	generate_text_for_storage($event_body, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
 	$preview_message = generate_text_for_display($event_body, $uid, $bitfield, $options);
 
-	$preview_etype_display_name = $newraid->available_etype_display_names[$event_data['etype_id']];
-	$preview_event_color = $newraid->available_etype_colors[$event_data['etype_id']];
-	$preview_event_image = $newraid->available_etype_images[$event_data['etype_id']];
+	$preview_etype_display_name = $newraid->raid_event_displaynames[$event_data['etype_id']];
+	$preview_event_color = $newraid->raid_event_colors[$event_data['etype_id']];
+	$preview_event_image = $newraid->raid_event_images[$event_data['etype_id']];
 	$preview_subject = censor_text($event_data['event_subject']);
 
 	$poster_url = '';
@@ -247,9 +247,9 @@ $event_data['event_body'] = str_replace( $temp_find_str, $temp_replace_str, $eve
 
 //count events from bbdkp, put them in a pulldown...
 $e_type_sel_code  = "";
-for( $i = 0; $i < $newraid->available_etype_count; $i++ )
+for( $i = 0; $i < $newraid->raid_event_count; $i++ )
 {
-	$e_type_sel_code .= "<option value='".$newraid->available_etype_ids[$i]."'>".$newraid->available_etype_full_names[$i]."</option>\n";
+	$e_type_sel_code .= "<option value='".$newraid->raid_event_ids[$i]."'>".$newraid->raid_event_names[$i]."</option>\n";
 }
 
 // event acces level
@@ -395,7 +395,7 @@ if( $event_data['s_recurring_opts'] )
 	$end_recurr_year_sel_code .= "</select>\n";
 
 }
-
+  
 $cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".$newraid->date['month_no']."&amp;y=".$newraid->date['year']);
 
 // check to see if we're editing an existing event
@@ -424,7 +424,7 @@ if( sizeof($error) || $preview || $event_id > 0 )
 	    $template->assign_block_vars('raidroles', array(
 	        'ROLE_ID'        => $row['role_id'],
 		    'ROLE_NAME'      => $row['role_name'],
-	    	'ROLE_NEEDED2'    => $row['role_needed'],
+	    	'ROLE_NEEDED'    => $row['role_needed'],
 	    ));
 	}
 	$db->sql_freeresult($result);
@@ -579,7 +579,7 @@ if( sizeof($error) || $preview || $event_id > 0 )
 		}
 	}
 }
-else // we are creating a new event
+else //  new raid
 {
 	
 	// make raid composition proposal, always choose primary role first
@@ -597,7 +597,7 @@ else // we are creating a new event
 	    $template->assign_block_vars('raidroles', array(
 	        'ROLE_ID'        => $row['role_id'],
 		    'ROLE_NAME'      => $row['role_name'],
-	    	'ROLE_NEEDED'    => $row['role_needed'],
+	    	'ROLE_NEEDED'    => $row['role_needed1'],
 	    ));
 	}
 	$db->sql_freeresult($result);
@@ -666,8 +666,6 @@ else // we are creating a new event
 
 }
 
-// Build Navigation Links
-$newraid->generate_forum_nav($post_data);
 
 $s_hidden_fields = '<input type="hidden" name="calEid" value="' . $event_data['event_id'] . '" />';
 $s_hidden_fields .= '<input type="hidden" name="lastclick" value="' . $current_time . '" />';

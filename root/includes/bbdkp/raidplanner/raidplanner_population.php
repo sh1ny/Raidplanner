@@ -52,16 +52,8 @@ class raidplanner_population extends raidplanner_base
 		$event_data['group_id'] = 0;
 		$event_data['group_id_list'] = ",";
 		
-		// get raidsize from form, this is 1 or 2
-		$raidsize = request_var('raidcomposition', 99);
-		if ($raidsize == 1)
-		{
-			$event_data['roles_needed'] = request_var('role_needed1', array(0=> 0)); 
-		}
-		elseif  ($raidsize == 2)
-		{
-			$event_data['roles_needed'] = request_var('role_needed2', array(0=> 0));
-		}
+		// get raidsize from form
+		$event_data['roles_needed'] = request_var('role_needed', array(0=> 0));
 		
 		// get member group id
 		$group_id_array = request_var('calGroupId', array(0));
@@ -181,7 +173,7 @@ class raidplanner_population extends raidplanner_base
 	}
 		
 	/*
-	 * inserts new event in DB
+	 * inserts new planned raid in DB
 	 * @param byref : $event_data, $newraid, $event_id
 	 * 
 	 */
@@ -305,7 +297,7 @@ class raidplanner_population extends raidplanner_base
 	 * @param byref : &event_data 
 	 * @param byval : $newraid, $event_id
 	 */
-	public function edit_event(&$event_data, $newraid, $event_id)
+	public function edit_event(&$event_data, $newraid, $event_id, $s_date_time_opts)
 	{
 		global $db;
 		
@@ -319,8 +311,9 @@ class raidplanner_population extends raidplanner_base
 		if( $event_id > 0 )
 		{
 			// we are only editing the one event
-			if( $s_date_time_opts )
+			if($s_date_time_opts )
 			{
+				// update schedule table
 				$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
 					SET ' . $db->sql_build_array('UPDATE', array(
 						'etype_id'				=> (int) $event_data['etype_id'],
@@ -343,6 +336,23 @@ class raidplanner_population extends raidplanner_base
 						)) . "
 					WHERE event_id = $event_id";
 				$db->sql_query($sql);
+				
+				// delete old roles
+				$sql = 'delete from ' . RP_EVENTROLES . ' where event_id  = ' .  $event_id ; 
+				$db->sql_query($sql);
+				
+				unset($data);
+				$data = array();
+				// populate new roles
+				foreach($event_data['roles_needed'] as $key => $slots)
+				{
+					$data[] = array(
+						'event_id' 		=> $event_id,
+						'role_id'		=> $key,
+						'role_needed'	=> $slots,
+					);
+				}
+				$db->sql_multi_insert(RP_EVENTROLES, $data);
 			}
 			// we are editing all occurrences of this event...
 			else
@@ -395,112 +405,9 @@ class raidplanner_population extends raidplanner_base
 		}
 		
 	}
-	/**
-	* Create forum navigation links for given forum, create parent
-	* list if currently null, assign basic forum info to template
-	*/
-	public function generate_forum_nav(&$forum_data)
-	{
-		global $db, $user, $template, $auth, $config;
-		global $phpEx, $phpbb_root_path;
 	
-		if (!$auth->acl_get('f_list', $forum_data['forum_id']))
-		{
-			return;
-		}
-	
-		// Get forum parents
-		$forum_parents = $this->get_forum_parents($forum_data);
-	
-		// Build navigation links
-		if (!empty($forum_parents))
-		{
-			foreach ($forum_parents as $parent_forum_id => $parent_data)
-			{
-				list($parent_name, $parent_type) = array_values($parent_data);
-	
-				// Skip this parent if the user does not have the permission to view it
-				if (!$auth->acl_get('f_list', $parent_forum_id))
-				{
-					continue;
-				}
-	
-				$template->assign_block_vars('navlinks', array(
-					'S_IS_CAT'		=> ($parent_type == FORUM_CAT) ? true : false,
-					'S_IS_LINK'		=> ($parent_type == FORUM_LINK) ? true : false,
-					'S_IS_POST'		=> ($parent_type == FORUM_POST) ? true : false,
-					'FORUM_NAME'	=> $parent_name,
-					'FORUM_ID'		=> $parent_forum_id,
-					'U_VIEW_FORUM'	=> append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $parent_forum_id))
-				);
-			}
-		}
-	
-		$template->assign_block_vars('navlinks', array(
-			'S_IS_CAT'		=> ($forum_data['forum_type'] == FORUM_CAT) ? true : false,
-			'S_IS_LINK'		=> ($forum_data['forum_type'] == FORUM_LINK) ? true : false,
-			'S_IS_POST'		=> ($forum_data['forum_type'] == FORUM_POST) ? true : false,
-			'FORUM_NAME'	=> $forum_data['forum_name'],
-			'FORUM_ID'		=> $forum_data['forum_id'],
-			'U_VIEW_FORUM'	=> append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $forum_data['forum_id']))
-		);
-	
-		$template->assign_vars(array(
-			'FORUM_ID' 		=> $forum_data['forum_id'],
-			'FORUM_NAME'	=> $forum_data['forum_name'],
-			'FORUM_DESC'	=> generate_text_for_display($forum_data['forum_desc'], $forum_data['forum_desc_uid'], $forum_data['forum_desc_bitfield'], $forum_data['forum_desc_options']),
-	
-			'S_ENABLE_FEEDS_FORUM'	=> ($config['feed_forum'] && $forum_data['forum_type'] == FORUM_POST && !phpbb_optionget(FORUM_OPTION_FEED_EXCLUDE, $forum_data['forum_options'])) ? true : false,
-		));
-	
-		return;
-	}
 
-		
-	/**
-	* Returns forum parents as an array. Get them from forum_data if available, or update the database otherwise
-	*/
-	private function get_forum_parents(&$forum_data)
-	{
-		global $db;
-	
-		$forum_parents = array();
-	
-		if ($forum_data['parent_id'] > 0)
-		{
-			if ($forum_data['forum_parents'] == '')
-			{
-				$sql = 'SELECT forum_id, forum_name, forum_type
-					FROM ' . FORUMS_TABLE . '
-					WHERE left_id < ' . $forum_data['left_id'] . '
-						AND right_id > ' . $forum_data['right_id'] . '
-					ORDER BY left_id ASC';
-				$result = $db->sql_query($sql);
-	
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$forum_parents[$row['forum_id']] = array($row['forum_name'], (int) $row['forum_type']);
-				}
-				$db->sql_freeresult($result);
-	
-				$forum_data['forum_parents'] = serialize($forum_parents);
-	
-				$sql = 'UPDATE ' . FORUMS_TABLE . "
-					SET forum_parents = '" . $db->sql_escape($forum_data['forum_parents']) . "'
-					WHERE parent_id = " . $forum_data['parent_id'];
-				$db->sql_query($sql);
-			}
-			else
-			{
-				$forum_parents = unserialize($forum_data['forum_parents']);
-			}
-		}
-	
-		return $forum_parents;
-	}
-		
-		
-	/* calendar_notify_new_event()
+/* calendar_notify_new_event()
 	**
 	** send email to users who are watching the calendar of the new event
 	** (if the event is one the user has permission to see).
@@ -508,8 +415,6 @@ class raidplanner_population extends raidplanner_base
 	** INPUT
 	**   $event_id - the id of the newly created event
 	** OUTPUT
-	* 
-	* 
 	* 
 	**   
 	*/

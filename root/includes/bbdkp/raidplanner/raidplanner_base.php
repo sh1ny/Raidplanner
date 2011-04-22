@@ -33,12 +33,12 @@ class raidplanner_base
 	
 	public $date = array();
 	public $month_names = array();
-	public $available_etype_count = 0;
-	public $available_etype_ids = array();
-	public $available_etype_full_names = array();
-	public $available_etype_display_names = array();
-	public $available_etype_colors = array();
-	public $available_etype_images = array();
+	public $raid_event_count = 0;
+	public $raid_event_ids = array();
+	public $raid_event_names = array();
+	public $raid_event_displaynames = array();
+	public $raid_event_colors = array();
+	public $raid_event_images = array();
 	public $month_sel_code = "";
 	public $day_sel_code = "";
 	public $year_sel_code = "";
@@ -220,15 +220,15 @@ class raidplanner_base
 			//find the available event types:
 			$sql = 'SELECT * FROM ' . EVENTS_TABLE . ' ORDER BY event_id';
 			$result = $db->sql_query($sql);
-			$this->available_etype_count = 0;
+			$this->raid_event_count = 0;
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$this->available_etype_ids[$this->available_etype_count] = $row['event_id'];
-				$this->available_etype_full_names[$this->available_etype_count] = $row['event_name'];
-				$this->available_etype_colors[$row['event_id']] = $row['event_color'];
-				$this->available_etype_images[$row['event_id']] = $row['event_imagename'];
-				$this->available_etype_display_names[$row['event_id']] = $row['event_name'];
-				$this->available_etype_count++;
+				$this->raid_event_ids[$this->raid_event_count] = $row['event_id'];
+				$this->raid_event_names[$this->raid_event_count] = $row['event_name'];
+				$this->raid_event_colors[$row['event_id']] = $row['event_color'];
+				$this->raid_event_images[$row['event_id']] = $row['event_imagename'];
+				$this->raid_event_displaynames[$row['event_id']] = $row['event_name'];
+				$this->raid_event_count++;
 			}
 			$db->sql_freeresult($result);
 		}

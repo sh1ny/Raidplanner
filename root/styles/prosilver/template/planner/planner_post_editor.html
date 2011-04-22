@@ -276,7 +276,7 @@
   				var otitle = document.createElement('dt');
 
   				var oLabel = document.createElement('label');
-				oLabel.innerHTML = role_name;
+				oLabel.innerHTML = role_name + ":";
 				oLabel.setAttribute("for","subject");
 				otitle.appendChild(oLabel);
 				
@@ -347,14 +347,13 @@
   </fieldset>
   </div>
   
-  
  <div style="width:400px; float: left; position: relative;  height: 230px;">
 	<fieldset class="fields1"><legend><h4>{L_RAIDROLES}</h4></legend>
 		<br/>
 		<dl style="clear: left;">
 		<dt><label>{L_CHOOSEPROFILE}</label>  </dt>
 		<dd>
-		<input type="radio" name="raidcomposition" onclick="update_roles(1);" value="1"/> {L_RAIDPROFILE1}
+		<input type="radio" name="raidcomposition" onclick="update_roles(1);" value="1" checked /> {L_RAIDPROFILE1}
      	<input type="radio" name="raidcomposition" onclick="update_roles(2);" value="2"/> {L_RAIDPROFILE2}
 		</dd>
 		<div id="raidroles">
