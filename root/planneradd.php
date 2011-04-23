@@ -410,7 +410,7 @@ if( sizeof($error) || $preview || $raidplan_id > 0 )
 		    ),
 		    'LEFT_JOIN' => array(
 		        array(
-		            'FROM'  => array( RP_EVENTROLES  => 'er'),
+		            'FROM'  => array( RP_RAIDPLAN_ROLES  => 'er'),
 		            'ON'    => 'r.role_id = er.role_id AND er.raidplan_id = ' . $raidplan_id  
 		        )
 		    ),

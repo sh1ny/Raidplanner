@@ -895,7 +895,7 @@ class displayplanner extends raidplanner_base
 			    
 			    	'LEFT_JOIN' => array(
 			        	array(
-			            	'FROM'  => array( RP_EVENTROLES  => 'er'),
+			            	'FROM'  => array( RP_RAIDPLAN_ROLES  => 'er'),
 			            	'ON'    => 'r.role_id = er.role_id AND er.raidplan_id = ' . $planned_raid_id)
 			    			),
 			    	'WHERE' => 'er.role_needed > 0' ,  
@@ -1274,7 +1274,7 @@ class displayplanner extends raidplanner_base
 		$s_watching_raidplan['is_watching'] = false;
 		if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 		{
-			$sql = 'SELECT * FROM ' . RP_EVENTS_WATCH . '
+			$sql = 'SELECT * FROM ' . RP_RAIDPLAN_WATCH . '
 				WHERE user_id = '.$user->data['user_id'].' AND raidplan_id = ' .$raidplan_id;
 			$db->sql_query($sql);
 			$result = $db->sql_query($sql);
@@ -2145,7 +2145,7 @@ class displayplanner extends raidplanner_base
 		}
 	
 		$sql = 'SELECT w.*, u.username, u.username_clean, u.user_email, u.user_notify_type,
-			u.user_jabber, u.user_lang FROM ' . RP_EVENTS_WATCH . ' w, ' . USERS_TABLE . ' u
+			u.user_jabber, u.user_lang FROM ' . RP_RAIDPLAN_WATCH . ' w, ' . USERS_TABLE . ' u
 			WHERE w.user_id = u.user_id '. $sql_track_replies .' AND w.raidplan_id = ' .$raidplan_id.' AND u.user_id <> '.$user_id;
 		$db->sql_query($sql);
 		$result = $db->sql_query($sql);
@@ -2173,7 +2173,7 @@ class displayplanner extends raidplanner_base
 	
 				$messenger->send($row['user_notify_type']);
 	
-				$sql = 'UPDATE ' . RP_EVENTS_WATCH . '
+				$sql = 'UPDATE ' . RP_RAIDPLAN_WATCH . '
 					SET ' . $db->sql_build_array('UPDATE', array(
 					'notify_status'		=> (int) 1,
 										)) . "
@@ -2204,7 +2204,7 @@ class calendar_watch extends raidplanner_base
 {
 	/* calendar_watch_raidplan()
 	**
-	** Adds/removes the current user into the RP_EVENTS_WATCH table
+	** Adds/removes the current user into the RP_RAIDPLAN_WATCH table
 	** so that they can start/stop recieving notifications about updates
 	** and replies to the specified raidplan.
 	**
@@ -2223,7 +2223,7 @@ class calendar_watch extends raidplanner_base
 		if( $turn_on == 1 )
 		{
 			$is_watching_raidplan = false;
-			$sql = 'SELECT * FROM ' . RP_EVENTS_WATCH . '
+			$sql = 'SELECT * FROM ' . RP_RAIDPLAN_WATCH . '
 				WHERE user_id = '.$user_id.' AND raidplan_id = ' .$raidplan_id;
 			$db->sql_query($sql);
 			$result = $db->sql_query($sql);
@@ -2238,7 +2238,7 @@ class calendar_watch extends raidplanner_base
 			}
 			else
 			{
-				$sql = 'INSERT INTO ' . RP_EVENTS_WATCH . ' ' . 
+				$sql = 'INSERT INTO ' . RP_RAIDPLAN_WATCH . ' ' . 
 				$db->sql_build_array('INSERT', array(
 						'raidplan_id'		=> (int) $raidplan_id,
 						'user_id'		=> (int) $user_id,
@@ -2251,7 +2251,7 @@ class calendar_watch extends raidplanner_base
 		}
 		else if( $turn_on == 0 )
 		{
-			$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . '
+			$sql = 'DELETE FROM ' . RP_RAIDPLAN_WATCH . '
 					WHERE raidplan_id = ' .$db->sql_escape($raidplan_id). '
 					AND user_id = '.$db->sql_escape($user_id);
 			$db->sql_query($sql);
@@ -2260,7 +2260,7 @@ class calendar_watch extends raidplanner_base
 	
 	/* calendar_mark_user_read_raidplan()
 	**
-	** Changes the user's notify_status in the RP_EVENTS_WATCH table
+	** Changes the user's notify_status in the RP_RAIDPLAN_WATCH table
 	** This indicates that the user has re-visited the raidplan, and
 	** they will recieve a notification the next time there is
 	** an update/reply posted to this raidplan.
@@ -2272,7 +2272,7 @@ class calendar_watch extends raidplanner_base
 	{
 		global $db;
 	
-		$sql = 'UPDATE ' . RP_EVENTS_WATCH . '
+		$sql = 'UPDATE ' . RP_RAIDPLAN_WATCH . '
 			SET ' . $db->sql_build_array('UPDATE', array(
 			'notify_status'		=> (int) 0,
 								)) . "

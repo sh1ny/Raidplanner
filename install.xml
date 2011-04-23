@@ -96,10 +96,10 @@
 				<action type="after-add"><![CDATA[define('RP_RAIDS_TABLE',		$table_prefix . 'rp_raids');
 define('RP_RECURRING',		$table_prefix . 'rp_recurring');
 define('RP_SIGNUPS',		$table_prefix . 'rp_signups');
-define('RP_EVENTS_WATCH',		$table_prefix . 'rp_events_watch');
-define('RP_WATCH',		$table_prefix . 'rp_watch');
-define('RP_ROLES',		$table_prefix . 'rp_roles');
-define('RP_EVENTROLES',		$table_prefix . 'rp_eventroles');
+define('RP_RAIDPLAN_WATCH',	$table_prefix . 'rp_raidplans_watch');
+define('RP_WATCH',			$table_prefix . 'rp_watch');
+define('RP_ROLES',			$table_prefix . 'rp_roles');
+define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
 	]]></action>
 			</edit>
 		</open>
@@ -138,10 +138,10 @@ define('RP_EVENTROLES',		$table_prefix . 'rp_eventroles');
 				<comment lang="en"><![CDATA[Include functions_calendar so we can later display the current week or next events on the index]]></comment>
 				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
 				<action type="after-add"><![CDATA[if ( !class_exists('displayplanner')) 
-		        {
-					include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
-				}
-				$cal = new displayplanner;]]></action>
+{
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
+}
+$cal = new displayplanner;]]></action>
 			</edit>
 			<edit>
 				<comment lang="en"><![CDATA[Displays Raidplanner Week view on index]]></comment>

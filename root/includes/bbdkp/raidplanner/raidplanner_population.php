@@ -278,7 +278,7 @@ class raidplanner_population extends raidplanner_base
 					'role_needed'	=> $slots,
 				);
 			}
-			$db->sql_multi_insert(RP_EVENTROLES, $data);
+			$db->sql_multi_insert(RP_RAIDPLAN_ROLES, $data);
 			
 		}
 		
@@ -338,7 +338,7 @@ class raidplanner_population extends raidplanner_base
 				$db->sql_query($sql);
 				
 				// delete old roles
-				$sql = 'delete from ' . RP_EVENTROLES . ' where raidplan_id  = ' .  $raidplan_id ; 
+				$sql = 'delete from ' . RP_RAIDPLAN_ROLES . ' where raidplan_id  = ' .  $raidplan_id ; 
 				$db->sql_query($sql);
 				
 				unset($data);
@@ -352,7 +352,7 @@ class raidplanner_population extends raidplanner_base
 						'role_needed'	=> $slots,
 					);
 				}
-				$db->sql_multi_insert(RP_EVENTROLES, $data);
+				$db->sql_multi_insert(RP_RAIDPLAN_ROLES, $data);
 			}
 			// we are editing all occurrences of this raidplan...
 			else
@@ -681,7 +681,7 @@ class raidplanner_population extends raidplanner_base
 			$sql = 'DELETE FROM ' . RP_SIGNUPS . ' WHERE raidplan_id = ' .$db->sql_escape($raidplan_id);
 			$db->sql_query($sql);
 	
-			$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE raidplan_id = ' .$db->sql_escape($raidplan_id);
+			$sql = 'DELETE FROM ' . RP_RAIDPLAN_WATCH . ' WHERE raidplan_id = ' .$db->sql_escape($raidplan_id);
 			$db->sql_query($sql);
 	
 			// Delete raidplan
@@ -743,7 +743,7 @@ class raidplanner_population extends raidplanner_base
 					$sql = 'DELETE FROM ' . RP_SIGNUPS . ' WHERE raidplan_id = ' .$db->sql_escape($row['raidplan_id']);
 					$db->sql_query($sql);
 	
-					$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE raidplan_id = ' .$db->sql_escape($row['raidplan_id']);
+					$sql = 'DELETE FROM ' . RP_RAIDPLAN_WATCH . ' WHERE raidplan_id = ' .$db->sql_escape($row['raidplan_id']);
 					$db->sql_query($sql);
 				}
 				$db->sql_freeresult($result);
@@ -1587,7 +1587,7 @@ class raidplanner_population extends raidplanner_base
 			$sql = 'DELETE FROM ' . RP_SIGNUPS . ' WHERE raidplan_id = ' .$row['raidplan_id'];
 			$db->sql_query($sql);
 	
-			$sql = 'DELETE FROM ' . RP_EVENTS_WATCH . ' WHERE raidplan_id = ' .$row['raidplan_id'];
+			$sql = 'DELETE FROM ' . RP_RAIDPLAN_WATCH . ' WHERE raidplan_id = ' .$row['raidplan_id'];
 			$db->sql_query($sql);
 	
 		}
