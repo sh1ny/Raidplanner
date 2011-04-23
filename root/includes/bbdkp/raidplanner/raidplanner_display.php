@@ -1228,7 +1228,15 @@ class displayplanner extends raidplanner_base
 			$signup_data['role_id'] = $newrole_id;
 			
 			//decrease old role signup count
-			$sql = " update " . RP_RAIDPLAN_ROLES . " set role_signedup = (role_signedup  - 1) where role_id = " . 
+			$sql = " select role_signedup from " . RP_RAIDPLAN_ROLES . " where role_id = " . 
+			$old_role_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
+			$result = $db->sql_query($sql);
+			$db->sql_query($sql);
+			$role_signedup = (int) $db->sql_fetchfield('role_signedup',0,$result);  
+			$role_signedup = max(0, $role_signedup - 1);
+			$db->sql_freeresult ( $result );
+			
+			$sql = " update " . RP_RAIDPLAN_ROLES . ' set role_signedup = ' . $role_signedup . ' where role_id = ' . 
 				$old_role_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
 			$db->sql_query($sql);
 
