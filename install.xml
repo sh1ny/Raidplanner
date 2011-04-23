@@ -83,6 +83,7 @@
 			<file from="root/umil/*.*" to="umil/*.*" />
 			<file from="root/install/installrp.php" to="install/installrp.php" />
 			<file from="root/planner.php" to="planner.php" />
+			<file from="root/plannerajax.php" to="plannerajax.php" />			
 			<file from="root/planneradd.php" to="planneradd.php" />						
 	
 		</copy>
