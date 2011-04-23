@@ -742,10 +742,10 @@ class displayplanner extends raidplanner_base
 		$etype_url_opts = $this->get_etype_url_opts();
 
 		$planned_raid_id = request_var('calEid', 0);
+		
 		$raidplan_display_name = "";
 		$raidplan_color = "";
 		$raidplan_image = "";
-		$raidplan_details = "";
 		$all_day = 1;
 		$start_date_txt = "";
 		$end_date_txt = "";
@@ -807,17 +807,18 @@ class displayplanner extends raidplanner_base
 			$raidplan_image = $this->raid_plan_images[$raidplan_data['etype_id']];
 			
 			$raidplan_body = $raidplan_data['raidplan_body'];
+			$subject = censor_text($raidplan_data['raidplan_subject']);
+			
 			$raidplan_data['bbcode_options'] = (($raidplan_data['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) +   
 			 (($raidplan_data['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) +     (($raidplan_data['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
 			 
 			$message = generate_text_for_display($raidplan_body, $raidplan_data['bbcode_uid'], $raidplan_data['bbcode_bitfield'], $raidplan_data['bbcode_options']);
-	
-			$subject = censor_text($raidplan_data['raidplan_subject']);
 			
 			// translate raidplan start and end time into user's timezone
 			$raidplan_start = $raidplan_data['raidplan_start_time'] + $user->timezone + $user->dst;
 			$raidplan_end = $raidplan_data['raidplan_end_time'] + $user->timezone + $user->dst;
-	
+			$start_date_txt = "";
+			
 			if( $raidplan_data['raidplan_all_day'] == 1 )
 			{
 				// All day raidplan - find the string for the raidplan day
@@ -831,12 +832,7 @@ class displayplanner extends raidplanner_base
 					$this->date['month_no'] = $eday['eday_month'];
 					$this->date['year'] = $eday['eday_year'];
 				}
-				else
-				{
-					// We should never get here
-					// (this would be an all day raidplan with no specified day for the raidplan)
-					$start_date_txt = "";
-				}
+
 			}
 			else
 			{
@@ -845,10 +841,10 @@ class displayplanner extends raidplanner_base
 				$this->date['month_no'] = gmdate("n", $raidplan_start);
 				$this->date['year']	=	gmdate('Y', $raidplan_start);
 			}
+			
 			$back_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calD=".$this->date['day'].
 				"&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts );
 	
-
 			$poster_url = '';
 			$invite_list = '';
 			
@@ -937,62 +933,107 @@ class displayplanner extends raidplanner_base
 					$edit_signup_url .="&amp;signup_id=";
 				}
 				
-				// list the signups 
-				$sql = 'SELECT * FROM ' . RP_SIGNUPS . '
-						WHERE raidplan_id = '.$db->sql_escape($planned_raid_id). ' ORDER BY signup_val ASC';
-				$result = $db->sql_query($sql);
 				
-				while ($signup_row = $db->sql_fetchrow($result) )
+				// list the signups per role_id
+				// get profiles needed for this raid
+				$sql_array = array(
+				    	'SELECT'    => 'r.role_id, r.role_name, er.role_needed, er.role_signedup, er.role_confirmed', 
+				    	'FROM'      => array(
+							RP_ROLES   => 'r'
+				    	),
+				    
+				    	'LEFT_JOIN' => array(
+				        	array(
+				            	'FROM'  => array( RP_RAIDPLAN_ROLES  => 'er'),
+				            	'ON'    => 'r.role_id = er.role_id AND er.raidplan_id = ' . $planned_raid_id)
+				    			),
+				    	'WHERE' => ' er.role_needed > 0' ,  
+				    	'ORDER_BY'  => 'r.role_id'
+				);
+				$sql = $db->sql_build_query('SELECT', $sql_array);
+				$result0 = $db->sql_query($sql);
+				$roles = array ();
+				while ( $row = $db->sql_fetchrow ( $result0 ) )
 				{
-					if( ($signup_id == 0 && $signup_data['poster_id'] == $signup_row['poster_id']) ||
-					    ($signup_id != 0 && $signup_id == $signup_row['signup_id']) )
-					{
-						$signup_data['signup_id'] = $signup_row['signup_id'];
-						$signup_data['post_time'] = $signup_row['post_time'];
-						$signup_data['signup_val'] = $signup_row['signup_val'];
-						$signup_data['signup_count'] = $signup_row['signup_count'];
-						$edit_text_array = generate_text_for_edit( $signup_row['signup_detail'], $signup_row['bbcode_uid'], $signup_row['bbcode_options']);
-						$signup_data['signup_detail_edit'] = $edit_text_array['text'];
-					}
 
-					if( $signup_row['signup_val'] == 0 )
+					$role_id = $row['role_id'];
+					$role_name = $row['role_name'];
+					$role_needed = $row['role_needed'];
+					$role_signedup = $row['role_signedup'];
+					
+					// build divs with signups 
+					$template->assign_block_vars('raidroles', array(
+					        'ROLE_ID'        => $role_id,
+						    'ROLE_NAME'      => $role_name,
+					    	'ROLE_NEEDED'    => $role_needed,
+					    	'ROLE_SIGNEDUP' => $role_signedup,
+					 ));
+					    
+					
+					// list the signups 
+					$sql = 'SELECT * FROM ' . RP_SIGNUPS . '
+							WHERE raidplan_id = '. (int) $planned_raid_id . ' 
+							and role_id = ' . (int) $role_id . ' 
+							ORDER BY signup_val ASC';
+					$result = $db->sql_query($sql);
+					
+					while ($signup_row = $db->sql_fetchrow($result) )
 					{
-						$signupcolor = '#00FF00';
-						$signuptext = $user->lang['YES'];
-					}
-					else if( $signup_row['signup_val'] == 1 )
-					{
-						$signupcolor = '#FF0000';
-						$signuptext = $user->lang['NO'];
-					}
-					else
-					{
-						$signupcolor = '#FFCC33';
-						$signuptext = $user->lang['MAYBE'];
+						if( ($signup_id == 0 && $signup_data['poster_id'] == $signup_row['poster_id']) ||
+						    ($signup_id != 0 && $signup_id == $signup_row['signup_id']) )
+						{
+							$signup_data['signup_id'] = $signup_row['signup_id'];
+							$signup_data['post_time'] = $signup_row['post_time'];
+							$signup_data['signup_val'] = $signup_row['signup_val'];
+							$signup_data['signup_count'] = $signup_row['signup_count'];
+							$edit_text_array = generate_text_for_edit( $signup_row['signup_detail'], $signup_row['bbcode_uid'], $signup_row['bbcode_options']);
+							$signup_data['signup_detail_edit'] = $edit_text_array['text'];
+						}
+	
+						if( $signup_row['signup_val'] == 0 )
+						{
+							$signupcolor = '#00FF00';
+							$signuptext = $user->lang['YES'];
+						}
+						else if( $signup_row['signup_val'] == 1 )
+						{
+							$signupcolor = '#FF0000';
+							$signuptext = $user->lang['NO'];
+						}
+						else
+						{
+							$signupcolor = '#FFCC33';
+							$signuptext = $user->lang['MAYBE'];
+						}
+						
+						$signup_editlink = "";
+						if( $edit_signups === 1 )
+						{
+							$signup_editlink = $edit_signup_url . $signup_row['signup_id'];
+						}
+						
+						$template->assign_block_vars('raidroles.signups', array(
+	        				'POST_TIME' => $user->format_date($signup_row['post_time']),
+							'POST_TIMESTAMP' => $signup_row['post_time'],
+							'DETAILS' => generate_text_for_display($signup_row['signup_detail'], $signup_row['bbcode_uid'], $signup_row['bbcode_bitfield'], $signup_row['bbcode_options']),
+							'HEADCOUNT' => $signup_row['signup_count'],
+							'U_EDIT' => $signup_editlink,
+							'POSTER' => $signup_row['poster_name'], 
+							'POSTER_URL' => get_username_string( 'full', $signup_row['poster_id'], $signup_row['poster_name'], $signup_row['poster_colour'] ),
+							'VALUE' => $signup_row['signup_val'], 
+							'POST_TIME' => $user->format_date($signup_row['post_time']),
+							'COLOR' => $signupcolor, 
+							'VALUE_TXT' => $signuptext, 
+						));
+	    
 					}
 					
-					$signup_editlink = "";
-					if( $edit_signups === 1 )
-					{
-						$signup_editlink = $edit_signup_url . $signup_row['signup_id'];
-					}
-					
-					$template->assign_block_vars('signups', array(
-        				'POST_TIME' => $user->format_date($signup_row['post_time']),
-						'POST_TIMESTAMP' => $signup_row['post_time'],
-						'DETAILS' => generate_text_for_display($signup_row['signup_detail'], $signup_row['bbcode_uid'], $signup_row['bbcode_bitfield'], $signup_row['bbcode_options']),
-						'HEADCOUNT' => $signup_row['signup_count'],
-						'U_EDIT' => $signup_editlink,
-						'POSTER' => $signup_row['poster_name'], 
-						'POSTER_URL' => get_username_string( 'full', $signup_row['poster_id'], $signup_row['poster_name'], $signup_row['poster_colour'] ),
-						'VALUE' => $signup_row['signup_val'], 
-						'POST_TIME' => $user->format_date($signup_row['post_time']),
-						'COLOR' => $signupcolor, 
-						'VALUE_TXT' => $signuptext, 
-					));
-    
 				}
+				
+				
 				$db->sql_freeresult($result);
+				$db->sql_freeresult($result0);
+				
 				$show_current_response = 0;
 				
 				/* Build the signup form */
@@ -1007,37 +1048,6 @@ class displayplanner extends raidplanner_base
 					$sel_attend_code .= "<option value='1'>".$user->lang['NO']."</option>\n";
 					$sel_attend_code .= "<option value='2'>".$user->lang['MAYBE']."</option>\n";
 					$sel_attend_code .= "</select>\n";
-					
-					// get profiles needed for this raid
-					// build divs with signups 
-					$sql_array = array(
-				    	'SELECT'    => 'r.role_id, r.role_name, er.role_needed, role_signedup, role_confirmed, er.role_needed - er.role_confirmed as open ', 
-				    	'FROM'      => array(
-							RP_ROLES   => 'r'
-				    	),
-				    
-				    	'LEFT_JOIN' => array(
-				        	array(
-				            	'FROM'  => array( RP_RAIDPLAN_ROLES  => 'er'),
-				            	'ON'    => 'r.role_id = er.role_id AND er.raidplan_id = ' . $planned_raid_id)
-				    			),
-				    	'WHERE' => 'er.role_needed > 0' ,  
-				    	'ORDER_BY'  => 'r.role_id'
-					);
-			
-					$sql = $db->sql_build_query('SELECT', $sql_array);
-					$result = $db->sql_query($sql);
-					while ($row = $db->sql_fetchrow($result))
-					{
-						// for the divs
-					    $template->assign_block_vars('raidroles', array(
-					        'ROLE_ID'        => $row['role_id'],
-						    'ROLE_NAME'      => $row['role_name'],
-					    	'ROLE_NEEDED'    => $row['role_needed'],
-					    	'ROLE_AVAILABLE'    => $row['role_signedup'],
-					    ));
-					}
-					$db->sql_freeresult($result);
 					
 					// get profiles still not confirmed for this raid for the pulldown
 					// ex. needed 5

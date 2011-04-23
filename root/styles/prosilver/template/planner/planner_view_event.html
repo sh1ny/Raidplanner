@@ -25,6 +25,10 @@
 
 <span class="corners-bottom"><span></span></span></div>
 
+
+
+
+
 <div class="panel">
 <div class="inner">
 <span class="corners-top"><span></span></span>
@@ -153,53 +157,9 @@
 </div>
 
 
-<div class="panel">
-<div class="inner"><span class="corners-top"><span></span></span>
-
-<!-- BEGIN raidroles -->
-
-<div style="width:160px; float:left ;">
-<table style="width:100%; cellspacing="0" cellpadding="5">
-<tbody>
-<tr>
-	<td style="border-bottom:1px solid"> <strong>{raidroles.ROLE_NAME}: {raidroles.ROLE_SIGNEDUP}/{raidroles.ROLE_NEEDED}</strong></td>
-</tr>
-
-<!-- BEGIN signups -->
-<tr>
-	<td> <strong>{raidroles.signups.POSTER}</strong><br />
-	{raidroles.signups.POST_TIME}
-	
-	</td>
-</tr>
-<!-- END signups -->
-
-</tbody>
-</table>
-</div>
-	 
-<!-- END raidroles -->
-<span class="corners-bottom"><span></span></span>
-</div>
-</div>
 
 
 
-
-<!-- xx 
-<!-- BEGIN signups -->
-	<tr>
-		<td align="left"><span style="display: none">{signups.POSTER}</span>{signups.POSTER_URL}</td>
-
-		<td align="left">{signups.VALUE_TXT}</td>
-		<td align="left">{signups.DETAILS}</td>
-		<td align="left"><span style="display: none">{signups.POST_TIMESTAMP}</span>{signups.POST_TIME}</td>
-		<!-- IF S_EDIT_SIGNUP -->
-		<td align="left"><a href="{signups.U_EDIT}">{L_EDIT}</a></td>
-		<!-- ENDIF -->
-	</tr>
-<!-- END signups -->
--->
 
 <!-- IF S_CURRENT_SIGNUP -->
 <form method="post" action="{S_SIGNUP_MODE_ACTION}" name="signup_form" id="signup_form">
@@ -212,7 +172,7 @@
 	<dd>{SEL_ATTEND}</dd>
 
 	<dt>{L_RAIDROLE}</dt>
-	<dd><select id="signuprole" name="signuprole">{S_ROLE_OPTIONS}</select></dd>
+	<dd>{SEL_ROLE}</dd>
 
 	<dt>&nbsp;<br>
 	{L_COMMENTS}</dt>
@@ -220,8 +180,8 @@
 		cols="25">{CURR_SIGNUP_DETAIL}</textarea></dd>
 	<dt>&nbsp;</dt>
 	<dd><input type="hidden" name="signup_id" id="signup_id"
-		value="{CURR_SIGNUP_ID}" />
-		<input type="submit" name="signmeup" value="{L_SUBMIT}" class="button1" /></dd>
+		value="{CURR_SIGNUP_ID}" /><input type="submit" name="post"
+		value="{L_SUBMIT}" class="button1" /></dd>
 </dl>
 </fieldset>
 <span class="corners-bottom"><span></span></span></div>
