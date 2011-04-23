@@ -955,132 +955,11 @@ class displayplanner extends raidplanner_base
 
 				// sign up
 				$signmeup	= (isset($_POST['signmeup'])) ? true : false;
-				
 				if( $signmeup )
 				{
-					// what were the old raidplan_data head counts?
-					$old_yes_count = $raidplan_data['signup_yes'];
-					$old_no_count = $raidplan_data['signup_no'];
-					$old_maybe_count = $raidplan_data['signup_maybe'];
-	
-					$old_user_yes_count = 0;
-					$old_user_maybe_count = 0;
-					$old_user_no_count = 0;
-	
-					$new_signup_val	= request_var('signup_val', 2);
-					$new_signup_count	= request_var('signup_count', 1);
-					$new_signup_detail = utf8_normalize_nfc( request_var('signup_detail', '', true) );
-	
-					$uid = $bitfield = $options = '';
-					$allow_bbcode = $allow_urls = $allow_smilies = true;
-					generate_text_for_storage($new_signup_detail, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
-	
-					$new_user_yes_count = 0;
-					$new_user_maybe_count = 0;
-					$new_user_no_count = 0;
-	
-					if( $signup_id !== 0 )
-					{
-						if( $signup_data['signup_val'] == 0 )
-						{
-							$old_user_yes_count = $signup_data['signup_count'];
-						}
-						else if( $signup_data['signup_val'] == 1 )
-						{
-							$old_user_no_count = $signup_data['signup_count'];
-						}
-						else
-						{
-							$old_user_maybe_count = $signup_data['signup_count'];
-						}
-					}
-					
-					if( $new_signup_val == 0 )
-					{
-						$new_user_yes_count = $new_signup_count;
-					}
-					else if( $new_signup_val == 1 )
-					{
-						$new_user_no_count = $new_signup_count;
-					}
-					else
-					{
-						$new_user_maybe_count = $new_signup_count;
-					}
-	
-					$new_yes_count = $old_yes_count - $old_user_yes_count + $new_user_yes_count;
-					$new_no_count = $old_no_count - $old_user_no_count + $new_user_no_count;
-					$new_maybe_count = $old_maybe_count - $old_user_maybe_count + $new_user_maybe_count;
-	
-					// save the user's signup data...
-	
-					// update the ip address and time
-					$signup_data['poster_ip'] = $user->ip;
-					$signup_data['post_time'] = time();
-					$signup_data['signup_val'] = $new_signup_val;
-					$signup_data['signup_count'] = $new_signup_count;
-					$signup_data['signup_detail'] = $new_signup_detail;
-					if( $signup_id > 0 )
-					{
-						$sql = 'UPDATE ' . RP_SIGNUPS . '
-							SET ' . $db->sql_build_array('UPDATE', array(
-								'poster_id'			=> (int) $signup_data['poster_id'],
-								'poster_name'		=> (string) $signup_data['poster_name'],
-								'poster_colour'		=> (string) $signup_data['poster_colour'],
-								'poster_ip'			=> (string) $signup_data['poster_ip'],
-								'post_time'			=> (int) $signup_data['post_time'],
-								'signup_val'				=> (int) $signup_data['signup_val'],
-								'signup_count'			=> (int) $signup_data['signup_count'],
-								'signup_detail'			=> (string) $signup_data['signup_detail'],
-								'bbcode_bitfield'	=> $bitfield,
-								'bbcode_uid'		=> $uid,
-								'bbcode_options'	=> $options,
-								)) . "
-							WHERE signup_id = $signup_id";
-						$db->sql_query($sql);
-					}
-					else
-					{
-						$sql = 'INSERT INTO ' . RP_SIGNUPS . ' ' . $db->sql_build_array('INSERT', array(
-								'raidplan_id'			=> (int) $signup_data['raidplan_id'],
-								'poster_id'			=> (int) $signup_data['poster_id'],
-								'poster_name'		=> (string) $signup_data['poster_name'],
-								'poster_colour'		=> (string) $signup_data['poster_colour'],
-								'poster_ip'			=> (string) $signup_data['poster_ip'],
-								'post_time'			=> (int) $signup_data['post_time'],
-								'signup_val'				=> (int) $signup_data['signup_val'],
-								'signup_count'			=> (int) $signup_data['signup_count'],
-								'signup_detail'			=> (string) $signup_data['signup_detail'],
-								'bbcode_bitfield'	=> $bitfield,
-								'bbcode_uid'		=> $uid,
-								'bbcode_options'	=> $options,
-								)
-							);
-						$db->sql_query($sql);
-						//$signup_id = $db->sql_nextid();
-					}
-					// update the raidplan id's signup stats
-						$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
-							SET ' . $db->sql_build_array('UPDATE', array(
-								'signup_yes'		=> (int) $new_yes_count,
-								'signup_no'		=> (int) $new_no_count,
-								'signup_maybe'	=> (int) $new_maybe_count,
-								)) . "
-							WHERE raidplan_id = $planned_raid_id";
-						$db->sql_query($sql);
-					$raidplan_data['signup_yes'] = $new_yes_count;
-					$raidplan_data['signup_no'] = $new_no_count;
-					$raidplan_data['signup_maybe'] = $new_maybe_count;
-					
-						
-					$this->calendar_add_or_update_reply( $planned_raid_id );
-				
+					$this->signup($raidplan_data);
 				}
-	
-				$sql = 'SELECT * FROM ' . RP_SIGNUPS . '
-						WHERE raidplan_id = '.$db->sql_escape($planned_raid_id). ' ORDER BY signup_val ASC';
-				$result = $db->sql_query($sql);
-	
+				
 				$edit_signups = 0;
 				if( $auth->acl_get('m_raidplanner_edit_other_users_signups') )
 				{
@@ -1088,7 +967,12 @@ class displayplanner extends raidplanner_base
 					$edit_signup_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$planned_raid_id.$etype_url_opts );
 					$edit_signup_url .="&amp;signup_id=";
 				}
-	
+				
+				// list the signups 
+				$sql = 'SELECT * FROM ' . RP_SIGNUPS . '
+						WHERE raidplan_id = '.$db->sql_escape($planned_raid_id). ' ORDER BY signup_val ASC';
+				$result = $db->sql_query($sql);
+				
 				while ($signup_row = $db->sql_fetchrow($result) )
 				{
 					if( ($signup_id == 0 && $signup_data['poster_id'] == $signup_row['poster_id']) ||
@@ -1101,35 +985,43 @@ class displayplanner extends raidplanner_base
 						$edit_text_array = generate_text_for_edit( $signup_row['signup_detail'], $signup_row['bbcode_uid'], $signup_row['bbcode_options']);
 						$signup_data['signup_detail_edit'] = $edit_text_array['text'];
 					}
-					$signup_out['POSTER'] = $signup_row['poster_name'];
-					$signup_out['POSTER_URL'] = get_username_string( 'full', $signup_row['poster_id'], $signup_row['poster_name'], $signup_row['poster_colour'] );
-					$signup_out['VALUE'] = $signup_row['signup_val'];
+
 					if( $signup_row['signup_val'] == 0 )
 					{
-						$signup_out['COLOR'] = '#00ff00';
-						$signup_out['VALUE_TXT'] = $user->lang['YES'];
+						$signupcolor = '#00FF00';
+						$signuptext = $user->lang['YES'];
 					}
 					else if( $signup_row['signup_val'] == 1 )
 					{
-						$signup_out['COLOR'] = '#ff0000';
-						$signup_out['VALUE_TXT'] = $user->lang['NO'];
+						$signupcolor = '#FF0000';
+						$signuptext = $user->lang['NO'];
 					}
 					else
 					{
-						$signup_out['COLOR'] = '#0000ff';
-						$signup_out['VALUE_TXT'] = $user->lang['MAYBE'];
+						$signupcolor = '#FFCC33';
+						$signuptext = $user->lang['MAYBE'];
 					}
-					$signup_out['U_EDIT'] = "";
+					
+					$signup_editlink = "";
 					if( $edit_signups === 1 )
 					{
-						$signup_out['U_EDIT'] = $edit_signup_url . $signup_row['signup_id'];
+						$signup_editlink = $edit_signup_url . $signup_row['signup_id'];
 					}
-					$signup_out['HEADCOUNT'] = $signup_row['signup_count'];
-					$signup_out['DETAILS'] = generate_text_for_display($signup_row['signup_detail'], $signup_row['bbcode_uid'], $signup_row['bbcode_bitfield'], $signup_row['bbcode_options']);
-					$signup_out['POST_TIMESTAMP'] = $signup_row['post_time'];
-					$signup_out['POST_TIME'] = $user->format_date($signup_row['post_time']);
-					$template->assign_block_vars('signups', $signup_out);
-	
+					
+					$template->assign_block_vars('signups', array(
+        				'POST_TIME' => $user->format_date($signup_row['post_time']),
+						'POST_TIMESTAMP' => $signup_row['post_time'],
+						'DETAILS' => generate_text_for_display($signup_row['signup_detail'], $signup_row['bbcode_uid'], $signup_row['bbcode_bitfield'], $signup_row['bbcode_options']),
+						'HEADCOUNT' => $signup_row['signup_count'],
+						'U_EDIT' => $signup_editlink,
+						'POSTER' => $signup_row['poster_name'], 
+						'POSTER_URL' => get_username_string( 'full', $signup_row['poster_id'], $signup_row['poster_name'], $signup_row['poster_colour'] ),
+						'VALUE' => $signup_row['signup_val'], 
+						'POST_TIME' => $user->format_date($signup_row['post_time']),
+						'COLOR' => $signupcolor, 
+						'VALUE_TXT' => $signuptext, 
+					));
+    
 				}
 				$db->sql_freeresult($result);
 				$show_current_response = 0;
@@ -1229,6 +1121,134 @@ class displayplanner extends raidplanner_base
 		
 	}
 	
+	/***
+	 * handles signing up to a raid
+	 * 
+	 */
+	private function signup(&$raidplan)
+	{
+		
+		// what were the old raidplan_data head counts?
+		$old_yes_count = $raidplan_data['signup_yes'];
+		$old_no_count = $raidplan_data['signup_no'];
+		$old_maybe_count = $raidplan_data['signup_maybe'];
+
+		$old_user_yes_count = 0;
+		$old_user_maybe_count = 0;
+		$old_user_no_count = 0;
+
+		$new_signup_val	= request_var('signup_val', 2);
+		$new_signup_count	= request_var('signup_count', 1);
+		$new_signup_detail = utf8_normalize_nfc( request_var('signup_detail', '', true) );
+
+		$uid = $bitfield = $options = '';
+		$allow_bbcode = $allow_urls = $allow_smilies = true;
+		generate_text_for_storage($new_signup_detail, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+
+		$new_user_yes_count = 0;
+		$new_user_maybe_count = 0;
+		$new_user_no_count = 0;
+
+		if( $signup_id !== 0 )
+		{
+			if( $signup_data['signup_val'] == 0 )
+			{
+				$old_user_yes_count = $signup_data['signup_count'];
+			}
+			else if( $signup_data['signup_val'] == 1 )
+			{
+				$old_user_no_count = $signup_data['signup_count'];
+			}
+			else
+			{
+				$old_user_maybe_count = $signup_data['signup_count'];
+			}
+		}
+		
+		if( $new_signup_val == 0 )
+		{
+			$new_user_yes_count = $new_signup_count;
+		}
+		else if( $new_signup_val == 1 )
+		{
+			$new_user_no_count = $new_signup_count;
+		}
+		else
+		{
+			$new_user_maybe_count = $new_signup_count;
+		}
+
+		$new_yes_count = $old_yes_count - $old_user_yes_count + $new_user_yes_count;
+		$new_no_count = $old_no_count - $old_user_no_count + $new_user_no_count;
+		$new_maybe_count = $old_maybe_count - $old_user_maybe_count + $new_user_maybe_count;
+
+		// save the user's signup data...
+
+		// update the ip address and time
+		$signup_data['poster_ip'] = $user->ip;
+		$signup_data['post_time'] = time();
+		$signup_data['signup_val'] = $new_signup_val;
+		$signup_data['signup_count'] = $new_signup_count;
+		$signup_data['signup_detail'] = $new_signup_detail;
+		
+		if( $signup_id > 0 )
+		{
+			$sql = 'UPDATE ' . RP_SIGNUPS . '
+				SET ' . $db->sql_build_array('UPDATE', array(
+					'poster_id'			=> (int) $signup_data['poster_id'],
+					'poster_name'		=> (string) $signup_data['poster_name'],
+					'poster_colour'		=> (string) $signup_data['poster_colour'],
+					'poster_ip'			=> (string) $signup_data['poster_ip'],
+					'post_time'			=> (int) $signup_data['post_time'],
+					'signup_val'				=> (int) $signup_data['signup_val'],
+					'signup_count'			=> (int) $signup_data['signup_count'],
+					'signup_detail'			=> (string) $signup_data['signup_detail'],
+					'bbcode_bitfield'	=> $bitfield,
+					'bbcode_uid'		=> $uid,
+					'bbcode_options'	=> $options,
+					)) . "
+				WHERE signup_id = $signup_id";
+			$db->sql_query($sql);
+		}
+		else
+		{
+			$sql = 'INSERT INTO ' . RP_SIGNUPS . ' ' . $db->sql_build_array('INSERT', array(
+					'raidplan_id'			=> (int) $signup_data['raidplan_id'],
+					'poster_id'			=> (int) $signup_data['poster_id'],
+					'poster_name'		=> (string) $signup_data['poster_name'],
+					'poster_colour'		=> (string) $signup_data['poster_colour'],
+					'poster_ip'			=> (string) $signup_data['poster_ip'],
+					'post_time'			=> (int) $signup_data['post_time'],
+					'signup_val'				=> (int) $signup_data['signup_val'],
+					'signup_count'			=> (int) $signup_data['signup_count'],
+					'signup_detail'			=> (string) $signup_data['signup_detail'],
+					'bbcode_bitfield'	=> $bitfield,
+					'bbcode_uid'		=> $uid,
+					'bbcode_options'	=> $options,
+					)
+				);
+			$db->sql_query($sql);
+			//$signup_id = $db->sql_nextid();
+		}
+		// update the raidplan id's signup stats
+			$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
+				SET ' . $db->sql_build_array('UPDATE', array(
+					'signup_yes'		=> (int) $new_yes_count,
+					'signup_no'		=> (int) $new_no_count,
+					'signup_maybe'	=> (int) $new_maybe_count,
+					)) . "
+				WHERE raidplan_id = $planned_raid_id";
+			$db->sql_query($sql);
+		$raidplan_data['signup_yes'] = $new_yes_count;
+		$raidplan_data['signup_no'] = $new_no_count;
+		$raidplan_data['signup_maybe'] = $new_maybe_count;
+		
+			
+		$this->calendar_add_or_update_reply( $planned_raid_id );
+		
+		
+		
+	}
 	
 	
 		

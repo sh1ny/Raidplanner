@@ -305,7 +305,10 @@ $versions = array(
 					   'bbcode_bitfield' 	=> array('VCHAR:255', ''),
 					   'bbcode_uid' 		=> array('VCHAR:8', ''),
 					   'bbcode_options' 	=> array('UINT', 7),
-					),
+					   'dkpmember_id'		=> array('INT:8', 0),
+					   'role_id'			=> array('INT:8', 0),
+					   'role_confirm'		=> array('BOOL', 0),
+						),
                     'PRIMARY_KEY'	=> array('signup_id'),
 					 'KEYS'            => array(
     				     'raidplan_id'   => array('INDEX', 'raidplan_id'),
@@ -345,6 +348,9 @@ $versions = array(
 					   'raidplan_id' 			=> array('INT:8', 0),
 					   'role_id' 			=> array('INT:8', 0),
 					   'role_needed' 		=> array('INT:8', 0),
+					   'role_available' 	=> array('INT:8', 0),
+					   'role_confirmed' 	=> array('INT:8', 0),
+					   
 					),
                     'PRIMARY_KEY'	=> array('raidplandet_id')), 
               ),              
@@ -352,8 +358,9 @@ $versions = array(
               array(
               		'phpbb_rp_roles' , array(
                     'COLUMNS'        => array(
-                        'role_id'    		=> array('INT:8', NULL, 'auto_increment'),
-                        'role_name'     	=> array('VCHAR_UNI', ''),
+                        'role_id'    	   => array('INT:8', NULL, 'auto_increment'),
+                        'role_name'        => array('VCHAR_UNI', ''),
+                        'role_color'       => array('VCHAR', ''),
               			'role_needed1'     => array('INT:8', 0),
               			'role_needed2'     => array('INT:8', 0),
                     ),
@@ -371,8 +378,7 @@ $versions = array(
                   array('role_name' => 'Tank' , 'role_needed1' => 1,  'role_needed2' => 2),
                   array('role_name' => 'Off Tank', 'role_needed1' => 1,  'role_needed2' => 2),
                   array('role_name' => 'Healer', 'role_needed1' => 2,  'role_needed2' => 5),
-                  array('role_name' => 'Hybrid DPS/Heal' , 'role_needed1' => 1,  'role_needed2' => 3),
-                  array('role_name' => 'Hybrid Tank/Heal' , 'role_needed1' => 1,  'role_needed2' => 3),
+                  array('role_name' => 'Hybrid' , 'role_needed1' => 2,  'role_needed2' => 6),
            ))),
            
         'custom' => array('purgecaches'),
