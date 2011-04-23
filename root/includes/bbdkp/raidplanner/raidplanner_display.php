@@ -780,6 +780,7 @@ class displayplanner extends raidplanner_base
 			{
 				trigger_error( 'PRIVATE_RAIDPLAN' );
 			}
+			
 			if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 			{
 				$calWatchE = request_var( 'calWatchE', 2 );
@@ -800,7 +801,19 @@ class displayplanner extends raidplanner_base
 	
 			$start_date_txt = $user->format_date($raidplan_data['raidplan_start_time'], $disp_date_time_format, true);
 			$end_date_txt = $user->format_date($raidplan_data['raidplan_end_time'], $disp_date_time_format, true);
+			
+			$raidplan_display_name = $this->raid_plan_displaynames[$raidplan_data['etype_id']];
+			$raidplan_color = $this->raid_plan_colors[$raidplan_data['etype_id']];
+			$raidplan_image = $this->raid_plan_images[$raidplan_data['etype_id']];
+			
+			$raidplan_body = $raidplan_data['raidplan_body'];
+			$raidplan_data['bbcode_options'] = (($raidplan_data['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) +   
+			 (($raidplan_data['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) +     (($raidplan_data['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
+			 
+			$message = generate_text_for_display($raidplan_body, $raidplan_data['bbcode_uid'], $raidplan_data['bbcode_bitfield'], $raidplan_data['bbcode_options']);
 	
+			$subject = censor_text($raidplan_data['raidplan_subject']);
+			
 			// translate raidplan start and end time into user's timezone
 			$raidplan_start = $raidplan_data['raidplan_start_time'] + $user->timezone + $user->dst;
 			$raidplan_end = $raidplan_data['raidplan_end_time'] + $user->timezone + $user->dst;
@@ -832,22 +845,17 @@ class displayplanner extends raidplanner_base
 				$this->date['month_no'] = gmdate("n", $raidplan_start);
 				$this->date['year']	=	gmdate('Y', $raidplan_start);
 			}
-			$back_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts );
+			$back_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calD=".$this->date['day'].
+				"&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts );
 	
-			$raidplan_body = $raidplan_data['raidplan_body'];
-			$raidplan_data['bbcode_options'] = (($raidplan_data['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) +   
-			 (($raidplan_data['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) +     (($raidplan_data['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
-	
-			$message = generate_text_for_display($raidplan_body, $raidplan_data['bbcode_uid'], $raidplan_data['bbcode_bitfield'], $raidplan_data['bbcode_options']);
-			$raidplan_display_name = $this->raid_plan_displaynames[$raidplan_data['etype_id']];
-			$raidplan_color = $this->raid_plan_colors[$raidplan_data['etype_id']];
-			$raidplan_image = $this->raid_plan_images[$raidplan_data['etype_id']];
-	
-			$subject = censor_text($raidplan_data['raidplan_subject']);
-	
+
 			$poster_url = '';
 			$invite_list = '';
 			
+			/**
+			* get invited groups
+			*  
+			**/
 			$raidplans = new raidplans();
 			$raidplans->get_raidplan_invite_list_and_poster_url($raidplan_data, $poster_url, $invite_list );
 	
@@ -890,6 +898,7 @@ class displayplanner extends raidplanner_base
 			            	'FROM'  => array( RP_EVENTROLES  => 'er'),
 			            	'ON'    => 'r.role_id = er.role_id AND er.raidplan_id = ' . $planned_raid_id)
 			    			),
+			    	'WHERE' => 'er.role_needed > 0' ,  
 			    	'ORDER_BY'  => 'r.role_id'
 				);
 		
@@ -904,11 +913,12 @@ class displayplanner extends raidplanner_base
 				    ));
 				}
 				$db->sql_freeresult($result);
-				
 			
-				$signup_id	= request_var('signup_id', 0);
-				$submit		= (isset($_POST['post'])) ? true : false;
+				
 				$signup_data = array();
+				// show raiders that signed up
+				$signup_id	= request_var('signup_id', 0);
+				
 				if( $signup_id !== 0 )
 				{
 					$this->get_signup_data( $signup_id, $signup_data );
@@ -942,10 +952,11 @@ class displayplanner extends raidplanner_base
 						trigger_error('USER_CANNOT_EDIT_SIGNUP');
 					}
 				}
-	
+
+				// sign up
+				$signmeup	= (isset($_POST['signmeup'])) ? true : false;
 				
-				// save updated raid
-				if( $submit )
+				if( $signmeup )
 				{
 					// what were the old raidplan_data head counts?
 					$old_yes_count = $raidplan_data['signup_yes'];
@@ -1147,7 +1158,7 @@ class displayplanner extends raidplanner_base
 						'CURR_SIGNUP_COUNT'	=> $signup_data['signup_count'],
 						'CURR_SIGNUP_DETAIL'	=> $signup_data['signup_detail_edit'],
 						'SEL_ATTEND'		=> $sel_attend_code,
-						'SEL_ROLE'			=> $sel_role, 
+						//'SEL_ROLE'			=> $sel_role, 
 						)
 					);
 	
@@ -2373,7 +2384,7 @@ class raidplans extends raidplanner_base
 	}
 	
 	
-	/* get the the invite list for an raidplan and the poster url
+	/* get the the group invite list for raidplan and the raidleader url
 	*/
 	public function get_raidplan_invite_list_and_poster_url($raidplan_data, &$poster_url, &$invite_list )
 	{
@@ -2399,7 +2410,7 @@ class raidplans extends raidplanner_base
 			case 1:
 				if( $raidplan_data['group_id'] != 0 )
 				{
-					// group raidplan... only members of specified group are invited
+					// group raidplan... only phpbb accounts of this group are invited
 					$sql = 'SELECT group_name, group_type, group_colour FROM ' . GROUPS_TABLE . '
 							WHERE group_id = '.$db->sql_escape($raidplan_data['group_id']);
 					$result = $db->sql_query($sql);
@@ -2416,8 +2427,9 @@ class raidplans extends raidplanner_base
 					}
 					$invite_list = "<a href='".$temp_url."'>".$temp_color_start.$temp_list.$temp_color_end."</a>";
 				}
-				else
+				else 
 				{
+					// multiple groups invited	
 					$group_list = explode( ',', $raidplan_data['group_id_list'] );
 					$num_groups = sizeof( $group_list );
 					for( $i = 0; $i < $num_groups; $i++ )
@@ -2426,7 +2438,7 @@ class raidplans extends raidplanner_base
 						{
 							continue;
 						}
-						// group raidplan... only members of specified group are invited
+						// group raidplan... only phpbb accounts  of specified group are invited
 						$sql = 'SELECT group_name, group_type, group_colour FROM ' . GROUPS_TABLE . '
 								WHERE group_id = '.$db->sql_escape($group_list[$i]);
 						$result = $db->sql_query($sql);
