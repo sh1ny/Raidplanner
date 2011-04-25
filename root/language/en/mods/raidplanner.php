@@ -105,8 +105,8 @@ $lang = array_merge($lang, array(
 	'ALLOW_GUESTS_OFF'			=> 'Members are not allowed to bring guests to this raid.',
 	'AM'						=> 'AM',
 
-	'CALENDAR_POST_RAIDPLAN'		=> 'Create New Raid',
-	'CALENDAR_EDIT_RAIDPLAN'		=> 'Edit Raid',
+	'CALENDAR_POST_RAIDPLAN'	=> 'Create New Raid',
+	'CALENDAR_EDIT_RAIDPLAN'	=> 'Edit Raid',
 	'CALENDAR_TITLE'			=> 'Planner',
 	'RAIDPLANNER'				=> 'Raid Planner',
 	'NEWRAID'					=> 'New Raid',
@@ -115,6 +115,10 @@ $lang = array_merge($lang, array(
 	'CALENDAR_NUMBER_ATTEND_EXPLAIN'=> '(enter 1 for yourself)',
 	'CALENDAR_RESPOND'		=> 'Please register here',
 	'CALENDAR_WILL_ATTEND'	=> 'Will you attend this raid?',
+
+	'CANNOTSIGNUP'			=> 'you cannot sign up because you have no DKP characters linked to your account.',
+	
+	'RAIDCHARACTER'			=> 'Raidcharacter', 
 	'COL_HEADCOUNT'			=> 'Count',
 	'COL_WILL_ATTEND'		=> 'Will Attend?',
 	'COMMENTS'				=> 'Comments',
@@ -159,6 +163,7 @@ $lang = array_merge($lang, array(
 	'INVITE_INFO'			=> 'Invited',
 
 	'MESSAGE_BODY_EXPLAIN'		=> 'Enter your message here, it may contain no more than <strong>%d</strong> characters.',
+
 	'MAYBE'					=> 'Maybe',
 	'MONTH'					=> 'Month',
 	'MONTH_OF'				=> 'Month of ',

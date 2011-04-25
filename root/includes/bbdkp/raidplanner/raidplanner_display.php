@@ -897,7 +897,7 @@ class displayplanner extends raidplanner_base
 					
 				
 				// show signed up
-				$signup_id	= request_var('signup_id', 0);
+				$signup_id	= request_var('hidden_signup_id', 0);
 				
 				if( $signup_id !== 0 )
 				{
@@ -968,20 +968,47 @@ class displayplanner extends raidplanner_base
 					    	'ROLE_NEEDED'    => $role_needed,
 					    	'ROLE_SIGNEDUP' => $role_signedup,
 					 ));
-					    
-					
+				 
+					 
 					// list the signups 
-					$sql = 'SELECT * FROM ' . RP_SIGNUPS . '
-							WHERE raidplan_id = '. (int) $planned_raid_id . ' 
-							and role_id = ' . (int) $role_id . ' 
-							ORDER BY signup_val ASC';
+					$sql_array = array(
+				    	'SELECT'    => ' s.*, m.member_id, m.member_name, m.member_level,  
+					    				 m.member_gender_id, a.image_female_small, a.image_male_small, 
+					    				 l.name as member_class , c.imagename, c.colorcode ', 
+				    	'FROM'      => array(
+					        RP_SIGNUPS	 		=> 's', 
+					        MEMBER_LIST_TABLE 	=> 'm',
+					        CLASS_TABLE  		=> 'c',
+					        RACE_TABLE  		=> 'a',
+					        BB_LANGUAGE			=> 'l', 
+					        
+				    	),
+				    
+					    'WHERE'     =>  " l.attribute_id = c.class_id 
+					    				  AND l.language = '" . $config['bbdkp_lang'] . "' 
+				    					  AND l.attribute = 'class'
+										  AND (m.member_class_id = c.class_id)
+										  AND m.member_race_id =  a.race_id  
+										  AND s.role_id = " . (int) $role_id . ' 
+										  AND s.raidplan_id = ' . $planned_raid_id . '
+										  AND s.poster_id = m.phpbb_user_id
+										  AND s.dkpmember_id = m.member_id' , 
+				    	'ORDER_BY'  => 's.signup_val DESC'
+					);
+					$sql = $db->sql_build_query('SELECT', $sql_array);
+						
 					$result = $db->sql_query($sql);
 					
 					while ($signup_row = $db->sql_fetchrow($result) )
 					{
+						
+						
+						
+						
 						if( ($signup_id == 0 && $signup_data['poster_id'] == $signup_row['poster_id']) ||
 						    ($signup_id != 0 && $signup_id == $signup_row['signup_id']) )
 						{
+							
 							$signup_data['signup_id'] = $signup_row['signup_id'];
 							$signup_data['post_time'] = $signup_row['post_time'];
 							$signup_data['signup_val'] = $signup_row['signup_val'];
@@ -1012,6 +1039,8 @@ class displayplanner extends raidplanner_base
 							$signup_editlink = $edit_signup_url . $signup_row['signup_id'];
 						}
 						
+						$raceimage = (string) (($signup_row['member_gender_id']==0) ? $signup_row['image_male_small'] : $signup_row['image_female_small']);
+						
 						$template->assign_block_vars('raidroles.signups', array(
 	        				'POST_TIME' => $user->format_date($signup_row['post_time']),
 							'POST_TIMESTAMP' => $signup_row['post_time'],
@@ -1024,6 +1053,16 @@ class displayplanner extends raidplanner_base
 							'POST_TIME' => $user->format_date($signup_row['post_time']),
 							'COLOR' => $signupcolor, 
 							'VALUE_TXT' => $signuptext, 
+							'CHARNAME'      => $signup_row['member_name'],
+							'LEVEL'         => $signup_row['member_level'],
+							'CLASS'         => $signup_row['member_class'],
+							'COLORCODE'  	=> ($signup_row['colorcode'] == '') ? '#123456' : $signup_row['colorcode'],
+					        'CLASS_IMAGE' 	=> (strlen($signup_row['imagename']) > 1) ? $phpbb_root_path . "images/class_images/" . $signup_row['imagename'] . ".png" : '',  
+							'S_CLASS_IMAGE_EXISTS' => (strlen($signup_row['imagename']) > 1) ? true : false,
+					       	'RACE_IMAGE' 	=> (strlen($raceimage) > 1) ? $phpbb_root_path . "images/race_images/" . $raceimage . ".png" : '',  
+							'S_RACE_IMAGE_EXISTS' => (strlen($raceimage) > 1) ? true : false, 			 				
+						
+						
 						));
 	    
 					}
@@ -1077,6 +1116,34 @@ class displayplanner extends raidplanner_base
 						$s_role_options .= '<option value="' . $row['role_id'] . '" > ' . $row['role_name'] . ' ('.$row['role_confirmed'] .'/'.$row['role_needed'] .')' . '</option>';     
 					}
 					$db->sql_freeresult($result);
+					
+					//build the dkpmember pulldown, only those that are assigned to this user.
+					$sql_array = array(
+					    'SELECT'    => 	'm.member_id, m.member_name  ', 
+					    'FROM'      => array(
+					        MEMBER_LIST_TABLE 	=> 'm',
+					        USERS_TABLE 		=> 'u', 
+					    	),
+					    'WHERE'     =>  " u.user_id = m.phpbb_user_id and u.user_id = " . $user->data['user_id']  ,
+						'ORDER_BY'	=> " m.member_name ",
+					    );
+
+				    $sql = $db->sql_build_query('SELECT', $sql_array);
+				    $result = $db->sql_query($sql);
+					$s_member_options = '';
+					$hasdkpchar= false;
+					while ( $row = $db->sql_fetchrow($result) )
+                    {
+                    	$hasdkpchar = true;
+						$s_member_options .= '<option value="' . $row['member_id'] . '" > ' . $row['member_name'] . '</option>';
+                    }
+                    $db->sql_freeresult($result);
+					$template->assign_vars(array(
+						'S_CANSIGNUP' => $hasdkpchar,
+						'S_RAIDMEMBER_OPTIONS'	=> $s_member_options,
+						)
+					);
+
 			
 					$temp_find_str = "value='".$signup_data['signup_val']."'";
 					$temp_replace_str = "value='".$signup_data['signup_val']."' selected='selected'";
@@ -1092,8 +1159,7 @@ class displayplanner extends raidplanner_base
 						'CURR_SIGNUP_COUNT'	=> $signup_data['signup_count'],
 						'CURR_SIGNUP_DETAIL'	=> $signup_data['signup_detail_edit'],
 						'SEL_ATTEND'		=> $sel_attend_code,
-						//'SEL_ROLE'			=> $sel_role, 
-						)
+											)
 					);
 	
 				}
@@ -1165,6 +1231,7 @@ class displayplanner extends raidplanner_base
 	
 	/***
 	 * handles signing up to a raid
+	 * called from display_plannedraid
 	 * 
 	 */
 	private function signup(&$raidplan_data, $signup_data)
@@ -1172,7 +1239,7 @@ class displayplanner extends raidplanner_base
 		global $user, $db, $config;
 			
 		// identify the signup. if user returns to signup screen he can change
-		$signup_id = request_var('signup_id', 0);
+		$signup_id = request_var('hidden_signup_id', 0);
 		
 		$uid = $bitfield = $options = '';
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
@@ -1180,8 +1247,9 @@ class displayplanner extends raidplanner_base
 		
 		// get the chosen raidrole 1-6, this changes the signup value
 		$newrole_id = request_var('signuprole', 0);
-		
-		// the new user input
+		// get the chosen raidchar
+		$signup_data['dkpmember_id'] = request_var('signupchar', 0);
+		// get the attendance value
 		$new_signup_val	= request_var('signup_val', 2);
 
 		// update the ip address and time
@@ -1250,6 +1318,7 @@ class displayplanner extends raidplanner_base
 					'signup_val'		=> (int) $signup_data['signup_val'],
 					'signup_count'		=> (int) $signup_data['signup_count'],
 					'signup_detail'		=> (string) $signup_data['signup_detail'],
+					'dkpmember_id'		=> $signup_data['dkpmember_id'], 
 					'role_id'			=> (int) $newrole_id,
 					'bbcode_bitfield'	=> $bitfield,
 					'bbcode_uid'		=> $uid,
@@ -1275,6 +1344,7 @@ class displayplanner extends raidplanner_base
 					'signup_val'		=> (int) $signup_data['signup_val'],
 					'signup_count'		=> (int) $signup_data['signup_count'],
 					'signup_detail'		=> (string) $signup_data['signup_detail'],
+					'dkpmember_id'		=> $signup_data['dkpmember_id'], 
 					'role_id'			=> $newrole_id,
 					'bbcode_bitfield'	=> $bitfield,
 					'bbcode_uid'		=> $uid,
@@ -1283,12 +1353,14 @@ class displayplanner extends raidplanner_base
 				);
 			$db->sql_query($sql);
 			
-			//$signup_id = $db->sql_nextid();
+			$signup_id = $db->sql_nextid();
+			$signup_data['signup_id'] = $signup_id;
 		}
 		
 		switch ($new_signup_val)
 		{
 			case 0:
+				//yes
 				$new_yes_count += 1;
 				//increase new role signup count
 				$sql = " update " . RP_RAIDPLAN_ROLES . " set role_signedup = (role_signedup  + 1) where role_id = " . 
@@ -1296,9 +1368,11 @@ class displayplanner extends raidplanner_base
 				$db->sql_query($sql);
 				break;
 			case 1:
+				//no
 				$new_no_count += 1;
 				break;
 			case 2:
+				//maybe
 				//increase new role signup count
 				$sql = " update " . RP_RAIDPLAN_ROLES . " set role_signedup = (role_signedup  + 1) where role_id = " . 
 				$newrole_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];

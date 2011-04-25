@@ -1,5 +1,26 @@
 <!-- INCLUDE overall_header.html -->
 <!-- INCLUDE dkp/dkpmenu.html -->
+<script type="text/javascript">
+// <![CDATA[
+function toggle_rpsignup()
+{
+	if (document.getElementById('rpsignup'))
+	{
+		document.getElementById('rpsignup').style.display = (document.getElementById('rpsignup').style.display == 'none') ? 'block' : 'none';
+	}
+}
+
+if (document.addEventListener)
+{
+	document.addEventListener('DOMContentLoaded', toggle_rpsignup, false);
+}
+else
+{
+	window.onload = toggle_rpsignup;
+}
+// ]]>
+</script>
+
 <div class="forabg">
 <span class="corners-top"><span></span></span>
 <div style="width:50%; float: left;">
@@ -65,7 +86,7 @@
 <div class="inner"><span class="corners-top"><span></span></span>
 <!-- IF IS_RECURRING --><h4><br />&nbsp;<br />{L_OCCURS_EVERY}: {RECURRING_TXT}</h4><!-- ENDIF -->
 
-<table class="table1" style="width:90%; margin-left:auto;margin-right:auto;text-align:left" ">
+<table class="table1" style="width:95%; margin-left:auto;margin-right:auto;text-align:left" ">
 <tbody>
 <tr>
 <td>
@@ -153,10 +174,15 @@
 </div>
 
 
-<div class="panel">
+<div class="panel" >
 <div class="inner"><span class="corners-top"><span></span></span>
 
+<div style="width:95%; margin-left:auto;margin-right:auto;text-align:left" > 
 <!-- BEGIN raidroles -->
+
+<!-- IF raidroles.S_ROW_COUNT % 5 == 0 -->
+<div style="width:160px; clear:left ;"></div>
+<!-- ENDIF -->
 
 <div style="width:160px; float:left ;">
 <table style="width:100%; cellspacing="0" cellpadding="5">
@@ -168,8 +194,15 @@
 <!-- BEGIN signups -->
 <tr>
 	<td> <strong><a>{raidroles.signups.POSTER_URL}</a></strong><br />
+	<span><!-- IF raidroles.signups.S_RACE_IMAGE_EXISTS --><img src="{raidroles.signups.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
+	<!-- IF raidroles.signups.S_CLASS_IMAGE_EXISTS --><img src="{raidroles.signups.CLASS_IMAGE}" alt="{raidroles.signups.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
+	<strong><h4> <span style="color:{raidroles.signups.COLORCODE}">{raidroles.signups.CHARNAME}</span></h4></strong></span> <br />
+			
 	{raidroles.signups.POST_TIME} <br />
 	{raidroles.signups.DETAILS} <br /> 
+	<!-- IF S_EDIT_SIGNUP -->
+		<td align="left"><a href="{raidroles.signups.U_EDIT}">{L_EDIT}</a></td>
+		<!-- ENDIF -->
 	</td>
 </tr>
 <!-- END signups -->
@@ -177,35 +210,21 @@
 </tbody>
 </table>
 </div>
-	 
 <!-- END raidroles -->
+</div>
 <span class="corners-bottom"><span></span></span>
 </div>
 </div>
 
-
-
-
-<!-- xx 
-<!-- BEGIN signups -->
-	<tr>
-		<td align="left"><span style="display: none">{signups.POSTER}</span>{signups.POSTER_URL}</td>
-
-		<td align="left">{signups.VALUE_TXT}</td>
-		<td align="left">{signups.DETAILS}</td>
-		<td align="left"><span style="display: none">{signups.POST_TIMESTAMP}</span>{signups.POST_TIME}</td>
-		<!-- IF S_EDIT_SIGNUP -->
-		<td align="left"><a href="{signups.U_EDIT}">{L_EDIT}</a></td>
-		<!-- ENDIF -->
-	</tr>
-<!-- END signups -->
--->
-
-<!-- IF S_CURRENT_SIGNUP -->
+<!-- IF S_CURRENT_SIGNUP  -->
+<fieldset>
+<h4 class="solo"><a href="javascript:toggle_rpsignup();">{L_CALENDAR_RESPOND}</a></h4>
+<div id="rpsignup">
+<!-- IF S_CANSIGNUP -->
 <form method="post" action="{S_SIGNUP_MODE_ACTION}" name="signup_form" id="signup_form">
 <div class="panel bg2">
 <div class="inner"><span class="corners-top"><span></span></span>
-<h3 class="solo">{L_CALENDAR_RESPOND} : {CURR_POSTER_URL}</h3>
+
 <fieldset>
 <dl>
 	<dt>{L_CALENDAR_WILL_ATTEND}</dt>
@@ -214,21 +233,30 @@
 	<dt>{L_RAIDROLE}</dt>
 	<dd><select id="signuprole" name="signuprole">{S_ROLE_OPTIONS}</select></dd>
 
+	<dt>{L_RAIDCHARACTER}</dt>
+	<dd><select id="signupchar" name="signupchar">{S_RAIDMEMBER_OPTIONS}</select></dd>
+
 	<dt>&nbsp;<br>
 	{L_COMMENTS}</dt>
 	<dd><textarea name="signup_detail" id="signup_detail" rows="4"
 		cols="25">{CURR_SIGNUP_DETAIL}</textarea></dd>
 	<dt>&nbsp;</dt>
-	<dd><input type="hidden" name="signup_id" id="signup_id"
-		value="{CURR_SIGNUP_ID}" />
+	<dd><input type="hidden" name="hidden_signup_id" id="hidden_signup_id" value="{CURR_SIGNUP_ID}" />
 		<input type="submit" name="signmeup" value="{L_SUBMIT}" class="button1" /></dd>
 </dl>
 </fieldset>
 <span class="corners-bottom"><span></span></span></div>
 </div>
-
-
 </form>
+<!-- ELSE -->
+<div class="panel bg2">
+<div class="inner"><span class="corners-top"><span></span></span>
+	<p class="error">{L_CANNOTSIGNUP}</p>
+<span class="corners-bottom"><span></span></span></div>
+</div>
+<!-- ENDIF -->
+</div>
+</fieldset>
 <!-- ENDIF -->
 
 <hr />
