@@ -62,8 +62,9 @@ else
 		$raidplan_data['s_recurring_opts'] = true;
 	}
 	$raidplan_data['raidplan_id'] = 0;
+	// new field
+	$raidplan_data['raidplan_invite_time'] = 0;
 	$raidplan_data['raidplan_start_time'] = 0;
-	
 	$raidplan_data['etype_id'] = 0;
 	$raidplan_data['raidplan_subject'] = "";
 	$raidplan_data['raidplan_body'] = "";
@@ -270,7 +271,6 @@ if( $auth->acl_get('u_raidplanner_create_private_raidplans') )
 }
 
 
-
 // Raid start date
 $month_sel_code  = " ";
 for( $i = 1; $i <= 12; $i++ )
@@ -289,6 +289,53 @@ for( $i = $newraid->date['year']; $i < ($newraid->date['year']+5); $i++ )
 {
 	$year_sel_code .= "<option value='".$i."'>".$i."</option>\n";
 }
+
+// Raid invite time
+
+$hour_sel_code = "";
+$hour_mode = $config['rp_hour_mode'];
+if( $hour_mode == 12 )
+{
+	for( $i = 0; $i < 24; $i++ )
+	{
+		$mod_12 = $i % 12;
+		if( $mod_12 == 0 )
+		{
+			$mod_12 = 12;
+		}
+		$am_pm = $user->lang['PM'];
+		if( $i < 12 )
+		{
+			$am_pm = $user->lang['AM'];
+		}
+		$hour_sel_code .= "<option value='".$i."'>".$am_pm." ".$mod_12."</option>\n";
+	}
+}
+else
+{
+	for( $i = 0; $i < 24; $i++ )
+	{
+		$o = "";
+		if($i < 10 )
+		{
+			$o="0";
+		}
+		$hour_sel_code .= "<option value='".$i."'>".$o.$i."</option>\n";
+	}
+}
+
+$min_sel_code = "";
+for( $i = 0; $i < 12; $i++ )
+{
+	$t = $i * 5;
+	$o = "";
+	if($t < 10 )
+	{
+		$o="0";
+	}
+	$min_sel_code .= "<option value='".$t."'>".$o.$t."</option>\n";
+}
+
 
 // Raid start time
 $hour_sel_code = "";
@@ -770,7 +817,7 @@ $template->set_filenames(array(
 	'body' => 'planner/planner_post_body.html')
 );
 
-make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
+//make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
 
 page_footer();
 

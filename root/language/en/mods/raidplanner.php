@@ -114,7 +114,7 @@ $lang = array_merge($lang, array(
 	'CALENDAR_NUMBER_ATTEND'=> 'The number of people you are bringing to this raid',
 	'CALENDAR_NUMBER_ATTEND_EXPLAIN'=> '(enter 1 for yourself)',
 	'CALENDAR_RESPOND'		=> 'Please register here',
-	'CALENDAR_WILL_ATTEND'	=> 'Will you attend this raid?',
+	'CALENDAR_WILL_ATTEND'	=> 'Are you available for this raid?',
 
 	'CANNOTSIGNUP'			=> 'you cannot sign up because you have no DKP characters linked to your account.',
 	
@@ -122,6 +122,7 @@ $lang = array_merge($lang, array(
 	'COL_HEADCOUNT'			=> 'Count',
 	'COL_WILL_ATTEND'		=> 'Will Attend?',
 	'COMMENTS'				=> 'Comments',
+	'CONFIRMED'				=> 'Confirmed',
 
 	'DAY'					=> 'Day',
 	'DAY_OF'				=> 'Day of ',
@@ -165,6 +166,7 @@ $lang = array_merge($lang, array(
 	'MESSAGE_BODY_EXPLAIN'		=> 'Enter your message here, it may contain no more than <strong>%d</strong> characters.',
 
 	'MAYBE'					=> 'Maybe',
+	'AVAILABLE'				=> 'Available', 
 	'MONTH'					=> 'Month',
 	'MONTH_OF'				=> 'Month of ',
 	'MY_EVENTS'				=> 'My Raids',
@@ -214,8 +216,8 @@ $lang = array_merge($lang, array(
 	'START_DATE'				=> 'Start Date',
 	'RAID_DATE'					=> 'Raid Date',
 	'START_TIME'				=> 'Start Time',
+	'RAID_INVITE_TIME'			=> 'Raid Invite Time',
 	'RAID_START_TIME'			=> 'Raid Start Time',
-
 	'TO_TIME'					=> 'To',
 
 	'TRACK_SIGNUPS'				=> 'Track attendance',

@@ -97,6 +97,9 @@ class raidplanner_population extends raidplanner_base
 	    -------------------------------------------------------------------*/
 		if( $s_date_time_opts )
 		{
+			$invite_hr = request_var('calinvHr', 0);
+			$invite_mn = request_var('calinvMn', 0);
+			$raidplan_data['raidplan_invite_time'] = gmmktime($invite_hr, $invite_mn, 0, $newraid->date['month_no'], $newraid->date['day'], $newraid->date['year'] ) - $user->timezone - $user->dst;
 			$start_hr = request_var('calHr', 0);
 			$start_mn = request_var('calMn', 0);
 			$raidplan_data['raidplan_start_time'] = gmmktime($start_hr, $start_mn, 0, $newraid->date['month_no'], $newraid->date['day'], $newraid->date['year'] ) - $user->timezone - $user->dst;

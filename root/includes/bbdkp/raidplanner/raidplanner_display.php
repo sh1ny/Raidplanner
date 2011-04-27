@@ -934,7 +934,7 @@ class displayplanner extends raidplanner_base
 				}
 				
 				
-				// list the signups per role_id
+				// list the available signups per role_id
 				// get profiles needed for this raid
 				$sql_array = array(
 				    	'SELECT'    => 'r.role_id, r.role_name, er.role_needed, er.role_signedup, er.role_confirmed', 
