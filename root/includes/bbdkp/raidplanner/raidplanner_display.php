@@ -3,7 +3,6 @@
 *
 * @author alightner, Sajaki
 * @package bbDKP Raidplanner
-* @version CVS/SVN: $Id: raidplanner_display.php 1761 2010-11-23 01:27:59Z sajaki9 $
 * @copyright (c) 2009 alightner
 * @copyright (c) 2010 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
@@ -35,6 +34,7 @@ class displayplanner extends raidplanner_base
 		
 		$this->_init_calendar_data();
 		$this->_init_view_selection_code("month");
+		
 		//create next and prev links
 		$this->set_date_prev_next( "month" );
 		$prev_link = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year'].$etype_url_opts);
@@ -311,6 +311,7 @@ class displayplanner extends raidplanner_base
 			$prev_year_no--;
 		}
 		$prev_month_day_count = date("t",mktime( 0,0,0,$prev_month_no, 25, $prev_year_no));
+		
 		// how many days are in this month?
 		$month_day_count = date("t",mktime(0,0,0,$this->date['month_no'], 25, $this->date['year']));
 		$next_month_no = $this->date['month_no'] + 1;
@@ -890,6 +891,7 @@ class displayplanner extends raidplanner_base
 				$signup_data['poster_colour'] = $user->data['user_colour'];
 				$signup_data['poster_ip'] = $user->ip;
 				$signup_data['post_time'] = time();
+				$signup_data['dkpmember_id'] = request_var('signupchar', 0);
 				$signup_data['signup_val'] = 2;
 				$signup_data['signup_count'] = 1;
 				$signup_data['signup_detail'] = "";
@@ -899,6 +901,12 @@ class displayplanner extends raidplanner_base
 				// show signed up
 				$signup_id	= request_var('hidden_signup_id', 0);
 				
+				if ($signup_id ==0)
+				{
+					//doublecheck in database in case of repost
+					$signup_id = $this->check_if_subscribed($signup_data['poster_id'],$signup_data['dkpmember_id'], $signup_data['raidplan_id']);
+				}
+		
 				if( $signup_id !== 0 )
 				{
 					$this->get_signup_data( $signup_id, $signup_data );
@@ -1238,19 +1246,18 @@ class displayplanner extends raidplanner_base
 	{
 		global $user, $db, $config;
 			
-		// identify the signup. if user returns to signup screen he can change
-		$signup_id = request_var('hidden_signup_id', 0);
+
+		// get the chosen raidrole 1-6, this changes the signup value
+		$newrole_id = request_var('signuprole', 0);
+		// get the attendance value
+		$new_signup_val	= request_var('signup_val', 2);
 		
 		$uid = $bitfield = $options = '';
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
 		generate_text_for_storage($new_signup_detail, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
 		
-		// get the chosen raidrole 1-6, this changes the signup value
-		$newrole_id = request_var('signuprole', 0);
 		// get the chosen raidchar
 		$signup_data['dkpmember_id'] = request_var('signupchar', 0);
-		// get the attendance value
-		$new_signup_val	= request_var('signup_val', 2);
 
 		// update the ip address and time
 		$signup_data['poster_ip'] = $user->ip;
@@ -1262,6 +1269,15 @@ class displayplanner extends raidplanner_base
 		$new_no_count = 0;
 		$new_maybe_count = 0;
 		
+		// identify the signup. if user returns to signup screen he can change
+		$signup_id = request_var('hidden_signup_id', 0);
+		
+		if ($signup_id ==0)
+		{
+			//doublecheck in database
+			$signup_id = $this->check_if_subscribed($signup_data['poster_id'],$signup_data['dkpmember_id'], $signup_data['raidplan_id']);
+		}
+			
 		// save the user's signup data...
 		if( $signup_id > 0)
 		{
@@ -1402,7 +1418,31 @@ class displayplanner extends raidplanner_base
 		
 	}
 	
-	
+	/*
+	 * doublecheck in db if poster already signed up
+	 * 
+	 */
+	private function check_if_subscribed($user_id, $dkpmember_id, $raidplan_id)
+	{
+		global $db;
+		$signup_id = 0;
+		
+		$sql = 'select signup_id from ' . RP_SIGNUPS . ' WHERE 
+			poster_id = ' . $user_id . ' 
+			and raidplan_id = ' . $raidplan_id . ' 
+			and dkpmember_id = ' . $dkpmember_id;
+		$db->sql_query($sql);
+		
+		$result = $db->sql_query($sql);
+		if($result)
+		{
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$signup_id = (int) $row['signup_id'];
+			}
+		}
+		return $signup_id; 
+	}
 		
 	/* calendar_init_s_watching_raidplan_data()
 	**

@@ -139,7 +139,7 @@ if ($submit || $preview)
 	
 	if( $raidplan_id > 0 )
 	{
-		$newraid->edit_raidplan($raidplan_data, $newraid, $raidplan_id,$s_date_time_opts );
+		$newraid->edit_raidplan($raidplan_data, $newraid, $raidplan_id, $s_date_time_opts );
 	}
 	else 
 	{
@@ -291,9 +291,9 @@ for( $i = $newraid->date['year']; $i < ($newraid->date['year']+5); $i++ )
 }
 
 // Raid invite time
-
-$hour_sel_code = "";
 $hour_mode = $config['rp_hour_mode'];
+
+$hour_invsel_code = "";
 if( $hour_mode == 12 )
 {
 	for( $i = 0; $i < 24; $i++ )
@@ -308,7 +308,7 @@ if( $hour_mode == 12 )
 		{
 			$am_pm = $user->lang['AM'];
 		}
-		$hour_sel_code .= "<option value='".$i."'>".$am_pm." ".$mod_12."</option>\n";
+		$hour_invsel_code .= "<option value='".$i."'>".$am_pm." ".$mod_12."</option>\n";
 	}
 }
 else
@@ -320,11 +320,11 @@ else
 		{
 			$o="0";
 		}
-		$hour_sel_code .= "<option value='".$i."'>".$o.$i."</option>\n";
+		$hour_invsel_code .= "<option value='".$i."'>".$o.$i."</option>\n";
 	}
 }
 
-$min_sel_code = "";
+$min_invite_sel_code = "";
 for( $i = 0; $i < 12; $i++ )
 {
 	$t = $i * 5;
@@ -333,13 +333,13 @@ for( $i = 0; $i < 12; $i++ )
 	{
 		$o="0";
 	}
-	$min_sel_code .= "<option value='".$t."'>".$o.$t."</option>\n";
+	$min_invite_sel_code .= "<option value='".$t."'>".$o.$t."</option>\n";
 }
 
 
 // Raid start time
 $hour_sel_code = "";
-$hour_mode = $config['rp_hour_mode'];
+
 if( $hour_mode == 12 )
 {
 	for( $i = 0; $i < 24; $i++ )
@@ -711,6 +711,10 @@ else //  new raid
 	$temp_replace_str = "name='calMnEnd' id='calMnEnd'";
 	$end_min_code = str_replace( $temp_find_str, $temp_replace_str, $end_min_code );
 
+	
+
+	
+	
 }
 
 
@@ -744,6 +748,9 @@ $template->assign_vars(array(
 	'YEAR_SEL'					=> $year_sel_code,
 	'START_HOUR_SEL'			=> $start_hour_code,
 	'START_MIN_SEL'				=> $start_min_code,
+
+	'INVITE_HOUR_SEL'			=> $hour_invsel_code, 
+	'INVITE_MIN_SEL'			=> $min_invite_sel_code, 
 
 	'EVENT_TYPE_SEL'			=> $e_type_sel_code,
 	'EVENT_ACCESS_LEVEL_SEL'	=> $level_sel_code,
