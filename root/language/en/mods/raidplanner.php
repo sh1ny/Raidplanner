@@ -58,8 +58,8 @@ $lang = array_merge($lang, array(
     'DISPLAY_EVENTS_ONLY_1_DAY_EXPLAIN'		=> 'Display raids only on the day they begin (ignore their end date/time).',
     'DISPLAY_FIRST_WEEK'					=> 'Display Current Week',
     'DISPLAY_FIRST_WEEK_EXPLAIN'			=> 'Would you like to have the current week displayed on the forum index?',
-    'DISPLAY_NEXT_EVENTS'					=> 'Display Next Raids',
-    'DISPLAY_NEXT_EVENTS_EXPLAIN'			=> 'Specify the number of current raids you want listed on the index page.  Note this option is ignored if you have turned on the option to display the current week.',
+    'DISPLAY_NEXT_RAIDS_PORTAL'				=> 'Display Next Raids on Portal',
+    'DISPLAY_NEXT_RAIDS_PORTAL_EXPLAIN'		=> 'Specify the number of upcoming raids to display on the Portal.',
     'DISPLAY_TRUNCATED_SUBJECT'				=> 'Truncate Subject',
     'DISPLAY_TRUNCATED_SUBJECT_EXPLAIN'		=> 'Long names in the subject can take up a lot of space on the calendar.  How many characters do you want displayed in the subject on the calendar? (enter 0 if you do not want to truncate the subject)',
     'EDIT'									=> 'Edit',
@@ -88,6 +88,7 @@ $lang = array_merge($lang, array(
     'WEDNESDAY'								=> 'Wednesday',
 	'USER_CANNOT_MANAGE_RAIDPLANNER'		=> 'You are not authorised to manage the raidplanner settings', 
 	'RPADVANCEDOPTIONS'						=> 'Advanced options', 
+	'RPSETTINGS'							=> 'Settings', 
 	
 	//confirms
 	'ROLE_DELETE_SUCCESS'	=> 'The role %s was deleted.', 
@@ -159,7 +160,7 @@ $lang = array_merge($lang, array(
 	'FREQUENCEY_LESS_THAN_1'	=> 'Recurring raids must have a frequency greater than or equal to 1',
 
 	'HOW_MANY_PEOPLE'		=> 'Quick Headcount',
-
+	'HOUR'					=> 'Hour',
 	'INVALID_RAIDPLAN'			=> 'The raid you are trying to view does not exist.',
 	'INVITE_INFO'			=> 'Invited',
 
@@ -167,6 +168,7 @@ $lang = array_merge($lang, array(
 
 	'MAYBE'					=> 'Maybe',
 	'AVAILABLE'				=> 'Available', 
+	'MINUTE'				=> 'Minute', 
 	'MONTH'					=> 'Month',
 	'MONTH_OF'				=> 'Month of ',
 	'MY_EVENTS'				=> 'My Raids',
@@ -217,7 +219,9 @@ $lang = array_merge($lang, array(
 	'RAID_DATE'					=> 'Raid Date',
 	'START_TIME'				=> 'Start Time',
 	'RAID_INVITE_TIME'			=> 'Raid Invite Time',
+	'RAID_INVITE_TIME_DEFAULT'	=> 'Default Raid invite time',
 	'RAID_START_TIME'			=> 'Raid Start Time',
+	'DEFAULT_RAID_START_TIME'   => 'Default Raid start time',
 	'TO_TIME'					=> 'To',
 
 	'TRACK_SIGNUPS'				=> 'Track attendance',
@@ -230,7 +234,7 @@ $lang = array_merge($lang, array(
 	'USER_CANNOT_EDIT_RAIDPLAN'	=> 'You do not have permission to edit raids.',
 	'USER_CANNOT_POST_RAIDPLAN'	=> 'You do not have permission to create raids.',
 	'USER_CANNOT_VIEW_RAIDPLAN'	=> 'You do not have permission to view raids.',
-
+	
 	'VIEW_RAIDPLAN'				=> '%sView your submitted raid%s',
 	'WEEK'						=> 'Week',
 

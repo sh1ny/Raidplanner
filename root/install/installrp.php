@@ -224,6 +224,8 @@ $versions = array(
 			array('rp_populate_frequency', 86400, true),
 			array('rp_last_populate', 0, true),
 			array('rp_populate_limit', 94608000, true),
+			array('rp_default_invite_time', 1200, true),
+			array('rp_default_start_time', 1230, true),
 			),
         	 
 			//adding some tables

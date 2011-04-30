@@ -156,7 +156,7 @@ class raidplanner_base
 		// Permission to do the action asked?
 		switch ($mode)
 		{
-			case 'post':
+			case 'addraid':
 				if ( $auth->acl_gets(
 					'u_raidplanner_create_public_raidplans', 
 					'u_raidplanner_create_group_raidplans', 

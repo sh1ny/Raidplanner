@@ -58,6 +58,8 @@ img_icon_raidplanner_edit_all = planner/icon_calendar_edit_all.gif*20*61
 img_icon_raidplanner_delete_all = planner/icon_calendar_delete_all.gif*20*40]]></action>
 			</edit>
 		</open>
+		
+		
 		<open src="styles/prosilver/template/index_body.html">
 			<edit>
 				<comment lang="en"><![CDATA[Add calendar to index page]]></comment>
@@ -70,6 +72,18 @@ img_icon_raidplanner_delete_all = planner/icon_calendar_delete_all.gif*20*40]]><
 		]]></action>
 			</edit>
 		</open>
+		
+		<open src="/styles/prosilver/template/dkp/dkpmenu.html">
+			<edit>
+				<comment lang="en"><![CDATA[raidplanner link]]></comment>
+				<comment lang="fr"><![CDATA[raidplanner link]]></comment>
+				<comment lang="de"><![CDATA[raidplanner link]]></comment>								
+				<find><![CDATA[  <!-- IF U_ACP -->&nbsp; &nbsp; <a href="{U_DKP_ACP}">{L_MENU_ADMIN_PANEL}</a> <!-- ENDIF -->]]></find>
+				<action type="before-add"><![CDATA[	&nbsp; &nbsp;<a href="{U_PLANNER}">{L_PLANNER}</a>
+]]></action>
+			</edit>
+		</open>
+		
 		<open src="styles/prosilver/template/overall_footer.html">
 			<edit>
 				<comment lang="en"><![CDATA[Add calendar subscription links]]></comment>
@@ -79,6 +93,9 @@ img_icon_raidplanner_delete_all = planner/icon_calendar_delete_all.gif*20*40]]><
 		]]></action>
 			</edit>
 		</open>
+		
+		
+		
 		<open src="styles/prosilver/theme/buttons.css">
 			<edit>
 				<comment lang="en"><![CDATA[Add calendar icon buttons]]></comment>
@@ -116,6 +133,8 @@ img_icon_raidplanner_delete_all = planner/icon_calendar_delete_all.gif*20*40]]><
 		ul.profile-icons li.delete-all-icon	{ width: {IMG_ICON_RAIDPLANNER_DELETE_ALL_WIDTH}px; height: {IMG_ICON_RAIDPLANNER_DELETE_ALL_HEIGHT}px; }]]></action>
 			</edit>
 		</open>
+		
+		
 		<open src="/styles/prosilver/theme/stylesheet.css">
 			<edit>
 				<comment lang="en"><![CDATA[raidplanner css]]></comment>
@@ -126,6 +145,7 @@ img_icon_raidplanner_delete_all = planner/icon_calendar_delete_all.gif*20*40]]><
 ]]></action>
 			</edit>
 		</open>
+		
 		<open src="styles/prosilver/theme/colours.css">
 			<edit>
 				<comment lang="en"><![CDATA[Define main calendar icon data]]></comment>

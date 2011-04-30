@@ -110,7 +110,7 @@ class raidplanner_population extends raidplanner_base
 		// DNSBL check
 		if ($config['check_dnsbl'] )
 		{
-			if (($dnsbl = $user->check_dnsbl('post')) !== false)
+			if (($dnsbl = $user->check_dnsbl('newraid')) !== false)
 			{
 				$error[] = sprintf($user->lang['IP_BLACKLISTED'], $user->ip, $dnsbl[1]);
 			}
@@ -850,7 +850,7 @@ class raidplanner_population extends raidplanner_base
 		{
 			$template->assign_vars(array(
 				'S_SHOW_SMILEY_LINK' 	=> true,
-				'U_MORE_SMILIES' 		=> append_sid("{$phpbb_root_path}calendarpost.$phpEx", 'mode=smilies'))
+				'U_MORE_SMILIES' 		=> append_sid("{$phpbb_root_path}planneradd.$phpEx", 'mode=smilies'))
 			);
 		}
 	
@@ -859,6 +859,7 @@ class raidplanner_population extends raidplanner_base
 			page_footer();
 		}
 	}
+
 
 	
 	
