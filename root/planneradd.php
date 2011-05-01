@@ -90,12 +90,13 @@ else
 
 // mode: addraid, edit, delete, or smilies
 $submit		= (isset($_POST['addraid'])) ? true : false;
-$delete		= (isset($_POST['delete'])) ? true : false;
 $cancel		= (isset($_POST['cancel'])) ? true : false;
-$mode = ($delete && $submit) ? 'delete' : request_var('mode', '');
+
+$mode		= (isset($_GET['mode'])) ? true : false;
+$mode 		= ($mode == true) ? request_var('mode', '') : '';
+
 $s_date_time_opts = true;
 $page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
-
 if($submit)
 {
 		$newraid->authcheck('addraid', $submit, $raidplan_data, $raidplan_id);
@@ -118,7 +119,8 @@ if($submit)
 		trigger_error($message, E_USER_NOTICE);
 	
 }
-elseif($delete)
+
+if($mode =='delete')
 {
 		$newraid->authcheck('delete', $submit, $raidplan_data, $raidplan_id);
 		$page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
@@ -134,19 +136,10 @@ elseif($delete)
 		exit;
 }
 
-	
-switch ($mode)
-{
-	case 'smilies' :
-		// take care of smilies popup if > 200 smilies
-		$newraid->generate_calendar_smilies('window');
-		trigger_error('NO_POST_EVENT_MODE');
 
-		break;
-		
-	case 'delete' : 
-		
-	case 'edit';
+if($mode =='edit' && $submit)
+{		
+		//http://localhost/qi/boards/test6/planneradd.php?mode=edit&calEid=4&calD=04&calM=5&calY=2011
 		$newraid->authcheck($mode, $submit, $raidplan_data, $raidplan_id);
 		$page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
 	    $edit_all = request_var('calEditAll', 0);
@@ -162,17 +155,13 @@ switch ($mode)
 		{
 			$newraid->edit_raidplan($raidplan_data, $newraid, $raidplan_id, $s_date_time_opts );
 		}
+		$main_calendar_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+		$view_raidplan_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$raidplan_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+		
 		$message = $user->lang['EVENT_EDITED'] . '<br /><br />' . sprintf($user->lang['VIEW_RAIDPLAN'], '<a href="' . $view_raidplan_url . '">', '</a>');
 		$message .= '<br /><br />' . sprintf($user->lang['RETURN_CALENDAR'], '<a href="' . $main_calendar_url . '">', '</a>');
 		trigger_error($message, E_USER_NOTICE);
-
-		break;
-		
-	case 'addraid';
-		
-		break;
 }
-
 
  /** 
  * build Raid posting form
