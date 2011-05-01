@@ -185,7 +185,9 @@ class displayplanner extends raidplanner_base
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$raidplan_output['COLOR'] = $this->raid_plan_colors[$row['etype_id']];
-					$raidplan_output['IMAGE'] = $this->raid_plan_images[$row['etype_id']];
+					$raidplan_output['IMAGE'] = $phpbb_root_path . "images/event_images/" . $this->raid_plan_images[$row['etype_id']] . ".png";
+					$raidplan_output['S_EVENT_IMAGE_EXISTS'] = (strlen( $this->raid_plan_images[$row['etype_id']] ) > 1) ? true : false;
+					
 					$raidplan_output['EVENT_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$row['raidplan_id'].$etype_url_opts);
 	
 					// if the raidplan was created by this user
@@ -447,7 +449,9 @@ class displayplanner extends raidplanner_base
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$raidplan_output['COLOR'] = $this->raid_plan_colors[$row['etype_id']];
-					$raidplan_output['IMAGE'] = $this->raid_plan_images[$row['etype_id']];
+					$raidplan_output['IMAGE'] = $phpbb_root_path . "images/event_images/" . $this->raid_plan_images[$row['etype_id']] . ".png";
+					$raidplan_output['S_EVENT_IMAGE_EXISTS'] = (strlen( $this->raid_plan_images[$row['etype_id']] ) > 1) ? true : false;
+					
 					$raidplan_output['EVENT_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$row['raidplan_id'].$etype_url_opts);
 	
 					// if the raidplan was created by this user
@@ -631,7 +635,10 @@ class displayplanner extends raidplanner_base
 				$raidplans['PADDING'] = "";
 				$raidplans['POST_PADDING'] = "";
 				$raidplans['COLOR'] = $this->raid_plan_colors[$row['etype_id']];
-				$raidplans['IMAGE'] = $this->raid_plan_images[$row['etype_id']];
+				$raidplans['IMAGE'] = $phpbb_root_path . "images/event_images/" . $this->raid_plan_images[$row['etype_id']] . ".png";
+				$raidplans['S_EVENT_IMAGE_EXISTS'] = (strlen( $this->raid_plan_images[$row['etype_id']] ) > 1) ? true : false;
+				
+					
 				$raidplans['EVENT_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$row['raidplan_id']. $etype_url_opts);
 				// if the raidplan was created by this user
 				// display it in bold
@@ -1010,9 +1017,6 @@ class displayplanner extends raidplanner_base
 					while ($signup_row = $db->sql_fetchrow($result) )
 					{
 						
-						
-						
-						
 						if( ($signup_id == 0 && $signup_data['poster_id'] == $signup_row['poster_id']) ||
 						    ($signup_id != 0 && $signup_id == $signup_row['signup_id']) )
 						{
@@ -1202,7 +1206,8 @@ class displayplanner extends raidplanner_base
 				'U_CALENDAR'		=> $back_url,
 				'ETYPE_DISPLAY_NAME'=> $raidplan_display_name,
 				'EVENT_COLOR'		=> $raidplan_color,
-				'EVENT_IMAGE'		=> $raidplan_image,
+				'EVENT_IMAGE' 		=> $phpbb_root_path . "images/event_images/" . $raidplan_image . ".png", 
+            	'S_EVENT_IMAGE_EXISTS' 	=> (strlen($raidplan_image) > 1) ? true : false, 
 				'SUBJECT'			=> $subject,
 				'MESSAGE'			=> $message,
 				'START_DATE'		=> $start_date_txt,
@@ -1742,8 +1747,7 @@ class displayplanner extends raidplanner_base
 		}
 	}
 	
-	/* displays the calendar - either week view or upcoming raidplan list
-	   as specified in the ACP on the index */
+	/* displays the calendar - either week view or upcoming raidplan list as specified in the ACP on the index */
 	public function display_calendar_on_index()
 	{
 		global $auth, $db, $user, $config, $template;

@@ -46,9 +46,13 @@ class raidplanner_population extends raidplanner_base
 		global $user, $config; 
 		$error = array();
 		
+		// read subjectline
 		$raidplan_data['raidplan_subject']= utf8_normalize_nfc(request_var('subject', '', true));
+		//read comment section
 		$raidplan_data['raidplan_body']	= utf8_normalize_nfc(request_var('message', '', true));
-		$raidplan_data['etype_id']		= request_var('calEType', 0);
+		//get event type
+		$raidplan_data['etype_id']	= request_var('calEType', 0);
+		
 		$raidplan_data['group_id'] = 0;
 		$raidplan_data['group_id_list'] = ",";
 		
@@ -107,15 +111,6 @@ class raidplanner_population extends raidplanner_base
 			$raidplan_data['raidplan_start_time'] = gmmktime($start_hr, $start_mn, 0, $newraid->date['month_no'], $newraid->date['day'], $newraid->date['year'] ) - $user->timezone - $user->dst;
 		}
 	
-		// DNSBL check
-		if ($config['check_dnsbl'] )
-		{
-			if (($dnsbl = $user->check_dnsbl('newraid')) !== false)
-			{
-				$error[] = sprintf($user->lang['IP_BLACKLISTED'], $user->ip, $dnsbl[1]);
-			}
-		}
-		
 	    /*------------------------------------------------------------------
 	      Check options for recurring raidplans
 	    -------------------------------------------------------------------*/

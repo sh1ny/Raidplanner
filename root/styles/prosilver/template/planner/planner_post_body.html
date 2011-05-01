@@ -16,8 +16,6 @@
 </div>
 <form id="postform" name="postform" method="post" action="{S_POST_ACTION}" onsubmit="return checkForm(this);">
 
-<!-- IF S_DISPLAY_PREVIEW --><!-- INCLUDE planner/planner_post_preview.html --><!-- ENDIF -->
-
 <div class="panel" id="postingbox">
 <div class="inner"><span class="corners-top"><span></span></span>
 <div class="panel">
@@ -39,7 +37,7 @@
 			<!-- IF S_SAVE_ALLOWED -->
 			<input type="submit" accesskey="k" tabindex="8" name="save" value="{L_SAVE}" class="button2" />&nbsp;
 			<!-- ENDIF -->
-			<input type="submit" accesskey="s" tabindex="6" name="newraid" value="{L_SUBMIT}" class="button1" />&nbsp;
+			<input type="submit" accesskey="s" tabindex="6" name="addraid" value="{L_SUBMIT}" class="button1" />&nbsp;
 		</fieldset>
 
 		<span class="corners-bottom"><span></span></span></div>

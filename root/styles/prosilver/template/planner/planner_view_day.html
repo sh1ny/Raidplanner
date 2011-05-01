@@ -36,7 +36,7 @@
           		<a href="{raidplans.EVENT_URL}" title="<!-- IF raidplans.ETYPE_DISPLAY_NAME -->{raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{raidplans.FULL_SUBJECT}">
           			<!-- IF raidplans.COLOR --><span style="color:#{raidplans.COLOR}"><!-- ENDIF -->
           			<!-- IF raidplans.DISPLAY_BOLD --><strong><!-- ENDIF -->
-          			<!-- IF raidplans.IMAGE --><img src="{raidplans.IMAGE}" alt="{raidplans.ETYPE_DISPLAY_NAME}" /> <!-- ENDIF -->
+          			<!-- IF raidplans.S_EVENT_IMAGE_EXISTS --><img src="{raidplans.IMAGE}" alt="{raidplans.ETYPE_DISPLAY_NAME}" /> <br/><!-- ENDIF -->
           			<!-- IF raidplans.ETYPE_DISPLAY_NAME -->{raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{raidplans.EVENT_SUBJECT}
           			<!-- IF raidplans.DISPLAY_BOLD --></strong><!-- ENDIF --><br /><span class="smCalText">
           					<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}

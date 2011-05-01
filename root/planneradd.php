@@ -15,19 +15,27 @@ $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
-$raidplans = new raidplans();
-include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_population.' . $phpEx);
-$newraid= new raidplanner_population();
-
-// Start session management
+ 
+//Start session management
 $user->session_begin();
 $auth->acl($user->data);
-$current_time = $user->time_now;
-
 // Language files 
 $user->setup('posting');
 $user->add_lang ( array ('posting', 'mods/dkp_admin','mods/raidplanner'  ));
+
+$current_time = $user->time_now;
+
+if (!class_exists('raidplans'))
+{
+	include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
+}
+$raidplans = new raidplans();
+
+if (!class_exists('raidplanner_population'))
+{
+	include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_population.' . $phpEx);
+}
+$newraid= new raidplanner_population();
 
 $error = array();
 
@@ -53,8 +61,9 @@ else
 		$raidplan_data['s_recurring_opts'] = false;
 	}
 	$raidplan_data['raidplan_id'] = 0;
+
 	// new field
-	$raidplan_data['raidplan_invite_time'] = 0;
+	$raidplan_data['raidplan_invite_time'] = request_var('calM',0);
 	$raidplan_data['raidplan_start_time'] = 0;
 	$raidplan_data['etype_id'] = 0;
 	$raidplan_data['raidplan_subject'] = "";
@@ -62,6 +71,7 @@ else
 	$raidplan_data['poster_id'] = $user->data['user_id'];
 	$raidplan_data['poster_timezone'] = $user->data['user_timezone'];
 	$raidplan_data['poster_dst'] = $user->data['user_dst'];
+	
 	// set raidplan tracking to 1 by default
 	$raidplan_data['track_signups'] = 1;
 	$raidplan_data['raidplan_day'] = "00-00-0000";
@@ -82,31 +92,35 @@ else
 $submit		= (isset($_POST['addraid'])) ? true : false;
 $delete		= (isset($_POST['delete'])) ? true : false;
 $cancel		= (isset($_POST['cancel'])) ? true : false;
-$mode = ($delete && $submit) ? 'delete' : request_var('mode', '');	
-
-switch ($mode)
-{
-	/*
-	 * check authorisation
-	 */
-	case 'addraid':
-	case 'delete':
-	case 'edit':
-		$newraid->authcheck($mode, $submit, $raidplan_data, $raidplan_id);
-		break;
-}
-
+$mode = ($delete && $submit) ? 'delete' : request_var('mode', '');
+$s_date_time_opts = true;
 $page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
-switch ($mode)
-{
-	case 'smilies' :
-		// take care of smilies popup if > 200 smilies
-		$newraid->generate_calendar_smilies('window');
-		trigger_error('NO_POST_EVENT_MODE');
 
-		break;
+if($submit)
+{
+		$newraid->authcheck('addraid', $submit, $raidplan_data, $raidplan_id);
+		$page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
+		//complete the raidplan array by calling the gather function
+		$newraid->gather_raiddata($raidplan_data, $newraid, $s_date_time_opts);
 		
-	case 'delete' : 
+		// we have all data, now go create the raidplan
+		// pass zero raidplan_id by reference to get it updated
+		$newraid->create_raidplan($raidplan_data, $newraid, $raidplan_id);
+		
+		$main_calendar_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+		$view_raidplan_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$raidplan_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+		
+		// now redirect to the new newly created raidplan
+		meta_refresh(3, $view_raidplan_url);
+		$message = $user->lang['EVENT_STORED'] . '<br /><br />' . sprintf($user->lang['VIEW_RAIDPLAN'], '<a href="' . $view_raidplan_url . '">', '</a>');
+	
+		$message .= '<br /><br />' . sprintf($user->lang['RETURN_CALENDAR'], '<a href="' . $main_calendar_url . '">', '</a>');
+		trigger_error($message, E_USER_NOTICE);
+	
+}
+elseif($delete)
+{
+		$newraid->authcheck('delete', $submit, $raidplan_data, $raidplan_id);
 		$page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
 	    $delete_all = request_var('calDelAll', 0);
 	    if( $delete_all == 0 )
@@ -118,9 +132,30 @@ switch ($mode)
 			$newraid->handle_raidplan_delete_all($raidplan_id, $raidplan_data);
 		}
 		exit;
+}
+
+	
+switch ($mode)
+{
+	case 'smilies' :
+		// take care of smilies popup if > 200 smilies
+		$newraid->generate_calendar_smilies('window');
+		trigger_error('NO_POST_EVENT_MODE');
+
+		break;
+		
+	case 'delete' : 
 		
 	case 'edit';
+		$newraid->authcheck($mode, $submit, $raidplan_data, $raidplan_id);
 		$page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
+	    $edit_all = request_var('calEditAll', 0);
+	    //if editing recurring plans then don't add raid times
+	    if( $edit_all != 0)
+	    {
+			$s_date_time_opts = false;
+	    }
+				
 		// Decode bbcodes text for message editing
 		decode_message($raidplan_data['raidplan_body'], $raidplan_data['bbcode_uid']);
 		if( $raidplan_id > 0 )
@@ -134,48 +169,15 @@ switch ($mode)
 		break;
 		
 	case 'addraid';
-		$page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
-		//complete the raidplan array by calling the gather function
-		$newraid->gather_raiddata($raidplan_data, $newraid, $s_date_time_opts);
-		
-		// we have all data, now go create the raid
-		//pass zero raidplan_id by reference to get it updated
-		$newraid->create_raidplan($raidplan_data, $newraid, $raidplan_id);
-		
-		$main_calendar_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
-		$view_raidplan_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$raidplan_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
-		
-		// now redirect to the new newly created raidplan - not the main calendar page
-		meta_refresh(3, $view_raidplan_url);
-		$message = $user->lang['EVENT_STORED'] . '<br /><br />' . sprintf($user->lang['VIEW_RAIDPLAN'], '<a href="' . $view_raidplan_url . '">', '</a>');
-	
-		$message .= '<br /><br />' . sprintf($user->lang['RETURN_CALENDAR'], '<a href="' . $main_calendar_url . '">', '</a>');
-		trigger_error($message, E_USER_NOTICE);
 		
 		break;
 }
 
-/*---------------------------------------------------------
-  If in edit mode, we need to find out if we are editing
-  one raidplan, or all recurring raidplans... BEFORE we start querying
-  all the submitted data!
----------------------------------------------------------*/
-$s_date_time_opts = true;
-if( $raidplan_id != 0 )
-{
-    $edit_all = request_var('calEditAll', 0);
-    if( $edit_all != 0 )
-    {
-		$s_date_time_opts = false;
-    }
-}
 
-
-/******************************************************************************************************
+ /** 
+ * build Raid posting form
  * 
- * build new Raid posting form
- * 
- ******************************************************************************************************/
+ **/
 
 // action URL, include session_id for security purpose
 $s_action = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=$mode", true, $user->session_id);
@@ -190,26 +192,27 @@ $raidplan_data['raidplan_body'] = str_replace( $temp_find_str, $temp_replace_str
 
 //count events from bbDKP, put them in a pulldown...
 $e_type_sel_code  = "";
-for( $i = 0; $i < $newraid->raid_plan_count; $i++ )
+for( $i = 0; $i < $newraid->raid_plan_count; $i++)
 {
-	$e_type_sel_code .= "<option value='".$newraid->raid_plan_ids[$i]."'>".$newraid->raid_plan_names[$i]."</option>\n";
+	$e_type_sel_code .= '<option value="' . $newraid->raid_plan_ids[$i] . '">'. $newraid->raid_plan_names[$i].'</option>';
 }
 
 // raidplan acces level
-$level_sel_code ="";	
+$level_sel_code ="";
+
 // Find what groups this user is a member of and add them to the list of groups to invite
 $group_sel_code = $newraid->posting_generate_group_selection_code( $raidplan_data['poster_id'] );
 if( $auth->acl_get('u_raidplanner_create_public_raidplans') )
 {
-	$level_sel_code .= "<option value='2'>".$user->lang['EVENT_ACCESS_LEVEL_PUBLIC']."</option>\n";
+	$level_sel_code .= '<option value="2">'.$user->lang['EVENT_ACCESS_LEVEL_PUBLIC'].'</option>';
 }
 if( $auth->acl_get('u_raidplanner_create_group_raidplans') )
 {
-	$level_sel_code .= "<option value='1'>".$user->lang['EVENT_ACCESS_LEVEL_GROUP']."</option>\n";
+	$level_sel_code .= '<option value="1">'.$user->lang['EVENT_ACCESS_LEVEL_GROUP'].'</option>';
 }
 if( $auth->acl_get('u_raidplanner_create_private_raidplans') )
 {
-	$level_sel_code .= "<option value='0'>".$user->lang['EVENT_ACCESS_LEVEL_PERSONAL']."</option>\n";
+	$level_sel_code .= '<option value="0">'.$user->lang['EVENT_ACCESS_LEVEL_PERSONAL'].'</option>';
 }
 
 /**
@@ -277,23 +280,26 @@ if( $raidplan_data['s_recurring_opts'] )
 $cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".$newraid->date['month_no']."&amp;y=".$newraid->date['year']);
 
 
-
 // Raid date
 $month_sel_code  = " ";
 for( $i = 1; $i <= 12; $i++ )
 {
-	$month_sel_code .= "<option value='".$i."'>".$user->lang['datetime'][$newraid->month_names[$i]]."</option>\n";
+	$selected = ($newraid->date['month_no']==$i) ?   ' selected="selected"': '';
+	$month_sel_code .= '<option value="'.$i.'"' . $selected . '>'.$user->lang['datetime'][$newraid->month_names[$i]].'</option>';
 }
 
 $day_sel_code= "";
 for( $i = 1; $i <= 31; $i++ )
 {
-	$day_sel_code .= "<option value='".$i."'>".$i."</option>\n";
+	$selected = ($newraid->date['day']==$i) ?  ' selected="selected"': '';
+	$day_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 }
+
 $year_sel_code  = " ";
 for( $i = $newraid->date['year']; $i < ($newraid->date['year']+5); $i++ )
 {
-	$year_sel_code .= "<option value='".$i."'>".$i."</option>\n";
+	$selected = ($newraid->date['year'] == $i) ?  ' selected="selected"': '';
+	$year_sel_code .= '<option value="'.$i.'"'.$selected. '>'.$i.'</option>';
 }
 
 // Raid invite time
@@ -372,10 +378,8 @@ for( $i = 0; $i < 59; $i++ )
 	$min_start_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 }
 
-
-
-// check to see if we're editing an existing raidplan
-if( sizeof($error) || $raidplan_id > 0 )
+// check to see if we're viewing an existing raidplan
+if( sizeof($error) || $raidplan_id > 0)
 {
 	
 	// get profile for this raid
@@ -405,7 +409,6 @@ if( sizeof($error) || $raidplan_id > 0 )
 	}
 	$db->sql_freeresult($result);
 	
-
 	// translate raidplan start and end time into user's timezone
 	$raidplan_start = $raidplan_data['raidplan_start_time'] + $user->timezone + $user->dst;
 	$cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".gmdate('n', $raidplan_start)."&amp;y=".gmdate('Y', $raidplan_start) );
@@ -442,6 +445,7 @@ if( sizeof($error) || $raidplan_id > 0 )
 	//-----------------------------------------
 	// recurring raidplans
 	//-----------------------------------------
+	/*
 	if( $raidplan_data['is_recurr'] == 1 )
 	{
 		$temp_find_str = "value='ON'";
@@ -480,6 +484,7 @@ if( sizeof($error) || $raidplan_id > 0 )
 			$end_recurr_year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $end_recurr_year_sel_code );
 		}
 	}
+	*/
 }
 else //  new raid
 {
@@ -503,42 +508,6 @@ else //  new raid
 	    ));
 	}
 	$db->sql_freeresult($result);
-	
-	//-----------------------------------------
-	// month selection data
-	//-----------------------------------------
-	$temp_find_str = "value='".$newraid->date['month_no']."'>";
-	$temp_replace_str = "value='".$newraid->date['month_no']."' selected='selected'>";
-	$month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $month_sel_code );
-
-	$temp_find_str = "name='calM' id='calM'";
-	$temp_replace_str = "name='calMEnd' id='calMEnd' disabled='disabled'";
-	$end_month_sel_code = str_replace( $temp_find_str, $temp_replace_str, $month_sel_code );
-
-	//-----------------------------------------
-	// day selection data
-	//-----------------------------------------
-	$temp_find_str = "value='".$newraid->date['day']."'>";
-	$temp_replace_str = "value='".$newraid->date['day']."' selected='selected'>";
-	$day_sel_code = str_replace( $temp_find_str, $temp_replace_str, $day_sel_code );
-
-	$temp_find_str = "name='calD' id='calD'";
-	$temp_replace_str = "name='calDEnd' id='calDEnd' disabled='disabled'";
-	$end_day_sel_code = str_replace( $temp_find_str, $temp_replace_str, $day_sel_code );
-
-
-	//-----------------------------------------
-	// year selection data
-	//-----------------------------------------
-	$temp_find_str = "value='".$newraid->date['year']."'>";
-	$temp_replace_str = "value='".$newraid->date['year']."' selected='selected'>";
-	$year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $year_sel_code );
-
-	$temp_find_str = "name='calY' id='calY'";
-	$temp_replace_str = "name='calYEnd' id='calYEnd' disabled='disabled'";
-	$end_year_sel_code = str_replace( $temp_find_str, $temp_replace_str, $year_sel_code );
-
-	
 	
 }
 
@@ -655,9 +624,3 @@ $template->set_filenames(array(
 //make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
 
 page_footer();
-
-
-
-
-
-?>

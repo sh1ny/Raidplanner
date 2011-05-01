@@ -85,14 +85,13 @@ class raidplanner_base
 		}
 	
 		// always refresh the date...
-	
-		//get the current date and set it into an array
+		$temp_now_time = time() + $user->timezone + $user->dst;
+		
+		//get the selected date and set it into an array
 		$this->date['day'] = request_var('calD', '');
 		$this->date['month'] = request_var('calM', '');
 		$this->date['month_no'] = request_var('calM', '');
 		$this->date['year'] = request_var('calY', '');
-	
-		$temp_now_time = time() + $user->timezone + $user->dst;
 	
 		if( $this->date['day'] == "" )
 		{
@@ -171,6 +170,7 @@ class raidplanner_base
 							switch ($test_raidplan_level)
 							{
 								case 2:
+									//public events
 									if ( $auth->acl_get('u_raidplanner_create_public_raidplans') )
 									{
 										$is_authed = true;
@@ -178,6 +178,7 @@ class raidplanner_base
 								break;
 			
 								case 1:
+									//group raids
 									if ( $auth->acl_get('u_raidplanner_create_group_raidplans') )
 									{
 										$is_authed = true;
@@ -186,6 +187,7 @@ class raidplanner_base
 			
 								case 0:
 								default:
+									//personal events
 									if ( $auth->acl_get('u_raidplanner_create_private_raidplans') )
 									{
 										$is_authed = true;
