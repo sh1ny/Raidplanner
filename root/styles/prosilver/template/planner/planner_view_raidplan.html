@@ -1,35 +1,13 @@
 <!-- INCLUDE overall_header.html -->
 <!-- INCLUDE dkp/dkpmenu.html -->
-<script type="text/javascript">
-// <![CDATA[
-function toggle_rpsignup()
-{
-	if (document.getElementById('rpsignup'))
-	{
-		document.getElementById('rpsignup').style.display = (document.getElementById('rpsignup').style.display == 'none') ? 'block' : 'none';
-	}
-}
-
-if (document.addEventListener)
-{
-	document.addEventListener('DOMContentLoaded', toggle_rpsignup, false);
-}
-else
-{
-	window.onload = toggle_rpsignup;
-}
-// ]]>
-</script>
 
 <div class="forabg">
 <span class="corners-top"><span></span></span>
-<div style="width:50%; float: left;">
+<div style="width:70%; float: left;">
 <h1> <span style="color:#<!-- IF EVENT_COLOR -->{EVENT_COLOR}<!--ELSE -->dfc065<!-- ENDIF -->">
-<!-- IF S_EVENT_IMAGE_EXISTS --><img src="{EVENT_IMAGE}" /> <!-- ENDIF --> <!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}:
-<!-- ENDIF -->{SUBJECT} <!-- IF EVENT_COLOR --></span><!-- ENDIF --></h1>
-
+<!-- IF S_EVENT_IMAGE_EXISTS --><img src="{EVENT_IMAGE}" /> <!-- ENDIF --> <!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}<!-- ENDIF --><!-- IF EVENT_COLOR --></span><!-- ENDIF --></h1>
 </div>
-<div style="width:50%; float: right;">
+<div style="width:30%; float: right;">
 <div class="buttons" style="float: right;"><!-- IF ADD_LINK -->
 <div class="calendar-new-icon"><a href="{ADD_LINK}"
 	title="{L_NEW_EVENT}"><span></span></a></div>
@@ -46,7 +24,7 @@ else
 
 <span class="corners-bottom"><span></span></span></div>
 
-<div class="panel">
+<div class="panel bg3">
 <div class="inner">
 <span class="corners-top"><span></span></span>
 
@@ -72,6 +50,7 @@ else
 	</ul>
 	<!-- ENDIF -->
 <div class="content">
+<h4><strong>{SUBJECT}</strong></h4><br/>
 {MESSAGE}
 </div>
 </div>
@@ -79,225 +58,107 @@ else
 </div>
 </div>
 
-
-
 <!--  raid information -->
-<div class="panel">
+
+<div class="panel bg2">
 <div class="inner"><span class="corners-top"><span></span></span>
 <!-- IF IS_RECURRING --><h4><br />&nbsp;<br />{L_OCCURS_EVERY}: {RECURRING_TXT}</h4><!-- ENDIF -->
 
 <table class="table1" style="width:95%; margin-left:auto;margin-right:auto;text-align:left" ">
 <tbody>
+
 <tr>
-<td>
-{L_EVENT_CREATED_BY}
+<td style="width:25%; border-top:0px; ">
+<strong>{L_EVENT_CREATED_BY}</strong>
 </td>
-<td>
+<td style="width:25%; border-top:0px; ">
 {POSTER}
 </td>
-
-<td style="width:25%">
+<td style="width:25%; border-top:0px; ">
 <!-- IF S_SIGNUP_HEADCOUNT -->
-{L_YES}
+{L_CONFIRMED}
 <!-- ENDIF -->
 </td>
-<td style="width:25%">
+<td style="width:25%; border-top:0px; ">
+{CURR_INVITED_COUNT}
+</td>
+</tr>
+
+<tr>
+<td style="width:25%; border-top:0px; ">
+{L_INVITE_TIME}
+</td>
+<td style="width:25%; border-top:0px; ">
+{INVITE_TIME}
+</td>
+<td style="width:25%; border-top:0px; ">
+<!-- IF S_SIGNUP_HEADCOUNT -->
+{L_AVAILABLE}
+<!-- ENDIF -->
+</td>
+<td style="width:25%; border-top:0px; ">
 <!-- IF S_SIGNUP_HEADCOUNT -->
 {CURR_YES_COUNT}
 <!-- ENDIF -->
 </td>
-
 </tr>
 
 <tr>
-<td style="width:25%">
-<!-- IF ALL_DAY -->
-{L_ALL_DAY}
-<!-- ELSE -->
-{L_FROM_TIME}
-<!-- ENDIF -->
-</td>
-<td style="width:25%">
-{START_DATE}
-</td>
-<td style="width:25%">
-<!-- IF S_SIGNUP_HEADCOUNT -->
-{L_NO}
-<!-- ENDIF -->
-</td>
-<td style="width:25%">
-<!-- IF S_SIGNUP_HEADCOUNT -->
-{CURR_NO_COUNT}
-<!-- ENDIF -->
-</td>
-
-</tr>
-
-<tr>
-<td style="width:25%">
+<td style="width:25%; border-top:0px; ">
 <!-- IF ! ALL_DAY -->
-{L_TO_TIME}:
+{L_START_TIME}:
 <!-- ENDIF -->
 </td>
-<td style="width:25%">
- {END_DATE}
+<td style="width:25%; border-top:0px; ">
+ {START_TIME}
 </td>
 
-<td style="width:25%">
+<td style="width:25%; border-top:0px; ">
 <!-- IF S_SIGNUP_HEADCOUNT -->
 {L_MAYBE}
 <!-- ENDIF -->
 </td>
-<td style="width:25%"> 
+<td style="width:25%; border-top:0px; "> 
 <!-- IF S_SIGNUP_HEADCOUNT -->
 {CURR_MAYBE_COUNT}
 <!-- ENDIF -->
 </td>
-
 </tr>
 
 <tr>
-<td style="width:25%">
+<td style="width:25%; border-top:0px; ">
 {L_INVITE_INFO}
 </td>
-<td style="width:25%">
+<td style="width:25%; border-top:0px; ">
 {INVITED}
 </td>
-
-
+<td style="width:25%; border-top:0px; ">
+{L_NOTAVAILABLE}
+</td>
+<td style="width:25%; border-top:0px; ">
+<!-- IF S_SIGNUP_HEADCOUNT -->
+{CURR_NO_COUNT}
+<!-- ENDIF -->
+</td>
 </tr>
 
 </tbody>
 </table>
 
 <span class="corners-bottom"><span></span></span></div>
+</div>
 </div>
 
 <!-- IF S_SHOWCONFIRMED -->
-<h2>{L_CONFIRMED}</h2>
-<div class="panel" >
-<div class="inner"><span class="corners-top"><span></span></span>
-
-<div style="width:95%; margin-left:auto;margin-right:auto;text-align:left" > 
-
-
-<!-- BEGIN raidrolesconfirmed -->
-
-<div style="width:160px; float:left ;">
-<table style="width:100%; cellspacing="0" cellpadding="5">
-<tbody>
-<tr>
-	<td style="border-bottom:1px solid"> <strong>{raidrolesconfirmed.ROLE_NAME}: {raidrolesconfirmed.ROLE_SIGNEDUP}/{raidrolesconfirmed.ROLE_NEEDED}</strong></td>
-</tr>
-
-<!-- BEGIN signups -->
-<tr>
-	<td> <strong><a>{raidrolesconfirmed.signups.POSTER_URL}</a></strong><br />
-	<span><!-- IF raidrolesconfirmed.signups.S_RACE_IMAGE_EXISTS --><img src="{raidrolesconfirmed.signups.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
-	<!-- IF raidrolesconfirmed.signups.S_CLASS_IMAGE_EXISTS --><img src="{raidrolesconfirmed.signups.CLASS_IMAGE}" alt="{raidrolesconfirmed.signups.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
-	<strong><h4> <span style="color:{raidrolesconfirmed.signups.COLORCODE}">{raidrolesconfirmed.signups.CHARNAME}</span></h4></strong></span> <br />
-	{raidrolesconfirmed.signups.POST_TIME} <br />
-	{raidrolesconfirmed.signups.DETAILS} <br /> 
-	</td>
-</tr>
-<!-- END signups -->
-
-</tbody>
-</table>
-</div>
-<!-- END raidrolesconfirmed -->
-</div>
-<span class="corners-bottom"><span></span></span>
-</div>
-</div>
+<!-- INCLUDE planner/planner_view_confirmed.html -->
 <!-- ENDIF -->
 
-
-<h2>{L_AVAILABLE}</h2>
-
-<div class="panel" >
-<div class="inner"><span class="corners-top"><span></span></span>
-
-<div style="width:95%; margin-left:auto;margin-right:auto;text-align:left" > 
-<!-- BEGIN raidroles -->
-
-<div style="width:160px; float:left ;">
-<table style="width:100%; cellspacing="0" cellpadding="5">
-<tbody>
-<tr>
-	<td style="border-bottom:1px solid"> <strong>{raidroles.ROLE_NAME}: {raidroles.ROLE_SIGNEDUP}/{raidroles.ROLE_NEEDED}</strong></td>
-</tr>
-
-<!-- BEGIN signups -->
-<tr>
-	<td> <strong><a>{raidroles.signups.POSTER_URL}</a></strong><br />
-	<span><!-- IF raidroles.signups.S_RACE_IMAGE_EXISTS --><img src="{raidroles.signups.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
-	<!-- IF raidroles.signups.S_CLASS_IMAGE_EXISTS --><img src="{raidroles.signups.CLASS_IMAGE}" alt="{raidroles.signups.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
-	<strong><h4> <span style="color:{raidroles.signups.COLORCODE}">{raidroles.signups.CHARNAME}</span></h4></strong></span> <br />
-
-	{raidroles.signups.POST_TIME} <br />
-	{raidroles.signups.DETAILS} <br /> 
-	<!-- IF S_EDIT_SIGNUP -->
-		<td align="left"><a href="{raidroles.signups.U_EDIT}">{L_EDIT}</a></td>
-		<!-- ENDIF -->
-	</td>
-</tr>
-<!-- END signups -->
-
-</tbody>
-</table>
-</div>
-<!-- END raidroles -->
-</div>
-<span class="corners-bottom"><span></span></span>
-</div>
-</div>
-
-
-
-
-
-<!-- IF S_CURRENT_SIGNUP  -->
-<fieldset>
-<h4 class="solo"><a href="javascript:toggle_rpsignup();">{L_CALENDAR_RESPOND}</a></h4>
-<div id="rpsignup">
-<!-- IF S_CANSIGNUP -->
-<form method="post" action="{S_SIGNUP_MODE_ACTION}" name="signup_form" id="signup_form">
-<div class="panel bg2">
-<div class="inner"><span class="corners-top"><span></span></span>
-
-<fieldset>
-<dl>
-	<dt>{L_CALENDAR_WILL_ATTEND}</dt>
-	<dd>{SEL_ATTEND}</dd>
-
-	<dt>{L_RAIDROLE}</dt>
-	<dd><select id="signuprole" name="signuprole">{S_ROLE_OPTIONS}</select></dd>
-
-	<dt>{L_RAIDCHARACTER}</dt>
-	<dd><select id="signupchar" name="signupchar">{S_RAIDMEMBER_OPTIONS}</select></dd>
-
-	<dt>&nbsp;<br>
-	{L_COMMENTS}</dt>
-	<dd><textarea name="signup_detail" id="signup_detail" rows="4"
-		cols="25">{CURR_SIGNUP_DETAIL}</textarea></dd>
-	<dt>&nbsp;</dt>
-	<dd><input type="hidden" name="hidden_signup_id" id="hidden_signup_id" value="{CURR_SIGNUP_ID}" />
-		<input type="submit" name="signmeup" value="{L_SUBMIT}" class="button1" /></dd>
-</dl>
-</fieldset>
-<span class="corners-bottom"><span></span></span></div>
-</div>
-</form>
-<!-- ELSE -->
-<div class="panel bg2">
-<div class="inner"><span class="corners-top"><span></span></span>
-	<p class="error">{L_CANNOTSIGNUP}</p>
-<span class="corners-bottom"><span></span></span></div>
-</div>
+<!-- IF S_CURR_YES_COUNT -->
+<!-- INCLUDE planner/planner_view_available.html -->
 <!-- ENDIF -->
-</div>
-</fieldset>
+
+<!-- IF S_CURRENT_SIGNUP -->
+<!-- INCLUDE planner/planner_signup.html -->
 <!-- ENDIF -->
 
 <hr />

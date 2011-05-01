@@ -94,8 +94,6 @@ $lang = array_merge($lang, array(
 	'ROLE_DELETE_SUCCESS'	=> 'The role %s was deleted.', 
 	'CONFIRM_DELETE_ROLE'	=> 'Please confirm you want to delete the raid role %s. If there are scheduled raids with this role then it can‘t be deleted.', 
 	
-	'AM'					=> 'AM',
-	
 	'CHOOSEPROFILE'				=> 'Choose Raidprofile', 
 	'RAIDROLES'					=> 'Raid Roles', 
 	'RAIDROLE'					=> 'Role', 
@@ -105,6 +103,7 @@ $lang = array_merge($lang, array(
 	'ALLOW_GUESTS_ON'			=> 'Members are allowed to bring guests to this raid.',
 	'ALLOW_GUESTS_OFF'			=> 'Members are not allowed to bring guests to this raid.',
 	'AM'						=> 'AM',
+	'AVAILABLE'					=> 'Available',
 
 	'CALENDAR_POST_RAIDPLAN'	=> 'Create New Raid',
 	'CALENDAR_EDIT_RAIDPLAN'	=> 'Edit Raid',
@@ -163,6 +162,7 @@ $lang = array_merge($lang, array(
 	'HOUR'					=> 'Hour',
 	'INVALID_RAIDPLAN'			=> 'The raid you are trying to view does not exist.',
 	'INVITE_INFO'			=> 'Invited',
+	'INVITE_TIME'			=> 'Invite Time',
 
 	'MESSAGE_BODY_EXPLAIN'		=> 'Enter your message here, it may contain no more than <strong>%d</strong> characters.',
 
@@ -178,12 +178,14 @@ $lang = array_merge($lang, array(
 
 	'NEGATIVE_LENGTH_RAIDPLAN'		=> 'The raid cannot end before it starts.',
 	'NEVER'						=> 'Never',
-	'NEW_RAIDPLAN'					=> 'New Raid',
-	'NO_RAIDPLAN'					=> 'The requested raid does not exist.',
+	'NEW_RAIDPLAN'				=> 'New Raid',
+	'NEW_EVENT'					=> 'New Raid',
+	'NO_RAIDPLAN'				=> 'The requested raid does not exist.',
 	'NO_EVENT_TYPES'			=> 'The site administrator has not set up raid types for this calendar.  Calendar raid creation has been disabled.',
 	'NO_GROUP_SELECTED'			=> 'There are no groups selected for this group raid.',
 	'NO_POST_EVENT_MODE'		=> 'No post mode specified.',
 	'NO_EVENTS_TODAY'			=> 'There are no raids scheduled for this day.',
+	'NOTAVAILABLE'				=> 'Not Available', 
 
 	'OCCURS_EVERY'			=> 'Occurs every',
 	
@@ -216,6 +218,7 @@ $lang = array_merge($lang, array(
 	'RAIDPROFILE2'				=> '25-man', 
 
 	'START_DATE'				=> 'Start Date',
+	'START_TIME'				=> 'Start Time',
 	'RAID_DATE'					=> 'Raid Date',
 	'START_TIME'				=> 'Start Time',
 	'RAID_INVITE_TIME'			=> 'Raid Invite Time',

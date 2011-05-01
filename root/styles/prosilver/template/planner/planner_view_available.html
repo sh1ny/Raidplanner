@@ -1,0 +1,36 @@
+<div class="panel bg1" >
+<div class="inner"><span class="corners-top"><span></span></span>
+<h2>{L_AVAILABLE}</h2>
+
+<div style="width:95%; margin-left:auto;margin-right:auto;text-align:left" > 
+<!-- BEGIN raidroles -->
+<div style="width:160px; float:left ;">
+
+<table style="width:100%; cellspacing:0; cellpadding:5">
+<tbody>
+<tr>
+	<td style="border-bottom:0px solid"> <strong>{raidroles.ROLE_NAME}: {raidroles.ROLE_SIGNEDUP}/{raidroles.ROLE_NEEDED}</strong></td>
+</tr>
+<!-- BEGIN signups -->
+<tr>
+	<td><strong><a>{raidroles.signups.POSTER_URL}</a></strong><br />
+	<span><!-- IF raidroles.signups.S_RACE_IMAGE_EXISTS --><img src="{raidroles.signups.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
+	<!-- IF raidroles.signups.S_CLASS_IMAGE_EXISTS --><img src="{raidroles.signups.CLASS_IMAGE}" alt="{raidroles.signups.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
+	<strong><span style="color:{raidroles.signups.COLORCODE}">{raidroles.signups.CHARNAME}</span></strong></span> <br />
+	{raidroles.signups.POST_TIME}<br />
+	{raidroles.signups.DETAILS}<br /> 
+	<!-- IF S_EDIT_SIGNUP -->
+		<td align="left"><a href="{raidroles.signups.U_EDIT}">{L_EDIT}</a></td>
+		<!-- ENDIF -->
+	</td>
+</tr>
+<!-- END signups -->
+
+</tbody>
+</table>
+</div>
+<!-- END raidroles -->
+</div>
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>
