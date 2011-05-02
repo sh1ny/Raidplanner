@@ -120,7 +120,7 @@ if($submit)
 	
 }
 
-if($mode =='delete')
+if($mode =='delete' && $raidplan_id > 0)
 {
 		$newraid->authcheck('delete', $submit, $raidplan_data, $raidplan_id);
 		$page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
@@ -137,11 +137,14 @@ if($mode =='delete')
 }
 
 
-if($mode =='edit' && $submit)
+if($mode =='edit' && $submit && ($raidplan_id > 0))
 {		
 		//http://localhost/qi/boards/test6/planneradd.php?mode=edit&calEid=4&calD=04&calM=5&calY=2011
 		$newraid->authcheck($mode, $submit, $raidplan_data, $raidplan_id);
 		$page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
+	    
+		$newraid->gather_raiddata($raidplan_data, $newraid, $s_date_time_opts);
+	    
 	    $edit_all = request_var('calEditAll', 0);
 	    //if editing recurring plans then don't add raid times
 	    if( $edit_all != 0)
@@ -151,10 +154,9 @@ if($mode =='edit' && $submit)
 				
 		// Decode bbcodes text for message editing
 		decode_message($raidplan_data['raidplan_body'], $raidplan_data['bbcode_uid']);
-		if( $raidplan_id > 0 )
-		{
-			$newraid->edit_raidplan($raidplan_data, $newraid, $raidplan_id, $s_date_time_opts );
-		}
+	
+		$newraid->edit_raidplan($raidplan_data, $newraid, $raidplan_id, $s_date_time_opts );
+		
 		$main_calendar_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
 		$view_raidplan_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$raidplan_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
 		
@@ -544,7 +546,7 @@ $template->assign_vars(array(
 	'WEEK_VIEW_URL'				=> $week_view_url,
 	'MONTH_VIEW_URL'			=> $month_view_url,
  	'TRACK_RSVP_CHECK'			=> ($raidplan_data['track_signups'] == 1) ? ' checked="checked"' : '',
-	'S_RECURRING_OPTS'			=> $raidplan_data['s_recurring_opts'],
+	//'S_RECURRING_OPTS'			=> $raidplan_data['s_recurring_opts'],
 	//'S_UPDATE_RECURRING_OPTIONS'=> $raidplan_data['s_update_recurring_options'],
 	'RECURRING_EVENT_CHECK'		=> $recurr_raidplan_check,
 	'RECURRING_EVENT_TYPE_SEL'	=> $recurr_raidplan_freq_sel_code,

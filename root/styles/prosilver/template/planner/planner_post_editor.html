@@ -1,5 +1,12 @@
 <!-- post editor start -->
 <script type="text/javascript">
+  window.onload = start;
+  function start()
+  {
+    subPanels('raidinfo-panel');
+  }
+
+  
   function update_group_id_state()
   {
       if( document.getElementById('calELevel').value == 1 )
@@ -314,135 +321,27 @@
 
   
   </script>
-  <div>
-  <!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
-  <!-- IF S_POST_ACTION -->
   
-  <div style="width:400px; float: left; height: 250px;"><legend><h4>{L_RAIDINFO}</h4></legend>
-  <fieldset class="fields1">
-  	<br/>
+  <!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+  
+  
+  
+  <!-- IF S_POST_ACTION -->
+
+
+
+ <div class="panel bg2">
+<div class="inner">
+<span class="corners-top"><span></span></span>
+
+<div style="width:100%; clear:both;">
+
+<fieldset class="fields1">
   	<dl style="clear: left;">
 		<dt><label for="subject">{L_SUBJECT}:</label></dt>
-		<dd><input type="text" name="subject" id="subject" size="30" maxlength="100" tabindex="2" value="{SUBJECT}" class="inputbox autowidth" /></dd>
+		<dd><input type="text" name="subject" id="subject" size="50" maxlength="100" tabindex="2" value="{SUBJECT}" class="inputbox autowidth" /></dd>
 	</dl>
-	<!-- fetch the raidplans from bbDKP -->
-	<dl style="clear: left;">
-		<dt><label for="calEType">{L_EVENT_TYPE}:</label></dt>
-		<dd>
-			<select name='calEType' id='calEType'>{EVENT_TYPE_SEL}</select>
-	    </dd>
-	</dl>
-	
-	<dl style="clear: left;">
-		<dt><label for="calELevel">{L_EVENT_ACCESS_LEVEL}:</label></dt>
-		<dd><select name='calELevel' id='calELevel' onchange='update_group_id_state();'>
-		{EVENT_ACCESS_LEVEL_SEL}
-		</select>
-		</dd>
-	</dl>
-	<dl style="clear: left;">
-		<dt><label for="calGroupId">{L_EVENT_GROUP}:</label></dt>
-		<dd>{EVENT_GROUP_SEL}</dd>
-	</dl>
-	
-	 
-	
-  </fieldset>
-  </div>
-  
- <div style="width:300px; float: left; position: relative;  height: 250px;">
-	<fieldset class="fields1"><legend><h4>{L_RAIDROLES}</h4></legend>
-		<br/>
-		<dl style="clear: left;">
-		<dt><label>{L_CHOOSEPROFILE}</label>  </dt>
-		<dd>
-		<input type="radio" name="raidcomposition" onclick="update_roles(1);" value="1" checked /> {L_RAIDPROFILE1}
-     	<input type="radio" name="raidcomposition" onclick="update_roles(2);" value="2"/> {L_RAIDPROFILE2}
-		</dd>
-		<div id="raidroles">
-	<!-- BEGIN raidroles -->
-		<dt><label for="subject">{raidroles.ROLE_NAME}:</label></dt>
-		<dd>
-			<input type="hidden" name="role[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" />
-			<input type="text" name="role_needed[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED}" class="inputbox autowidth" />
-		</dd>
-	<!-- END raidroles -->
-		</div>
-	</dl>
-	
-	</fieldset>
-	</div>
-
-
-  <hr/><!-- IF S_DATE_TIME_OPTS -->
- <div style="width:400px; clear: all;  float: left;">
- 
-  <fieldset class="fields1"><legend><h4>{L_RAIDWHEN}</h4></legend> 
- <br/>
-  <dl style="clear: right;">
-			<dt><label for="calM">{L_RAID_DATE}:</label></dt>
-			<dd><select name='calM' id='calM'>{MONTH_SEL}</select><select name='calD' id='calD'>{DAY_SEL}</select><select name='calY' id='calY'>{YEAR_SEL}</select>
-		  	</dd>
-		</dl>
-
-		<dl style="clear: right;">
-			<dt><label for="calinvHr">{L_RAID_INVITE_TIME}:</label></dt>
-			<dd>
-				<select name='calinvHr' id='calinvHr'>{INVITE_HOUR_SEL}</select>
-				<select name='calinvMn' id='calinvMn'>{INVITE_MIN_SEL}</select>
-			</dd>
-		</dl>
-		<dl style="clear: right;">
-			<dt><label for="calHr">{L_RAID_START_TIME}:</label></dt>
-			<dd>
-				<select name='calHr' id='calHr'>{START_HOUR_SEL}</select>
-				<select name='calMn' id='calMn'>{START_MIN_SEL}</select>
-			</dd>
-		</dl>
-		
-		<dl style="clear: left;">
-		<dt><label>{L_TRACK_SIGNUPS}:</label></dt>
-		<dd><input type='checkbox' name='calTrackRsvps' value='1' {TRACK_RSVP_CHECK} /></dd>
-		</dl> 
-	
-    </fieldset>
- </div>
- 
-<div style="width:400px; float: left; ">
-<!-- IF S_RECURRING_OPTS -->
-	<fieldset class="fields1"><legend><h4>{L_RAIDREPEAT}</h4></legend> 
-		<br/>			
-			
-			<dl style="clear: left;">
-				<dt><label>{L_RECURRING_RAIDPLAN}:</label></dt>
-				<dd>{RECURRING_EVENT_CHECK}</dd>
-			</dl>
-			<dl style="clear: left;">
-				<dt title="{L_RECURRING_EVENT_FREQ_EXPLAIN}"><label for="calRFreq">{L_RECURRING_EVENT_FREQ}</label><br /></dt>
-				<dd>{RECURRING_EVENT_FREQ_IN}</dd>
-			</dl>
-			<dl style="clear: left;">
-				<dt><label for="calMEnd">{L_END_RECURRING_EVENT_DATE}</label></dt>
-				<dd>{END_RECURR_MONTH_SEL} {END_RECURR_DAY_SEL} {END_RECURR_YEAR_SEL}</dd>
-			</dl>
-			<dl style="clear: left;">
-				<dt title="{L_RECURRING_EVENT_TYPE_EXPLAIN}"><label for="calRType">{L_RECURRING_EVENT_TYPE}</label><br /></dt>
-				<dd ">{RECURRING_EVENT_TYPE_SEL}</dd>
-			</dl>
-			
-			</fieldset>
-						
-<!-- ENDIF -->
-</div>
-
-<!-- ELSE -->
-<div>
-	<input type="hidden" name="calEditAll" id="calEditAll" value="1">
-</div>
-<!-- ENDIF -->
-<hr />
-<div style="width:100%; height: 200px; clear:both;">
-
+</fieldset>
 <!-- INCLUDE planner/planner_post_buttons.html -->
 		<div id="smiley-box">
 			<!-- IF S_SMILIES_ALLOWED and .smiley -->
@@ -475,11 +374,168 @@
 
 </div>
 
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>
+
+
+<div id="tabs">
+	<ul>
+		<li id="raidinfo-panel-tab" class="activetab"><a href="#tabs" onclick="subPanels('raidinfo-panel'); return false;"><span>{L_RAIDINFO}</span></a></li>
+		<li id="raidroles-panel-tab"><a href="#tabs" onclick="subPanels('raidroles-panel'); return false;"><span>{L_RAIDROLES}</span></a></li>
+		<!-- IF S_DATE_TIME_OPTS -->
+		<li id="raidwhen-panel-tab"><a href="#tabs" onclick="subPanels('raidwhen-panel'); return false;"><span>{L_RAIDWHEN}</span></a></li>
+		<!-- IF S_RECURRING_OPTS -->
+		<li id="raidrecurring-panel-tab"><a href="#tabs" onclick="subPanels('raidrecurring-panel'); return false;"><span>{L_RAIDREPEAT}</span></a></li>
+		<!-- ENDIF -->
+		<!-- ENDIF -->
+	</ul>
+</div>
+		
+<div class="panel bg2" id="raidinfo-panel">
+<div class="inner">
+<span class="corners-top"><span></span></span>
+
+  <h3>{L_RAIDINFO}</h3>
+  <fieldset class="fields1">
+  	<br/>
+	<!-- fetch the raidplans from bbDKP -->
+	<dl style="clear: left;">
+		<dt><label for="calEType">{L_EVENT_TYPE}:</label></dt>
+		<dd>
+			<select name='calEType' id='calEType'>{EVENT_TYPE_SEL}</select>
+	    </dd>
+	</dl>
+	
+	<dl style="clear: left;">
+		<dt><label for="calELevel">{L_EVENT_ACCESS_LEVEL}:</label></dt>
+		<dd><select name='calELevel' id='calELevel' onchange='update_group_id_state();'>
+		{EVENT_ACCESS_LEVEL_SEL}
+		</select>
+		</dd>
+	</dl>
+	<dl style="clear: left;">
+		<dt><label for="calGroupId">{L_EVENT_GROUP}:</label></dt>
+		<dd>{EVENT_GROUP_SEL}</dd>
+	</dl>
+	
+  </fieldset>
+ 
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>
+
+<div class="panel bg2" id="raidroles-panel">
+<div class="inner">
+<span class="corners-top"><span></span></span>
+ <h3>{L_RAIDROLES}</h3>
+	<fieldset class="fields1">
+		<br/>
+		<dl style="clear: left;">
+		<dt><label>{L_CHOOSEPROFILE}</label>  </dt>
+		<dd>
+		<input type="radio" name="raidcomposition" onclick="update_roles(1);" value="1" checked /> {L_RAIDPROFILE1}
+     	<input type="radio" name="raidcomposition" onclick="update_roles(2);" value="2"/> {L_RAIDPROFILE2}
+		</dd>
+		<div id="raidroles">
+	<!-- BEGIN raidroles -->
+		<dt><label for="subject">{raidroles.ROLE_NAME}:</label></dt>
+		<dd>
+			<input type="hidden" name="role[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" />
+			<input type="text" name="role_needed[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED}" class="inputbox autowidth" />
+		</dd>
+	<!-- END raidroles -->
+		</div>
+	</dl>
+	</fieldset>
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>
+
+  
+ <!-- IF S_DATE_TIME_OPTS -->
+ <div class="panel bg2" id="raidwhen-panel">
+<div class="inner">
+<span class="corners-top"><span></span></span>
+
+ <h3>{L_RAIDWHEN}</h3>
+<fieldset class="fields1"> 
+  <dl style="clear: right;">
+			<dt><label for="calM">{L_RAID_DATE}:</label></dt>
+			<dd><select name='calM' id='calM'>{MONTH_SEL}</select><select name='calD' id='calD'>{DAY_SEL}</select><select name='calY' id='calY'>{YEAR_SEL}</select>
+		  	</dd>
+		</dl>
+
+		<dl style="clear: right;">
+			<dt><label for="calinvHr">{L_RAID_INVITE_TIME}:</label></dt>
+			<dd>
+				<select name='calinvHr' id='calinvHr'>{INVITE_HOUR_SEL}</select>
+				<select name='calinvMn' id='calinvMn'>{INVITE_MIN_SEL}</select>
+			</dd>
+		</dl>
+		<dl style="clear: right;">
+			<dt><label for="calHr">{L_RAID_START_TIME}:</label></dt>
+			<dd>
+				<select name='calHr' id='calHr'>{START_HOUR_SEL}</select>
+				<select name='calMn' id='calMn'>{START_MIN_SEL}</select>
+			</dd>
+		</dl>
+		
+		<dl style="clear: left;">
+		<dt><label>{L_TRACK_SIGNUPS}:</label></dt>
+		<dd><input type='checkbox' name='calTrackRsvps' value='1' {TRACK_RSVP_CHECK} /></dd>
+		</dl> 
+	
+    </fieldset>
+ 
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>
+
+<!-- IF S_RECURRING_OPTS -->
+<div class="panel bg2" id="raidwhen-panel">
+<div class="inner">
+<span class="corners-top"><span></span></span>
+
+	<fieldset class="fields1"><legend><h4>{L_RAIDREPEAT}</h4></legend> 
+		<br/>			
+			
+			<dl style="clear: left;">
+				<dt><label>{L_RECURRING_RAIDPLAN}:</label></dt>
+				<dd>{RECURRING_EVENT_CHECK}</dd>
+			</dl>
+			<dl style="clear: left;">
+				<dt title="{L_RECURRING_EVENT_FREQ_EXPLAIN}"><label for="calRFreq">{L_RECURRING_EVENT_FREQ}</label><br /></dt>
+				<dd>{RECURRING_EVENT_FREQ_IN}</dd>
+			</dl>
+			<dl style="clear: left;">
+				<dt><label for="calMEnd">{L_END_RECURRING_EVENT_DATE}</label></dt>
+				<dd>{END_RECURR_MONTH_SEL} {END_RECURR_DAY_SEL} {END_RECURR_YEAR_SEL}</dd>
+			</dl>
+			<dl style="clear: left;">
+				<dt title="{L_RECURRING_EVENT_TYPE_EXPLAIN}"><label for="calRType">{L_RECURRING_EVENT_TYPE}</label><br /></dt>
+				<dd ">{RECURRING_EVENT_TYPE_SEL}</dd>
+			</dl>
+			
+			</fieldset>
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>
+<!-- ENDIF -->
+
+
+
+
+<!-- ELSE -->
+<div>
+	<input type="hidden" name="calEditAll" id="calEditAll" value="1">
+</div>
+<!-- ENDIF -->
 
 
 <!-- ENDIF -->
 
 	
 
-</div>
+
 <!-- post editor end -->
