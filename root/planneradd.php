@@ -91,13 +91,15 @@ else
 // mode: addraid, edit, delete, or smilies
 $submit		= (isset($_POST['addraid'])) ? true : false;
 $cancel		= (isset($_POST['cancel'])) ? true : false;
+$delete		= (isset($_POST['delete'])) ? true : false;
 
 $mode		= (isset($_GET['mode'])) ? true : false;
 $mode 		= ($mode == true) ? request_var('mode', '') : '';
 
 $s_date_time_opts = true;
 $page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
-if($submit)
+
+if($submit && $mode !='edit' && $mode != 'delete')
 {
 		$newraid->authcheck('addraid', $submit, $raidplan_data, $raidplan_id);
 		$page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
@@ -120,7 +122,7 @@ if($submit)
 	
 }
 
-if($mode =='delete' && $raidplan_id > 0)
+if(($delete || $mode =='delete') && $raidplan_id > 0)
 {
 		$newraid->authcheck('delete', $submit, $raidplan_data, $raidplan_id);
 		$page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
@@ -136,14 +138,11 @@ if($mode =='delete' && $raidplan_id > 0)
 		exit;
 }
 
-
-if($mode =='edit' && $submit && ($raidplan_id > 0))
+if($mode =='edit' && ($raidplan_id > 0))
 {		
 		//http://localhost/qi/boards/test6/planneradd.php?mode=edit&calEid=4&calD=04&calM=5&calY=2011
 		$newraid->authcheck($mode, $submit, $raidplan_data, $raidplan_id);
 		$page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
-	    
-		$newraid->gather_raiddata($raidplan_data, $newraid, $s_date_time_opts);
 	    
 	    $edit_all = request_var('calEditAll', 0);
 	    //if editing recurring plans then don't add raid times
@@ -155,14 +154,20 @@ if($mode =='edit' && $submit && ($raidplan_id > 0))
 		// Decode bbcodes text for message editing
 		decode_message($raidplan_data['raidplan_body'], $raidplan_data['bbcode_uid']);
 	
-		$newraid->edit_raidplan($raidplan_data, $newraid, $raidplan_id, $s_date_time_opts );
-		
 		$main_calendar_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
 		$view_raidplan_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$raidplan_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
 		
-		$message = $user->lang['EVENT_EDITED'] . '<br /><br />' . sprintf($user->lang['VIEW_RAIDPLAN'], '<a href="' . $view_raidplan_url . '">', '</a>');
-		$message .= '<br /><br />' . sprintf($user->lang['RETURN_CALENDAR'], '<a href="' . $main_calendar_url . '">', '</a>');
-		trigger_error($message, E_USER_NOTICE);
+		if ($submit)
+		{
+			//assemble request_var input
+			$newraid->gather_raiddata($raidplan_data, $newraid, $s_date_time_opts);
+			$newraid->edit_raidplan($raidplan_data, $newraid, $raidplan_id, $s_date_time_opts );
+			
+			$message = $user->lang['EVENT_EDITED'] . '<br /><br />' . sprintf($user->lang['VIEW_RAIDPLAN'], '<a href="' . $view_raidplan_url . '">', '</a>');
+			$message .= '<br /><br />' . sprintf($user->lang['RETURN_CALENDAR'], '<a href="' . $main_calendar_url . '">', '</a>');
+			trigger_error($message, E_USER_NOTICE);
+			
+		}
 }
 
  /** 

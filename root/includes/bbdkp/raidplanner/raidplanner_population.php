@@ -685,7 +685,10 @@ class raidplanner_population extends raidplanner_base
 	
 			$sql = 'DELETE FROM ' . RP_RAIDPLAN_WATCH . ' WHERE raidplan_id = ' .$db->sql_escape($raidplan_id);
 			$db->sql_query($sql);
-	
+
+			$sql = 'DELETE FROM ' . RP_RAIDPLAN_ROLES . ' WHERE raidplan_id = ' .$db->sql_escape($raidplan_id);
+			$db->sql_query($sql);
+			
 			// Delete raidplan
 			$sql = 'DELETE FROM ' . RP_RAIDS_TABLE . '
 					WHERE raidplan_id = '.$db->sql_escape($raidplan_id);
@@ -749,6 +752,9 @@ class raidplanner_population extends raidplanner_base
 					$db->sql_query($sql);
 				}
 				$db->sql_freeresult($result);
+				
+				$sql = 'DELETE FROM ' . RP_RAIDPLAN_ROLES . ' WHERE raidplan_id = ' .$db->sql_escape($row['raidplan_id']);
+				$db->sql_query($sql);
 	
 				// delete the recurring raidplan
 				$sql = 'DELETE FROM ' . RP_RECURRING . '

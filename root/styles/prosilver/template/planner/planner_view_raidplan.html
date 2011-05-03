@@ -3,9 +3,13 @@
 
 <div class="forabg">
 <span class="corners-top"><span></span></span>
-<div style="width:70%; float: left;">
-<h1> <span style="color:#<!-- IF EVENT_COLOR -->{EVENT_COLOR}<!--ELSE -->dfc065<!-- ENDIF -->">
-<!-- IF S_EVENT_IMAGE_EXISTS --><img src="{EVENT_IMAGE}" /> <!-- ENDIF --> <!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}<!-- ENDIF --><!-- IF EVENT_COLOR --></span><!-- ENDIF --></h1>
+<div style="width:10%; float: left;">
+<!-- IF S_EVENT_IMAGE_EXISTS --><img src="{EVENT_IMAGE}" width="64" height="64" /><!-- ENDIF --> 
+</div>
+<div style="width:60%; float: left;">
+<h1><span style="color:<!-- IF EVENT_COLOR -->{EVENT_COLOR}<!--ELSE -->#dfc065<!-- ENDIF -->">
+<!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}<!-- ENDIF --><!-- IF EVENT_COLOR --></span><!-- ENDIF --></h1>
+<span style="color:#dfc065"><h4>{SUBJECT}</h4></span>
 </div>
 <div style="width:30%; float: right;">
 <div class="buttons" style="float: right;"><!-- IF ADD_LINK -->
@@ -22,9 +26,10 @@
 </div>
 <br />
 
-<span class="corners-bottom"><span></span></span></div>
+<span class="corners-bottom"><span></span></span>
+</div>
 
-<div class="panel bg3">
+<div class="panel bg2">
 <div class="inner">
 <span class="corners-top"><span></span></span>
 
@@ -50,18 +55,14 @@
 	</ul>
 	<!-- ENDIF -->
 <div class="content">
-<h4><strong>{SUBJECT}</strong></h4><br/>
+
 {MESSAGE}
-</div>
-</div>
-<span class="corners-bottom"><span></span></span>
 </div>
 </div>
 
 <!--  raid information -->
 
-<div class="panel bg2">
-<div class="inner"><span class="corners-top"><span></span></span>
+
 <!-- IF IS_RECURRING --><h4><br />&nbsp;<br />{L_OCCURS_EVERY}: {RECURRING_TXT}</h4><!-- ENDIF -->
 
 <table class="table1" style="width:95%; margin-left:auto;margin-right:auto;text-align:left" ">
@@ -147,7 +148,7 @@
 
 <span class="corners-bottom"><span></span></span></div>
 </div>
-</div>
+
 
 <!-- IF S_SHOWCONFIRMED -->
 <!-- INCLUDE planner/planner_view_confirmed.html -->

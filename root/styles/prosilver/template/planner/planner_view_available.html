@@ -1,18 +1,17 @@
 <div class="panel bg1" >
 <div class="inner"><span class="corners-top"><span></span></span>
-<h2>{L_AVAILABLE}</h2>
 
 <div style="width:95%; margin-left:auto;margin-right:auto;text-align:left" > 
+<h3>{L_AVAILABLE}</h3>
 <!-- BEGIN raidroles -->
 <div style="width:160px; float:left ;">
-
-<table style="width:100%; cellspacing:0; cellpadding:5">
+<table class="table1" style="width:100%; cellspacing:0; cellpadding:5">
+<thead>
+	<th class="rolesignup" style="background-color:{raidroles.ROLE_COLOR}; border-bottom:0px solid"> <strong>{raidroles.ROLE_NAME}: {raidroles.ROLE_SIGNEDUP}/{raidroles.ROLE_NEEDED}</strong></th>
+</thead>
 <tbody>
-<tr>
-	<td style="border-bottom:0px solid"> <strong>{raidroles.ROLE_NAME}: {raidroles.ROLE_SIGNEDUP}/{raidroles.ROLE_NEEDED}</strong></td>
-</tr>
 <!-- BEGIN signups -->
-<tr>
+<tr style="background-color:{raidroles.ROLE_COLOR}; border-bottom:0px solid">
 	<td><strong><a>{raidroles.signups.POSTER_URL}</a></strong><br />
 	<span><!-- IF raidroles.signups.S_RACE_IMAGE_EXISTS --><img src="{raidroles.signups.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
 	<!-- IF raidroles.signups.S_CLASS_IMAGE_EXISTS --><img src="{raidroles.signups.CLASS_IMAGE}" alt="{raidroles.signups.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->

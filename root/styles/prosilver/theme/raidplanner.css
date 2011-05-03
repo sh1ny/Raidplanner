@@ -32,6 +32,13 @@ hr.hrCal
 	background-color: #8DB8DE;
 }
 
+table.table1 thead th.rolesignup 
+{
+	border-top: medium;
+	border-top-color: #12A3EB;
+	font-weight: bold;
+}
+
 /* uses background-color of .bg3
 		    (used to display the numbers and icons for 
 		    each day in the month and week view displays ) */
@@ -50,8 +57,7 @@ table tbody td.bg4_calMonH
 	font-size: 85%
 }
 
-/* uses background-color of .bg1
-		   (used to display days in calendar month/week view) */
+/* uses background-color of .bg1 (used to display days in calendar month/week view) */
 table.table1 tbody td.bg1_calMon 
 {
 	background-color: #ECF3F7;
@@ -61,8 +67,7 @@ table.table1 tbody td.bg1_calMon
 	padding-right: 4px;
 }
 
-/* uses background-color of .bg2
-		   (used to display days in calendar month/week view) */
+/* uses background-color of .bg2 (used to display days in calendar month/week view) */
 table.table1 tbody td.bg2_calMon 
 {
 	background-color: #e1ebf2;
@@ -72,8 +77,7 @@ table.table1 tbody td.bg2_calMon
 	padding-right: 4px;
 }
 
-/* uses background-color of .bg3
-		   (used to display days in calendar month/week view) */
+/* uses background-color of .bg3 (used to display days in calendar month/week view) */
 table.table1 tbody td.bg3_calMon 
 {
 	background-color: #cadceb;
@@ -104,3 +108,5 @@ table.table1 tbody td.bg3_calDay
 	background-color: #cadceb;
 	border-top-color: #12A3EB;
 }
+
+
