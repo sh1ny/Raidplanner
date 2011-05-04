@@ -58,8 +58,8 @@ $lang = array_merge($lang, array(
     'DISPLAY_EVENTS_ONLY_1_DAY_EXPLAIN'		=> 'Display raids only on the day they begin (ignore their end date/time).',
     'DISPLAY_FIRST_WEEK'					=> 'Display Current Week',
     'DISPLAY_FIRST_WEEK_EXPLAIN'			=> 'Would you like to have the current week displayed on the forum index?',
-    'DISPLAY_NEXT_EVENTS'					=> 'Display Next Raids',
-    'DISPLAY_NEXT_EVENTS_EXPLAIN'			=> 'Specify the number of current raids you want listed on the index page.  Note this option is ignored if you have turned on the option to display the current week.',
+    'DISPLAY_NEXT_RAIDS_PORTAL'				=> 'Display Next Raids on Portal',
+    'DISPLAY_NEXT_RAIDS_PORTAL_EXPLAIN'		=> 'Specify the number of upcoming raids to display on the Portal.',
     'DISPLAY_TRUNCATED_SUBJECT'				=> 'Truncate Subject',
     'DISPLAY_TRUNCATED_SUBJECT_EXPLAIN'		=> 'Long names in the subject can take up a lot of space on the calendar.  How many characters do you want displayed in the subject on the calendar? (enter 0 if you do not want to truncate the subject)',
     'EDIT'									=> 'Edit',
@@ -88,12 +88,11 @@ $lang = array_merge($lang, array(
     'WEDNESDAY'								=> 'Wednesday',
 	'USER_CANNOT_MANAGE_RAIDPLANNER'		=> 'You are not authorised to manage the raidplanner settings', 
 	'RPADVANCEDOPTIONS'						=> 'Advanced options', 
+	'RPSETTINGS'							=> 'Settings', 
 	
 	//confirms
 	'ROLE_DELETE_SUCCESS'	=> 'The role %s was deleted.', 
 	'CONFIRM_DELETE_ROLE'	=> 'Please confirm you want to delete the raid role %s. If there are scheduled raids with this role then it can‘t be deleted.', 
-	
-	'AM'					=> 'AM',
 	
 	'CHOOSEPROFILE'				=> 'Choose Raidprofile', 
 	'RAIDROLES'					=> 'Raid Roles', 
@@ -104,6 +103,7 @@ $lang = array_merge($lang, array(
 	'ALLOW_GUESTS_ON'			=> 'Members are allowed to bring guests to this raid.',
 	'ALLOW_GUESTS_OFF'			=> 'Members are not allowed to bring guests to this raid.',
 	'AM'						=> 'AM',
+	'AVAILABLE'					=> 'Available',
 
 	'CALENDAR_POST_RAIDPLAN'	=> 'Create New Raid',
 	'CALENDAR_EDIT_RAIDPLAN'	=> 'Edit Raid',
@@ -114,7 +114,7 @@ $lang = array_merge($lang, array(
 	'CALENDAR_NUMBER_ATTEND'=> 'The number of people you are bringing to this raid',
 	'CALENDAR_NUMBER_ATTEND_EXPLAIN'=> '(enter 1 for yourself)',
 	'CALENDAR_RESPOND'		=> 'Please register here',
-	'CALENDAR_WILL_ATTEND'	=> 'Will you attend this raid?',
+	'CALENDAR_WILL_ATTEND'	=> 'Are you available for this raid?',
 
 	'CANNOTSIGNUP'			=> 'you cannot sign up because you have no DKP characters linked to your account.',
 	
@@ -122,6 +122,7 @@ $lang = array_merge($lang, array(
 	'COL_HEADCOUNT'			=> 'Count',
 	'COL_WILL_ATTEND'		=> 'Will Attend?',
 	'COMMENTS'				=> 'Comments',
+	'CONFIRMED'				=> 'Confirmed',
 
 	'DAY'					=> 'Day',
 	'DAY_OF'				=> 'Day of ',
@@ -158,13 +159,16 @@ $lang = array_merge($lang, array(
 	'FREQUENCEY_LESS_THAN_1'	=> 'Recurring raids must have a frequency greater than or equal to 1',
 
 	'HOW_MANY_PEOPLE'		=> 'Quick Headcount',
-
+	'HOUR'					=> 'Hour',
 	'INVALID_RAIDPLAN'			=> 'The raid you are trying to view does not exist.',
 	'INVITE_INFO'			=> 'Invited',
+	'INVITE_TIME'			=> 'Invite Time',
 
 	'MESSAGE_BODY_EXPLAIN'		=> 'Enter your message here, it may contain no more than <strong>%d</strong> characters.',
 
 	'MAYBE'					=> 'Maybe',
+	'AVAILABLE'				=> 'Available', 
+	'MINUTE'				=> 'Minute', 
 	'MONTH'					=> 'Month',
 	'MONTH_OF'				=> 'Month of ',
 	'MY_EVENTS'				=> 'My Raids',
@@ -174,12 +178,14 @@ $lang = array_merge($lang, array(
 
 	'NEGATIVE_LENGTH_RAIDPLAN'		=> 'The raid cannot end before it starts.',
 	'NEVER'						=> 'Never',
-	'NEW_RAIDPLAN'					=> 'New Raid',
-	'NO_RAIDPLAN'					=> 'The requested raid does not exist.',
+	'NEW_RAIDPLAN'				=> 'New Raid',
+	'NEW_EVENT'					=> 'New Raid',
+	'NO_RAIDPLAN'				=> 'The requested raid does not exist.',
 	'NO_EVENT_TYPES'			=> 'The site administrator has not set up raid types for this calendar.  Calendar raid creation has been disabled.',
 	'NO_GROUP_SELECTED'			=> 'There are no groups selected for this group raid.',
 	'NO_POST_EVENT_MODE'		=> 'No post mode specified.',
 	'NO_EVENTS_TODAY'			=> 'There are no raids scheduled for this day.',
+	'NOTAVAILABLE'				=> 'Not Available', 
 
 	'OCCURS_EVERY'			=> 'Occurs every',
 	
@@ -212,10 +218,13 @@ $lang = array_merge($lang, array(
 	'RAIDPROFILE2'				=> '25-man', 
 
 	'START_DATE'				=> 'Start Date',
+	'START_TIME'				=> 'Start Time',
 	'RAID_DATE'					=> 'Raid Date',
 	'START_TIME'				=> 'Start Time',
+	'RAID_INVITE_TIME'			=> 'Raid Invite Time',
+	'RAID_INVITE_TIME_DEFAULT'	=> 'Default Raid invite time',
 	'RAID_START_TIME'			=> 'Raid Start Time',
-
+	'DEFAULT_RAID_START_TIME'   => 'Default Raid start time',
 	'TO_TIME'					=> 'To',
 
 	'TRACK_SIGNUPS'				=> 'Track attendance',
@@ -228,7 +237,7 @@ $lang = array_merge($lang, array(
 	'USER_CANNOT_EDIT_RAIDPLAN'	=> 'You do not have permission to edit raids.',
 	'USER_CANNOT_POST_RAIDPLAN'	=> 'You do not have permission to create raids.',
 	'USER_CANNOT_VIEW_RAIDPLAN'	=> 'You do not have permission to view raids.',
-
+	
 	'VIEW_RAIDPLAN'				=> '%sView your submitted raid%s',
 	'WEEK'						=> 'Week',
 

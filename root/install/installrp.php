@@ -224,6 +224,8 @@ $versions = array(
 			array('rp_populate_frequency', 86400, true),
 			array('rp_last_populate', 0, true),
 			array('rp_populate_limit', 94608000, true),
+			array('rp_default_invite_time', 1200, true),
+			array('rp_default_start_time', 1230, true),
 			),
         	 
 			//adding some tables
@@ -234,6 +236,7 @@ $versions = array(
                        'raidplan_id'			=> array('INT:8', NULL, 'auto_increment' ),
 					   'etype_id' 			=> array('INT:8', 0),
 		  			   'sort_timestamp' 	=> array('BINT', 0),
+					   'raidplan_invite_time' 	=> array('BINT', 0),
 		  			   'raidplan_start_time' 	=> array('BINT', 0),
 			 		   'raidplan_end_time' 	=> array('BINT', 0),
 					   'raidplan_all_day'   	=> array('UINT', 0),
@@ -348,7 +351,7 @@ $versions = array(
 					   'raidplan_id' 			=> array('INT:8', 0),
 					   'role_id' 			=> array('INT:8', 0),
 					   'role_needed' 		=> array('INT:8', 0),
-					   'role_available' 	=> array('INT:8', 0),
+					   'role_signedup' 	=> array('INT:8', 0),
 					   'role_confirmed' 	=> array('INT:8', 0),
 					   
 					),

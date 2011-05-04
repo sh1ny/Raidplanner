@@ -73,17 +73,21 @@ else
   </tfoot>
   
 </table>
+
+<br />
+   
 {S_FORM_TOKEN}
 </form>
 
 </fieldset>
 
 
-<fieldset><legend><a href="javascript:toggle_rpsettings();">{L_RPADVANCEDOPTIONS}</a></legend>
-<div id="rpsettingsdisplay">
+<fieldset><legend>{L_RPSETTINGS}</legend>
+<div>
 <form id="rpsettings" name="rpsettings" method="post" action="{U_ACTION}" >
-<div class="tablewrap">
-	<dl>
+
+ <div class="tablewrap">
+<dl>
 		<dt><label>{L_FIRST_DAY}:</label><br />{L_FIRST_DAY_EXPLAIN}</dt>
 		<dd><select name="first_day" id="first_day">
 		  <option value="0" {SEL_MONDAY}>{L_MONDAY}</option>
@@ -96,13 +100,47 @@ else
 		  </select>
 		</dd>
 	</dl>
+	
+	<dl>
+    <dt><label>{L_RAID_INVITE_TIME_DEFAULT} (hh-mm):</label></dt>
+    <dd>
+		{L_HOUR}: <select id="event_invite_hh" name="event_invite_hh">{S_RAID_INVITE_HOUR_OPTIONS}</select>
+		{L_MINUTE}: <select id="event_invite_mm" name="event_invite_mm">{S_RAID_INVITE_MINUTE_OPTIONS}</select> 
+	</dd>
+   </dl> 
+   
    <dl>
+    <dt><label>{L_DEFAULT_RAID_START_TIME} (hh-mm):</label></dt>
+    <dd>
+		{L_HOUR}: <select id="event_start_hh" name="event_start_hh">{S_RAID_START_HOUR_OPTIONS}</select>
+		{L_MINUTE}: <select id="event_start_mm" name="event_start_mm">{S_RAID_START_MINUTE_OPTIONS}</select> 
+	</dd>
+    
+   </dl> 
+   </div>
+   
+<fieldset class="quick">
+    <input type="submit" name="update_rp_settings" value="{L_SUBMIT}" class="button1" />
+    <input type="reset" name="reset" value="{L_RESET}" class="button2" />
+</fieldset>
+{S_FORM_TOKEN}
+
+</form>
+</div>
+</fieldset>
+
+<fieldset><legend><a href="javascript:toggle_rpsettings();">{L_RPADVANCEDOPTIONS}</a></legend>
+<div id="rpsettingsdisplay">
+<form id="rpsettingsadv" name="rpsettingsadv" method="post" action="{U_ACTION}" >
+<div class="tablewrap">
+   
+    <dl>
 		<dt><label>{L_DISPLAY_FIRST_WEEK}:</label><br />{L_DISPLAY_FIRST_WEEK_EXPLAIN}</dt>
 		<dd><input type="checkbox" id="disp_week" name="disp_week" value="1" {DISP_WEEK_CHECKED} onclick="update_action_status()" /></dd>
 	</dl>
 	<dl>
-		<dt><label>{L_DISPLAY_NEXT_EVENTS}:</label><br />{L_DISPLAY_NEXT_EVENTS_EXPLAIN}</dt>
-		<dd><input type="text" name="disp_next_raidplans" id="disp_next_raidplans" value="{DISP_NEXT_EVENTS}" {DISP_NEXT_EVENTS_DISABLED} /></dd>
+		<dt><label>{L_DISPLAY_NEXT_RAIDS_PORTAL}:</label><br />{L_DISPLAY_NEXT_RAIDS_PORTAL_EXPLAIN}</dt>
+		<dd><input type="text" name="disp_next_raidplans" id="disp_next_raidplans" value="{DISP_NEXT_EVENTS}" /></dd>
 	</dl>
 	<dl>
 		<dt><label>{L_DISPLAY_12_OR_24_HOURS}:</label><br />{L_DISPLAY_12_OR_24_HOURS_EXPLAIN}</dt>
@@ -119,10 +157,6 @@ else
 	<dl>
 		<dt><label>{L_DISPLAY_HIDDEN_GROUPS}:</label><br />{L_DISPLAY_HIDDEN_GROUPS_EXPLAIN}</dt>
 		<dd><input type="checkbox" id="disp_hidden_groups" name="disp_hidden_groups" value="1" {DISP_HIDDEN_GROUPS_CHECKED} /></dd>
-	</dl>
-	<dl>
-		<dt><label>{L_DISPLAY_EVENTS_ONLY_1_DAY}:</label><br />{L_DISPLAY_EVENTS_ONLY_1_DAY_EXPLAIN}</dt>
-		<dd><input type="checkbox" id="disp_raidplans_1_day" name="disp_raidplans_1_day" value="1" {DISP_EVENTS_1_DAY_CHECKED} /></dd>
 	</dl>
 	<dl>
 		<dt><label>{L_TIME_FORMAT}:</label><br />{L_TIME_FORMAT_EXPLAIN}</dt>
@@ -159,7 +193,7 @@ else
 	</dl>
 
 <fieldset class="quick">
-    <input type="submit" name="update_rp_settings" value="{L_SUBMIT}" class="button1" />
+    <input type="submit" name="update_rp_settings_adv" value="{L_SUBMIT}" class="button1" />
     <input type="reset" name="reset" value="{L_RESET}" class="button2" />
 </fieldset>
 {S_FORM_TOKEN}

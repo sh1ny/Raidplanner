@@ -16,15 +16,8 @@
 </div>
 <form id="postform" name="postform" method="post" action="{S_POST_ACTION}" onsubmit="return checkForm(this);">
 
-<!-- IF S_DISPLAY_PREVIEW --><!-- INCLUDE planner/planner_post_preview.html --><!-- ENDIF -->
-
-<div class="panel" id="postingbox">
-<div class="inner"><span class="corners-top"><span></span></span>
-<div class="panel">
+<div id="postingbox">
 	<!-- INCLUDE planner/planner_post_editor.html -->
-</div>
-<span class="corners-bottom"><span></span></span>
-</div>
 </div>
 
 <div class="panel bg2">
@@ -39,8 +32,7 @@
 			<!-- IF S_SAVE_ALLOWED -->
 			<input type="submit" accesskey="k" tabindex="8" name="save" value="{L_SAVE}" class="button2" />&nbsp;
 			<!-- ENDIF -->
-			<input type="submit" tabindex="5" name="preview" value="{L_PREVIEW}" class="button1"<!-- IF not S_PRIVMSGS --> onclick="document.getElementById('postform').action += '#preview';"<!-- ENDIF --> />&nbsp;
-			<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_SUBMIT}" class="button1" />&nbsp;
+			<input type="submit" accesskey="s" tabindex="6" name="addraid" value="{L_SUBMIT}" class="button1" />&nbsp;
 		</fieldset>
 
 		<span class="corners-bottom"><span></span></span></div>

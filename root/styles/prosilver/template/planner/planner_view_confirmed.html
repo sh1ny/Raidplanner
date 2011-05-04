@@ -1,0 +1,35 @@
+<h2>{L_CONFIRMED}</h2>
+<div class="panel" >
+<div class="inner"><span class="corners-top"><span></span></span>
+
+<div style="width:95%; margin-left:auto;margin-right:auto;text-align:left" > 
+
+<!-- BEGIN raidrolesconfirmed -->
+
+<div style="width:160px; float:left ;">
+<table style="width:100%; cellspacing="0" cellpadding="5">
+<tbody>
+<tr>
+	<td style="border-bottom:1px solid"> <strong>{raidrolesconfirmed.ROLE_NAME}: {raidrolesconfirmed.ROLE_SIGNEDUP}/{raidrolesconfirmed.ROLE_NEEDED}</strong></td>
+</tr>
+
+<!-- BEGIN signups -->
+<tr>
+	<td> <strong><a>{raidrolesconfirmed.signups.POSTER_URL}</a></strong><br />
+	<span><!-- IF raidrolesconfirmed.signups.S_RACE_IMAGE_EXISTS --><img src="{raidrolesconfirmed.signups.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
+	<!-- IF raidrolesconfirmed.signups.S_CLASS_IMAGE_EXISTS --><img src="{raidrolesconfirmed.signups.CLASS_IMAGE}" alt="{raidrolesconfirmed.signups.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
+	<strong><h4> <span style="color:{raidrolesconfirmed.signups.COLORCODE}">{raidrolesconfirmed.signups.CHARNAME}</span></h4></strong></span> <br />
+	{raidrolesconfirmed.signups.POST_TIME} <br />
+	{raidrolesconfirmed.signups.DETAILS} <br /> 
+	</td>
+</tr>
+<!-- END signups -->
+
+</tbody>
+</table>
+</div>
+<!-- END raidrolesconfirmed -->
+</div>
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>

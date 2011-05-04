@@ -45,10 +45,12 @@ class acp_raidplanner
 				$updateroles = (isset($_POST['roleupdate'])) ? true : false;
 				$deleterole = (request_var('roledelete', '') != '') ? true : false;
 				$addrole = (isset($_POST['roleadd'])) ? true : false;
+				
 				$update	= (isset($_POST['update_rp_settings'])) ? true : false;
+				$updateadv	= (isset($_POST['update_rp_settings_adv'])) ? true : false;
 
 				// check the form key
-				if ($updateroles || $addrole || $update )
+				if ($updateroles || $addrole || $update || $updateadv)
 				{
 					if (!check_form_key('acp_raidplanner'))
 					{
@@ -56,12 +58,6 @@ class acp_raidplanner
 					}
 				}
 				
-				// move the calendar for daylight savings
-				if( request_var('calPlusHour', 0) == 1)
-				{
-					$this->move_all_raidplans_by_one_hour( request_var('plusVal', 1));
-					exit;
-				}
 				
 				//user pressed edit button
 				if( $updateroles)
@@ -125,18 +121,34 @@ class acp_raidplanner
 						
 				}
 				
-				
-				// update all advanced settings
-				if( $update )
+				if($update)
 				{
+					
 					$first_day	= request_var('first_day', 0);
 					set_config  ( 'rp_first_day_of_week',  $first_day,0);  
 					
+					$invitehour	= request_var('event_invite_hh', 0) * 60 + request_var('event_invite_mm', 0);
+					set_config  ( 'rp_default_invite_time',  $invitehour,0);
+					$starthour =  request_var('event_start_hh', 0) * 60 + request_var('event_start_mm', 0);
+					set_config  ( 'rp_default_start_time',  $starthour,0);
+					
+				}
+				
+				// move the calendar for daylight savings
+				if( request_var('calPlusHour', 0) == 1)
+				{
+					$this->move_all_raidplans_by_one_hour( request_var('plusVal', 1));
+					exit;
+				}
+				
+				// update all advanced settings
+				if( $updateadv )
+				{
+				
+					
+					
 					$disp_week	= request_var('disp_week', 0);
 					set_config  ( 'rp_index_display_week',  $disp_week,0);  
-					
-					$disp_next_raidplans	= request_var('disp_next_raidplans', 0);
-					set_config  ( 'rp_index_display_next_raidplans',  $disp_next_raidplans,0);
 					
 					$hour_mode = request_var('hour_mode', 12);
 					set_config  ( 'rp_hour_mode',  $hour_mode,0);
@@ -215,6 +227,44 @@ class acp_raidplanner
 						break;
 				}
 				
+				// build presets for invite hour pulldown
+				$s_event_invite_hh_options = '<option value="0"' . (isset($config['rp_default_invite_time']) ? '': ' selected="selected"' ) . '>--</option>';
+				$invhour = intval($config['rp_default_invite_time'] / 60);
+				for ($i = 1; $i <= 24; $i++)
+				{
+					$selected = ($i == $invhour ) ? ' selected="selected"' : '';
+					$s_event_invite_hh_options .= "<option value=\"$i\"$selected>$i</option>";
+				}
+				// build presets for invite minute pulldown
+				$s_event_invite_mm_options = '<option value="0"' . (isset($config['rp_default_invite_time']) ? '': ' selected="selected"' ) . '>--</option>';
+				$invmin = $config['rp_default_invite_time'] - ($invhour*60); 
+				for ($i = 1; $i <= 59; $i++)
+				{
+					$selected = ($i == $invmin ) ? ' selected="selected"' : '';
+					$s_event_invite_mm_options .= "<option value=\"$i\"$selected>$i</option>";
+				}
+				// build presets for start hour pulldown
+				$s_event_start_hh_options = '<option value="0"' . (isset($config['rp_default_start_time']) ? '': ' selected="selected"' ) . '>--</option>';
+				$starthour = intval($config['rp_default_start_time'] / 60);
+				for ($i = 1; $i <= 24; $i++)
+				{
+					$selected = ($i == $starthour ) ? ' selected="selected"' : '';
+					$s_event_start_hh_options .= "<option value=\"$i\"$selected>$i</option>";
+				}
+				// build presets for start minute pulldown
+				$s_event_start_mm_options = '<option value="0"' . (isset($config['rp_default_start_time']) ? '': ' selected="selected"' ) . '>--</option>';
+				$startmin =  $config['rp_default_start_time'] - ($starthour* 60); 
+				for ($i = 1; $i <= 59; $i++)
+				{
+					$selected = '';
+					if($i == $startmin)
+					{
+						$selected = ' selected="selected"';
+					}
+					
+					$s_event_start_mm_options .= "<option value=\"$i\"$selected>$i</option>";
+				}				
+					
 				// select raid roles
 				$sql = 'SELECT * FROM ' . RP_ROLES . '
 						ORDER BY role_id';
@@ -235,6 +285,10 @@ class acp_raidplanner
                 $db->sql_freeresult($result);
 			
 				$template->assign_vars(array(
+					'S_RAID_INVITE_HOUR_OPTIONS'		=> $s_event_invite_hh_options,
+					'S_RAID_INVITE_MINUTE_OPTIONS'		=> $s_event_invite_mm_options, 
+					'S_RAID_START_HOUR_OPTIONS'			=> $s_event_start_hh_options,
+					'S_RAID_START_MINUTE_OPTIONS'		=> $s_event_start_mm_options,
 					'SEL_MONDAY'		=> $sel_monday,
 					'SEL_TUESDAY'		=> $sel_tuesday,
 					'SEL_WEDNESDAY'		=> $sel_wednesday,
