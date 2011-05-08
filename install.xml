@@ -103,7 +103,6 @@ define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
 	]]></action>
 			</edit>
 		</open>
-
 		<open src="includes/functions.php">
 			<edit>
 				<comment lang="en"><![CDATA[ adding Planner link in functions.php right after bbdkp]]></comment>
@@ -112,27 +111,6 @@ define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
 				]]></action>
 			</edit>
 		</open>
-		<open src="includes/acp/acp_language.php">
-			<edit>
-				<comment lang="en"><![CDATA[Define raidplanner imageset keys for localised theme language]]></comment>
-				<find><![CDATA['icon_back_top', 'icon_contact_aim', 'icon_contact_email',]]></find>
-				<inline-edit>
-					<inline-find><![CDATA['icon_post_edit',]]></inline-find>
-					<inline-action type="after-add"><![CDATA[ 'icon_raidplanner_edit_all', 'icon_raidplanner_delete_all','button_raidplanner_new', 'button_raidplanner_day', 'button_raidplanner_week', 'button_raidplanner_month',]]></inline-action>
-				</inline-edit>
-			</edit>
-		</open>
-		<open src="includes/acp/acp_styles.php">
-			<edit>
-				<comment lang="en"><![CDATA[Define new localised raidplanner imageset keys for theme ]]></comment>
-				<find><![CDATA['icon_back_top', 'icon_contact_aim', 'icon_contact_email',]]></find>
-				<inline-edit>
-					<inline-find><![CDATA['icon_post_edit',]]></inline-find>
-					<inline-action type="after-add"><![CDATA[ 'button_raidplanner_new', 'button_raidplanner_day', 'button_raidplanner_week', 'button_raidplanner_month',]]></inline-action>
-				</inline-edit>
-			</edit>
-		</open>
-
 		<open src="index.php">
 			<edit>
 				<comment lang="en"><![CDATA[Include functions_calendar so we can later display the current week or next events on the index]]></comment>
