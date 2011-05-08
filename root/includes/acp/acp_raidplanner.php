@@ -64,12 +64,16 @@ class acp_raidplanner
 					$rolenames = utf8_normalize_nfc(request_var('rolename', array( 0 => ''), true));
 					$roleneed1 = request_var('role_need1', array( 0 => 0));
 					$roleneed2 = request_var('role_need2', array( 0 => 0));
+					$rolecolor = request_var('role_color', array( 0 => ''));
+					$roleicon = request_var('role_icon', array( 0 => ''));
 					foreach ( $rolenames as $role_id => $role_name )
 					{
 						$data = array(
 						    'role_name'     	=> $role_name,
-						    'role_needed1'     => $roleneed1[$role_id],
-						 	'role_needed2'     => $roleneed2[$role_id],
+						    'role_needed1'     	=> $roleneed1[$role_id],
+						 	'role_needed2'     	=> $roleneed2[$role_id],
+							'role_color'     	=> $rolecolor[$role_id],
+							'role_icon'     	=> $roleicon[$role_id],
 						);
 
 						 $sql = 'UPDATE ' . RP_ROLES . ' SET ' . $db->sql_build_array('UPDATE', $data) . '
@@ -84,8 +88,10 @@ class acp_raidplanner
 				{
 					$data = array(
 					    'role_name'     => utf8_normalize_nfc(request_var('newrole', 'New role', true)),
-						'role_needed1'     => request_var('newrole_need1', 0),
-						'role_needed2'     => request_var('newrole_need2', 0),
+						'role_needed1'   => request_var('newrole_need1', 0),
+						'role_needed2'   => request_var('newrole_need2', 0),
+						'role_color'     => request_var('newrole_color', ''),
+						'role_icon'     => request_var('newrole_icon', ''),
 					);
 
 					$sql = 'INSERT INTO ' . RP_ROLES . $db->sql_build_array('INSERT', $data);
@@ -287,6 +293,10 @@ class acp_raidplanner
                         'ROLENAME' 		=> $row['role_name'],
 	                    'ROLENEED1' 	=> $row['role_needed1'],
 	                    'ROLENEED2' 	=> $row['role_needed2'],
+                    	'ROLECOLOR' 	=> $row['role_color'],
+                    	'ROLEICON' 		=> $row['role_icon'],
+                    	'S_ROLE_ICON_EXISTS'	=>  (strlen($row['role_icon']) > 1) ? true : false,
+                    	'ROLE_ICON' 	=> (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $row['role_icon'] . ".png" : '',
                     	'U_DELETE' 		=> $this->u_action. '&roledelete=1&delrole_id=' . $row['role_id'],
                     	));
                 }

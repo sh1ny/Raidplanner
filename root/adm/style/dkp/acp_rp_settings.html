@@ -32,23 +32,27 @@ else
 
 <fieldset><legend>{L_RAIDROLES}</legend>
 
-
 <form id="rproles" name="rproles" method="post" action="{U_ACTION}" >
-
 <table style="width:300px">
 <thead>
 	<th>{L_RAIDROLE}</th>
 	<th>{L_RAIDPROFILE1}</th>
 	<th>{L_RAIDPROFILE2}</th>
+	<th>{L_COLOR}</th>
+	<th>{L_ROLEICON}</th>
     <th style="text-align: center" width="5%">{L_ACTION}</th>
   </tr>
 </thead>
 <tbody>
   <!-- BEGIN role_row -->
   <tr class="row1">
-    <td><input type="text" name="rolename[{role_row.ROLE_ID}]" value="{role_row.ROLENAME}" class="input" /></td>
-    <td><input type="text" name="role_need1[{role_row.ROLE_ID}]" value="{role_row.ROLENEED1}" class="input" /></td>
-    <td><input type="text" name="role_need2[{role_row.ROLE_ID}]" value="{role_row.ROLENEED2}" class="input" /></td>
+    <td><input type="text" name="rolename[{role_row.ROLE_ID}]" value="{role_row.ROLENAME}" class="autowidth" /></td>
+    <td><input type="text" name="role_need1[{role_row.ROLE_ID}]" value="{role_row.ROLENEED1}" class="medium" /></td>
+    <td><input type="text" name="role_need2[{role_row.ROLE_ID}]" value="{role_row.ROLENEED2}" class="medium" /></td>
+    <td><input type="text" name="role_color[{role_row.ROLE_ID}]" value="{role_row.ROLECOLOR}" class="medium" /></td>
+    <td><input type="text" name="role_icon[{role_row.ROLE_ID}]" value="{role_row.ROLEICON}" class="medium" /> 
+    	<!-- IF role_row.S_ROLE_ICON_EXISTS --><img src="{role_row.ROLE_ICON}" alt="image" /><!-- ENDIF -->
+    </td>
     <td style="text-align: center" ><a href="{role_row.U_DELETE}">{ICON_DELETE}</a></td>
   </tr>
   <!-- END role_row -->
@@ -57,17 +61,20 @@ else
   <tfoot>
   <tr class="row2">
   <td>{L_EDITRAIDROLES}</td>
-  <td>
-  <td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
   <td style="text-align: center">
-  
-	<input class="button2" name="roleupdate" type="submit" value="{L_EDIT}" />
+  	<input class="button2" name="roleupdate" type="submit" value="{L_EDIT}" />
   </td>
   </tr>
     <tr class="row2">
-    <td><input type="text" name="newrole" value="" class="input" /></td>
-    <td><input type="text" name="newrole_need1" value="" class="input" /></td>
-    <td><input type="text" name="newrole_need2" value="" class="input" /></td>    
+    <td><input type="text" name="newrole" value="" class="autowidth" /></td>
+    <td><input type="text" name="newrole_need1" value="" class="medium" /></td>
+    <td><input type="text" name="newrole_need2" value="" class="medium" /></td>
+    <td><input type="text" name="newrole_color" value="" class="autowidth" /></td>
+    <td><input type="text" name="newrole_icon" value="" class="autowidth" /></td>    
     <td style="text-align: center"> <input class="button2" name="roleadd" type="submit" value="{L_ADD}" /></td>
   </tr>
   </tfoot>

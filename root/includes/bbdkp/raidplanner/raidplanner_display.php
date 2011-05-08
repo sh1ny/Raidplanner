@@ -827,6 +827,7 @@ class displayplanner extends raidplanner_base
 			$raidplan_invite = $raidplan_data['raidplan_invite_time'] + $user->timezone + $user->dst;
 			$raidplan_start = $raidplan_data['raidplan_start_time'] + $user->timezone + $user->dst;
 			
+			/*
 			if( $raidplan_data['raidplan_all_day'] == 1 )
 			{
 				// All day raidplan - find the string for the raidplan day
@@ -844,12 +845,15 @@ class displayplanner extends raidplanner_base
 			}
 			else
 			{
+			*/
 				$all_day = 0;
 				$this->date['day'] = gmdate("d", $raidplan_start);
 				$this->date['month_no'] = gmdate("n", $raidplan_start);
 				$this->date['year']	=	gmdate('Y', $raidplan_start);
+			/*
 			}
-			
+			*/
+				
 			$back_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calD=".$this->date['day'].
 				"&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts );
 	
