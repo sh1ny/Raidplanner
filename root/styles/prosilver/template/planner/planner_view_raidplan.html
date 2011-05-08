@@ -60,8 +60,6 @@
 </div>
 </div>
 
-<!--  raid information -->
-
 
 <!-- IF IS_RECURRING --><h4><br />&nbsp;<br />{L_OCCURS_EVERY}: {RECURRING_TXT}</h4><!-- ENDIF -->
 
@@ -81,7 +79,9 @@
 <!-- ENDIF -->
 </td>
 <td style="width:25%; border-top:0px; ">
-{CURR_INVITED_COUNT}
+<!-- IF S_CURR_INVITED_COUNT -->
+{CURR_INVITED_COUNT} / {RAID_TOTAL}
+<!-- ENDIF -->
 </td>
 </tr>
 
@@ -98,8 +98,8 @@
 <!-- ENDIF -->
 </td>
 <td style="width:25%; border-top:0px; ">
-<!-- IF S_SIGNUP_HEADCOUNT -->
-{CURR_YES_COUNT}
+<!-- IF S_CURR_YES_COUNT -->
+{CURR_YES_COUNT} / {RAID_TOTAL}
 <!-- ENDIF -->
 </td>
 </tr>
@@ -120,15 +120,15 @@
 <!-- ENDIF -->
 </td>
 <td style="width:25%; border-top:0px; "> 
-<!-- IF S_SIGNUP_HEADCOUNT -->
-{CURR_MAYBE_COUNT}
+<!-- IF S_CURR_MAYBE_COUNT -->
+{CURR_MAYBE_COUNT} / {RAID_TOTAL}
 <!-- ENDIF -->
 </td>
 </tr>
 
 <tr>
 <td style="width:25%; border-top:0px; ">
-{L_INVITE_INFO}
+{L_INVITE_INFO}	
 </td>
 <td style="width:25%; border-top:0px; ">
 {INVITED}
@@ -137,8 +137,8 @@
 {L_NOTAVAILABLE}
 </td>
 <td style="width:25%; border-top:0px; ">
-<!-- IF S_SIGNUP_HEADCOUNT -->
-{CURR_NO_COUNT}
+<!-- IF S_CURR_NO_COUNT -->
+{CURR_NO_COUNT} / {RAID_TOTAL}
 <!-- ENDIF -->
 </td>
 </tr>

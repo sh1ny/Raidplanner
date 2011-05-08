@@ -954,9 +954,9 @@ class displayplanner extends raidplanner_base
 				
 				
 				// list the available signups per role_id
-				// get profiles needed for this raid
+				// first get profiles needed for this raid
 				$sql_array = array(
-				    	'SELECT'    => 'r.role_id, r.role_name, r.role_color, er.role_needed, er.role_signedup, er.role_confirmed', 
+				    	'SELECT'    => 'r.role_id, r.role_name, r.role_color, r.role_icon, er.role_needed, er.role_signedup, er.role_confirmed ', 
 				    	'FROM'      => array(
 							RP_ROLES   => 'r'
 				    	),
@@ -972,6 +972,7 @@ class displayplanner extends raidplanner_base
 				$sql = $db->sql_build_query('SELECT', $sql_array);
 				$result0 = $db->sql_query($sql);
 				$roles = array ();
+				$total_needed = 0;
 				while ( $row = $db->sql_fetchrow ( $result0 ) )
 				{
 
@@ -979,6 +980,7 @@ class displayplanner extends raidplanner_base
 					$role_name = $row['role_name'];
 					$role_needed = $row['role_needed'];
 					$role_signedup = $row['role_signedup'];
+					$total_needed += $role_needed;
 					
 					// build divs with signups 
 					$template->assign_block_vars('raidroles', array(
@@ -986,11 +988,13 @@ class displayplanner extends raidplanner_base
 						    'ROLE_NAME'      => $role_name,
 					    	'ROLE_NEEDED'    => $role_needed,
 							'ROLE_COLOR'	 => $row['role_color'],
-					    	'ROLE_SIGNEDUP' => $role_signedup,
+							'S_ROLE_ICON_EXISTS' => (strlen($row['role_icon']) > 1) ? true : false,
+					       	'ROLE_ICON' 	 => (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $row['role_icon'] . ".png" : '',
+					    	'ROLE_SIGNEDUP'  => $role_signedup,
 					 ));
 				 
 					 
-					// list the signups 
+					// list the signups for each raid role
 					$sql_array = array(
 				    	'SELECT'    => ' s.*, m.member_id, m.member_name, m.member_level,  
 					    				 m.member_gender_id, a.image_female_small, a.image_male_small, 
@@ -1019,6 +1023,7 @@ class displayplanner extends raidplanner_base
 						
 					$result = $db->sql_query($sql);
 					
+					// loop signups
 					while ($signup_row = $db->sql_fetchrow($result) )
 					{
 						
@@ -1180,11 +1185,24 @@ class displayplanner extends raidplanner_base
 					);
 	
 				}
+				
+				// display raid attendance statistics
+				
 				$template->assign_vars( array(
+					'RAID_TOTAL'		=> $total_needed,
+				
+					'CURR_INVITED_COUNT' => 0, 
+					'S_CURR_INVITED_COUNT'	=> false,
+				
 					'CURR_YES_COUNT'	=> $raidplan_data['signup_yes'],
 					'S_CURR_YES_COUNT'	=> ($raidplan_data['signup_yes'] + $raidplan_data['signup_maybe'] > 0) ? true: false,
-					'CURR_NO_COUNT'		=> $raidplan_data['signup_no'],
+					
 					'CURR_MAYBE_COUNT'	=> $raidplan_data['signup_maybe'],
+					'S_CURR_MAYBE_COUNT' => ($raidplan_data['signup_maybe'] > 0) ? true: false,
+
+					'CURR_NO_COUNT'		=> $raidplan_data['signup_no'],
+					'S_CURR_NO_COUNT'	=> ($raidplan_data['signup_no'] > 0) ? true: false,
+				
 					)
 				);
 			}
@@ -1215,6 +1233,7 @@ class displayplanner extends raidplanner_base
             	'S_EVENT_IMAGE_EXISTS' 	=> (strlen($raidplan_image) > 1) ? true : false, 
 				'SUBJECT'			=> $subject,
 				'MESSAGE'			=> $message,
+			
 				'INVITE_TIME'		=> $invite_date_txt,
 				'START_TIME'		=> $start_date_txt,
 				'END_DATE'			=> $end_date_txt,
@@ -1270,16 +1289,15 @@ class displayplanner extends raidplanner_base
 		
 		// get the chosen raidchar
 		$signup_data['dkpmember_id'] = request_var('signupchar', 0);
-
 		// update the ip address and time
 		$signup_data['poster_ip'] = $user->ip;
 		$signup_data['post_time'] = time();
 		$signup_data['signup_count'] =  request_var('signup_count', 1);
 		$signup_data['signup_detail'] = utf8_normalize_nfc( request_var('signup_detail', '', true) );
 		
-		$new_yes_count = 0;
-		$new_no_count = 0;
-		$new_maybe_count = 0;
+		$delta_yes_count = 0;
+		$delta_no_count = 0;
+		$delta_maybe_count = 0;
 		
 		// identify the signup. if user returns to signup screen he can change
 		$signup_id = request_var('hidden_signup_id', 0);
@@ -1293,37 +1311,10 @@ class displayplanner extends raidplanner_base
 		// save the user's signup data...
 		if( $signup_id > 0)
 		{
-			// fetch existing signup value
-			if ($signup_data['signup_val'] != $new_signup_val)
-			{
-				$old_signup_val = $signup_data['signup_val'];
-				$signup_data['signup_val'] = $new_signup_val;
-				
-				// decrease the current yes-no-maybe stat
-				$new_yes_count = $raidplan_data['signup_yes'];
-				$new_no_count = $raidplan_data['signup_no'];
-				$new_maybe_count = $raidplan_data['signup_maybe'];
-				
-				switch($old_signup_val)
-				{
-					case 0:
-						$new_yes_count -= 1;
-						break;
-					case 1:
-						$new_no_count -= 1;
-						break;
-					case 2:
-						$new_maybe_count -= 1;
-						break;
-				}
-
-			}
 			
-			//user selected a new role !
+			//get old role
 			$old_role_id = (int) $signup_data['role_id'];
 			$signup_data['role_id'] = $newrole_id;
-			
-			//decrease old role signup count
 			$sql = " select role_signedup from " . RP_RAIDPLAN_ROLES . " where role_id = " . 
 			$old_role_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
 			$result = $db->sql_query($sql);
@@ -1331,11 +1322,54 @@ class displayplanner extends raidplanner_base
 			$role_signedup = (int) $db->sql_fetchfield('role_signedup',0,$result);  
 			$role_signedup = max(0, $role_signedup - 1);
 			$db->sql_freeresult ( $result );
-			
+			// decrease old role
 			$sql = " update " . RP_RAIDPLAN_ROLES . ' set role_signedup = ' . $role_signedup . ' where role_id = ' . 
-				$old_role_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
+			$old_role_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
 			$db->sql_query($sql);
+			
+			// increase new role
+			$sql = " update " . RP_RAIDPLAN_ROLES . " set role_signedup = (role_signedup  + 1) where role_id = " . 
+			$newrole_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
+			$db->sql_query($sql);
+			
+			// fetch existing signup value
+			if ($signup_data['signup_val'] != $new_signup_val)
+			{
+				// new role selected 
+				
+				// decrease the current yes-no-maybe stat
+				$old_signup_val = $signup_data['signup_val'];
+				$signup_data['signup_val'] = $new_signup_val;
+				
+				switch($old_signup_val)
+				{
+					case 0:
+						$delta_yes_count -= 1;
+						break;
+					case 1:
+						$delta_no_count -= 1;
+						break;
+					case 2:
+						$delta_maybe_count -= 1;
+						break;
+				}
+				
+				// NEW Signup
+				switch($new_signup_val)
+				{
+					case 0:
+						$delta_yes_count += 1;
+						break;
+					case 1:
+						$delta_no_count += 1;
+						break;
+					case 2:
+						$delta_maybe_count += 1;
+						break;
+				}
 
+			}
+			
 			$sql = 'UPDATE ' . RP_SIGNUPS . '
 				SET ' . $db->sql_build_array('UPDATE', array(
 					'poster_id'			=> (int) $signup_data['poster_id'],
@@ -1357,7 +1391,23 @@ class displayplanner extends raidplanner_base
 		}
 		else
 		{
-			// NEW Signup
+			//NEW SIGNUP
+			$sql = " update " . RP_RAIDPLAN_ROLES . " set role_signedup = (role_signedup  + 1) where role_id = " . 
+			$newrole_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
+			$db->sql_query($sql);
+				
+			switch($new_signup_val)
+			{
+				case 0:
+					$delta_yes_count += 1;
+					break;
+				case 1:
+					$delta_no_count += 1;
+					break;
+				case 2:
+					$delta_maybe_count += 1;
+					break;
+			}
 			
 			$signup_data['signup_val'] = $new_signup_val;
 			$signup_data['role_id'] = $newrole_id;
@@ -1385,46 +1435,15 @@ class displayplanner extends raidplanner_base
 			$signup_data['signup_id'] = $signup_id;
 		}
 		
-		switch ($new_signup_val)
-		{
-			case 0:
-				//yes
-				$new_yes_count += 1;
-				//increase new role signup count
-				$sql = " update " . RP_RAIDPLAN_ROLES . " set role_signedup = (role_signedup  + 1) where role_id = " . 
-				$newrole_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
-				$db->sql_query($sql);
-				break;
-			case 1:
-				//no
-				$new_no_count += 1;
-				break;
-			case 2:
-				//maybe
-				//increase new role signup count
-				$sql = " update " . RP_RAIDPLAN_ROLES . " set role_signedup = (role_signedup  + 1) where role_id = " . 
-				$newrole_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
-				$db->sql_query($sql);
-				$new_maybe_count += 1;
-				break;
-		}
-		
-		
-		
 		// update the raidplan id's signup stats
-		$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
-			SET ' . $db->sql_build_array('UPDATE', array(
-				'signup_yes'	=> (int) $new_yes_count,
-				'signup_no'		=> (int) $new_no_count,
-				'signup_maybe'	=> (int) $new_maybe_count,
-			)) . "
-		WHERE raidplan_id = " . (int) $signup_data['raidplan_id'];
-		
+		$sql = 'UPDATE ' . RP_RAIDS_TABLE . ' SET signup_yes = signup_yes + ' . (int) $delta_yes_count . ', signup_no = signup_no + ' . 
+			(int) $delta_no_count . ', signup_maybe = signup_maybe + ' . (int) $delta_maybe_count . '
+		WHERE raidplan_id = ' . (int) $signup_data['raidplan_id'];
 		$db->sql_query($sql);
 		
-		$raidplan_data['signup_yes'] = $new_yes_count;
-		$raidplan_data['signup_no'] = $new_no_count;
-		$raidplan_data['signup_maybe'] = $new_maybe_count;
+		$raidplan_data['signup_yes'] = $raidplan_data['signup_yes'] + $delta_yes_count;
+		$raidplan_data['signup_no'] = $raidplan_data['signup_no'] + $delta_no_count;
+		$raidplan_data['signup_maybe'] = $raidplan_data['signup_maybe'] + $delta_maybe_count;
 		
 		$this->calendar_add_or_update_reply( $signup_data['raidplan_id'] );
 		
@@ -2396,8 +2415,6 @@ class displayplanner extends raidplanner_base
 	
 
 }
-
-
 
 /*
  * collects functions for watching certain raidplan types
