@@ -3,7 +3,6 @@
 *
 * @author alightner, Sajaki
 * @package bbDKP Raidplanner
-* @version CVS/SVN: $Id: raidplanner_display.php 1761 2010-11-23 01:27:59Z sajaki9 $
 * @copyright (c) 2009 alightner
 * @copyright (c) 2010 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
@@ -35,6 +34,7 @@ class displayplanner extends raidplanner_base
 		
 		$this->_init_calendar_data();
 		$this->_init_view_selection_code("month");
+		
 		//create next and prev links
 		$this->set_date_prev_next( "month" );
 		$prev_link = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year'].$etype_url_opts);
@@ -119,7 +119,7 @@ class displayplanner extends raidplanner_base
 			
 			if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 			{
-				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=post&amp;calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']. $etype_url_opts);
+				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}planneradd.$phpEx", "calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']. $etype_url_opts);
 			}
 			$calendar_days['DAY_VIEW_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=day&amp;calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 			$calendar_days['WEEK_VIEW_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=week&amp;calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
@@ -185,7 +185,9 @@ class displayplanner extends raidplanner_base
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$raidplan_output['COLOR'] = $this->raid_plan_colors[$row['etype_id']];
-					$raidplan_output['IMAGE'] = $this->raid_plan_images[$row['etype_id']];
+					$raidplan_output['IMAGE'] = $phpbb_root_path . "images/event_images/" . $this->raid_plan_images[$row['etype_id']] . ".png";
+					$raidplan_output['S_EVENT_IMAGE_EXISTS'] = (strlen( $this->raid_plan_images[$row['etype_id']] ) > 1) ? true : false;
+					
 					$raidplan_output['EVENT_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$row['raidplan_id'].$etype_url_opts);
 	
 					// if the raidplan was created by this user
@@ -311,6 +313,7 @@ class displayplanner extends raidplanner_base
 			$prev_year_no--;
 		}
 		$prev_month_day_count = date("t",mktime( 0,0,0,$prev_month_no, 25, $prev_year_no));
+		
 		// how many days are in this month?
 		$month_day_count = date("t",mktime(0,0,0,$this->date['month_no'], 25, $this->date['year']));
 		$next_month_no = $this->date['month_no'] + 1;
@@ -380,7 +383,7 @@ class displayplanner extends raidplanner_base
 			//if( $auth->acl_get('u_raidplanner_create_raidplans') )
 			if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 			{
-				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=post&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
+				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}planneradd.$phpEx", "calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
 			}
 			$calendar_days['DAY_VIEW_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=day&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
 			$calendar_days['MONTH_VIEW_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=month&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
@@ -446,7 +449,9 @@ class displayplanner extends raidplanner_base
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$raidplan_output['COLOR'] = $this->raid_plan_colors[$row['etype_id']];
-					$raidplan_output['IMAGE'] = $this->raid_plan_images[$row['etype_id']];
+					$raidplan_output['IMAGE'] = $phpbb_root_path . "images/event_images/" . $this->raid_plan_images[$row['etype_id']] . ".png";
+					$raidplan_output['S_EVENT_IMAGE_EXISTS'] = (strlen( $this->raid_plan_images[$row['etype_id']] ) > 1) ? true : false;
+					
 					$raidplan_output['EVENT_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$row['raidplan_id'].$etype_url_opts);
 	
 					// if the raidplan was created by this user
@@ -630,7 +635,10 @@ class displayplanner extends raidplanner_base
 				$raidplans['PADDING'] = "";
 				$raidplans['POST_PADDING'] = "";
 				$raidplans['COLOR'] = $this->raid_plan_colors[$row['etype_id']];
-				$raidplans['IMAGE'] = $this->raid_plan_images[$row['etype_id']];
+				$raidplans['IMAGE'] = $phpbb_root_path . "images/event_images/" . $this->raid_plan_images[$row['etype_id']] . ".png";
+				$raidplans['S_EVENT_IMAGE_EXISTS'] = (strlen( $this->raid_plan_images[$row['etype_id']] ) > 1) ? true : false;
+				
+					
 				$raidplans['EVENT_URL'] = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$row['raidplan_id']. $etype_url_opts);
 				// if the raidplan was created by this user
 				// display it in bold
@@ -707,7 +715,7 @@ class displayplanner extends raidplanner_base
 	
 		if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 		{
-			$add_raidplan_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=post&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
+			$add_raidplan_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=newraid&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 		}
 	
 		// A typical usage for sending your variables to your template.
@@ -799,6 +807,7 @@ class displayplanner extends raidplanner_base
 			$disp_date_format = $config['rp_date_format'];
 		    $disp_date_time_format = $config['rp_date_time_format'];
 	
+			$invite_date_txt = $user->format_date($raidplan_data['raidplan_invite_time'], $disp_date_time_format, true);
 			$start_date_txt = $user->format_date($raidplan_data['raidplan_start_time'], $disp_date_time_format, true);
 			$end_date_txt = $user->format_date($raidplan_data['raidplan_end_time'], $disp_date_time_format, true);
 			
@@ -815,10 +824,10 @@ class displayplanner extends raidplanner_base
 			$message = generate_text_for_display($raidplan_body, $raidplan_data['bbcode_uid'], $raidplan_data['bbcode_bitfield'], $raidplan_data['bbcode_options']);
 			
 			// translate raidplan start and end time into user's timezone
+			$raidplan_invite = $raidplan_data['raidplan_invite_time'] + $user->timezone + $user->dst;
 			$raidplan_start = $raidplan_data['raidplan_start_time'] + $user->timezone + $user->dst;
-			$raidplan_end = $raidplan_data['raidplan_end_time'] + $user->timezone + $user->dst;
-			$start_date_txt = "";
 			
+			/*
 			if( $raidplan_data['raidplan_all_day'] == 1 )
 			{
 				// All day raidplan - find the string for the raidplan day
@@ -836,12 +845,15 @@ class displayplanner extends raidplanner_base
 			}
 			else
 			{
+			*/
 				$all_day = 0;
 				$this->date['day'] = gmdate("d", $raidplan_start);
 				$this->date['month_no'] = gmdate("n", $raidplan_start);
 				$this->date['year']	=	gmdate('Y', $raidplan_start);
+			/*
 			}
-			
+			*/
+				
 			$back_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calD=".$this->date['day'].
 				"&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts );
 	
@@ -890,6 +902,7 @@ class displayplanner extends raidplanner_base
 				$signup_data['poster_colour'] = $user->data['user_colour'];
 				$signup_data['poster_ip'] = $user->ip;
 				$signup_data['post_time'] = time();
+				$signup_data['dkpmember_id'] = request_var('signupchar', 0);
 				$signup_data['signup_val'] = 2;
 				$signup_data['signup_count'] = 1;
 				$signup_data['signup_detail'] = "";
@@ -899,6 +912,12 @@ class displayplanner extends raidplanner_base
 				// show signed up
 				$signup_id	= request_var('hidden_signup_id', 0);
 				
+				if ($signup_id ==0)
+				{
+					//doublecheck in database in case of repost
+					$signup_id = $this->check_if_subscribed($signup_data['poster_id'],$signup_data['dkpmember_id'], $signup_data['raidplan_id']);
+				}
+		
 				if( $signup_id !== 0 )
 				{
 					$this->get_signup_data( $signup_id, $signup_data );
@@ -934,10 +953,10 @@ class displayplanner extends raidplanner_base
 				}
 				
 				
-				// list the signups per role_id
-				// get profiles needed for this raid
+				// list the available signups per role_id
+				// first get profiles needed for this raid
 				$sql_array = array(
-				    	'SELECT'    => 'r.role_id, r.role_name, er.role_needed, er.role_signedup, er.role_confirmed', 
+				    	'SELECT'    => 'r.role_id, r.role_name, r.role_color, r.role_icon, er.role_needed, er.role_signedup, er.role_confirmed ', 
 				    	'FROM'      => array(
 							RP_ROLES   => 'r'
 				    	),
@@ -953,6 +972,7 @@ class displayplanner extends raidplanner_base
 				$sql = $db->sql_build_query('SELECT', $sql_array);
 				$result0 = $db->sql_query($sql);
 				$roles = array ();
+				$total_needed = 0;
 				while ( $row = $db->sql_fetchrow ( $result0 ) )
 				{
 
@@ -960,17 +980,21 @@ class displayplanner extends raidplanner_base
 					$role_name = $row['role_name'];
 					$role_needed = $row['role_needed'];
 					$role_signedup = $row['role_signedup'];
+					$total_needed += $role_needed;
 					
 					// build divs with signups 
 					$template->assign_block_vars('raidroles', array(
 					        'ROLE_ID'        => $role_id,
 						    'ROLE_NAME'      => $role_name,
 					    	'ROLE_NEEDED'    => $role_needed,
-					    	'ROLE_SIGNEDUP' => $role_signedup,
+							'ROLE_COLOR'	 => $row['role_color'],
+							'S_ROLE_ICON_EXISTS' => (strlen($row['role_icon']) > 1) ? true : false,
+					       	'ROLE_ICON' 	 => (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $row['role_icon'] . ".png" : '',
+					    	'ROLE_SIGNEDUP'  => $role_signedup,
 					 ));
 				 
 					 
-					// list the signups 
+					// list the signups for each raid role
 					$sql_array = array(
 				    	'SELECT'    => ' s.*, m.member_id, m.member_name, m.member_level,  
 					    				 m.member_gender_id, a.image_female_small, a.image_male_small, 
@@ -999,11 +1023,9 @@ class displayplanner extends raidplanner_base
 						
 					$result = $db->sql_query($sql);
 					
+					// loop signups
 					while ($signup_row = $db->sql_fetchrow($result) )
 					{
-						
-						
-						
 						
 						if( ($signup_id == 0 && $signup_data['poster_id'] == $signup_row['poster_id']) ||
 						    ($signup_id != 0 && $signup_id == $signup_row['signup_id']) )
@@ -1163,19 +1185,32 @@ class displayplanner extends raidplanner_base
 					);
 	
 				}
+				
+				// display raid attendance statistics
+				
 				$template->assign_vars( array(
+					'RAID_TOTAL'		=> $total_needed,
+				
+					'CURR_INVITED_COUNT' => 0, 
+					'S_CURR_INVITED_COUNT'	=> false,
+				
 					'CURR_YES_COUNT'	=> $raidplan_data['signup_yes'],
-					'CURR_NO_COUNT'		=> $raidplan_data['signup_no'],
+					'S_CURR_YES_COUNT'	=> ($raidplan_data['signup_yes'] + $raidplan_data['signup_maybe'] > 0) ? true: false,
+					
 					'CURR_MAYBE_COUNT'	=> $raidplan_data['signup_maybe'],
+					'S_CURR_MAYBE_COUNT' => ($raidplan_data['signup_maybe'] > 0) ? true: false,
+
+					'CURR_NO_COUNT'		=> $raidplan_data['signup_no'],
+					'S_CURR_NO_COUNT'	=> ($raidplan_data['signup_no'] > 0) ? true: false,
+				
 					)
 				);
 			}
 		
 			$add_raidplan_url = "";
-			//if( $auth->acl_get('u_raidplanner_create_raidplans') )
 			if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 			{
-				$add_raidplan_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=post&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
+				$add_raidplan_url = append_sid("{$phpbb_root_path}planneradd.$phpEx", "calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 			}
 			$day_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=day&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 			$week_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=week&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
@@ -1194,11 +1229,15 @@ class displayplanner extends raidplanner_base
 				'U_CALENDAR'		=> $back_url,
 				'ETYPE_DISPLAY_NAME'=> $raidplan_display_name,
 				'EVENT_COLOR'		=> $raidplan_color,
-				'EVENT_IMAGE'		=> $raidplan_image,
+				'EVENT_IMAGE' 		=> $phpbb_root_path . "images/event_images/" . $raidplan_image . ".png", 
+            	'S_EVENT_IMAGE_EXISTS' 	=> (strlen($raidplan_image) > 1) ? true : false, 
 				'SUBJECT'			=> $subject,
 				'MESSAGE'			=> $message,
-				'START_DATE'		=> $start_date_txt,
+			
+				'INVITE_TIME'		=> $invite_date_txt,
+				'START_TIME'		=> $start_date_txt,
 				'END_DATE'			=> $end_date_txt,
+			
 				'IS_RECURRING'		=> $raidplan_data['recurr_id'],
 				'RECURRING_TXT'		=> $this->get_recurring_raidplan_string_via_id( $raidplan_data['recurr_id'] ),
 				'POSTER'			=> $poster_url,
@@ -1221,7 +1260,7 @@ class displayplanner extends raidplanner_base
 				'U_WATCH_RAIDPLAN' 		=> $s_watching_raidplan['link'],
 				'L_WATCH_RAIDPLAN' 		=> $s_watching_raidplan['title'],
 				'S_WATCHING_RAIDPLAN'		=> $s_watching_raidplan['is_watching'],
-	
+				
 				)
 			);
 		}
@@ -1238,64 +1277,44 @@ class displayplanner extends raidplanner_base
 	{
 		global $user, $db, $config;
 			
-		// identify the signup. if user returns to signup screen he can change
-		$signup_id = request_var('hidden_signup_id', 0);
+
+		// get the chosen raidrole 1-6, this changes the signup value
+		$newrole_id = request_var('signuprole', 0);
+		// get the attendance value
+		$new_signup_val	= request_var('signup_val', 2);
 		
 		$uid = $bitfield = $options = '';
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
 		generate_text_for_storage($new_signup_detail, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
 		
-		// get the chosen raidrole 1-6, this changes the signup value
-		$newrole_id = request_var('signuprole', 0);
 		// get the chosen raidchar
 		$signup_data['dkpmember_id'] = request_var('signupchar', 0);
-		// get the attendance value
-		$new_signup_val	= request_var('signup_val', 2);
-
 		// update the ip address and time
 		$signup_data['poster_ip'] = $user->ip;
 		$signup_data['post_time'] = time();
 		$signup_data['signup_count'] =  request_var('signup_count', 1);
 		$signup_data['signup_detail'] = utf8_normalize_nfc( request_var('signup_detail', '', true) );
 		
-		$new_yes_count = 0;
-		$new_no_count = 0;
-		$new_maybe_count = 0;
+		$delta_yes_count = 0;
+		$delta_no_count = 0;
+		$delta_maybe_count = 0;
 		
+		// identify the signup. if user returns to signup screen he can change
+		$signup_id = request_var('hidden_signup_id', 0);
+		
+		if ($signup_id ==0)
+		{
+			//doublecheck in database
+			$signup_id = $this->check_if_subscribed($signup_data['poster_id'],$signup_data['dkpmember_id'], $signup_data['raidplan_id']);
+		}
+			
 		// save the user's signup data...
 		if( $signup_id > 0)
 		{
-			// fetch existing signup value
-			if ($signup_data['signup_val'] != $new_signup_val)
-			{
-				$old_signup_val = $signup_data['signup_val'];
-				$signup_data['signup_val'] = $new_signup_val;
-				
-				// decrease the current yes-no-maybe stat
-				$new_yes_count = $raidplan_data['signup_yes'];
-				$new_no_count = $raidplan_data['signup_no'];
-				$new_maybe_count = $raidplan_data['signup_maybe'];
-				
-				switch($old_signup_val)
-				{
-					case 0:
-						$new_yes_count -= 1;
-						break;
-					case 1:
-						$new_no_count -= 1;
-						break;
-					case 2:
-						$new_maybe_count -= 1;
-						break;
-				}
-
-			}
 			
-			//user selected a new role !
+			//get old role
 			$old_role_id = (int) $signup_data['role_id'];
 			$signup_data['role_id'] = $newrole_id;
-			
-			//decrease old role signup count
 			$sql = " select role_signedup from " . RP_RAIDPLAN_ROLES . " where role_id = " . 
 			$old_role_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
 			$result = $db->sql_query($sql);
@@ -1303,11 +1322,54 @@ class displayplanner extends raidplanner_base
 			$role_signedup = (int) $db->sql_fetchfield('role_signedup',0,$result);  
 			$role_signedup = max(0, $role_signedup - 1);
 			$db->sql_freeresult ( $result );
-			
+			// decrease old role
 			$sql = " update " . RP_RAIDPLAN_ROLES . ' set role_signedup = ' . $role_signedup . ' where role_id = ' . 
-				$old_role_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
+			$old_role_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
 			$db->sql_query($sql);
+			
+			// increase new role
+			$sql = " update " . RP_RAIDPLAN_ROLES . " set role_signedup = (role_signedup  + 1) where role_id = " . 
+			$newrole_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
+			$db->sql_query($sql);
+			
+			// fetch existing signup value
+			if ($signup_data['signup_val'] != $new_signup_val)
+			{
+				// new role selected 
+				
+				// decrease the current yes-no-maybe stat
+				$old_signup_val = $signup_data['signup_val'];
+				$signup_data['signup_val'] = $new_signup_val;
+				
+				switch($old_signup_val)
+				{
+					case 0:
+						$delta_yes_count -= 1;
+						break;
+					case 1:
+						$delta_no_count -= 1;
+						break;
+					case 2:
+						$delta_maybe_count -= 1;
+						break;
+				}
+				
+				// NEW Signup
+				switch($new_signup_val)
+				{
+					case 0:
+						$delta_yes_count += 1;
+						break;
+					case 1:
+						$delta_no_count += 1;
+						break;
+					case 2:
+						$delta_maybe_count += 1;
+						break;
+				}
 
+			}
+			
 			$sql = 'UPDATE ' . RP_SIGNUPS . '
 				SET ' . $db->sql_build_array('UPDATE', array(
 					'poster_id'			=> (int) $signup_data['poster_id'],
@@ -1329,7 +1391,23 @@ class displayplanner extends raidplanner_base
 		}
 		else
 		{
-			// NEW Signup
+			//NEW SIGNUP
+			$sql = " update " . RP_RAIDPLAN_ROLES . " set role_signedup = (role_signedup  + 1) where role_id = " . 
+			$newrole_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
+			$db->sql_query($sql);
+				
+			switch($new_signup_val)
+			{
+				case 0:
+					$delta_yes_count += 1;
+					break;
+				case 1:
+					$delta_no_count += 1;
+					break;
+				case 2:
+					$delta_maybe_count += 1;
+					break;
+			}
 			
 			$signup_data['signup_val'] = $new_signup_val;
 			$signup_data['role_id'] = $newrole_id;
@@ -1357,52 +1435,46 @@ class displayplanner extends raidplanner_base
 			$signup_data['signup_id'] = $signup_id;
 		}
 		
-		switch ($new_signup_val)
-		{
-			case 0:
-				//yes
-				$new_yes_count += 1;
-				//increase new role signup count
-				$sql = " update " . RP_RAIDPLAN_ROLES . " set role_signedup = (role_signedup  + 1) where role_id = " . 
-				$newrole_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
-				$db->sql_query($sql);
-				break;
-			case 1:
-				//no
-				$new_no_count += 1;
-				break;
-			case 2:
-				//maybe
-				//increase new role signup count
-				$sql = " update " . RP_RAIDPLAN_ROLES . " set role_signedup = (role_signedup  + 1) where role_id = " . 
-				$newrole_id . ' and raidplan_id = ' . $signup_data['raidplan_id'];
-				$db->sql_query($sql);
-				$new_maybe_count += 1;
-				break;
-		}
-		
-		
-		
 		// update the raidplan id's signup stats
-		$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
-			SET ' . $db->sql_build_array('UPDATE', array(
-				'signup_yes'	=> (int) $new_yes_count,
-				'signup_no'		=> (int) $new_no_count,
-				'signup_maybe'	=> (int) $new_maybe_count,
-			)) . "
-		WHERE raidplan_id = " . (int) $signup_data['raidplan_id'];
-		
+		$sql = 'UPDATE ' . RP_RAIDS_TABLE . ' SET signup_yes = signup_yes + ' . (int) $delta_yes_count . ', signup_no = signup_no + ' . 
+			(int) $delta_no_count . ', signup_maybe = signup_maybe + ' . (int) $delta_maybe_count . '
+		WHERE raidplan_id = ' . (int) $signup_data['raidplan_id'];
 		$db->sql_query($sql);
 		
-		$raidplan_data['signup_yes'] = $new_yes_count;
-		$raidplan_data['signup_no'] = $new_no_count;
-		$raidplan_data['signup_maybe'] = $new_maybe_count;
+		$raidplan_data['signup_yes'] = $raidplan_data['signup_yes'] + $delta_yes_count;
+		$raidplan_data['signup_no'] = $raidplan_data['signup_no'] + $delta_no_count;
+		$raidplan_data['signup_maybe'] = $raidplan_data['signup_maybe'] + $delta_maybe_count;
 		
 		$this->calendar_add_or_update_reply( $signup_data['raidplan_id'] );
 		
 	}
 	
-	
+	/*
+	 * doublecheck in db if poster already signed up
+	 * 
+	 */
+	private function check_if_subscribed($user_id, $dkpmember_id, $raidplan_id)
+	{
+		global $db;
+		$signup_id = 0;
+		
+		$sql = 'select signup_id from ' . RP_SIGNUPS . ' WHERE 
+			poster_id = ' . $user_id . ' 
+			and raidplan_id = ' . $raidplan_id . ' 
+			and dkpmember_id = ' . $dkpmember_id;
+		$db->sql_query($sql);
+		
+		$result = $db->sql_query($sql);
+		if($result)
+		{
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$signup_id = (int) $row['signup_id'];
+			}
+		}
+		$db->sql_freeresult ( $result );
+		return $signup_id; 
+	}
 		
 	/* calendar_init_s_watching_raidplan_data()
 	**
@@ -1702,8 +1774,7 @@ class displayplanner extends raidplanner_base
 		}
 	}
 	
-	/* displays the calendar - either week view or upcoming raidplan list
-	   as specified in the ACP on the index */
+	/* displays the calendar - either week view or upcoming raidplan list as specified in the ACP on the index */
 	public function display_calendar_on_index()
 	{
 		global $auth, $db, $user, $config, $template;
@@ -2344,8 +2415,6 @@ class displayplanner extends raidplanner_base
 	
 
 }
-
-
 
 /*
  * collects functions for watching certain raidplan types

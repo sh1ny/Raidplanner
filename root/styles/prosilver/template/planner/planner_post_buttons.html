@@ -6,6 +6,9 @@
 	var load_draft = false;
 	var upload = false;
 
+	var panels = new Array('raidinfo-panel', 'raidroles-panel', 'raidwhen-panel', 'raidrecurring-panel');
+	var show_panel = 'raidinfo-panel';
+	
 	// Define the bbCode tags
 	var bbcode = new Array();
 	var bbtags = new Array('[b]','[/b]','[i]','[/i]','[u]','[/u]','[quote]','[/quote]','[code]','[/code]','[list]','[/list]','[list=]','[/list]','[img]','[/img]','[url]','[/url]','[flash=]', '[/flash]','[size=]','[/size]'<!-- BEGIN custom_tags -->, {custom_tags.BBCODE_NAME}<!-- END custom_tags -->);

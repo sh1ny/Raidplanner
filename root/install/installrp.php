@@ -224,6 +224,8 @@ $versions = array(
 			array('rp_populate_frequency', 86400, true),
 			array('rp_last_populate', 0, true),
 			array('rp_populate_limit', 94608000, true),
+			array('rp_default_invite_time', 1200, true),
+			array('rp_default_start_time', 1230, true),
 			),
         	 
 			//adding some tables
@@ -234,6 +236,7 @@ $versions = array(
                        'raidplan_id'			=> array('INT:8', NULL, 'auto_increment' ),
 					   'etype_id' 			=> array('INT:8', 0),
 		  			   'sort_timestamp' 	=> array('BINT', 0),
+					   'raidplan_invite_time' 	=> array('BINT', 0),
 		  			   'raidplan_start_time' 	=> array('BINT', 0),
 			 		   'raidplan_end_time' 	=> array('BINT', 0),
 					   'raidplan_all_day'   	=> array('UINT', 0),
@@ -348,7 +351,7 @@ $versions = array(
 					   'raidplan_id' 			=> array('INT:8', 0),
 					   'role_id' 			=> array('INT:8', 0),
 					   'role_needed' 		=> array('INT:8', 0),
-					   'role_available' 	=> array('INT:8', 0),
+					   'role_signedup' 		=> array('INT:8', 0),
 					   'role_confirmed' 	=> array('INT:8', 0),
 					   
 					),
@@ -363,6 +366,7 @@ $versions = array(
                         'role_color'       => array('VCHAR', ''),
               			'role_needed1'     => array('INT:8', 0),
               			'role_needed2'     => array('INT:8', 0),
+ 		                'role_icon'    	   => array('VCHAR', ''),
                     ),
                     'PRIMARY_KEY'    => 'role_id'), 
                 ),
@@ -373,12 +377,12 @@ $versions = array(
 		// inserting roles
 		array('phpbb_rp_roles',
            array(
-                  array('role_name' => 'Ranged DPS', 'role_needed1' => 3, 'role_needed2' => 7),          
-                  array('role_name' => 'Melee DPS', 'role_needed1' => 1, 'role_needed2' => 3),
-                  array('role_name' => 'Tank' , 'role_needed1' => 1,  'role_needed2' => 2),
-                  array('role_name' => 'Off Tank', 'role_needed1' => 1,  'role_needed2' => 2),
-                  array('role_name' => 'Healer', 'role_needed1' => 2,  'role_needed2' => 5),
-                  array('role_name' => 'Hybrid' , 'role_needed1' => 2,  'role_needed2' => 6),
+                  array('role_name' => 'Ranged DPS', 'role_needed1' => 3, 'role_needed2' => 7, 'role_color' => '#BB00AA', 'role_icon' => 'range'),          
+                  array('role_name' => 'Melee DPS', 'role_needed1' => 1, 'role_needed2' => 3, 'role_color' => '#FFCC66', 'role_icon' => 'melee'),
+                  array('role_name' => 'Tank' , 'role_needed1' => 1,  'role_needed2' => 2, 'role_color' => '#777777', 'role_icon' => 'tank'),
+                  array('role_name' => 'Off Tank', 'role_needed1' => 1,  'role_needed2' => 2, 'role_color' => '#AAAAAA', 'role_icon' => 'tank'),
+                  array('role_name' => 'Healer', 'role_needed1' => 2,  'role_needed2' => 5, 'role_color' => '#00EECC', 'role_icon' => 'healer'),
+                  array('role_name' => 'Hybrid' , 'role_needed1' => 2,  'role_needed2' => 6, 'role_color' => '#9999FF', 'role_icon' => 'unknown'),
            ))),
            
         'custom' => array('purgecaches'),

@@ -72,6 +72,7 @@ switch( $view_mode )
 		$template_body = "planner/planner_view_raidplan.html";
 		$cal->display_plannedraid();
 		break;
+
 	case "day":
 		// display all of the raidplans on this day
 		$cal->display_day(0);
@@ -107,13 +108,11 @@ $template->assign_vars(array(
 // Output the page
 page_header($user->lang['PAGE_TITLE']); 
 
-
 // Set the filename of the template you want to use for this file.
 $template->set_filenames(array(
 	'body' => $template_body)
 );
 
 page_footer();
-
 
 ?>

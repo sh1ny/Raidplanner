@@ -45,22 +45,17 @@ class acp_raidplanner
 				$updateroles = (isset($_POST['roleupdate'])) ? true : false;
 				$deleterole = (request_var('roledelete', '') != '') ? true : false;
 				$addrole = (isset($_POST['roleadd'])) ? true : false;
+				
 				$update	= (isset($_POST['update_rp_settings'])) ? true : false;
+				$updateadv	= (isset($_POST['update_rp_settings_adv'])) ? true : false;
 
 				// check the form key
-				if ($updateroles || $addrole || $update )
+				if ($updateroles || $addrole || $update || $updateadv)
 				{
 					if (!check_form_key('acp_raidplanner'))
 					{
 						trigger_error('FORM_INVALID');
 					}
-				}
-				
-				// move the calendar for daylight savings
-				if( request_var('calPlusHour', 0) == 1)
-				{
-					$this->move_all_raidplans_by_one_hour( request_var('plusVal', 1));
-					exit;
 				}
 				
 				//user pressed edit button
@@ -69,12 +64,16 @@ class acp_raidplanner
 					$rolenames = utf8_normalize_nfc(request_var('rolename', array( 0 => ''), true));
 					$roleneed1 = request_var('role_need1', array( 0 => 0));
 					$roleneed2 = request_var('role_need2', array( 0 => 0));
+					$rolecolor = request_var('role_color', array( 0 => ''));
+					$roleicon = request_var('role_icon', array( 0 => ''));
 					foreach ( $rolenames as $role_id => $role_name )
 					{
 						$data = array(
 						    'role_name'     	=> $role_name,
-						    'role_needed1'     => $roleneed1[$role_id],
-						 	'role_needed2'     => $roleneed2[$role_id],
+						    'role_needed1'     	=> $roleneed1[$role_id],
+						 	'role_needed2'     	=> $roleneed2[$role_id],
+							'role_color'     	=> $rolecolor[$role_id],
+							'role_icon'     	=> $roleicon[$role_id],
 						);
 
 						 $sql = 'UPDATE ' . RP_ROLES . ' SET ' . $db->sql_build_array('UPDATE', $data) . '
@@ -89,8 +88,10 @@ class acp_raidplanner
 				{
 					$data = array(
 					    'role_name'     => utf8_normalize_nfc(request_var('newrole', 'New role', true)),
-						'role_needed1'     => request_var('newrole_need1', 0),
-						'role_needed2'     => request_var('newrole_need2', 0),
+						'role_needed1'   => request_var('newrole_need1', 0),
+						'role_needed2'   => request_var('newrole_need2', 0),
+						'role_color'     => request_var('newrole_color', ''),
+						'role_icon'     => request_var('newrole_icon', ''),
 					);
 
 					$sql = 'INSERT INTO ' . RP_ROLES . $db->sql_build_array('INSERT', $data);
@@ -125,18 +126,37 @@ class acp_raidplanner
 						
 				}
 				
-				
-				// update all advanced settings
-				if( $update )
+				if($update)
 				{
+					
 					$first_day	= request_var('first_day', 0);
 					set_config  ( 'rp_first_day_of_week',  $first_day,0);  
 					
+					$invitehour	= request_var('event_invite_hh', 0) * 60 + request_var('event_invite_mm', 0);
+					set_config  ( 'rp_default_invite_time',  $invitehour,0);
+					$starthour =  request_var('event_start_hh', 0) * 60 + request_var('event_start_mm', 0);
+					set_config  ( 'rp_default_start_time',  $starthour,0);
+										
+					$message="";
+					$message .= '<br />' . sprintf( $user->lang['RPSETTINGS_UPDATED'], E_USER_NOTICE);
+					trigger_error($message);
+					
+					
+				}
+				
+				// move the calendar for daylight savings
+				if( request_var('calPlusHour', 0) == 1)
+				{
+					$this->move_all_raidplans_by_one_hour( request_var('plusVal', 1));
+					exit;
+				}
+				
+				// update all advanced settings
+				if( $updateadv )
+				{
+					
 					$disp_week	= request_var('disp_week', 0);
 					set_config  ( 'rp_index_display_week',  $disp_week,0);  
-					
-					$disp_next_raidplans	= request_var('disp_next_raidplans', 0);
-					set_config  ( 'rp_index_display_next_raidplans',  $disp_next_raidplans,0);
 					
 					$hour_mode = request_var('hour_mode', 12);
 					set_config  ( 'rp_hour_mode',  $hour_mode,0);
@@ -181,6 +201,12 @@ class acp_raidplanner
 					set_config  ( 'rp_populate_limit',  $populate_limit,0);
 
 					$cache->destroy('config');
+					
+					$message="";
+					$message .= '<br />' . sprintf( $user->lang['ADVRPSETTINGS_UPDATED'], E_USER_NOTICE);
+					trigger_error($message);
+					
+					
 				}
 
 				$sel_monday = "";
@@ -215,6 +241,44 @@ class acp_raidplanner
 						break;
 				}
 				
+				// build presets for invite hour pulldown
+				$s_event_invite_hh_options = '<option value="0"' . (isset($config['rp_default_invite_time']) ? '': ' selected="selected"' ) . '>--</option>';
+				$invhour = intval($config['rp_default_invite_time'] / 60);
+				for ($i = 0; $i <= 23; $i++)
+				{
+					$selected = ($i == $invhour ) ? ' selected="selected"' : '';
+					$s_event_invite_hh_options .= "<option value=\"$i\"$selected>$i</option>";
+				}
+				// build presets for invite minute pulldown
+				$s_event_invite_mm_options = '<option value="0"' . (isset($config['rp_default_invite_time']) ? '': ' selected="selected"' ) . '>--</option>';
+				$invmin = $config['rp_default_invite_time'] - ($invhour*60); 
+				for ($i = 0; $i <= 59; $i++)
+				{
+					$selected = ($i == $invmin ) ? ' selected="selected"' : '';
+					$s_event_invite_mm_options .= "<option value=\"$i\"$selected>$i</option>";
+				}
+				// build presets for start hour pulldown
+				$s_event_start_hh_options = '<option value="0"' . (isset($config['rp_default_start_time']) ? '': ' selected="selected"' ) . '>--</option>';
+				$starthour = intval($config['rp_default_start_time'] / 60);
+				for ($i = 0; $i <= 23; $i++)
+				{
+					$selected = ($i == $starthour ) ? ' selected="selected"' : '';
+					$s_event_start_hh_options .= "<option value=\"$i\"$selected>$i</option>";
+				}
+				// build presets for start minute pulldown
+				$s_event_start_mm_options = '<option value="0"' . (isset($config['rp_default_start_time']) ? '': ' selected="selected"' ) . '>--</option>';
+				$startmin =  $config['rp_default_start_time'] - ($starthour* 60); 
+				for ($i = 0; $i <= 59; $i++)
+				{
+					$selected = '';
+					if($i == $startmin)
+					{
+						$selected = ' selected="selected"';
+					}
+					
+					$s_event_start_mm_options .= "<option value=\"$i\"$selected>$i</option>";
+				}				
+					
 				// select raid roles
 				$sql = 'SELECT * FROM ' . RP_ROLES . '
 						ORDER BY role_id';
@@ -229,12 +293,20 @@ class acp_raidplanner
                         'ROLENAME' 		=> $row['role_name'],
 	                    'ROLENEED1' 	=> $row['role_needed1'],
 	                    'ROLENEED2' 	=> $row['role_needed2'],
+                    	'ROLECOLOR' 	=> $row['role_color'],
+                    	'ROLEICON' 		=> $row['role_icon'],
+                    	'S_ROLE_ICON_EXISTS'	=>  (strlen($row['role_icon']) > 1) ? true : false,
+                    	'ROLE_ICON' 	=> (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $row['role_icon'] . ".png" : '',
                     	'U_DELETE' 		=> $this->u_action. '&roledelete=1&delrole_id=' . $row['role_id'],
                     	));
                 }
                 $db->sql_freeresult($result);
 			
 				$template->assign_vars(array(
+					'S_RAID_INVITE_HOUR_OPTIONS'		=> $s_event_invite_hh_options,
+					'S_RAID_INVITE_MINUTE_OPTIONS'		=> $s_event_invite_mm_options, 
+					'S_RAID_START_HOUR_OPTIONS'			=> $s_event_start_hh_options,
+					'S_RAID_START_MINUTE_OPTIONS'		=> $s_event_start_mm_options,
 					'SEL_MONDAY'		=> $sel_monday,
 					'SEL_TUESDAY'		=> $sel_tuesday,
 					'SEL_WEDNESDAY'		=> $sel_wednesday,
@@ -273,6 +345,11 @@ class acp_raidplanner
 		}
 	}
 
+	/**
+	 * moves all raids in the calendar +/- one hour 
+	 * helps when you reset the boards daylight savings time setting. 
+	 * 
+	 */
 	private function move_all_raidplans_by_one_hour( $plusVal )
 	{
 		global $auth, $db, $user, $config, $phpEx, $phpbb_root_path;
@@ -296,8 +373,12 @@ class acp_raidplanner
 	
 			/* first populate all recurring raidplans to make sure
 			   the cron job does not run again while we are working. */
-			include_once($phpbb_root_path . 'includes/bbdkp/raidplanner/functions_rp.' . $phpEx);
-			populate_calendar(0);
+			if (!class_exists('raidplanner_population'))
+			{
+				require($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_population.' . $phpEx);
+			}
+			$rp = new raidplanner_population;
+			$rp->populate_calendar(0);
 	
 			/* next move all recurring raidplans by one hour
 			   (note we will also edit the poster_timezone by one hour
@@ -340,15 +421,17 @@ class acp_raidplanner
 			$result = $db->sql_query($sql);
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$sort_timestamp = $row['sort_timestamp'] + ($factor * 3600);
-				$raidplan_start_time = $row['raidplan_start_time'] + ($factor * 3600);
-				$raidplan_end_time = $row['raidplan_end_time'] + ($factor * 3600);
+				$sort_timestamp = max(0,$row['sort_timestamp'] + ($factor * 3600));
+				$raidplan_invite_time = max(0,$row['raidplan_invite_time'] + ($factor * 3600));
+				$raidplan_start_time = max($row['raidplan_start_time'] + ($factor * 3600),0);
+				$raidplan_end_time = max(0,$row['raidplan_end_time'] + ($factor * 3600));
 				$raidplan_id = $row['raidplan_id'];
 				$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
 					SET ' . $db->sql_build_array('UPDATE', array(
 						'sort_timestamp'	=> (int) $sort_timestamp,
+						'raidplan_invite_time'	=> (int) $raidplan_invite_time,
 						'raidplan_start_time'	=> (int) $raidplan_start_time,
-						'raidplan_end_time'	=> (int) $raidplan_end_time,
+						'raidplan_end_time'		=> (int) $raidplan_end_time,				
 						)) . "
 					WHERE raidplan_id = $raidplan_id";
 				$db->sql_query($sql);
@@ -357,7 +440,7 @@ class acp_raidplanner
 						 
 			$meta_info = append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_settings" );
 			meta_refresh(3, $meta_info);
-	
+			$message="";
 			$message .= '<br /><br />' . sprintf( $user->lang['PLUS_HOUR_SUCCESS'],(string)$factor);
 			trigger_error($message);
 	

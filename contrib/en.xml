@@ -8,7 +8,7 @@
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[RaidPlanner 0.2.0b]]></title>
+		<title lang="en"><![CDATA[RaidPlanner 0.2.0]]></title>
 		<description lang="en"><![CDATA[English language installation files]]></description>
 		<author-notes lang="en"><![CDATA[English language installation files]]></author-notes>
 		<author-group>
@@ -22,7 +22,7 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>0.2.0b</mod-version>
+		<mod-version>0.2.0</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>60</time>
@@ -55,12 +55,12 @@
 				<find><![CDATA['VIEWED'					=> 'Viewed',
 ]]></find>
 				<action type="after-add"><![CDATA[	'VIEWING_CALENDAR'			=> 'Viewing Planner',
-	'VIEWING_CALENDAR_DAY'		=> 'Viewing calendar day',
-	'VIEWING_CALENDAR_EVENT'	=> 'Viewing calendar event',
-	'VIEWING_CALENDAR_MONTH'	=> 'Viewing calendar month',
-	'VIEWING_CALENDAR_WEEK'		=> 'Viewing calendar week',
-	'EDITING_CALENDAR_EVENT'	=> 'Editing calendar event',
-	'CREATING_CALENDAR_EVENT'	=> 'Creating calendar event',
+	'VIEWING_CALENDAR_DAY'		=> 'Viewing Planner day',
+	'VIEWING_CALENDAR_EVENT'	=> 'Viewing Planner event',
+	'VIEWING_CALENDAR_MONTH'	=> 'Viewing Planner month',
+	'VIEWING_CALENDAR_WEEK'		=> 'Viewing Planner week',
+	'EDITING_CALENDAR_EVENT'	=> 'Editing Planner event',
+	'CREATING_CALENDAR_EVENT'	=> 'Creating Planner event',
 
 ]]></action>
 			</edit>
@@ -79,22 +79,6 @@
 				<action type="after-add"><![CDATA[	'UCP_MAIN_RAIDPLANNER_MYEVENTS'	=> 'Manage my Raids',
 			'UCP_MAIN_RAIDPLANNER_REGISTRATION'=> 'Manage Raid registration',
 		]]></action>
-			</edit>
-		</open>
-		<open src="language/en/acp/styles.php">
-			<edit>
-				<comment lang="en"><![CDATA[Define recurring event icons for prosilver style]]></comment>
-				<find><![CDATA['IMG_ICON_POST_EDIT'			=> 'Edit post',]]></find>
-				<action type="after-add"><![CDATA[	'IMG_ICON_CALENDAR_EDIT_ALL'	=> 'Edit all posts',
-'IMG_ICON_CALENDAR_DELETE_ALL'	=> 'Delete all posts',]]></action>
-			</edit>
-			<edit>
-				<comment lang="en"><![CDATA[Define main calendar icons for prosilver style]]></comment>
-				<find><![CDATA['IMG_ICON_USER_WARN'		=> 'Warn user',]]></find>
-				<action type="after-add"><![CDATA['IMG_BUTTON_CALENDAR_NEW'	=> 'New Raid',
-'IMG_BUTTON_CALENDAR_DAY'	=> 'View Day',
-'IMG_BUTTON_CALENDAR_WEEK'	=> 'View Week',
-'IMG_BUTTON_CALENDAR_MONTH'	=> 'View Month',]]></action>
 			</edit>
 		</open>
 		<diy-instructions lang="en"><![CDATA[]]></diy-instructions>

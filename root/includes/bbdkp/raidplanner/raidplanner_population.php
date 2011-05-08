@@ -46,9 +46,13 @@ class raidplanner_population extends raidplanner_base
 		global $user, $config; 
 		$error = array();
 		
+		// read subjectline
 		$raidplan_data['raidplan_subject']= utf8_normalize_nfc(request_var('subject', '', true));
+		//read comment section
 		$raidplan_data['raidplan_body']	= utf8_normalize_nfc(request_var('message', '', true));
-		$raidplan_data['etype_id']		= request_var('calEType', 0);
+		//get event type
+		$raidplan_data['etype_id']	= request_var('calEType', 0);
+		
 		$raidplan_data['group_id'] = 0;
 		$raidplan_data['group_id_list'] = ",";
 		
@@ -97,20 +101,16 @@ class raidplanner_population extends raidplanner_base
 	    -------------------------------------------------------------------*/
 		if( $s_date_time_opts )
 		{
+			// raid invite time
+			$invite_hr = request_var('calinvHr', 0);
+			$invite_mn = request_var('calinvMn', 0);
+			$raidplan_data['raidplan_invite_time'] = gmmktime($invite_hr, $invite_mn, 0, $newraid->date['month_no'], $newraid->date['day'], $newraid->date['year'] ) - $user->timezone - $user->dst;
+			//raid start time
 			$start_hr = request_var('calHr', 0);
 			$start_mn = request_var('calMn', 0);
 			$raidplan_data['raidplan_start_time'] = gmmktime($start_hr, $start_mn, 0, $newraid->date['month_no'], $newraid->date['day'], $newraid->date['year'] ) - $user->timezone - $user->dst;
 		}
 	
-		// DNSBL check
-		if ($config['check_dnsbl'] )
-		{
-			if (($dnsbl = $user->check_dnsbl('post')) !== false)
-			{
-				$error[] = sprintf($user->lang['IP_BLACKLISTED'], $user->ip, $dnsbl[1]);
-			}
-		}
-		
 	    /*------------------------------------------------------------------
 	      Check options for recurring raidplans
 	    -------------------------------------------------------------------*/
@@ -242,9 +242,11 @@ class raidplanner_population extends raidplanner_base
 		{
 
 			// insert raid
+			// added the invite time
 			$data = array(
 					'etype_id'				=> (int) $raidplan_data['etype_id'],
 					'sort_timestamp'		=> (int) $raidplan_data['raidplan_start_time'],
+					'raidplan_invite_time'		=> (int) $raidplan_data['raidplan_invite_time'],
 					'raidplan_start_time'		=> (int) $raidplan_data['raidplan_start_time'],
 					'raidplan_day'				=> (string) $raidplan_data['raidplan_day'],
 					'raidplan_subject'			=> (string) $raidplan_data['raidplan_subject'],
@@ -683,7 +685,10 @@ class raidplanner_population extends raidplanner_base
 	
 			$sql = 'DELETE FROM ' . RP_RAIDPLAN_WATCH . ' WHERE raidplan_id = ' .$db->sql_escape($raidplan_id);
 			$db->sql_query($sql);
-	
+
+			$sql = 'DELETE FROM ' . RP_RAIDPLAN_ROLES . ' WHERE raidplan_id = ' .$db->sql_escape($raidplan_id);
+			$db->sql_query($sql);
+			
 			// Delete raidplan
 			$sql = 'DELETE FROM ' . RP_RAIDS_TABLE . '
 					WHERE raidplan_id = '.$db->sql_escape($raidplan_id);
@@ -747,6 +752,9 @@ class raidplanner_population extends raidplanner_base
 					$db->sql_query($sql);
 				}
 				$db->sql_freeresult($result);
+				
+				$sql = 'DELETE FROM ' . RP_RAIDPLAN_ROLES . ' WHERE raidplan_id = ' .$db->sql_escape($row['raidplan_id']);
+				$db->sql_query($sql);
 	
 				// delete the recurring raidplan
 				$sql = 'DELETE FROM ' . RP_RECURRING . '
@@ -843,7 +851,7 @@ class raidplanner_population extends raidplanner_base
 		{
 			$template->assign_vars(array(
 				'S_SHOW_SMILEY_LINK' 	=> true,
-				'U_MORE_SMILIES' 		=> append_sid("{$phpbb_root_path}calendarpost.$phpEx", 'mode=smilies'))
+				'U_MORE_SMILIES' 		=> append_sid("{$phpbb_root_path}planneradd.$phpEx", 'mode=smilies'))
 			);
 		}
 	
@@ -852,6 +860,7 @@ class raidplanner_population extends raidplanner_base
 			page_footer();
 		}
 	}
+
 
 	
 	
