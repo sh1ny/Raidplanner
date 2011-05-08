@@ -1,17 +1,18 @@
 /* -------------------------
    raidplanner css
   ------------------------- */
+
 /* uses border-top-color = .bg3 background-color
  (the line between events in the month display) */
-hr.hrCal 
-{
+
+hr.hrCal {
 	border-top-color: #cadceb;
 }
 
 /* uses color from h1
 		   (calendar header previous and next links) */
-.calH1
-{
+
+.calH1 {
 	color: #FFFFFF;
 	font-weight: bold;
 	font-size: 200%
@@ -20,20 +21,19 @@ hr.hrCal
 /* The from and to times take up a lot of 
 		  space in the calendar display.
 		  Use this to shrink them */
-.smCalText 
-{
+
+.smCalText {
 	font-size: 85%
 }
 
 /* bg4 is just slightly darker then bg3 
 		  (used in calendar headers) */
-.bg4
-{
+
+.bg4 {
 	background-color: #8DB8DE;
 }
 
-table.table1 thead th.rolesignup 
-{
+table.table1 thead th.rolesignup {
 	border-top: medium;
 	border-top-color: #12A3EB;
 	font-weight: bold;
@@ -42,24 +42,32 @@ table.table1 thead th.rolesignup
 /* uses background-color of .bg3
 		    (used to display the numbers and icons for 
 		    each day in the month and week view displays ) */
-table tbody td.bg3_calMonH 
-{
+
+table tbody td.bg3_calMonH {
 	background-color: #cadceb;
 	font-size: 85%
+}
+
+td.bg3_calMonH a:hover {
+	text-decoration: none;
 }
 
 /* uses background-color of .bg4
 		    (used to display the numbers and icons for 
 		    each day in the month and week view displays ) */
-table tbody td.bg4_calMonH 
-{
+
+table tbody td.bg4_calMonH {
 	background-color: #8DB8DE;
 	font-size: 85%
 }
 
+td.bg4_calMonH a:hover {
+	text-decoration: none;
+}
+
 /* uses background-color of .bg1 (used to display days in calendar month/week view) */
-table.table1 tbody td.bg1_calMon 
-{
+
+table.table1 tbody td.bg1_calMon {
 	background-color: #ECF3F7;
 	padding-top: 2px;
 	padding-bottom: 5px;
@@ -67,9 +75,13 @@ table.table1 tbody td.bg1_calMon
 	padding-right: 4px;
 }
 
+td.bg1_calMon a:hover {
+	text-decoration: none;
+}
+
 /* uses background-color of .bg2 (used to display days in calendar month/week view) */
-table.table1 tbody td.bg2_calMon 
-{
+
+table.table1 tbody td.bg2_calMon {
 	background-color: #e1ebf2;
 	padding-top: 2px;
 	padding-bottom: 5px;
@@ -77,9 +89,13 @@ table.table1 tbody td.bg2_calMon
 	padding-right: 4px;
 }
 
+td.bg2_calMon a:hover {
+	text-decoration: none;
+}
+
 /* uses background-color of .bg3 (used to display days in calendar month/week view) */
-table.table1 tbody td.bg3_calMon 
-{
+
+table.table1 tbody td.bg3_calMon {
 	background-color: #cadceb;
 	padding-top: 2px;
 	padding-bottom: 5px;
@@ -87,11 +103,15 @@ table.table1 tbody td.bg3_calMon
 	padding-right: 4px;
 }
 
+td.bg3_calMon a:hover {
+	text-decoration: none;
+}
+
 /* uses background-color of .bg1
 		   uses border-top-color = .forumbg background-color
 		   (used to display events in calendar day view) */
-table.table1 tbody td.bg1_calDay 
-{
+
+table.table1 tbody td.bg1_calDay {
 	background-color: #ECF3F7;
 	border-top-color: #12A3EB;
 	padding-top: 10px;
@@ -100,13 +120,80 @@ table.table1 tbody td.bg1_calDay
 	padding-right: 3px;
 }
 
+td.bg1_calDay a:hover {
+	text-decoration: none;
+}
+
 /* uses background-color of .bg3
 		   uses border-top-color = .forumbg background-color
 		   (used to display negative space in calendar day view) */
-table.table1 tbody td.bg3_calDay 
-{
+
+table.table1 tbody td.bg3_calDay {
 	background-color: #cadceb;
 	border-top-color: #12A3EB;
 }
 
+td.bg3_calDay a:hover {
+	text-decoration: none;
+}
 
+/* imagesets */
+.buttons div.planner-new-icon {
+	background: url("{T_IMAGESET_PATH}/planner/date_add.png") no-repeat;
+	width: 16px;
+	height: 16px;
+	text-align: left;
+}
+
+.buttons div.planner-day-icon {
+	background: url("{T_IMAGESET_PATH}/planner/calendar_view_day.png") no-repeat;
+	width: 16px;
+	height: 16px;
+	text-align: left;
+}
+
+.buttons div.planner-week-icon {
+	background: url("{T_IMAGESET_PATH}/planner/calendar_view_week.png") no-repeat;
+	width: 16px;
+	height: 16px;
+	text-align: left;
+}
+
+.buttons div.planner-month-icon {
+	background: url("{T_IMAGESET_PATH}/planner/calendar_view_month.png") no-repeat;
+	width: 16px;
+	height: 16px;
+	text-align: left;
+}
+
+div.planner_back {
+	background: transparent url("{T_IMAGESET_PATH}/planner/leftarrow.png") no-repeat;
+	width: 32px;
+	height: 32px;
+}
+
+div.planner_to {
+	background: transparent url("{T_IMAGESET_PATH}/planner/rightarrow.png") no-repeat;
+	width: 32px;
+	height: 32px;
+}
+
+.edit-all-icon, .edit-all-icon a {
+	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_calendar_edit_all.gif");
+	background-color: transparent;
+}
+
+.delete-all-icon, .delete-all-icon a {
+	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_calendar_delete_all.gif");
+	background-color: transparent;
+}
+
+ul.profile-icons li.edit-all-icon {
+	width: 61px;
+	height: 20px;
+}
+
+ul.profile-icons li.delete-all-icon {
+	width: 40px;
+	height: 20px;
+}
