@@ -89,6 +89,8 @@ $lang = array_merge($lang, array(
 	'USER_CANNOT_MANAGE_RAIDPLANNER'		=> 'You are not authorised to manage the raidplanner settings', 
 	'RPADVANCEDOPTIONS'						=> 'Advanced options', 
 	'RPSETTINGS'							=> 'Settings', 
+	'RPSETTINGS_UPDATED'					=> 'Raidplanner settings updated successfully',
+	'ADVRPSETTINGS_UPDATED'					=> 'Advanced Raidplanner settings updated successfully', 
 	
 	//confirms
 	'ROLE_DELETE_SUCCESS'	=> 'The role %s was deleted.', 
