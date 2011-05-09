@@ -191,12 +191,12 @@ class acp_raidplanner
 
 					// auto populate recurring raidplan settings
 					// populate_freq is entered in days by user, but stored in seconds
-					$populate_freq = request_var('populate_freq', '0');
+					$populate_freq = request_var('populate_freq', 0);
 					$populate_freq = 86400 * $populate_freq;
 					set_config  ( 'rp_populate_frequency',  $populate_freq,0);
 					
 					// populate_limit is entered in days by user, but stored in seconds
-					$populate_limit = request_var('populate_limit', '0');
+					$populate_limit = request_var('populate_limit', 0);
 					$populate_limit = 86400 * $populate_limit;
 					set_config  ( 'rp_populate_limit',  $populate_limit,0);
 
@@ -314,8 +314,8 @@ class acp_raidplanner
 					'SEL_FRIDAY'		=> $sel_friday,
 					'SEL_SATURDAY'		=> $sel_saturday,
 					'SEL_SUNDAY'		=> $sel_sunday,
-					'DISP_WEEK_CHECKED'	=> ( $config['rp_index_display_week'] == '1' ) ? "checked='checked'" : '',
-					'DISP_NEXT_EVENTS_DISABLED'	=> ( $config['rp_index_display_week'] == '1' ) ? "disabled='disabled'" : '',
+					'DISP_WEEK_CHECKED'	=> ( $config['rp_index_display_week'] == 1 ) ? "checked='checked'" : '',
+					'DISP_NEXT_EVENTS_DISABLED'	=> ( $config['rp_index_display_week'] == 1 ) ? "disabled='disabled'" : '',
 					'DISP_NEXT_EVENTS'	=> $config['rp_index_display_next_raidplans'],
 					'SEL_12_HOURS'		=> ($config['rp_hour_mode'] == 12) ? "selected='selected'" :'',
 					'SEL_24_HOURS'		=> ($config['rp_hour_mode'] != 12) ? "selected='selected'" :'' ,
