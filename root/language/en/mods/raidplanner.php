@@ -188,6 +188,7 @@ $lang = array_merge($lang, array(
 	'NO_GROUP_SELECTED'			=> 'There are no groups selected for this group raid.',
 	'NO_POST_EVENT_MODE'		=> 'No post mode specified.',
 	'NO_EVENTS_TODAY'			=> 'There are no raids scheduled for this day.',
+	'NO_RAIDS_SCHEDULED'		=> 'No raids scheduled.',
 	'NOTAVAILABLE'				=> 'Not Available', 
 
 	'OCCURS_EVERY'			=> 'Occurs every',

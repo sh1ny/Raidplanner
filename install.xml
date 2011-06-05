@@ -72,7 +72,7 @@
 			<file from="root/includes/bbdkp/raidplanner/raidplanner_display.php" to="includes/bbdkp/raidplanner/raidplanner_display.php" />
 			<file from="root/includes/bbdkp/raidplanner/raidplanner_base.php" to="includes/bbdkp/raidplanner/raidplanner_base.php" />
 			<file from="root/includes/bbdkp/raidplanner/planner.php" to="includes/bbdkp/raidplanner/planner.php" />
-			<file from="root/includes/bbdkp/raidplanner/plannerajax.php" to="includes/bbdkp/raidplanner/plannerajax.php" />
+			<file from="root/plannerajax.php" to="plannerajax.php" />
 			<file from="root/includes/bbdkp/raidplanner/planneradd.php" to="includes/bbdkp/raidplanner/planneradd.php" />
 			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php" />
 			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php" />
@@ -113,7 +113,7 @@ define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
 			<edit>
 				<comment lang="en"><![CDATA[ adding Planner link in functions.php right after bbdkp]]></comment>
 				<find><![CDATA[		'SITENAME'						=> $config['sitename'],]]></find>
-				<action type="after-add"><![CDATA[		'U_PLANNER'            => append_sid("{$phpbb_root_path}dkp.$phpEx", 'page=planner;'),
+				<action type="after-add"><![CDATA[		'U_PLANNER'            => append_sid("{$phpbb_root_path}dkp.$phpEx", 'page=planner'),
 				]]></action>
 			</edit>
 		</open>
