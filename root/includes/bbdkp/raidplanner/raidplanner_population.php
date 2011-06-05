@@ -13,7 +13,7 @@
 /**
 * @ignore
 */
-if (!defined('IN_PHPBB'))
+if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 {
 	exit;
 }
@@ -695,7 +695,7 @@ class raidplanner_population extends raidplanner_base
 			$db->sql_query($sql);
 	
 			$etype_url_opts = $this->get_etype_url_opts();
-			$meta_info = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts);
+			$meta_info = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts);
 			$message = $user->lang['EVENT_DELETED'];
 	
 			meta_refresh(3, $meta_info);
@@ -767,7 +767,7 @@ class raidplanner_population extends raidplanner_base
 				$db->sql_query($sql);
 	
 				$etype_url_opts = $this->get_etype_url_opts();
-				$meta_info = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts);
+				$meta_info = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;calM=".$date['month_no']."&amp;calY=".$date['year'].$etype_url_opts);
 				$message = $user->lang['EVENT_DELETED'];
 	
 				meta_refresh(3, $meta_info);
@@ -851,7 +851,7 @@ class raidplanner_population extends raidplanner_base
 		{
 			$template->assign_vars(array(
 				'S_SHOW_SMILEY_LINK' 	=> true,
-				'U_MORE_SMILIES' 		=> append_sid("{$phpbb_root_path}planneradd.$phpEx", 'mode=smilies'))
+				'U_MORE_SMILIES' 		=> append_sid("{$phpbb_root_path}dkp.$phpEx", 'page=planneradd&amp;mode=smilies'))
 			);
 		}
 	
