@@ -19,14 +19,7 @@ $user->add_lang ( array ('posting','mods/raidplanner'  ));
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 
 $user->setup('posting');
-
 $current_time = $user->time_now;
-
-if (!class_exists('raidplans'))
-{
-	include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
-}
-$raidplans = new raidplans();
 
 if (!class_exists('raidplanner_population'))
 {
@@ -49,6 +42,11 @@ $raidplan_id	= request_var('calEid', 0);
 $raidplan_data = array();
 if( $raidplan_id !== 0 )
 {
+	if (!class_exists('raidplans'))
+	{
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplans.' . $phpEx);
+	}
+	$raidplans = new raidplans();
 	$raidplans->get_raidplan_data( $raidplan_id, $raidplan_data );
 }
 else

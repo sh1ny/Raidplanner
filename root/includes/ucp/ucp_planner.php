@@ -23,16 +23,25 @@ class ucp_planner
 	function main($id, $mode)
 	{
 		global $db, $user, $auth, $template, $config, $phpbb_root_path, $phpEx;
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
+		define('IN_BBDKP', true);
+		
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplans.' . $phpEx);
 		$raidplans = new raidplans();
+		
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
 		$displayplanner = new displayplanner();
+		
 		$user->add_lang(array('mods/raidplanner', 'mods/dkp_common'));
 		
 	    if ( !function_exists('group_memberships') )
 	    {
 	        include_once($phpbb_root_path . 'includes/functions_user.'.$phpEx);
 	    }
+	    
 	    $groups = group_memberships(false,$user->data['user_id']);
+	    
+	    $group_options = "";
+	    
 	    foreach ($groups as $grouprec)
 	    {
 			if( $group_options != "" )

@@ -27,10 +27,17 @@ if ( !$auth->acl_get('u_raidplanner_view_raidplans') )
 {
 	trigger_error( 'NO_AUTH_OPERATION' );
 }
-
+	
+if (!class_exists('calendar_watch'))
+{
+	include($phpbb_root_path . 'includes/bbdkp/raidplanner/calendar_watch.' . $phpEx);
+}
+	
 if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 {
 	$calWatch = request_var( 'calWatch', 2 );
+
+	
 	$watchclass = new calendar_watch();
 				
 	if( $calWatch < 2 )

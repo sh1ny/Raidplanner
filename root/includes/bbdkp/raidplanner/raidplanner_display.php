@@ -743,6 +743,11 @@ class displayplanner extends raidplanner_base
 	public function display_plannedraid()
 	{
 		global $auth, $db, $user, $config, $template, $phpEx, $phpbb_root_path;
+		
+		if (!class_exists('calendar_watch'))
+		{
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/calendar_watch.' . $phpEx);
+		}
 	
 		// define month_names, raid_plan_ids, names, colors, images, date
 		$this->_init_calendar_data();
@@ -863,6 +868,11 @@ class displayplanner extends raidplanner_base
 			* get invited groups
 			*  
 			**/
+			if (!class_exists('raidplans'))
+			{
+				include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplans.' . $phpEx);
+			}
+
 			$raidplans = new raidplans();
 			$raidplans->get_raidplan_invite_list_and_poster_url($raidplan_data, $poster_url, $invite_list );
 	
@@ -1015,7 +1025,8 @@ class displayplanner extends raidplanner_base
 										  AND s.role_id = " . (int) $role_id . ' 
 										  AND s.raidplan_id = ' . $planned_raid_id . '
 										  AND s.poster_id = m.phpbb_user_id
-										  AND s.dkpmember_id = m.member_id' , 
+										  AND s.dkpmember_id = m.member_id
+										  AND m.game_id = c.game_id and m.game_id = a.game_id and m.game_id = l.game_id' , 
 				    	'ORDER_BY'  => 's.signup_val DESC'
 					);
 					$sql = $db->sql_build_query('SELECT', $sql_array);
@@ -2351,8 +2362,12 @@ class displayplanner extends raidplanner_base
 		$user_notify = $user->data['user_notify'];
 	
 		$raidplan_data = array();
-		
+		if (!class_exists('raidplans'))
+		{
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplans.' . $phpEx);
+		}
 		$raidplans = new raidplans();
+		
 		$raidplans->get_raidplan_data( $raidplan_id, $raidplan_data );
 	
 		include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
@@ -2413,307 +2428,6 @@ class displayplanner extends raidplanner_base
 	}
 	
 
-}
-
-/*
- * collects functions for watching certain raidplan types
- * 
- */
-class calendar_watch extends raidplanner_base 
-{
-	/* calendar_watch_raidplan()
-	**
-	** Adds/removes the current user into the RP_RAIDPLAN_WATCH table
-	** so that they can start/stop recieving notifications about updates
-	** and replies to the specified raidplan.
-	**
-	** INPUT
-	**    $raidplan_id - the raidplan the want to start/stop watching
-	**    $turn_on = 1 - the user wants to START watching the raidplan
-	**    $turn_on = 0 - the user wants to STOP watching the raidplan
-	*/
-	public function calendar_watch_raidplan( $raidplan_id, $turn_on = 1 )
-	{
-		global $db, $user, $auth;
-		global $phpEx, $phpbb_root_path;
-	
-		$user_id = $user->data['user_id'];
-	
-		if( $turn_on == 1 )
-		{
-			$is_watching_raidplan = false;
-			$sql = 'SELECT * FROM ' . RP_RAIDPLAN_WATCH . '
-				WHERE user_id = '.$user_id.' AND raidplan_id = ' .$raidplan_id;
-			$db->sql_query($sql);
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$is_watching_raidplan = true;
-			}
-			$db->sql_freeresult($result);
-			if( $is_watching_raidplan )
-			{
-				$this->calendar_mark_user_read_raidplan( $raidplan_id, $user_id );
-			}
-			else
-			{
-				$sql = 'INSERT INTO ' . RP_RAIDPLAN_WATCH . ' ' . 
-				$db->sql_build_array('INSERT', array(
-						'raidplan_id'		=> (int) $raidplan_id,
-						'user_id'		=> (int) $user_id,
-						'notify_status'	=> (int) 0,
-						'track_replies' => (int) 1,
-						)
-					);
-				$db->sql_query($sql);
-			}
-		}
-		else if( $turn_on == 0 )
-		{
-			$sql = 'DELETE FROM ' . RP_RAIDPLAN_WATCH . '
-					WHERE raidplan_id = ' .$db->sql_escape($raidplan_id). '
-					AND user_id = '.$db->sql_escape($user_id);
-			$db->sql_query($sql);
-		}
-	}
-	
-	/* calendar_mark_user_read_raidplan()
-	**
-	** Changes the user's notify_status in the RP_RAIDPLAN_WATCH table
-	** This indicates that the user has re-visited the raidplan, and
-	** they will recieve a notification the next time there is
-	** an update/reply posted to this raidplan.
-	**
-	** INPUT
-	**   $user_id - the user who just viewed a raidplan.
-	*/
-	public function calendar_mark_user_read_raidplan( $raidplan_id, $user_id )
-	{
-		global $db;
-	
-		$sql = 'UPDATE ' . RP_RAIDPLAN_WATCH . '
-			SET ' . $db->sql_build_array('UPDATE', array(
-			'notify_status'		=> (int) 0,
-								)) . "
-			WHERE raidplan_id = $raidplan_id AND user_id = $user_id";
-		$db->sql_query($sql);
-	}
-	
-	/* calendar_mark_user_read_calendar()
-	**
-	** Changes the user's notify_status in the RP_WATCH table
-	** This indicates that the user has re-visited the page, and
-	** they will recieve a notification the next time there is
-	** a new raidplan posted.
-	**
-	** INPUT
-	**   $user_id - the user who just viewed a calendar page.
-	*/
-	public function calendar_mark_user_read_calendar( $user_id )
-	{
-		global $db;
-
-		$sql = 'UPDATE ' . RP_WATCH . '
-			SET ' . $db->sql_build_array('UPDATE', array(
-			'notify_status'		=> (int) 0,
-								)) . "
-			WHERE user_id = $user_id";
-		$db->sql_query($sql);
-	}
-	
-	/* calendar_init_s_watching_calendar()
-	**
-	** Determines if the current user is watching the calendar, and
-	** generates the data required for the overall_footer to display
-	** the watch/unwatch link.
-	**
-	** OUTPUT
-	**   $s_watching_calendar - filled with data for the overall_footer template
-	*/
-	public function calendar_init_s_watching_calendar( &$s_watching_calendar )
-	{
-		global $db, $user;
-		global $phpEx, $phpbb_root_path;
-	
-		$s_watching_calendar['link'] = "";
-		$s_watching_calendar['title'] = "";
-		$s_watching_calendar['is_watching'] = false;
-		if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
-		{
-			$sql = 'SELECT * FROM ' . RP_WATCH . '
-				WHERE user_id = '.$user->data['user_id'];
-			$db->sql_query($sql);
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$s_watching_calendar['is_watching'] = true;
-			}
-			$db->sql_freeresult($result);
-			if( $s_watching_calendar['is_watching'] )
-			{
-				$s_watching_calendar['link'] = append_sid( "{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;calWatch=0" );
-				$s_watching_calendar['title'] = $user->lang['WATCH_CALENDAR_TURN_OFF'];
-			}
-			else
-			{
-				$s_watching_calendar['link'] = append_sid( "{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;calWatch=1" );
-				$s_watching_calendar['title'] = $user->lang['WATCH_CALENDAR_TURN_ON'];
-			}
-		}
-	}
-		
-	
-	
-}
-
-/*
- * raidplan functions
- */
-class raidplans extends raidplanner_base 
-{
-	
-	/* get_raidplan_data()
-	**
-	** Given an raidplan id, find all the data associated with the raidplan
-	*/
-	public function get_raidplan_data( $id, &$raidplan_data )
-	{
-		global $auth, $db, $user, $config;
-		if( $id < 1 )
-		{
-			trigger_error('NO_RAIDPLAN');
-		}
-		$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
-				WHERE raidplan_id = '.$db->sql_escape($id);
-		$result = $db->sql_query($sql);
-		$raidplan_data = $db->sql_fetchrow($result);
-		if( !$raidplan_data )
-		{
-			trigger_error('NO_RAIDPLAN');
-		}
-	
-	    $db->sql_freeresult($result);
-	
-	
-		if( $raidplan_data['recurr_id'] > 0 )
-		{
-		    $raidplan_data['is_recurr'] = 1;
-	
-			$sql = 'SELECT * FROM ' . RP_RECURRING . '
-						WHERE recurr_id = '.$db->sql_escape( $raidplan_data['recurr_id'] );
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
-	    	$db->sql_freeresult($result);
-	
-		    $raidplan_data['frequency_type'] = $row['frequency_type'];
-		    $raidplan_data['frequency'] = $row['frequency'];
-		    $raidplan_data['final_occ_time'] = $row['final_occ_time'];
-		    $raidplan_data['week_index'] = $row['week_index'];
-		    $raidplan_data['first_day_of_week'] = $row['first_day_of_week'];
-		}
-		else
-		{
-			$raidplan_data['is_recurr'] = 0;
-		    $raidplan_data['frequency_type'] = 0;
-		    $raidplan_data['frequency'] = 0;
-		    $raidplan_data['final_occ_time'] = 0;
-		    $raidplan_data['week_index'] = 0;
-		    $raidplan_data['first_day_of_week'] = $config["rp_first_day_of_week"];
-		}
-	}
-	
-	
-	/* get the the group invite list for raidplan and the raidleader url
-	*/
-	public function get_raidplan_invite_list_and_poster_url($raidplan_data, &$poster_url, &$invite_list )
-	{
-		global $auth, $db, $user, $config;
-		global $phpEx, $phpbb_root_path;
-	
-		$sql = 'SELECT user_id, username, user_colour FROM ' . USERS_TABLE . '
-				WHERE user_id = '.$db->sql_escape($raidplan_data['poster_id']);
-		$result = $db->sql_query($sql);
-		$poster_data = $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
-	
-		$poster_url = get_username_string( 'full', $raidplan_data['poster_id'], $poster_data['username'], $poster_data['user_colour'] );
-	
-		$invite_list = "";
-	
-		switch( $raidplan_data['raidplan_access_level'] )
-		{
-			case 0:
-				// personal raidplan... only raidplan creator is invited
-				$invite_list = $poster_url;
-				break;
-			case 1:
-				if( $raidplan_data['group_id'] != 0 )
-				{
-					// group raidplan... only phpbb accounts of this group are invited
-					$sql = 'SELECT group_name, group_type, group_colour FROM ' . GROUPS_TABLE . '
-							WHERE group_id = '.$db->sql_escape($raidplan_data['group_id']);
-					$result = $db->sql_query($sql);
-					$group_data = $db->sql_fetchrow($result);
-					$db->sql_freeresult($result);
-					$temp_list = (($group_data['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $group_data['group_name']] : $group_data['group_name']);
-					$temp_url = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g=".$raidplan_data['group_id']);
-					$temp_color_start = "";
-					$temp_color_end = "";
-					if( $group_data['group_colour'] !== "" )
-					{
-						$temp_color_start = "<span style='color:#".$group_data['group_colour']."'>";
-						$temp_color_end = "</span>";
-					}
-					$invite_list = "<a href='".$temp_url."'>".$temp_color_start.$temp_list.$temp_color_end."</a>";
-				}
-				else 
-				{
-					// multiple groups invited	
-					$group_list = explode( ',', $raidplan_data['group_id_list'] );
-					$num_groups = sizeof( $group_list );
-					for( $i = 0; $i < $num_groups; $i++ )
-					{
-						if( $group_list[$i] == "")
-						{
-							continue;
-						}
-						// group raidplan... only phpbb accounts  of specified group are invited
-						$sql = 'SELECT group_name, group_type, group_colour FROM ' . GROUPS_TABLE . '
-								WHERE group_id = '.$db->sql_escape($group_list[$i]);
-						$result = $db->sql_query($sql);
-						$group_data = $db->sql_fetchrow($result);
-						$db->sql_freeresult($result);
-						$temp_list = (($group_data['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $group_data['group_name']] : $group_data['group_name']);
-						$temp_url = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g=".$raidplan_data['group_id']);
-						$temp_color_start = "";
-						$temp_color_end = "";
-						if( $group_data['group_colour'] !== "" )
-						{
-							$temp_color_start = "<span style='color:#".$group_data['group_colour']."'>";
-							$temp_color_end = "</span>";
-						}
-						if( $invite_list == "" )
-						{
-							$invite_list = "<a href='".$temp_url."'>".$temp_color_start.$temp_list.$temp_color_end."</a>";
-						}
-						else
-						{
-							$invite_list = $invite_list . ", " . "<a href='".$temp_url."'>".$temp_color_start.$temp_list.$temp_color_end."</a>";
-						}
-					}
-				}
-				break;
-			case 2:
-				// public raidplan... everyone is invited
-				$invite_list = $user->lang['EVERYONE'];
-				break;
-		}
-	
-	}
-		
-	
-
-		
 }
 
 
