@@ -76,7 +76,6 @@
 			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php" />
 			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php" />
 			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html" />
-			<file from="root/adm/style/dkp/acp_rp_eventsettings.html" to="adm/style/dkp/acp_rp_eventsettings.html" />
 			<file from="root/umil/*.*" to="umil/*.*" />
 			<file from="root/install/installrp.php" to="install/installrp.php" />
 
@@ -112,7 +111,7 @@ define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
 		<open src="includes/functions.php">
 			<edit>
 				<comment lang="en"><![CDATA[ adding Planner link in functions.php right after bbdkp]]></comment>
-				<find><![CDATA[		'U_VIEWNEWS'      => append_sid("{$phpbb_root_path}viewnews.$phpEx"),]]></find>
+				<find><![CDATA[		'SITENAME'						=> $config['sitename'],]]></find>
 				<action type="after-add"><![CDATA[		'U_PLANNER'            => append_sid("{$phpbb_root_path}dkp.$phpEx", 'mode=planner&amp;'),
 				]]></action>
 			</edit>
@@ -216,7 +215,7 @@ $cal->display_calendar_on_index();
 			</edit>
 		</open>
 		
-		<open src="/styles/prosilver/template/dkp/dkpmenu.html">
+		<open src="/styles/prosilver/template/dkp/module/menu.html">
 			<edit>
 				<comment lang="en"><![CDATA[raidplanner link]]></comment>
 				<comment lang="fr"><![CDATA[raidplanner link]]></comment>
