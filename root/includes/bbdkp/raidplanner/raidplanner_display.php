@@ -105,7 +105,7 @@ class displayplanner extends raidplanner_base
 			$calendar_days['NUMBER'] = 0;
 			$calendar_days['ADD_LINK'] = '';
 			$calendar_days['BIRTHDAYS'] = '';
-	
+			
 			if($counter % 7 == 0)
 			{
 				$calendar_days['START_WEEK'] = true;
@@ -148,7 +148,7 @@ class displayplanner extends raidplanner_base
 			}
 	
 			$template->assign_block_vars('calendar_days', $calendar_days);
-	
+			
 			if ( $user_can_view_raidplans )
 			{
 				//find any raidplans on this day
@@ -744,10 +744,7 @@ class displayplanner extends raidplanner_base
 	{
 		global $auth, $db, $user, $config, $template, $phpEx, $phpbb_root_path;
 		
-		if (!class_exists('calendar_watch'))
-		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/calendar_watch.' . $phpEx);
-		}
+
 	
 		// define month_names, raid_plan_ids, names, colors, images, date
 		$this->_init_calendar_data();
@@ -768,8 +765,7 @@ class displayplanner extends raidplanner_base
 		
 		if( $planned_raid_id > 0)
 		{
-			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
-					WHERE raidplan_id = '.$db->sql_escape($planned_raid_id);
+			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . ' WHERE raidplan_id = '.$db->sql_escape($planned_raid_id);
 			$result = $db->sql_query($sql);
 			
 			// get raiddata into one recordset 
@@ -786,7 +782,8 @@ class displayplanner extends raidplanner_base
 				trigger_error( 'USER_CANNOT_VIEW_RAIDPLAN' );
 			}
 			
-			// Is user authorized to view THIS raidplan?
+			// check if it is a private appointment
+			// raidplan_access_level ==0
 			$user_auth_for_raidplan = $this->is_user_authorized_to_view_raidplan( $user->data['user_id'], $raidplan_data);
 			if( $user_auth_for_raidplan == 0 )
 			{
@@ -796,6 +793,12 @@ class displayplanner extends raidplanner_base
 			if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 			{
 				$calWatchE = request_var( 'calWatchE', 2 );
+				
+				if (!class_exists('calendar_watch'))
+				{
+					include($phpbb_root_path . 'includes/bbdkp/raidplanner/calendar_watch.' . $phpEx);
+				}
+		
 				$watchclass = new calendar_watch();
 				
 				if( $calWatchE < 2 )
@@ -900,7 +903,8 @@ class displayplanner extends raidplanner_base
 			}
 
 			// does this raidplan have attendance tracking turned on?
-			if( $raidplan_data['track_signups'] == 1 )
+			// and is it not a personal rainplan ?
+			if( $raidplan_data['track_signups'] == 1 && $raidplan_data['raidplan_access_level'] != 0)
 			{
 				
 				$signup_data = array();
@@ -1266,10 +1270,9 @@ class displayplanner extends raidplanner_base
 				'MONTH_VIEW_URL'	=> $month_view_url,
 				'S_CALENDAR_SIGNUPS'	=> $raidplan_data['track_signups'],
 				'S_SIGNUP_HEADCOUNT'	=> $s_signup_headcount,
-				
 				'U_WATCH_RAIDPLAN' 		=> $s_watching_raidplan['link'],
 				'L_WATCH_RAIDPLAN' 		=> $s_watching_raidplan['title'],
-				'S_WATCHING_RAIDPLAN'		=> $s_watching_raidplan['is_watching'],
+				'S_WATCHING_RAIDPLAN'	=> $s_watching_raidplan['is_watching'],
 				
 				)
 			);
@@ -1554,10 +1557,54 @@ class displayplanner extends raidplanner_base
 	    $db->sql_freeresult($result);
 	    $signup_data['signup_detail_edit'] = "";
 	}
+
+	/**
+	 * get list of signups for a raidplan
+	 *
+	 * @param int $raidplanid
+	 * @param array $signup_data
+	 */
+	function get_signuplist($raidplanid , &$signup_data )
+	{
+		global $config, $db, $user;
+		if( $raidplanid < 1 )
+		{
+			trigger_error('NO_SIGNUP');
+		}
 		
-	
-	
-	
+		$sql_array = array(
+    	'SELECT'    => ' s.*, m.member_id, m.member_name, m.member_level,  
+	    				 m.member_gender_id, a.image_female_small, a.image_male_small, 
+	    				 l.name as member_class , c.imagename, c.colorcode ', 
+    	'FROM'      => array(
+	        RP_SIGNUPS	 		=> 's', 
+	        MEMBER_LIST_TABLE 	=> 'm',
+	        CLASS_TABLE  		=> 'c',
+	        RACE_TABLE  		=> 'a',
+	        BB_LANGUAGE			=> 'l', 
+	        
+    	),
+    
+	    'WHERE'     =>  " l.attribute_id = c.class_id 
+	    				  AND l.language = '" . $config['bbdkp_lang'] . "' 
+    					  AND l.attribute = 'class'
+						  AND (m.member_class_id = c.class_id)
+						  AND m.member_race_id =  a.race_id  
+						  AND s.raidplan_id = " . $db->sql_escape($raidplanid) . '
+						  AND s.poster_id = m.phpbb_user_id
+						  AND s.dkpmember_id = m.member_id
+						  AND m.game_id = c.game_id and m.game_id = a.game_id and m.game_id = l.game_id' , 
+    	'ORDER_BY'  => 's.signup_val DESC'
+		);
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		$result = $db->sql_query($sql);
+		$signup_data = $db->sql_fetchrowset($result);
+		if( !$signup_data )
+		{
+			trigger_error('NO_SIGNUP');
+		}
+	    $db->sql_freeresult($result);
+	}
 		
 	/* get_recurring_raidplan_string_via_id()
 	**
@@ -1590,24 +1637,21 @@ class displayplanner extends raidplanner_base
 		return $string;
 	}
 	
-	/* get_recurring_raidplan_string()
-	**
-	** Gets the displayable string that describes the frequency of a
-	** recurring raidplan
-	**
-	** INPUT
-	**   $row - the row of data from the RP_RECURRING
-	**          describing this recurring raidplan.
-	*/
-	private function get_recurring_raidplan_string( $row )
+	/**
+	 * Gets the displayable string that describes the frequency of a recurring raidplan
+	 *
+	 * @param array $row the row of data from the RP_RECURRING describing this recurring raidplan.
+	 * @return string
+	 */
+	public function get_recurring_raidplan_string( $row )
 	{
 		global $user;
 	
 		$string = "";
 	
-		if( $row['recurr_id']== 0 && $row['is_recurr'] != 1 )
+		if( $row['recurr_id']== 0)
 		{
-			return string;
+			return $string;
 		}
 	
 		$week_index = $row['week_index'];

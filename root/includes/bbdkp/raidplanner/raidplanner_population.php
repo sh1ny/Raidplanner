@@ -431,6 +431,10 @@ class raidplanner_population extends raidplanner_base
 		$user_notify = $user->data['user_notify'];
 	
 		$raidplan_data = array();
+		if (!class_exists('raidplans'))
+		{
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplans.' . $phpEx);
+		}
 		$raidplans = new raidplans;
 		$raidplans->get_raidplan_data( $raidplan_id, $raidplan_data );
 

@@ -70,7 +70,7 @@ class raidplanner_base
 	
 			//find the available events from bbDKP, store them in a global array
 			$sql = 'SELECT * FROM ' . EVENTS_TABLE . ' ORDER BY event_id';
-			$result = $db->sql_query($sql);
+			$result = $db->sql_query($sql, 600000);
 			$this->raid_plan_count = 0;
 			while ($row = $db->sql_fetchrow($result))
 			{

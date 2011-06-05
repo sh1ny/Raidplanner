@@ -48,9 +48,10 @@
 								</ul>
 								</div>
 								<!-- ENDIF -->
-														
 						</dt>
-						<dd style="width:16%; padding-left:5px;" class="lastpost">{raids.VALUE_TXT}<!-- IF raids.HEADCOUNT > 1 --> ({raids.HEADCOUNT})<!-- ENDIF --></dd>
+						<dd style="width:16%; padding-left:5px;" class="lastpost">
+						<!-- BEGIN signups --><span style="font-weight: bold; color:{raids.signups.COLORCODE}">{raids.signups.CHARNAME}</span>{raids.VALUE_TXT}<!-- END signups -->		
+						</dd>
 						<dd style="width:16%; padding-left:5px;" class="lastpost">{raids.INVITED}</dd>
 					</dl>
 				</li>
