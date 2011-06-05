@@ -13,9 +13,9 @@
 */
 
 /**
-* @ignore
-*/
-if (!defined('IN_PHPBB'))
+ * @ignore
+ */
+if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 {
 	exit;
 }

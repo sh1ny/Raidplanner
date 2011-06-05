@@ -70,6 +70,7 @@
 			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php" />
 			<file from="root/includes/bbdkp/raidplanner/raidplanner_population.php" to="includes/bbdkp/raidplanner/raidplanner_population.php" />
 			<file from="root/includes/bbdkp/raidplanner/raidplanner_display.php" to="includes/bbdkp/raidplanner/raidplanner_display.php" />
+			<file from="root/includes/bbdkp/raidplanner/raidplanner_base.php" to="includes/bbdkp/raidplanner/raidplanner_base.php" />
 			<file from="root/includes/bbdkp/raidplanner/planner.php" to="includes/bbdkp/raidplanner/planner.php" />
 			<file from="root/includes/bbdkp/raidplanner/plannerajax.php" to="includes/bbdkp/raidplanner/plannerajax.php" />
 			<file from="root/includes/bbdkp/raidplanner/planneradd.php" to="includes/bbdkp/raidplanner/planneradd.php" />
@@ -112,7 +113,7 @@ define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
 			<edit>
 				<comment lang="en"><![CDATA[ adding Planner link in functions.php right after bbdkp]]></comment>
 				<find><![CDATA[		'SITENAME'						=> $config['sitename'],]]></find>
-				<action type="after-add"><![CDATA[		'U_PLANNER'            => append_sid("{$phpbb_root_path}dkp.$phpEx", 'mode=planner&amp;'),
+				<action type="after-add"><![CDATA[		'U_PLANNER'            => append_sid("{$phpbb_root_path}dkp.$phpEx", 'page=planner;'),
 				]]></action>
 			</edit>
 		</open>
@@ -214,6 +215,19 @@ $cal->display_calendar_on_index();
 		]]></action>
 			</edit>
 		</open>
+	
+		<open src="styles/prosilver/template/dkp/dkpmain.html">
+			<edit>
+				<comment lang="en"><![CDATA[Add calendar to DKP page]]></comment>
+				<find><![CDATA[<!-- [+] Raidplanner -->]]></find>
+				<action type="after-add"><![CDATA[<!-- IF S_CALENDAR_WEEK -->
+		<!-- INCLUDE planner/planner_week_on_index.html -->
+		<!-- ELSEIF S_CALENDAR_NEXT_EVENTS -->
+			<!-- INCLUDE planner/planner_next_events_on_index.html -->
+		<!-- ENDIF -->
+		]]></action>
+			</edit>
+		</open>		
 		
 		<open src="/styles/prosilver/template/dkp/module/menu.html">
 			<edit>
