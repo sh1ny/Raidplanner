@@ -93,8 +93,8 @@ $submit		= (isset($_POST['addraid'])) ? true : false;
 $cancel		= (isset($_POST['cancel'])) ? true : false;
 $delete		= (isset($_POST['delete'])) ? true : false;
 
-$mode		= (isset($_GET['mode'])) ? true : false;
-$mode 		= ($mode == true) ? request_var('mode', '') : '';
+$mode		= (isset($_GET['planmode'])) ? true : false;
+$mode 		= ($mode == true) ? request_var('planmode', '') : '';
 
 $s_date_time_opts = true;
 $page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
@@ -110,8 +110,8 @@ if($submit && $mode !='edit' && $mode != 'delete')
 		// pass zero raidplan_id by reference to get it updated
 		$newraid->create_raidplan($raidplan_data, $newraid, $raidplan_id);
 		
-		$main_calendar_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
-		$view_raidplan_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$raidplan_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+		$main_calendar_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "mode=planner&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+		$view_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "mode=planner&amp;view=raidplan&amp;calEid=".$raidplan_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
 		
 		// now redirect to the new newly created raidplan
 		meta_refresh(3, $view_raidplan_url);
@@ -140,7 +140,7 @@ if(($delete || $mode =='delete') && $raidplan_id > 0)
 
 if($mode =='edit' && ($raidplan_id > 0))
 {		
-		//http://localhost/qi/boards/test6/planneradd.php?mode=edit&calEid=4&calD=04&calM=5&calY=2011
+		
 		$newraid->authcheck($mode, $submit, $raidplan_data, $raidplan_id);
 		$page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
 	    
@@ -154,8 +154,8 @@ if($mode =='edit' && ($raidplan_id > 0))
 		// Decode bbcodes text for message editing
 		decode_message($raidplan_data['raidplan_body'], $raidplan_data['bbcode_uid']);
 	
-		$main_calendar_url = append_sid("{$phpbb_root_path}planner.$phpEx", "calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
-		$view_raidplan_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=raidplan&amp;calEid=".$raidplan_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+		$main_calendar_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "mode=planner&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+		$view_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "mode=planner&amp;view=raidplan&amp;calEid=".$raidplan_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
 		
 		if ($submit)
 		{
@@ -176,7 +176,7 @@ if($mode =='edit' && ($raidplan_id > 0))
  **/
 
 // action URL, include session_id for security purpose
-$s_action = append_sid("{$phpbb_root_path}planneradd.$phpEx", "mode=$mode", true, $user->session_id);
+$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "mode=add&amp;planmode=$mode", true, $user->session_id);
 
 $temp_find_str = "<br />";
 $temp_replace_str = "\n";
@@ -273,7 +273,7 @@ if( $raidplan_data['s_recurring_opts'] )
 
 }
  */ 
-$cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".$newraid->date['month_no']."&amp;y=".$newraid->date['year']);
+$cancel_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "mode=planner&amp;m=".$newraid->date['month_no']."&amp;y=".$newraid->date['year']);
 
 
 // Raid date
@@ -407,7 +407,7 @@ if( sizeof($error) || $raidplan_id > 0)
 	
 	// translate raidplan start and end time into user's timezone
 	$raidplan_start = $raidplan_data['raidplan_start_time'] + $user->timezone + $user->dst;
-	$cancel_url = append_sid("{$phpbb_root_path}planner.$phpEx", "m=".gmdate('n', $raidplan_start)."&amp;y=".gmdate('Y', $raidplan_start) );
+	$cancel_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "mode=planner&amp;m=".gmdate('n', $raidplan_start)."&amp;y=".gmdate('Y', $raidplan_start) );
 
 	if( $raidplan_data['group_id'] != 0 )
 	{
@@ -511,9 +511,9 @@ else //  new raid
 $s_hidden_fields = '<input type="hidden" name="calEid" value="' . $raidplan_data['raidplan_id'] . '" />';
 $s_hidden_fields .= '<input type="hidden" name="lastclick" value="' . $current_time . '" />';
 
-$day_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=day&amp;calD=".$newraid->date['day']."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
-$week_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=week&amp;calD=".$newraid->date['day']."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
-$month_view_url = append_sid("{$phpbb_root_path}planner.$phpEx", "view=month&amp;calD=".$newraid->date['day']."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+$day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "mode=planner&amp;view=day&amp;calD=".$newraid->date['day']."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "mode=planner&amp;view=week&amp;calD=".$newraid->date['day']."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "mode=planner&amp;view=month&amp;calD=".$newraid->date['day']."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
 
 $allow_delete = false;
 if( ($mode == 'edit') &&
@@ -531,7 +531,7 @@ $template->assign_vars(array(
 	'MESSAGE'					=> $raidplan_data['raidplan_body'],
 	'MINI_POST_IMG'				=> $user->img('icon_post_target', $user->lang['POST']),
 	'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
-	'U_CALENDAR'				=> append_sid("{$phpbb_root_path}planner.$phpEx"),
+	'U_CALENDAR'				=> append_sid("{$phpbb_root_path}dkp.$phpEx", "mode=planner"),
 	'S_DATE_TIME_OPTS'			=> $s_date_time_opts,
 	'MONTH_SEL'					=> $month_sel_code,
 	'DAY_SEL'					=> $day_sel_code,

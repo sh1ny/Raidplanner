@@ -61,12 +61,7 @@
 			<target-version>3.0.8</target-version>
 		</installation>
 		<link-group>
-			<link type="dependency" href="http://www.bbdkp.com/downloads.php"
-				lang="en">bbDKP 1.2.2</link>
-			<link type="language" href="contrib/en.xml" lang="en">English
-			</link>
-			<link type="template" href="contrib/prosilver.xml" lang="en">
-				Prosilver</link>
+			<link type="dependency" href="http://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.2.3</link>
 		</link-group>
 	</header>
 	<action-group>
@@ -75,17 +70,16 @@
 			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php" />
 			<file from="root/includes/bbdkp/raidplanner/raidplanner_population.php" to="includes/bbdkp/raidplanner/raidplanner_population.php" />
 			<file from="root/includes/bbdkp/raidplanner/raidplanner_display.php" to="includes/bbdkp/raidplanner/raidplanner_display.php" />
-			<file from="root/includes/bbdkp/raidplanner/raidplanner_base.php" to="includes/bbdkp/raidplanner/raidplanner_base.php" />		
+			<file from="root/includes/bbdkp/raidplanner/planner.php" to="includes/bbdkp/raidplanner/planner.php" />
+			<file from="root/includes/bbdkp/raidplanner/plannerajax.php" to="includes/bbdkp/raidplanner/plannerajax.php" />
+			<file from="root/includes/bbdkp/raidplanner/planneradd.php" to="includes/bbdkp/raidplanner/planneradd.php" />
 			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php" />
 			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php" />
 			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html" />
 			<file from="root/adm/style/dkp/acp_rp_eventsettings.html" to="adm/style/dkp/acp_rp_eventsettings.html" />
 			<file from="root/umil/*.*" to="umil/*.*" />
 			<file from="root/install/installrp.php" to="install/installrp.php" />
-			<file from="root/planner.php" to="planner.php" />
-			<file from="root/plannerajax.php" to="plannerajax.php" />			
-			<file from="root/planneradd.php" to="planneradd.php" />						
-	
+
 			<file from="root/language/en/mods/info_ucp_planner.php" to="language/en/mods/info_ucp_planner.php" />
 			<file from="root/language/en/mods/permissions_raidplanner.php" to="language/en/mods/permissions_raidplanner.php" />
 			<file from="root/language/en/mods/raidplanner.php" to="language/en/mods/raidplanner.php" />
@@ -98,7 +92,6 @@
 			<file from="root/styles/prosilver/imageset/planner/*.*" to="styles/prosilver/imageset/planner/*.*"/>			
 			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
 			<file from="root/styles/prosilver/theme/raidplanner.css" to="styles/prosilver/theme/raidplanner.css"/>
-
 		</copy>
 		<open src="includes/bbdkp/constants_bbdkp.php">
 			<edit>
@@ -120,7 +113,7 @@ define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
 			<edit>
 				<comment lang="en"><![CDATA[ adding Planner link in functions.php right after bbdkp]]></comment>
 				<find><![CDATA[		'U_VIEWNEWS'      => append_sid("{$phpbb_root_path}viewnews.$phpEx"),]]></find>
-				<action type="after-add"><![CDATA[		'U_PLANNER'            => append_sid("{$phpbb_root_path}planner.$phpEx"),
+				<action type="after-add"><![CDATA[		'U_PLANNER'            => append_sid("{$phpbb_root_path}dkp.$phpEx", 'mode=planner&amp;'),
 				]]></action>
 			</edit>
 		</open>
