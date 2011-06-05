@@ -1599,10 +1599,6 @@ class displayplanner extends raidplanner_base
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		$result = $db->sql_query($sql);
 		$signup_data = $db->sql_fetchrowset($result);
-		if( !$signup_data )
-		{
-			trigger_error('NO_SIGNUP');
-		}
 	    $db->sql_freeresult($result);
 	}
 		
