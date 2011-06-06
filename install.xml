@@ -68,12 +68,16 @@
 		<copy>
 			<file from="root/includes/ucp/info/ucp_planner.php" to="includes/ucp/info/ucp_planner.php" />
 			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php" />
+
 			<file from="root/includes/bbdkp/raidplanner/raidplanner_population.php" to="includes/bbdkp/raidplanner/raidplanner_population.php" />
 			<file from="root/includes/bbdkp/raidplanner/raidplanner_display.php" to="includes/bbdkp/raidplanner/raidplanner_display.php" />
+			<file from="root/includes/bbdkp/raidplanner/calendar_watch.php" to="includes/bbdkp/raidplanner/calendar_watch.php" />			
+			<file from="root/includes/bbdkp/raidplanner/raidplans.php" to="includes/bbdkp/raidplanner/raidplans.php" />			
 			<file from="root/includes/bbdkp/raidplanner/raidplanner_base.php" to="includes/bbdkp/raidplanner/raidplanner_base.php" />
 			<file from="root/includes/bbdkp/raidplanner/planner.php" to="includes/bbdkp/raidplanner/planner.php" />
-			<file from="root/plannerajax.php" to="plannerajax.php" />
 			<file from="root/includes/bbdkp/raidplanner/planneradd.php" to="includes/bbdkp/raidplanner/planneradd.php" />
+			<file from="root/plannerajax.php" to="plannerajax.php" />
+
 			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php" />
 			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php" />
 			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html" />
