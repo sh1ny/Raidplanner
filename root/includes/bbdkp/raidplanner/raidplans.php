@@ -1,10 +1,11 @@
 <?php
 /**
 *
-* @author alightner, Sajaki
+* @author alightner
+* @author Sajaki
 * @package bbDKP Raidplanner
 * @copyright (c) 2009 alightner
-* @copyright (c) 2010 Sajaki : refactoring, adapting to bbdkp
+* @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 * 
@@ -79,10 +80,15 @@ class raidplans extends raidplanner_base
 		}
 	}
 	
-	
-	/* get the the group invite list for raidplan and the raidleader url
-	*/
-	public function get_raidplan_invite_list_and_poster_url($raidplan_data, &$poster_url, &$invite_list )
+
+	/**
+	 * get the the group invite list
+	 *
+	 * @param array $raidplan_data
+	 * @param string $poster_url
+	 * @param array $invite_list
+	 */
+	public function get_raidplan_invites($raidplan_data, &$poster_url, &$invite_list )
 	{
 		global $auth, $db, $user, $config;
 		global $phpEx, $phpbb_root_path;

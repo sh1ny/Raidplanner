@@ -1,12 +1,12 @@
 <?php
 /**
 *
-* @author alightner, Sajaki
+* @author alightner
+* @author Sajaki
 * @package bbDKP Raidplanner
-* @version CVS/SVN: $Id$
 * @copyright (c) 2009 alightner
-* @copyright (c) 2010 Sajaki : refactoring code into classes, adapting to bbdkp
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * 
 */
 
@@ -301,7 +301,7 @@ class raidplanner_population extends raidplanner_base
 	 */
 	public function edit_raidplan(&$raidplan_data, $newraid, $raidplan_id, $s_date_time_opts)
 	{
-		global $db;
+		global $phpbb_root_path, $phpEx, $db;
 		
 		$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
@@ -400,8 +400,13 @@ class raidplanner_population extends raidplanner_base
 					WHERE recurr_id = $recurr_id";
 				$db->sql_query($sql);
 			}
-			
-			$raidplanner= new displayplanner;
+
+			if (!class_exists('raidplanner_display'))
+			{
+				require($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
+			}
+
+			$raidplanner= new raidplanner_display;
 			$raidplanner->calendar_add_or_update_reply($raidplan_id, false );
 			
 		}

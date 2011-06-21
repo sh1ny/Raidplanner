@@ -129,6 +129,7 @@ $lang = array_merge($lang, array(
 
 	'DAY'					=> 'Day',
 	'DAY_OF'				=> 'Day of ',
+	'DECLINE'				=> 'Decline', 
 	'DELETE_ALL_EVENTS'		=> 'Delete all occurrences of this raid.',
 	'DETAILS'				=> 'Details',
 	'DELETE_RAIDPLAN'			=> 'Delete raid',
@@ -225,12 +226,13 @@ $lang = array_merge($lang, array(
 	'START_TIME'				=> 'Start Time',
 	'RAID_DATE'					=> 'Raid Date',
 	'START_TIME'				=> 'Start Time',
+	'SIGN_UP'					=> 'Sign Up',
 	'RAID_INVITE_TIME'			=> 'Raid Invite Time',
 	'RAID_INVITE_TIME_DEFAULT'	=> 'Default Raid invite time',
 	'RAID_START_TIME'			=> 'Raid Start Time',
 	'DEFAULT_RAID_START_TIME'   => 'Default Raid start time',
 	'TO_TIME'					=> 'To',
-
+	'TENTATIVE'					=> 'Tentative',
 	'TRACK_SIGNUPS'				=> 'Track attendance',
 	'TRACK_SIGNUPS_ON'			=> 'Attendance tracking is enabled.',
 	'TRACK_SIGNUPS_OFF'			=> 'Attendance tracking is disabled.',

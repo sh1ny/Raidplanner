@@ -1,10 +1,11 @@
 <?php
 /**
 *
-* @author alightner, Sajaki
+* @author alightner
+* @author Sajaki
 * @package bbDKP Raidplanner
 * @copyright (c) 2009 alightner
-* @copyright (c) 2010 Sajaki : refactoring, adapting to bbdkp
+* @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 * 
@@ -24,14 +25,14 @@ if (!class_exists('raidplanner_base'))
 	require($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_base.' . $phpEx);
 }
 
-class displayplanner extends raidplanner_base 
+class raidplanner_display extends raidplanner_base 
 {
 	public function displaymonth()
 	{
 		global $auth, $db, $user, $config, $template, $phpEx, $phpbb_root_path;
 		$etype_url_opts = $this->get_etype_url_opts();
 		
-		$this->_init_calendar_data();
+		
 		$this->_init_view_selection_code("month");
 		
 		//create next and prev links
@@ -263,7 +264,7 @@ class displayplanner extends raidplanner_base
 	{
 		global $auth, $db, $user, $config, $template, $phpEx, $phpbb_root_path;
 	
-		$this->_init_calendar_data();
+	
 		$this->_init_view_selection_code("week");
 		$index_display_var = request_var('indexWk', 0);
 	
@@ -524,7 +525,7 @@ class displayplanner extends raidplanner_base
 	public function display_day()
 	{
 		global $auth, $db, $user, $config, $template, $phpEx, $phpbb_root_path;
-		$this->_init_calendar_data();
+		
 		$this->_init_view_selection_code("day");
 		$etype_url_opts = $this->get_etype_url_opts();
 	
@@ -744,10 +745,8 @@ class displayplanner extends raidplanner_base
 	{
 		global $auth, $db, $user, $config, $template, $phpEx, $phpbb_root_path;
 		
-
-	
 		// define month_names, raid_plan_ids, names, colors, images, date
-		$this->_init_calendar_data();
+		
 		$etype_url_opts = $this->get_etype_url_opts();
 
 		$planned_raid_id = request_var('calEid', 0);
@@ -811,12 +810,9 @@ class displayplanner extends raidplanner_base
 				}
 			}
 	
-			$disp_date_format = $config['rp_date_format'];
-		    $disp_date_time_format = $config['rp_date_time_format'];
-	
-			$invite_date_txt = $user->format_date($raidplan_data['raidplan_invite_time'], $disp_date_time_format, true);
-			$start_date_txt = $user->format_date($raidplan_data['raidplan_start_time'], $disp_date_time_format, true);
-			$end_date_txt = $user->format_date($raidplan_data['raidplan_end_time'], $disp_date_time_format, true);
+			$invite_date_txt = $user->format_date($raidplan_data['raidplan_invite_time'], $config['rp_date_time_format'], true);
+			$start_date_txt = $user->format_date($raidplan_data['raidplan_start_time'], $config['rp_date_time_format'], true);
+			$end_date_txt = $user->format_date($raidplan_data['raidplan_end_time'], $config['rp_date_time_format'], true);
 			
 			$raidplan_display_name = $this->raid_plan_displaynames[$raidplan_data['etype_id']];
 			$raidplan_color = $this->raid_plan_colors[$raidplan_data['etype_id']];
@@ -877,7 +873,7 @@ class displayplanner extends raidplanner_base
 			}
 
 			$raidplans = new raidplans();
-			$raidplans->get_raidplan_invite_list_and_poster_url($raidplan_data, $poster_url, $invite_list );
+			$raidplans->get_raidplan_invites($raidplan_data, $poster_url, $invite_list );
 	
 			$edit_url = "";
 			$edit_all_url = "";
@@ -902,8 +898,7 @@ class displayplanner extends raidplanner_base
 				}
 			}
 
-			// does this raidplan have attendance tracking turned on?
-			// and is it not a personal rainplan ?
+			// does this raidplan have attendance tracking turned on and not personal ?
 			if( $raidplan_data['track_signups'] == 1 && $raidplan_data['raidplan_access_level'] != 0)
 			{
 				
@@ -1119,9 +1114,9 @@ class displayplanner extends raidplanner_base
 					
 					// will you attend ?
 					$sel_attend_code  = "<select name='signup_val' id='signup_val''>\n";
-					$sel_attend_code .= "<option value='0'>".$user->lang['YES']."</option>\n";
-					$sel_attend_code .= "<option value='1'>".$user->lang['NO']."</option>\n";
-					$sel_attend_code .= "<option value='2'>".$user->lang['MAYBE']."</option>\n";
+					$sel_attend_code .= "<option value='0'>".$user->lang['SIGN_UP']."</option>\n";
+					$sel_attend_code .= "<option value='1'>".$user->lang['DECLINE']."</option>\n";
+					$sel_attend_code .= "<option value='2'>".$user->lang['TENTATIVE']."</option>\n";
 					$sel_attend_code .= "</select>\n";
 					
 					// get profiles still not confirmed for this raid for the pulldown
@@ -1160,7 +1155,7 @@ class displayplanner extends raidplanner_base
 					        MEMBER_LIST_TABLE 	=> 'm',
 					        USERS_TABLE 		=> 'u', 
 					    	),
-					    'WHERE'     =>  " u.user_id = m.phpbb_user_id and u.user_id = " . $user->data['user_id']  ,
+					    'WHERE'     =>  " m.member_rank_id != 90 AND u.user_id = m.phpbb_user_id AND u.user_id = " . $user->data['user_id']  ,
 						'ORDER_BY'	=> " m.member_name ",
 					    );
 
@@ -1281,10 +1276,12 @@ class displayplanner extends raidplanner_base
 		
 	}
 	
-	/***
-	 * handles signing up to a raid
-	 * called from display_plannedraid
-	 * 
+		
+	/**
+	 * handles signing up to a raid (called from display_plannedraid)
+	 *
+	 * @param array $raidplan_data
+	 * @param array $signup_data
 	 */
 	private function signup(&$raidplan_data, $signup_data)
 	{
@@ -1770,7 +1767,7 @@ class displayplanner extends raidplanner_base
 				$poster_url = '';
 				$invite_list = '';
 				$rraidplans = new raidplans; 
-				$rraidplans->get_raidplan_invite_list_and_poster_url($row, $poster_url, $invite_list );
+				$rraidplans->get_raidplan_invites($row, $poster_url, $invite_list );
 				$raidplans['POSTER'] = $poster_url;
 				$raidplans['INVITED'] = $invite_list;
 				$raidplans['ALL_DAY'] = 0;
@@ -1834,7 +1831,7 @@ class displayplanner extends raidplanner_base
 		if( $config['rp_index_display_week'] === "1" )
 		{
 			$template->assign_vars(array(
-				'S_CALENDAR_WEEK'	=> true,
+				'S_PLANNER_WEEK'	=> true,
 			));
 			$this->display_week(1);
 		}
@@ -1848,8 +1845,8 @@ class displayplanner extends raidplanner_base
 			}
 	
 			$template->assign_vars(array(
-				'S_CALENDAR_WEEK'	=> false,
-				'S_CALENDAR_NEXT_EVENTS'	=> $s_next_raidplans,
+				'S_PLANNER_WEEK'	=> false,
+				'S_PLANNER_UPCOMING'	=> $s_next_raidplans,
 			));
 			$this->_display_next_raidplans( $config['rp_index_display_next_raidplans'] );
 		}
@@ -1868,7 +1865,7 @@ class displayplanner extends raidplanner_base
 		if ( $auth->acl_get('u_calendar_view_raidplans') )
 		{
 	
-			$this->_init_calendar_data();
+	
 			$subject_limit = $config['display_truncated_name']; 
 			$group_options = $this->get_sql_group_options($user->data['user_id']);
 			$etype_options = $this->get_etype_filter();
@@ -1912,7 +1909,7 @@ class displayplanner extends raidplanner_base
 				$poster_url = '';
 				$invite_list = '';
 				$rraidplans = new raidplans; 
-				$rraidplans->get_raidplan_invite_list_and_poster_url($row, $poster_url, $invite_list );
+				$rraidplans->get_raidplan_invites($row, $poster_url, $invite_list );
 				$raidplans['POSTER'] = $poster_url;
 				$raidplans['INVITED'] = $invite_list;
 				$raidplans['ALL_DAY'] = 0;
@@ -1948,7 +1945,6 @@ class displayplanner extends raidplanner_base
 		if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 		{
 	
-			$this->_init_calendar_data();
 			$subject_limit = $config['rp_display_truncated_name'];
 			$group_options = $this->get_sql_group_options($user->data['user_id']);
 			$etype_options = $this->get_etype_filter();
@@ -1996,7 +1992,7 @@ class displayplanner extends raidplanner_base
 				$poster_url = '';
 				$invite_list = '';
 				$rraidplans = new raidplans; 
-				$rraidplans->get_raidplan_invite_list_and_poster_url($row, $poster_url, $invite_list );
+				$rraidplans->get_raidplan_invites($row, $poster_url, $invite_list );
 				$raidplans['POSTER'] = $poster_url;
 				$raidplans['INVITED'] = $invite_list;
 				$raidplans['ALL_DAY'] = 0;

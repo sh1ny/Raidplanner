@@ -1,11 +1,11 @@
 <?php
 /**
 *
-* @author alightner, Sajaki
+* @author alightner
+* @author Sajaki
 * @package bbDKP Raidplanner
-* @version CVS/SVN: $Id$
 * @copyright (c) 2009 alightner
-* @copyright (c) 2010 Sajaki : refactoring, adapting to bbdkp
+* @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 * 
@@ -23,66 +23,50 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 class raidplanner_base
 {
 	
-	/**
-	 * 
-	 */
-	function __construct()
-	{
-		$this->_init_calendar_data();
-	}
-	
 	public $date = array();
 	public $month_names = array();
-	public $raid_plan_count = 0;
 	public $raid_plan_ids = array();
 	public $raid_plan_names = array();
 	public $raid_plan_displaynames = array();
 	public $raid_plan_colors = array();
 	public $raid_plan_images = array();
+	public $raid_plan_count = 0;
 	public $month_sel_code = "";
 	public $day_sel_code = "";
 	public $year_sel_code = "";
 	public $mode_sel_code = "";
-	
-	
-	/* initialize global variables used throughout
-	   all of the calendar functions
-	*/
-	public function _init_calendar_data()
+
+	function __construct()
 	{
 		global $auth, $db, $user, $config; 
-		
-		/* check to see if we have already initialized things */
-		if( count($this->month_names) == 0 )
+
+		$this->month_names[1] = "January";
+		$this->month_names[2] = "February";
+		$this->month_names[3] = "March";
+		$this->month_names[4] = "April";
+		$this->month_names[5] = "May";
+		$this->month_names[6] = "June";
+		$this->month_names[7] = "July";
+		$this->month_names[8] = "August";
+		$this->month_names[9] = "September";
+		$this->month_names[10] = "October";
+		$this->month_names[11] = "November";
+		$this->month_names[12] = "December";
+
+		//find the available events from bbDKP, store them in a global array
+		$sql = 'SELECT * FROM ' . EVENTS_TABLE . ' ORDER BY event_id';
+		$result = $db->sql_query($sql, 600000);
+		$this->raid_plan_count = 0;
+		while ($row = $db->sql_fetchrow($result))
 		{
-			$this->month_names[1] = "January";
-			$this->month_names[2] = "February";
-			$this->month_names[3] = "March";
-			$this->month_names[4] = "April";
-			$this->month_names[5] = "May";
-			$this->month_names[6] = "June";
-			$this->month_names[7] = "July";
-			$this->month_names[8] = "August";
-			$this->month_names[9] = "September";
-			$this->month_names[10] = "October";
-			$this->month_names[11] = "November";
-			$this->month_names[12] = "December";
-	
-			//find the available events from bbDKP, store them in a global array
-			$sql = 'SELECT * FROM ' . EVENTS_TABLE . ' ORDER BY event_id';
-			$result = $db->sql_query($sql, 600000);
-			$this->raid_plan_count = 0;
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$this->raid_plan_ids[$this->raid_plan_count] = $row['event_id'];
-				$this->raid_plan_names[$this->raid_plan_count] = $row['event_name'];
-				$this->raid_plan_colors[$row['event_id']] = $row['event_color'];
-				$this->raid_plan_images[$row['event_id']] = $row['event_imagename'];
-				$this->raid_plan_displaynames[$row['event_id']] = $row['event_name'];
-				$this->raid_plan_count++;
-			}
-			$db->sql_freeresult($result);
+			$this->raid_plan_ids[$this->raid_plan_count] = $row['event_id'];
+			$this->raid_plan_names[$this->raid_plan_count] = $row['event_name'];
+			$this->raid_plan_displaynames[$row['event_id']] = $row['event_name'];
+			$this->raid_plan_colors[$row['event_id']] = $row['event_color'];
+			$this->raid_plan_images[$row['event_id']] = $row['event_imagename'];
+			$this->raid_plan_count++;
 		}
+		$db->sql_freeresult($result);
 	
 		// always refresh the date...
 		$temp_now_time = time() + $user->timezone + $user->dst;
@@ -127,9 +111,14 @@ class raidplanner_base
 	}
 	
 
-	/*
+	/**
 	 * checks if a user has right to post a new raid
-	 * @param byref : $raidplan_data
+	 *
+	 * @param string $mode
+	 * @param bool $submit
+	 * @param byref array $raidplan_data
+	 * @param int $raidplan_id
+	 * @return array
 	 */
 	public function authcheck($mode, $submit, &$raidplan_data, $raidplan_id)
 	{

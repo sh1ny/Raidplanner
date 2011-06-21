@@ -133,7 +133,7 @@ class ucp_planner
 			$poster_url = '';
 			$invite_list = '';
 			 
-			$raidplans->get_raidplan_invite_list_and_poster_url($row, $poster_url, $invite_list );
+			$raidplans->get_raidplan_invites($row, $poster_url, $invite_list );
 			$template_output['POSTER'] = $poster_url;
 			$template_output['INVITED'] = $invite_list;
 			
@@ -151,11 +151,11 @@ class ucp_planner
 			{
 				include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
 			}
-			$displayplanner = new displayplanner();	
+			$raidplanner_display = new raidplanner_display();	
 			
 			if($row2 = $db->sql_fetchrow($result))
 			{
-				$string = $displayplanner->get_recurring_raidplan_string($row2);
+				$string = $raidplanner_display->get_recurring_raidplan_string($row2);
 			}
 			
 			$db->sql_freeresult($result2);
@@ -201,7 +201,7 @@ class ucp_planner
 			
 			// get signups
 			$signups = array();
-			$displayplanner->get_signuplist($row['raidplan_id'],$signups);
+			$raidplanner_display->get_signuplist($row['raidplan_id'],$signups);
 			foreach($signups as $signup)
 			{
 				

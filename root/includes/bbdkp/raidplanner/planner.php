@@ -1,11 +1,11 @@
 <?php
 /**
 *
-* @author alightner, Salaki
-* @package phpBB Calendar
-* @version $Id $
+* @author alightner
+* @author Sajaki
+* @package bbDKP Raidplanner
 * @copyright (c) 2009 alightner
-* @copyright (c) 2010 Sajaki 
+* @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -52,7 +52,7 @@ if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 
 $view_mode = request_var('view', 'month');
 
-$cal = new displayplanner;
+$cal = new raidplanner_display();
 switch( $view_mode )
 {
 
@@ -69,29 +69,47 @@ switch( $view_mode )
       {
       	$cal->display_users_next_raidplans_for_x_days($daycount, $user_id);
       }
+      $template->assign_vars(array(
+		'S_PLANNER_UPCOMING'	=> true,
+		));
       break;
 
 	case "raidplan":
 		// display a single raidplan
 		$template_body = "planner/planner_view_raidplan.html";
+        $template->assign_vars(array(
+			'S_PLANNER_RAIDPLAN'	=> true,
+		));
+		
 		$cal->display_plannedraid();
+		
 		break;
 
 	case "day":
 		// display all of the raidplans on this day
 		$cal->display_day(0);
+        $template->assign_vars(array(
+			'S_PLANNER_DAY'	=> true,
+		));
 		$template_body = "planner/planner_view_day.html";
 		break;
 
 	case "week":
 		// display the entire week
 		$cal->display_week(0);
+        $template->assign_vars(array(
+			'S_PLANNER_WEEK'	=> true,
+		));
+		
 		$template_body = "planner/planner.html";
 		break;
 
 	case "month":
 		// display the entire month
 		$template_body = "planner/planner.html";
+        $template->assign_vars(array(
+			'S_PLANNER_MONTH'	=> true,
+		));
 		$cal->displaymonth();
 		
 		break;
@@ -112,11 +130,5 @@ $template->assign_vars(array(
 // Output the page
 page_header($user->lang['PAGE_TITLE']); 
 
-// Set the filename of the template you want to use for this file.
-$template->set_filenames(array(
-	'body' => $template_body)
-);
-
-page_footer();
 
 ?>

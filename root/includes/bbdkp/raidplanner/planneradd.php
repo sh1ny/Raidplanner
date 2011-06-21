@@ -599,6 +599,7 @@ $template->assign_vars(array(
 	'S_BBCODE_URL'				=> $url_status,
 	'S_BBCODE_FLASH'			=> $flash_status,
 	'S_BBCODE_QUOTE'			=> $quote_status,
+	'S_PLANNER_ADD'				=> true,
 )
 );
 
@@ -608,10 +609,5 @@ display_custom_bbcodes();
 // Output page ...
 page_header($page_title);
 
-$template->set_filenames(array(
-	'body' => 'planner/planner_post_body.html')
-);
 
-//make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
 
-page_footer();
