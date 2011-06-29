@@ -165,12 +165,12 @@ define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
 			<edit>
 				<comment lang="en"><![CDATA[Include functions_calendar so we can later display the current week or next events on the index]]></comment>
 				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
-				<action type="after-add"><![CDATA[if ( !class_exists('displayplanner')) 
+				<action type="after-add"><![CDATA[if ( !class_exists('raidplanner_display')) 
 {		
 		define('IN_BBDKP', true);
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
 }
-$cal = new displayplanner;]]></action>
+$cal = new raidplanner_display;]]></action>
 			</edit>
 			<edit>
 				<comment lang="en"><![CDATA[Displays Raidplanner Week view on index]]></comment>

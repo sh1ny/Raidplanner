@@ -86,7 +86,6 @@ $options = array(
 $versions = array(
     
     '0.2.0'    => array(
-
       	// raid permission
 	   'permission_add' => array(
             /* admin */
@@ -226,6 +225,7 @@ $versions = array(
 			array('rp_populate_limit', 94608000, true),
 			array('rp_default_invite_time', 1200, true),
 			array('rp_default_start_time', 1230, true),
+			array('rp_default_end_time', 0, true),
 			),
         	 
 			//adding some tables

@@ -257,6 +257,7 @@ class acp_raidplanner
 					$selected = ($i == $invmin ) ? ' selected="selected"' : '';
 					$s_event_invite_mm_options .= "<option value=\"$i\"$selected>$i</option>";
 				}
+				
 				// build presets for start hour pulldown
 				$s_event_start_hh_options = '<option value="0"' . (isset($config['rp_default_start_time']) ? '': ' selected="selected"' ) . '>--</option>';
 				$starthour = intval($config['rp_default_start_time'] / 60);
@@ -265,6 +266,7 @@ class acp_raidplanner
 					$selected = ($i == $starthour ) ? ' selected="selected"' : '';
 					$s_event_start_hh_options .= "<option value=\"$i\"$selected>$i</option>";
 				}
+				
 				// build presets for start minute pulldown
 				$s_event_start_mm_options = '<option value="0"' . (isset($config['rp_default_start_time']) ? '': ' selected="selected"' ) . '>--</option>';
 				$startmin =  $config['rp_default_start_time'] - ($starthour* 60); 
@@ -277,7 +279,24 @@ class acp_raidplanner
 					}
 					
 					$s_event_start_mm_options .= "<option value=\"$i\"$selected>$i</option>";
-				}				
+				}	
+				
+				// build presets for end hour pulldown
+				$s_event_end_hh_options = '<option value="0"' . (isset($config['rp_default_end_time']) ? '': ' selected="selected"' ) . '>--</option>';
+				$endhour = intval($config['rp_default_end_time'] / 60);
+				for ($i = 0; $i <= 23; $i++)
+				{
+					$selected = ($i == $endhour ) ? ' selected="selected"' : '';
+					$s_event_end_hh_options .= "<option value=\"$i\"$selected>$i</option>";
+				}
+				// build presets for end minute pulldown
+				$s_event_end_mm_options = '<option value="0"' . (isset($config['rp_default_end_time']) ? '': ' selected="selected"' ) . '>--</option>';
+				$endmin = $config['rp_default_end_time'] - ($endhour*60); 
+				for ($i = 0; $i <= 59; $i++)
+				{
+					$selected = ($i == $endmin ) ? ' selected="selected"' : '';
+					$s_event_end_mm_options .= "<option value=\"$i\"$selected>$i</option>";
+				}
 					
 				// select raid roles
 				$sql = 'SELECT * FROM ' . RP_ROLES . '
@@ -307,6 +326,8 @@ class acp_raidplanner
 					'S_RAID_INVITE_MINUTE_OPTIONS'		=> $s_event_invite_mm_options, 
 					'S_RAID_START_HOUR_OPTIONS'			=> $s_event_start_hh_options,
 					'S_RAID_START_MINUTE_OPTIONS'		=> $s_event_start_mm_options,
+					'S_RAID_END_HOUR_OPTIONS'			=> $s_event_end_hh_options,
+					'S_RAID_END_MINUTE_OPTIONS'			=> $s_event_end_mm_options,				
 					'SEL_MONDAY'		=> $sel_monday,
 					'SEL_TUESDAY'		=> $sel_tuesday,
 					'SEL_WEDNESDAY'		=> $sel_wednesday,

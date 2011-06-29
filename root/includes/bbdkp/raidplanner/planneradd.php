@@ -26,14 +26,7 @@ if (!class_exists('raidplanner_population'))
 	include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_population.' . $phpEx);
 }
 $newraid= new raidplanner_population();
-
 $error = array();
-
-// get the number of events from bbDKP.. if none defined then throw error
-if( $newraid->raid_plan_count < 1 )
-{
-	trigger_error('NO_EVENT_TYPES');
-}
 
 /*-----------------------------------
   begin raidplan_data initialization
@@ -42,6 +35,9 @@ $raidplan_id	= request_var('calEid', 0);
 $raidplan_data = array();
 if( $raidplan_id !== 0 )
 {
+	
+	// editing existing raid
+	
 	if (!class_exists('raidplans'))
 	{
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplans.' . $phpEx);
@@ -51,15 +47,19 @@ if( $raidplan_id !== 0 )
 }
 else
 {
+	// new raid, init data
+	// get the number of events from bbDKP.. if none defined then throw error
+	if( $newraid->raid_plan_count < 1 )
+	{
+		trigger_error('NO_EVENT_TYPES');
+	}
+
 	if( $auth->acl_get('u_raidplanner_create_recurring_raidplans') )
 	{
 		$raidplan_data['s_recurring_opts'] = false;
 	}
 	$raidplan_data['raidplan_id'] = 0;
 
-	// new field
-	$raidplan_data['raidplan_invite_time'] = request_var('calM',0);
-	$raidplan_data['raidplan_start_time'] = 0;
 	$raidplan_data['etype_id'] = 0;
 	$raidplan_data['raidplan_subject'] = "";
 	$raidplan_data['raidplan_body'] = "";
@@ -98,6 +98,7 @@ if($submit && $mode !='edit' && $mode != 'delete')
 {
 		$newraid->authcheck('addraid', $submit, $raidplan_data, $raidplan_id);
 		$page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
+
 		//complete the raidplan array by calling the gather function
 		$newraid->gather_raiddata($raidplan_data, $newraid, $s_date_time_opts);
 		
@@ -267,7 +268,7 @@ if( $raidplan_data['s_recurring_opts'] )
 	$end_recurr_year_sel_code .= "</select>\n";
 
 }
- */ 
+ */
 $cancel_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;m=".$newraid->date['month_no']."&amp;y=".$newraid->date['year']);
 
 
@@ -293,7 +294,9 @@ for( $i = $newraid->date['year']; $i < ($newraid->date['year']+5); $i++ )
 	$year_sel_code .= '<option value="'.$i.'"'.$selected. '>'.$i.'</option>';
 }
 
-// Raid invite time
+/**
+ *	Raid invite time 
+ */ 
 $hour_mode = $config['rp_hour_mode'];
 $presetinvhour = intval($config['rp_default_invite_time'] / 60);
 $hour_invite_selcode = "";
@@ -324,14 +327,16 @@ else
 	}
 }
 $min_invite_sel_code = "";
-$presetinvmin = $config['rp_default_invite_time'] - ($presetinvhour * 60) ;
+$presetinvmin = (int) $config['rp_default_invite_time'] - ($presetinvhour * 60) ;
 for( $i = 0; $i < 59; $i++ )
 {
 	$selected = ($i == $presetinvmin ) ? ' selected="selected"' : '';
 	$min_invite_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 }
 
-// Raid start time
+/**
+ *	Raid start time 
+ */ 
 $hour_start_selcode = "";
 $presetstarthour = intval($config['rp_default_start_time'] / 60);
 if( $hour_mode == 12 )
@@ -357,16 +362,56 @@ else
 	for( $i = 0; $i < 24; $i++ )
 	{
 		$selected = ($i == $presetstarthour) ? ' selected="selected"' : '';
-		$hour_start_selcode .= '<option value="'.$i.'">'.$i.'</option>';
+		$hour_start_selcode .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 	}
 }
-
 $min_start_sel_code = "";
-$presetstartmin = $config['rp_default_start_time'] - ($presetstarthour * 60) ;
+$presetstartmin = (int) $config['rp_default_start_time'] - ($presetstarthour * 60) ;
 for( $i = 0; $i < 59; $i++ )
 {
 	$selected = ($i == $presetstartmin ) ? ' selected="selected"' : '';
 	$min_start_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+}
+
+
+/**
+ *	Raid END time 
+ */ 
+$hour_end_selcode = "";
+$presetendhour = intval($config['rp_default_end_time'] / 60);
+if( $hour_mode == 12 )
+{
+	for( $i = 0; $i < 24; $i++ )
+	{
+		$selected = ($i == $presetendhour) ? ' selected="selected"' : '';
+		$mod_12 = $i % 12;
+		if( $mod_12 == 0 )
+		{
+			$mod_12 = 12;
+		}
+		$am_pm = $user->lang['PM'];
+		if( $i < 12 )
+		{
+			$am_pm = $user->lang['AM'];
+		}
+		$hour_end_selcode .= '<option value="'.$i.'"'.$selected.'>'.$mod_12.' '.$am_pm.'</option>';
+	}
+}
+else
+{
+	for( $i = 0; $i < 24; $i++ )
+	{
+		$selected = ($i == $presetendhour) ? ' selected="selected"' : '';
+		$hour_end_selcode .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+	}
+}
+
+$min_end_sel_code = "";
+$presetendmin = (int) $config['rp_default_end_time'] - ($presetendhour * 60) ;
+for( $i = 0; $i < 59; $i++ )
+{
+	$selected = ($i == $presetendmin ) ? ' selected="selected"' : '';
+	$min_end_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 }
 
 // check to see if we're viewing an existing raidplan
@@ -537,6 +582,9 @@ $template->assign_vars(array(
 
 	'START_HOUR_SEL'			=> $hour_start_selcode,
 	'START_MIN_SEL'				=> $min_start_sel_code,
+
+	'END_HOUR_SEL'				=> $hour_end_selcode,
+	'END_MIN_SEL'				=> $min_end_sel_code,
 
 	'EVENT_TYPE_SEL'			=> $e_type_sel_code,
 	'EVENT_ACCESS_LEVEL_SEL'	=> $level_sel_code,
