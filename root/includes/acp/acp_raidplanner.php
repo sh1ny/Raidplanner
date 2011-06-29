@@ -134,9 +134,19 @@ class acp_raidplanner
 					
 					$invitehour	= request_var('event_invite_hh', 0) * 60 + request_var('event_invite_mm', 0);
 					set_config  ( 'rp_default_invite_time',  $invitehour,0);
+					
 					$starthour =  request_var('event_start_hh', 0) * 60 + request_var('event_start_mm', 0);
 					set_config  ( 'rp_default_start_time',  $starthour,0);
+					
+					$endhour =  request_var('event_end_hh', 0) * 60 + request_var('event_end_mm', 0);
+					set_config  ( 'rp_default_end_time',  $endhour,0);
 										
+					$freezetime	= request_var('freeze_time', 0);
+					set_config  ( 'rp_default_freezetime',  $freezetime,0);  
+
+					$expire_time = request_var('expire_time', 0);
+					set_config  ( 'rp_default_expiretime',  $expire_time,0);  
+					
 					$message="";
 					$message .= '<br />' . sprintf( $user->lang['RPSETTINGS_UPDATED'], E_USER_NOTICE);
 					trigger_error($message);
@@ -328,6 +338,8 @@ class acp_raidplanner
 					'S_RAID_START_MINUTE_OPTIONS'		=> $s_event_start_mm_options,
 					'S_RAID_END_HOUR_OPTIONS'			=> $s_event_end_hh_options,
 					'S_RAID_END_MINUTE_OPTIONS'			=> $s_event_end_mm_options,				
+					'FROZEN_TIME'		=> $config['rp_default_freezetime'],
+					'EXPIRE_TIME'		=> $config['rp_default_expiretime'],
 					'SEL_MONDAY'		=> $sel_monday,
 					'SEL_TUESDAY'		=> $sel_tuesday,
 					'SEL_WEDNESDAY'		=> $sel_wednesday,

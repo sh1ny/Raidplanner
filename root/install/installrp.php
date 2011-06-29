@@ -226,6 +226,8 @@ $versions = array(
 			array('rp_default_invite_time', 1200, true),
 			array('rp_default_start_time', 1230, true),
 			array('rp_default_end_time', 0, true),
+			array('rp_default_freezetime', 60, true),
+			array('rp_default_expiretime', 60, true),
 			),
         	 
 			//adding some tables

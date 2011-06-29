@@ -161,7 +161,11 @@ $lang = array_merge($lang, array(
 
 	'FROM_TIME'				=> 'From',
 	'FREQUENCEY_LESS_THAN_1'	=> 'Recurring raids must have a frequency greater than or equal to 1',
-
+	'FROZEN_TIME'			=> 'Freeze Raid time.',
+	'FROZEN_EXPLAIN'		=> 'Freeze the raid x hours before Start time. Permissions differ per role',
+	'EXPIRE_TIME'			=> 'Expire Raid Time',
+	'EXPIRE_EXPLAIN'		=> 'Expire raids x hours after Raid start time. Permissions differ per role. ',
+ 
 	'HOW_MANY_PEOPLE'		=> 'Quick Headcount',
 	'HOUR'					=> 'Hour',
 	'INVALID_RAIDPLAN'			=> 'The raid you are trying to view does not exist.',
