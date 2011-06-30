@@ -112,13 +112,36 @@ class raidplanner_base
 	
 
 	/**
-	 * checks if a user has right to post a new raid
+	 * checks user raidplan rights
 	 *
 	 * @param string $mode
 	 * @param bool $submit
 	 * @param byref array $raidplan_data
 	 * @param int $raidplan_id
 	 * @return array
+	 * 
+	 * @todo freeze - expire rights
+	 * 										author	moderator	user
+			approve signup	if frozen		Y		Y		N
+			approve signup	if expired		Y		N		N
+			delete signup	if frozen		Y		Y		N
+			delete signup	if expired		Y		N		N
+			change roles	if frozen		Y		Y		N
+			change roles	if expired		Y		N		N
+			change comment	if frozen		Y		Y		N
+			change comment	if expired		Y		N		N
+			own signup as available	if frozen	Y	Y		N
+			own signup as available	if expired	Y	N		N
+			own signup as not available	if frozen	Y	Y	N
+			own signup as not available	if expired	Y	N	N
+			change own role	if frozen		Y		Y		N
+			change own role	if confirmed	Y		Y		N
+			change own role	if expired		Y		N		N
+			change own status avail / not avail	if frozen	Y	Y	N
+			can delete own signup	if frozen	Y	Y		N
+			can change comment	if frozen		Y	Y		Y
+			can change own comment	if expired	Y	Y		N
+	 * 
 	 */
 	public function authcheck($mode, $submit, &$raidplan_data, $raidplan_id)
 	{

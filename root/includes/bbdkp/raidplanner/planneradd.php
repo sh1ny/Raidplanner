@@ -28,16 +28,15 @@ if (!class_exists('raidplanner_population'))
 $newraid= new raidplanner_population();
 $error = array();
 
-/*-----------------------------------
-  begin raidplan_data initialization
--------------------------------------*/
-$raidplan_id	= request_var('calEid', 0);
+/*
+ * get raidplan_data 
+ */
+   
+$raidplan_id = request_var('calEid', 0);
 $raidplan_data = array();
 if( $raidplan_id !== 0 )
 {
-	
 	// editing existing raid
-	
 	if (!class_exists('raidplans'))
 	{
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplans.' . $phpEx);
@@ -45,99 +44,17 @@ if( $raidplan_id !== 0 )
 	$raidplans = new raidplans();
 	$raidplans->get_raidplan_data( $raidplan_id, $raidplan_data );
 }
-else
-{
-	// new raid, init data
-	// get the number of events from bbDKP.. if none defined then throw error
-	if( $newraid->raid_plan_count < 1 )
-	{
-		trigger_error('NO_EVENT_TYPES');
-	}
-
-	if( $auth->acl_get('u_raidplanner_create_recurring_raidplans') )
-	{
-		$raidplan_data['s_recurring_opts'] = false;
-	}
-	$raidplan_data['raidplan_id'] = 0;
-
-	$raidplan_data['etype_id'] = 0;
-	$raidplan_data['raidplan_subject'] = "";
-	$raidplan_data['raidplan_body'] = "";
-	$raidplan_data['poster_id'] = $user->data['user_id'];
-	$raidplan_data['poster_timezone'] = $user->data['user_timezone'];
-	$raidplan_data['poster_dst'] = $user->data['user_dst'];
-	
-	// set raidplan tracking to 1 by default
-	$raidplan_data['track_signups'] = 1;
-	$raidplan_data['raidplan_day'] = "00-00-0000";
-	$raidplan_data['signup_yes'] = 0;
-	$raidplan_data['signup_no'] = 0;
-	$raidplan_data['signup_maybe'] = 0;
-	$raidplan_data['recurr_id'] = 0;
-	$raidplan_data['is_recurr'] = 0;
-	$raidplan_data['frequency_type'] = 0;
-	$raidplan_data['frequency'] = 0;
-	$raidplan_data['final_occ_time'] = 0;
-	$raidplan_data['week_index'] = 0;
-	$raidplan_data['first_day_of_week'] = $config["rp_first_day_of_week"];
-
-}
 
 // mode: addraid, edit, delete, or smilies
-$submit		= (isset($_POST['addraid'])) ? true : false;
-$cancel		= (isset($_POST['cancel'])) ? true : false;
-$delete		= (isset($_POST['delete'])) ? true : false;
+$s_date_time_opts = true;
 
 $mode		= (isset($_GET['mode'])) ? true : false;
 $mode 		= ($mode == true) ? request_var('mode', '') : '';
-
-$s_date_time_opts = true;
-$page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
-
-if($submit && $mode !='edit' && $mode != 'delete')
+switch ($mode)
 {
-		$newraid->authcheck('addraid', $submit, $raidplan_data, $raidplan_id);
-		$page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
-
-		//complete the raidplan array by calling the gather function
-		$newraid->gather_raiddata($raidplan_data, $newraid, $s_date_time_opts);
+	case 'edit':
 		
-		// we have all data, now go create the raidplan
-		// pass zero raidplan_id by reference to get it updated
-		$newraid->create_raidplan($raidplan_data, $newraid, $raidplan_id);
-		
-		$main_calendar_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
-		$view_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$raidplan_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
-		
-		// now redirect to the new newly created raidplan
-		meta_refresh(3, $view_raidplan_url);
-		$message = $user->lang['EVENT_STORED'] . '<br /><br />' . sprintf($user->lang['VIEW_RAIDPLAN'], '<a href="' . $view_raidplan_url . '">', '</a>');
-	
-		$message .= '<br /><br />' . sprintf($user->lang['RETURN_CALENDAR'], '<a href="' . $main_calendar_url . '">', '</a>');
-		trigger_error($message, E_USER_NOTICE);
-	
-}
-
-if(($delete || $mode =='delete') && $raidplan_id > 0)
-{
-		$newraid->authcheck('delete', $submit, $raidplan_data, $raidplan_id);
-		$page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
-	    $delete_all = request_var('calDelAll', 0);
-	    if( $delete_all == 0 )
-	    {
-			$newraid->handle_raidplan_delete($raidplan_id, $raidplan_data);
-		}
-		else
-		{
-			$newraid->handle_raidplan_delete_all($raidplan_id, $raidplan_data);
-		}
-		exit;
-}
-
-if($mode =='edit' && ($raidplan_id > 0))
-{		
-		
-		$newraid->authcheck($mode, $submit, $raidplan_data, $raidplan_id);
+		$newraid->authcheck('edit', $submit, $raidplan_data, $raidplan_id);
 		$page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
 	    
 	    $edit_all = request_var('calEditAll', 0);
@@ -153,6 +70,7 @@ if($mode =='edit' && ($raidplan_id > 0))
 		$main_calendar_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
 		$view_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$raidplan_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
 		
+		$submit		= (isset($_POST['addraid'])) ? true : false;
 		if ($submit)
 		{
 			//assemble request_var input
@@ -164,6 +82,88 @@ if($mode =='edit' && ($raidplan_id > 0))
 			trigger_error($message, E_USER_NOTICE);
 			
 		}
+		break;
+
+	case 'delete':
+		
+		$delete		= (isset($_POST['delete'])) ? true : false;
+		if($delete)
+		{
+			$newraid->authcheck('delete', $submit, $raidplan_data, $raidplan_id);
+			$page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
+		    $delete_all = request_var('calDelAll', 0);
+		    if( $delete_all == 0 )
+		    {
+				$newraid->handle_raidplan_delete($raidplan_id, $raidplan_data);
+			}
+			else
+			{
+				$newraid->handle_raidplan_delete_all($raidplan_id, $raidplan_data);
+			}
+		}
+		
+		break;
+
+	default:
+		$page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
+			
+		// get the number of events from bbDKP.. if none defined then throw error
+		if( $newraid->raid_plan_count < 1 )
+		{
+			trigger_error('NO_EVENT_TYPES');
+		}
+	
+		if( $auth->acl_get('u_raidplanner_create_recurring_raidplans') )
+		{
+			$raidplan_data['s_recurring_opts'] = false;
+		}
+		$raidplan_data['raidplan_id'] = 0;
+	
+		$raidplan_data['etype_id'] = 0;
+		$raidplan_data['raidplan_subject'] = "";
+		$raidplan_data['raidplan_body'] = "";
+		$raidplan_data['poster_id'] = $user->data['user_id'];
+		$raidplan_data['poster_timezone'] = $user->data['user_timezone'];
+		$raidplan_data['poster_dst'] = $user->data['user_dst'];
+		
+		// set raidplan tracking to 1 by default
+		$raidplan_data['track_signups'] = 1;
+		$raidplan_data['raidplan_day'] = "00-00-0000";
+		$raidplan_data['signup_yes'] = 0;
+		$raidplan_data['signup_no'] = 0;
+		$raidplan_data['signup_maybe'] = 0;
+		$raidplan_data['recurr_id'] = 0;
+		$raidplan_data['is_recurr'] = 0;
+		$raidplan_data['frequency_type'] = 0;
+		$raidplan_data['frequency'] = 0;
+		$raidplan_data['final_occ_time'] = 0;
+		$raidplan_data['week_index'] = 0;
+		$raidplan_data['first_day_of_week'] = $config["rp_first_day_of_week"];
+		
+		$submit		= (isset($_POST['addraid'])) ? true : false;
+		if($submit)
+		{
+			$newraid->authcheck('addraid', $submit, $raidplan_data, $raidplan_id);
+			
+			//complete the raidplan array by calling the gather function
+			$newraid->gather_raiddata($raidplan_data, $newraid, $s_date_time_opts);
+			
+			// we have all data, now go create the raidplan
+			// pass zero raidplan_id by reference to get it updated
+			$newraid->create_raidplan($raidplan_data, $newraid, $raidplan_id);
+			
+			$main_calendar_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+			$view_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$raidplan_id."&amp;calM=".$newraid->date['month_no']."&amp;calY=".$newraid->date['year']);
+			
+			// now redirect to the new newly created raidplan
+			meta_refresh(3, $view_raidplan_url);
+			$message = $user->lang['EVENT_STORED'] . '<br /><br />' . sprintf($user->lang['VIEW_RAIDPLAN'], '<a href="' . $view_raidplan_url . '">', '</a>');
+			
+			$message .= '<br /><br />' . sprintf($user->lang['RETURN_CALENDAR'], '<a href="' . $main_calendar_url . '">', '</a>');
+			trigger_error($message, E_USER_NOTICE);
+		}
+		
+		break;
 }
 
  /** 
@@ -656,6 +656,3 @@ display_custom_bbcodes();
 
 // Output page ...
 page_header($page_title);
-
-
-
