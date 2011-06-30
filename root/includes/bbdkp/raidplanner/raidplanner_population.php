@@ -32,6 +32,163 @@ if (!class_exists('raidplanner_base'))
 class raidplanner_population extends raidplanner_base
 {
 	
+	/**
+	 * checks user raidplan rights for adding/editing/deleting raids
+	 *
+	 * @param string $mode
+	 * @param bool $submit
+	 * @param byref array $raidplan_data
+	 * @param int $raidplan_id
+	 * @return array
+	 * 
+	 * @todo freeze - expire rights
+	 * 
+	 */
+	public function authcheck($mode, $submit, &$raidplan_data, $raidplan_id)
+	{
+		global $user, $auth; 
+		$is_authed = false;
+		
+		// Bots can't post raidplans in the calendar
+		if ($user->data['is_bot'])
+		{
+			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		}
+	
+		// Is the user able to view raidplans?
+		if ( !$auth->acl_get('u_raidplanner_view_raidplans') )
+		{
+			if ($user->data['user_id'] != ANONYMOUS)
+			{
+				trigger_error('USER_CANNOT_VIEW_RAIDPLAN');
+			}
+			trigger_error('LOGIN_EXPLAIN_POST_RAIDPLAN');
+		}
+	
+		// Permission to do the action asked?
+		switch ($mode)
+		{
+			case 'addraid':
+				$test_raidplan_level = request_var('calELevel', 0);
+				switch ($test_raidplan_level)
+				{
+					case 2:
+						//public events
+						if ( !$auth->acl_get('u_raidplanner_create_public_raidplans') )
+						{
+							trigger_error('USER_CANNOT_POST_RAIDPLAN');
+						}
+					break;
+	
+					case 1:
+						//group raids
+						if ( !$auth->acl_get('u_raidplanner_create_group_raidplans') )
+						{
+							trigger_error('USER_CANNOT_POST_RAIDPLAN');
+						}
+					break;
+	
+					case 0:
+
+					default:
+						//personal events
+						if ( !$auth->acl_get('u_raidplanner_create_private_raidplans') )
+						{
+							trigger_error('USER_CANNOT_POST_RAIDPLAN');
+						}
+					break;
+				}
+			break;
+		
+			
+			case 'edit':
+				
+				if ($user->data['is_registered'] )
+				{
+					if (!$auth->acl_get('u_raidplanner_edit_raidplans') )
+					{
+						trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
+					}
+					
+					// has right to edit others raids ?
+					if (!$auth->acl_get('m_raidplanner_edit_other_users_raidplans'))
+					{
+						// is raidleader trying to edit own raid?
+						if ($user->data['user_id'] != $raidplan_data['poster_id'])
+						{
+							trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
+						}
+					}
+					else 
+					{
+						// @todo if raid expired then no edits possible even if user can edit others raids...
+						// this way officers can not fiddle with statistics
+						// assign editing expired raids only to administrator.
+						
+					}
+				}
+				else 
+				{
+					trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
+				}
+				
+			break;
+		
+			
+			case 'delete':
+
+				if ($user->data['is_registered'] )
+				{
+					if(!$auth->acl_get('u_raidplanner_delete_raidplans'))
+					{
+						trigger_error('USER_CANNOT_DELETE_RAIDPLAN');
+					}
+					
+					// is raidleader trying to delete own raid ?
+					if (($user->data['user_id'] != $raidplan_data['poster_id']) && !$auth->acl_get('m_raidplanner_delete_other_users_raidplans'))
+					{
+						trigger_error('USER_CANNOT_DELETE_RAIDPLAN');
+					}
+					
+					
+				}
+				else 
+				{
+					trigger_error('USER_CANNOT_DELETE_RAIDPLAN');
+				}
+				
+			break;
+		}
+		
+				
+		$raidplan_data['s_track_signups'] = false;
+		if( $auth->acl_get('u_raidplanner_track_signups'))
+		{
+			$raidplan_data['s_track_signups'] = true;
+		}
+		
+		/*-------------------------------------------
+		  permission for recurring raidplans?
+		---------------------------------------------*/
+		$raidplan_data['s_recurring_opts'] = false;
+		if( $raidplan_id == 0 )
+		{
+			if( $auth->acl_get('u_raidplanner_create_recurring_raidplans') )
+			{
+				$raidplan_data['s_recurring_opts'] = true;
+			}
+		}
+			
+		$raidplan_data['s_update_recurring_options'] = false;
+		if( $user->data['user_lang'] == 'en' )
+		{
+			$raidplan_data['s_update_recurring_options'] = true;
+		}
+		
+		return $raidplan_data;
+	}
+	
+	
 	/***
 	 * function to build raidplan array used for posting new raidplan. called from planneradd
 	 * error checking is done

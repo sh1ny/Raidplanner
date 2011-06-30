@@ -261,6 +261,8 @@ $lang = array_merge($lang, array(
 	'WEEK_OF'					=> 'Week of ',
 	
 	'ZERO_LENGTH_RAIDPLAN'			=> 'The raid cannot end at the same time it starts.',
+	'ERROR_RAIDSTARTBEFORENOW'			=> 'Cannot add raids in the past.',
+
 	'ZEROTH_FROM'				=> '0th from ',
 	'numbertext'			=> array(
 		'0'		=> '0th',

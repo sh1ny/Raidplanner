@@ -54,7 +54,8 @@ switch ($mode)
 {
 	case 'edit':
 		
-		$newraid->authcheck('edit', $submit, $raidplan_data, $raidplan_id);
+		
+		$newraid->authcheck('edit', false, $raidplan_data, $raidplan_id);
 		$page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
 	    
 	    $edit_all = request_var('calEditAll', 0);
@@ -147,6 +148,13 @@ switch ($mode)
 			
 			//complete the raidplan array by calling the gather function
 			$newraid->gather_raiddata($raidplan_data, $newraid, $s_date_time_opts);
+			
+			//checks
+			//cant add raid in the past
+			if($raidplan_data['raidplan_start_time'] < $user->time_now)
+			{
+				trigger_error($user->lang['ERROR_RAIDSTARTBEFORENOW']);
+			}
 			
 			// we have all data, now go create the raidplan
 			// pass zero raidplan_id by reference to get it updated

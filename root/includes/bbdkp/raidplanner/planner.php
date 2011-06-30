@@ -32,7 +32,7 @@ if (!class_exists('calendar_watch'))
 {
 	include($phpbb_root_path . 'includes/bbdkp/raidplanner/calendar_watch.' . $phpEx);
 }
-	
+
 if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 {
 	$calWatch = request_var( 'calWatch', 2 );

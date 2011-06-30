@@ -75,12 +75,17 @@ $lang['permission_cat']['raidplanner'] = 'Raidplanner';
 $lang['permission_type']['raidplanner_'] = 'Raidplanner Permissions';
 
 $lang = array_merge($lang, array(
+	
 	/* Admin Permissions */
 	'acl_a_raid_config'		=> array('lang' => 'Can manage ACP Raidplanner settings and raidplan types', 'cat' => 'raidplanner'),
+	
+	
 	/* moderator permissions */
 	'acl_m_raidplanner_edit_other_users_raidplans'	=> array('lang' => 'Can edit raidplans created by other users', 'cat' => 'raidplanner'),
 	'acl_m_raidplanner_delete_other_users_raidplans'	=> array('lang' => 'Can delete raidplans created by other users', 'cat' => 'raidplanner'),
 	'acl_m_raidplanner_edit_other_users_signups'	=> array('lang' => 'Can edit responses created by other users', 'cat' => 'raidplanner'),
+	
+	
 	/* User Permissions */
 	// allows creating raids
 	'acl_u_raidplanner_create_raidplans'			=> array('lang' => 'Can create raidplans', 'cat' => 'raidplanner'),
