@@ -1,4 +1,17 @@
-  <div class="forumbg forumbg-table">
+<script type="text/javascript"> 
+/* jqt tooltips */
+$(document).ready( function() 
+{
+<!-- BEGIN calendar_days -->
+<!-- BEGIN raidplans -->
+	$("#raid_id{calendar_days.raidplans.RAID_ID}").tooltip({ offset: [50, 120],  effect: 'fade', opacity: 0.95});  
+<!-- END raidplans -->
+<!-- END calendar_days -->
+}
+);
+</script>
+
+<div class="forumbg forumbg-table">
   	<div class="inner"><span class="corners-top"><span></span></span>
       
       <table style="width: 60%; text-align: center;margin-left: auto; margin-right: auto;" cellpadding="0" cellspacing="0">
@@ -52,8 +65,8 @@
 
  			<!-- BEGIN raidplans -->
           		<!-- IF calendar_days.raidplans.S_FIRST_ROW --><!-- IF calendar_days.BIRTHDAYS --><hr class="hrCal"><!-- ENDIF --><!-- ELSE --><hr class="hrCal"><!-- ENDIF -->
-          		<a href="{calendar_days.raidplans.EVENT_URL}" title="<!-- IF calendar_days.raidplans.ETYPE_DISPLAY_NAME -->{calendar_days.raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{calendar_days.raidplans.FULL_SUBJECT}">
-          			<!-- IF calendar_days.raidplans.COLOR --><span style="color:#{calendar_days.raidplans.COLOR}"><!-- ENDIF -->
+          		<a id="raid_id{calendar_days.raidplans.RAID_ID}" href="{calendar_days.raidplans.EVENT_URL}">
+          		<!-- IF calendar_days.raidplans.COLOR --><span style="color:#{calendar_days.raidplans.COLOR}"><!-- ENDIF -->
           			<!-- IF calendar_days.raidplans.DISPLAY_BOLD --><strong><!-- ENDIF -->
           			<!-- IF calendar_days.raidplans.S_EVENT_IMAGE_EXISTS --><img src="{calendar_days.raidplans.IMAGE}" alt="{calendar_days.raidplans.ETYPE_DISPLAY_NAME}" /> <br/><!-- ENDIF -->
           			<!-- IF calendar_days.raidplans.ETYPE_DISPLAY_NAME -->{calendar_days.raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{calendar_days.raidplans.EVENT_SUBJECT}
@@ -66,7 +79,14 @@
           				<!-- ENDIF -->
           			<!-- IF calendar_days.raidplans.COLOR --></span><!-- ENDIF -->
           		</a>
-          	<!-- END raidplans -->
+          		<div class="bbtooltip">
+			 	    <div class="bbinner">
+					    <div class="t"></div>
+							<h4>{calendar_days.raidplans.EVENT_SUBJECT}</h4>
+				    </div>
+		     		<div class="b"><div></div></div> 
+		     	</div>
+        <!-- END raidplans -->
       </td>
       <!-- ENDIF -->
     <!-- IF calendar_days.END_WEEK --></tr><!-- ENDIF -->

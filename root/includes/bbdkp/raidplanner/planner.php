@@ -37,7 +37,6 @@ if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 {
 	$calWatch = request_var( 'calWatch', 2 );
 
-	
 	$watchclass = new calendar_watch();
 				
 	if( $calWatch < 2 )
