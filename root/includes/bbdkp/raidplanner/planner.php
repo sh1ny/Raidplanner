@@ -25,7 +25,7 @@ include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $
 //get permissions
 if ( !$auth->acl_get('u_raidplanner_view_raidplans') )
 {
-	trigger_error( 'NO_AUTH_OPERATION' );
+	trigger_error( 'USER_CANNOT_VIEW_RAIDPLAN' );
 }
 	
 if (!class_exists('calendar_watch'))
@@ -74,7 +74,7 @@ switch( $view_mode )
       break;
 	case "raidplan":
 		// display a single raidplan
-		$cal->displayplan('raid', 0);
+		$cal->displayplan('raid', request_var('calEid', 0));
 		break;
 	case "day":
 		// display all of the raidplans on this day
