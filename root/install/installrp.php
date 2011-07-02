@@ -20,6 +20,7 @@ include($phpbb_root_path . 'common.' . $phpEx);
 $user->session_begin();
 $auth->acl($user->data);
 $user->setup();
+$user->add_lang ( array ('mods/raidplanner'));
 
 // We only allow a founder install this MOD
 if ($user->data['user_type'] != USER_FOUNDER)
@@ -228,6 +229,9 @@ $versions = array(
 			array('rp_default_end_time', 0, true),
 			array('rp_default_freezetime', 60, true),
 			array('rp_default_expiretime', 60, true),
+			array('rp_show_raidplanner', 60, true),
+			array('rp_show_welcomemsg', 1, true),
+			array('rp_welcomemessage', '', true),
 			),
         	 
 			//adding some tables
@@ -372,7 +376,19 @@ $versions = array(
                     ),
                     'PRIMARY_KEY'    => 'role_id'), 
                 ),
-            
+
+              array(
+              		'phpbb_rp_announcement' , array(
+                    'COLUMNS'        => array(
+                        'announcement_id'    	=> array('INT:8', NULL, 'auto_increment'),
+                        'announcement_title' 	=> array('VCHAR_UNI', ''),
+                        'announcement_msg'   	=> array('TEXT_UNI', ''),
+              			'announcement_timestamp'    => array('TIMESTAMP', 0),
+              			'user_id'     			=> array('INT:8', 0),
+                    ),
+                    'PRIMARY_KEY'    => 'announcement_id'), 
+                ),
+                                
 		),
 
 		 'table_row_insert'	=> array(
@@ -385,8 +401,17 @@ $versions = array(
                   array('role_name' => 'Off Tank', 'role_needed1' => 1,  'role_needed2' => 2, 'role_color' => '#AAAAAA', 'role_icon' => 'tank'),
                   array('role_name' => 'Healer', 'role_needed1' => 2,  'role_needed2' => 5, 'role_color' => '#00EECC', 'role_icon' => 'healer'),
                   array('role_name' => 'Hybrid' , 'role_needed1' => 2,  'role_needed2' => 6, 'role_color' => '#9999FF', 'role_icon' => 'unknown'),
+           )),
+		
+        array('phpbb_rp_announcement',
+           array(
+                  array(
+                  	'announcement_title' => 'Raid sign-up tool', 
+                  	'announcement_msg' => $user->lang['RP_WELCOME_DEFAULT'],
+                  	'announcement_timestamp' => (int) time(),
+                  	'user_id' => $user->data['user_id'] ),          
            ))),
-           
+                      
         'custom' => array('purgecaches'),
         
         ),

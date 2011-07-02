@@ -226,15 +226,22 @@ $lang = array_merge($lang, array(
 	'RAIDPROFILE1'				=> '10-man', 
 	'RAIDPROFILE2'				=> '25-man', 
 
+	'RP_SHOW_WELCOME'			=> 'Show welcome message',
+	'RP_WELCOME'				=> 'Welcome message',
+	'RP_WELCOME_EXPLAIN'		=> 'Message shown on top of planner. supports bbcodes. ', 
+	'RP_WELCOME_DEFAULT'		=> '[b]Welcome to our Raid Scheduler[/b]! All raids will be planned here. You do not need to make a new account as long as you have signed up on the forums.', 
+
 	'START_DATE'				=> 'Start Date',
 	'START_TIME'				=> 'Start Time',
 	'RAID_DATE'					=> 'Raid Date',
 	'START_TIME'				=> 'Start Time',
 	'SIGN_UP'					=> 'Sign Up',
-	'RAID_INVITE_TIME'			=> 'Raid Invite Time',
+	'RAID_INVITE_TIME'			=> 'Invite Time',
 	'RAID_INVITE_TIME_DEFAULT'	=> 'Default Raid invite time',
-	'RAID_START_TIME'			=> 'Raid Start Time',
-	'RAID_END_TIME'			=> 'Raid End Time',
+	'RAID_START_TIME'			=> 'Start Time',
+	'RAID_END_TIME'				=> 'End Time',
+	'START'						=> 'Start', 
+	'INVITE'					=> 'Invite', 
 	'DEFAULT_RAID_START_TIME'   => 'Default Raid start time',
 	'DEFAULT_RAID_END_TIME'   	=> 'Default Raid end time',
 	'TO_TIME'					=> 'To',
@@ -257,6 +264,7 @@ $lang = array_merge($lang, array(
 	'WATCH_CALENDAR_TURN_OFF'	=> 'Stop watching the calendar',
 	'WATCH_EVENT_TURN_ON'		=> 'Watch this raid',
 	'WATCH_EVENT_TURN_OFF'		=> 'Stop watching this raid',
+
 	'WEEK'						=> 'Week',
 	'WEEK_OF'					=> 'Week of ',
 	

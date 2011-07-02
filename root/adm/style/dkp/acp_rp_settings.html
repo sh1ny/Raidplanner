@@ -142,6 +142,21 @@ else
 		<dt><label>{L_EXPIRE_TIME}:</label><br />{L_EXPIRE_EXPLAIN}</dt>
 		<dd><input type="text" name="expire_time" id="expire_time" value="{EXPIRE_TIME}" /></dd>
 	</dl>
+
+	<dl>
+	<dt>    
+	  <label for="show_welcome">{L_RP_SHOW_WELCOME}:</label>
+	  <dd>
+	  		<input name="show_welcome" type="checkbox" id="show_welcome" value="1" {SHOW_WELCOME} />
+   		</dd>
+   </dl> 
+	
+	<dl>
+		<dt><label>{L_RP_WELCOME}:</label><br />{L_RP_WELCOME_EXPLAIN}</dt>
+		<dd>
+		<textarea name="welcome_message" rows="3" cols="60" style=" font-size: 100%; width: 99%" class="input">{WELCOME_MESSAGE}</textarea>
+		</dd>
+	</dl>
 	
 	
    </div>

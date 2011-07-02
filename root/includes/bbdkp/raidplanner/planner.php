@@ -72,45 +72,20 @@ switch( $view_mode )
 		'S_PLANNER_UPCOMING'	=> true,
 		));
       break;
-
 	case "raidplan":
 		// display a single raidplan
-		$template_body = "planner/planner_view_raidplan.html";
-        $template->assign_vars(array(
-			'S_PLANNER_RAIDPLAN'	=> true,
-		));
-		
-		$cal->display_plannedraid();
-		
+		$cal->displayplan('raid', 0);
 		break;
-
 	case "day":
 		// display all of the raidplans on this day
-		$cal->display_day(0);
-        $template->assign_vars(array(
-			'S_PLANNER_DAY'	=> true,
-		));
-		$template_body = "planner/planner_view_day.html";
+		$cal->displayplan('day', 0);
 		break;
-
 	case "week":
 		// display the entire week
-		$cal->display_week(0);
-        $template->assign_vars(array(
-			'S_PLANNER_WEEK'	=> true,
-		));
-		
-		$template_body = "planner/planner.html";
+		$cal->displayplan('week', 0);
 		break;
-
 	case "month":
-		// display the entire month
-		$template_body = "planner/planner.html";
-        $template->assign_vars(array(
-			'S_PLANNER_MONTH'	=> true,
-		));
-		$cal->displaymonth();
-		
+		$cal->displayplan('month', 0);
 		break;
 }
 

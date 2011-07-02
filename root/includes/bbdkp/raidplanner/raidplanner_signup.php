@@ -207,33 +207,6 @@ class raidplanner_signup extends raidplanner_base
 		
 	}
 	
-	/*
-	 * doublecheck in db if poster already signed up
-	 * 
-	 */
-	private function check_if_subscribed($user_id, $dkpmember_id, $raidplan_id)
-	{
-		global $db;
-		$signup_id = 0;
-		
-		$sql = 'select signup_id from ' . RP_SIGNUPS . ' WHERE 
-			poster_id = ' . $user_id . ' 
-			and raidplan_id = ' . $raidplan_id . ' 
-			and dkpmember_id = ' . $dkpmember_id;
-		$db->sql_query($sql);
-		
-		$result = $db->sql_query($sql);
-		if($result)
-		{
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$signup_id = (int) $row['signup_id'];
-			}
-		}
-		$db->sql_freeresult ( $result );
-		return $signup_id; 
-	}
-	
 	
 	
 	

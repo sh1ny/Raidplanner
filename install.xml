@@ -110,7 +110,8 @@ define('RP_RAIDPLAN_WATCH',	$table_prefix . 'rp_raidplans_watch');
 define('RP_WATCH',			$table_prefix . 'rp_watch');
 define('RP_ROLES',			$table_prefix . 'rp_roles');
 define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
-	]]></action>
+define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');				
+]]></action>
 			</edit>
 		</open>
 		<open src="includes/functions.php">

@@ -123,7 +123,6 @@ class acp_raidplanner
 							confirm_box(false, sprintf($user->lang['CONFIRM_DELETE_ROLE'], request_var('delrole_id', 0)), $s_hidden_fields);
 						}
 						
-						
 				}
 				
 				if($update)
@@ -146,6 +145,13 @@ class acp_raidplanner
 
 					$expire_time = request_var('expire_time', 0);
 					set_config  ( 'rp_default_expiretime',  $expire_time,0);  
+					
+					$text = utf8_normalize_nfc(request_var('welcome_message', '', true));
+					$sql = 'UPDATE ' . RP_RAIDPLAN_ANNOUNCEMENT . " SET announcement_msg = '" . (string) $db->sql_escape($text) . "' , 
+							announcement_timestamp = ".  (int) time() ." WHERE announcement_id = 1";
+					$db->sql_query($sql);
+					
+					set_config  ( 'rp_show_welcomemsg',  (isset ( $_POST ['show_welcome'] )) ? 1 : 0 , 0); 
 					
 					$message="";
 					$message .= '<br />' . sprintf( $user->lang['RPSETTINGS_UPDATED'], E_USER_NOTICE);
@@ -307,7 +313,17 @@ class acp_raidplanner
 					$selected = ($i == $endmin ) ? ' selected="selected"' : '';
 					$s_event_end_mm_options .= "<option value=\"$i\"$selected>$i</option>";
 				}
-					
+				
+				// get welcome msg
+				$sql = 'SELECT announcement_msg FROM ' . RP_RAIDPLAN_ANNOUNCEMENT;
+				$db->sql_query($sql);
+				$result = $db->sql_query($sql);
+				while ( $row = $db->sql_fetchrow($result) )
+				{
+					$text = $row['announcement_msg'];
+				}
+				
+				
 				// select raid roles
 				$sql = 'SELECT * FROM ' . RP_ROLES . '
 						ORDER BY role_id';
@@ -347,6 +363,8 @@ class acp_raidplanner
 					'SEL_FRIDAY'		=> $sel_friday,
 					'SEL_SATURDAY'		=> $sel_saturday,
 					'SEL_SUNDAY'		=> $sel_sunday,
+					'WELCOME_MESSAGE' 	=> $text,
+					'SHOW_WELCOME'		=> ((int) $config ['rp_show_welcomemsg'] == 1) ? 'checked="checked"' : "",
 					'DISP_WEEK_CHECKED'	=> ( $config['rp_index_display_week'] == 1 ) ? "checked='checked'" : '',
 					'DISP_NEXT_EVENTS_DISABLED'	=> ( $config['rp_index_display_week'] == 1 ) ? "disabled='disabled'" : '',
 					'DISP_NEXT_EVENTS'	=> $config['rp_index_display_next_raidplans'],
