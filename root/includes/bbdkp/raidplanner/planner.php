@@ -62,10 +62,12 @@ switch( $view_mode )
       $user_id = request_var('u', 0);
       if( $user_id == 0 )
       {
+      	// display all raids
       	$cal->display_next_raidplans_for_x_days( $daycount );
       }
       else
       {
+      	// display signed up raids
       	$cal->display_users_next_raidplans_for_x_days($daycount, $user_id);
       }
       $template->assign_vars(array(

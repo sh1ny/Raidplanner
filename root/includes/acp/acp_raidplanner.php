@@ -146,9 +146,19 @@ class acp_raidplanner
 					$expire_time = request_var('expire_time', 0);
 					set_config  ( 'rp_default_expiretime',  $expire_time,0);  
 					
+					
 					$text = utf8_normalize_nfc(request_var('welcome_message', '', true));
-					$sql = 'UPDATE ' . RP_RAIDPLAN_ANNOUNCEMENT . " SET announcement_msg = '" . (string) $db->sql_escape($text) . "' , 
-							announcement_timestamp = ".  (int) time() ." WHERE announcement_id = 1";
+					
+					$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
+					$allow_bbcode = $allow_urls = $allow_smilies = true;
+					generate_text_for_storage($text, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+
+					$sql = 'UPDATE ' . RP_RAIDPLAN_ANNOUNCEMENT . " SET 
+							announcement_msg = '" . (string) $db->sql_escape($text) . "' , 
+							announcement_timestamp = ".  (int) time() ." , 
+							bbcode_bitfield = 	'".  (string) $bitfield ."' , 
+							bbcode_uid = 		'".  (string) $uid ."'  
+							WHERE announcement_id = 1";
 					$db->sql_query($sql);
 					
 					set_config  ( 'rp_show_welcomemsg',  (isset ( $_POST ['show_welcome'] )) ? 1 : 0 , 0); 
@@ -320,14 +330,16 @@ class acp_raidplanner
 				}
 				
 				// get welcome msg
-				$sql = 'SELECT announcement_msg FROM ' . RP_RAIDPLAN_ANNOUNCEMENT;
+				$sql = 'SELECT announcement_msg, bbcode_bitfield, bbcode_uid FROM ' . RP_RAIDPLAN_ANNOUNCEMENT;
 				$db->sql_query($sql);
 				$result = $db->sql_query($sql);
 				while ( $row = $db->sql_fetchrow($result) )
 				{
 					$text = $row['announcement_msg'];
+					$bitfield = $row['bbcode_bitfield'];
+					$uid = $row['bbcode_uid'];
 				}
-				
+				$textarr = generate_text_for_edit($text, $uid, $bitfield, 7);
 				
 				// select raid roles
 				$sql = 'SELECT * FROM ' . RP_ROLES . '
@@ -368,7 +380,7 @@ class acp_raidplanner
 					'SEL_FRIDAY'		=> $sel_friday,
 					'SEL_SATURDAY'		=> $sel_saturday,
 					'SEL_SUNDAY'		=> $sel_sunday,
-					'WELCOME_MESSAGE' 	=> $text,
+					'WELCOME_MESSAGE' 	=> $textarr['text'],
 					'SHOW_WELCOME'		=> ((int) $config ['rp_show_welcomemsg'] == 1) ? 'checked="checked"' : "",
 					'DISP_WEEK_CHECKED'	=> ( $config['rp_index_display_week'] == 1 ) ? "checked='checked'" : '',
 					'DISP_NEXT_EVENTS_DISABLED'	=> ( $config['rp_index_display_week'] == 1 ) ? "disabled='disabled'" : '',

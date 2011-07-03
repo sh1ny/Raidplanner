@@ -1,3 +1,12 @@
+<!-- IF S_SHOW_WELCOME_MSG -->
+<div class="panel">
+<div class="inner">
+<span class="corners-top"><span></span></span>
+{WELCOME_MSG}
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>
+<!-- ENDIF -->
 <script type="text/javascript"> 
 /* jqt tooltips */
 <!-- IF EVENT_COUNT -->
@@ -10,8 +19,25 @@ $(document).ready( function()
 );
 <!-- ENDIF -->
 </script>
-<div class="forumbg forumbg-table">
-<div class="inner"><span class="corners-top"><span></span></span>
+
+<!-- left sidebar -->
+<div style="float: left; width: 0%; margin-left:0.5%">
+
+</div>
+<!-- middle div -->
+
+<div style="float: left; width: 79%; margin-left:0.5%; margin-right:0.5%">
+
+<div class="panel">
+<div class="inner">
+<span class="corners-top"><span></span></span>
+
+<h3>{L_RAIDPLANNER}</h3>
+
+<div class="forabg">
+  	<div class="inner">
+  	<span class="corners-inner-top"><span></span></span>
+  	
 
 <table style="width: 60%; text-align: center;margin-left: auto; margin-right: auto;" cellpadding="0" cellspacing="0">
 <tr>
@@ -84,11 +110,34 @@ $(document).ready( function()
   </table>
   </td></tr></table>
 
-  <span class="corners-bottom"><span></span></span></div>
-  </div>
-      	      <div class="buttons">
-		      <!-- IF ADD_LINK --><div class="planner-new-icon"><a href="{ADD_LINK}" title="{L_NEW_EVENT}"><span></span></a></div><!-- ENDIF -->
-	  	      <div class="planner-week-icon"><a href="{WEEK_VIEW_URL}" title="{L_WEEK}"><span></span></a></div>
-	          <div class="planner-month-icon"><a href="{MONTH_VIEW_URL}" title="{L_MONTH}"><span></span></a></div>
-	          </div>
+<span class="corners-inner-bottom"><span></span></span>
+</div>
+</div>
+
+<div class="buttons">
+<!-- IF ADD_LINK --><div class="planner-new-icon"><a href="{ADD_LINK}" title="{L_NEW_EVENT}"><span></span></a></div><!-- ENDIF -->
+<div class="planner-week-icon"><a href="{WEEK_VIEW_URL}" title="{L_WEEK}"><span></span></a></div>
+<div class="planner-month-icon"><a href="{MONTH_VIEW_URL}" title="{L_MONTH}"><span></span></a></div>
+</div>
+
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>
+  
+
+</div>
+
+<!-- right sidebar -->
+<div style="float: right; width: 19%; margin-right:0.5%">
+
+<div class="panel">
+<div class="inner">
+<span class="corners-top"><span></span></span>
+<h3>{L_UPCOMING_RAIDS}</h3>
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>
+  
+
+</div>
 

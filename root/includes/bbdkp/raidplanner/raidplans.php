@@ -60,6 +60,7 @@ class raidplans extends raidplanner_display
 				$birthday_list = $this->generate_birthday_list( $day, $month,$year );
 				if( $birthday_list != "" )
 				{
+					// place birthday in the middle
 					$raidplan_output['PRE_PADDING'] = "";
 					$raidplan_output['PADDING'] = "96";
 					$raidplan_output['DATA'] = $birthday_list;
@@ -147,6 +148,7 @@ class raidplans extends raidplanner_display
 			
 			$raidplan_output['ETYPE_DISPLAY_NAME'] = $this->raid_plan_displaynames[$row['etype_id']];
 
+			
 			$raidplan_output['FULL_SUBJECT'] = censor_text($row['raidplan_subject']);
 			$raidplan_output['EVENT_SUBJECT'] = $raidplan_output['FULL_SUBJECT'];
 			if( $config['rp_display_truncated_name'] > 0 )
@@ -207,6 +209,7 @@ class raidplans extends raidplanner_display
 		
 		
 	}
+	
 	
 	
 	/* get_raidplan_data()
@@ -272,6 +275,7 @@ class raidplans extends raidplanner_display
 	
 		$sql = 'SELECT user_id, username, user_colour FROM ' . USERS_TABLE . '
 				WHERE user_id = '.$db->sql_escape($raidplan_data['poster_id']);
+		
 		$result = $db->sql_query($sql);
 		$poster_data = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
@@ -317,6 +321,7 @@ class raidplans extends raidplanner_display
 						{
 							continue;
 						}
+						
 						// group raidplan... only phpbb accounts  of specified group are invited
 						$sql = 'SELECT group_name, group_type, group_colour FROM ' . GROUPS_TABLE . '
 								WHERE group_id = '.$db->sql_escape($group_list[$i]);
@@ -361,7 +366,6 @@ class raidplans extends raidplanner_display
 	{
 		global $user, $db, $config;
 			
-
 		// get the chosen raidrole 1-6, this changes the signup value
 		$newrole_id = request_var('signuprole', 0);
 		// get the attendance value
