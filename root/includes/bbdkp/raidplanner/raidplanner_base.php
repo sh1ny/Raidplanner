@@ -147,15 +147,18 @@ class raidplanner_base
 		return "calEType=".$calEType;
 	}
 	
+
 	
-	/* calendar_watch_calendar()
-	**
-	** Adds/removes the current user into the RP_WATCH table
-	** so that they can start/stop recieving notifications about new raidplans
-	**
-	** INPUT
-	**    $turn_on = 1 - the user wants to START watching the calendar
-	**    $turn_on = 0 - the user wants to STOP watching the calendar
+	
+	/**
+	* Adds/removes the current user into the RP_WATCH table
+	* so that they can start/stop recieving notifications about new raidplans
+	*
+ 	* INPUT
+	*    $turn_on = 1 - the user wants to START watching the calendar
+	*    $turn_on = 0 - the user wants to STOP watching the calendar
+	*
+	* @param int $turn_on
 	*/
 	public function calendar_watch_calendar($turn_on = 1)
 	{

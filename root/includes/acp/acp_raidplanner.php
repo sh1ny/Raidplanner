@@ -153,6 +153,13 @@ class acp_raidplanner
 					
 					set_config  ( 'rp_show_welcomemsg',  (isset ( $_POST ['show_welcome'] )) ? 1 : 0 , 0); 
 					
+										
+					$disp_week	= request_var('disp_week', 0);
+					set_config  ( 'rp_index_display_week',  $disp_week,0);  
+					
+					$disp_upcoming	= request_var('disp_next_raidplans', 0);
+					set_config  ( 'rp_index_display_next_raidplans',  $disp_upcoming,0);  
+					
 					$message="";
 					$message .= '<br />' . sprintf( $user->lang['RPSETTINGS_UPDATED'], E_USER_NOTICE);
 					trigger_error($message);
@@ -170,9 +177,7 @@ class acp_raidplanner
 				// update all advanced settings
 				if( $updateadv )
 				{
-					
-					$disp_week	= request_var('disp_week', 0);
-					set_config  ( 'rp_index_display_week',  $disp_week,0);  
+
 					
 					$hour_mode = request_var('hour_mode', 12);
 					set_config  ( 'rp_hour_mode',  $hour_mode,0);

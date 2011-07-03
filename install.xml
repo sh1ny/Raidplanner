@@ -213,7 +213,7 @@ $cal->display_calendar_on_index();
 			<edit>
 				<comment lang="en"><![CDATA[Add calendar to index page]]></comment>
 				<find><![CDATA[<!-- INCLUDE forumlist_body.html -->]]></find>
-				<action type="after-add"><![CDATA[<!-- IF S_CALENDAR_WEEK -->
+				<action type="after-add"><![CDATA[<!-- IF S_PLANNER_WEEK -->
 		<!-- INCLUDE planner/planner_week_on_index.html -->
 		<!-- ELSEIF S_CALENDAR_NEXT_EVENTS -->
 			<!-- INCLUDE planner/planner_next_events_on_index.html -->
@@ -234,10 +234,10 @@ $cal->display_calendar_on_index();
 	<!-- INCLUDE planner/planner_view_day.html -->
 <!-- ENDIF -->
 <!-- IF S_PLANNER_WEEK -->
-	<!-- INCLUDE planner/planner.html -->
+	<!-- INCLUDE planner/planner_view_month.html -->
 <!-- ENDIF -->
 <!-- IF S_PLANNER_MONTH -->
-	<!-- INCLUDE planner/planner.html -->
+	<!-- INCLUDE planner/planner_view_month.html -->
 <!-- ENDIF -->
 <!-- IF S_PLANNER_WEEK_ON_INDEX -->
 	<!-- INCLUDE planner/planner_week_on_index.html -->

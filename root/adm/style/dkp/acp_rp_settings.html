@@ -158,6 +158,15 @@ else
 		</dd>
 	</dl>
 	
+	<dl>
+		<dt><label>{L_DISPLAY_FIRST_WEEK}:</label><br />{L_DISPLAY_FIRST_WEEK_EXPLAIN}</dt>
+		<dd><input type="checkbox" id="disp_week" name="disp_week" value="1" {DISP_WEEK_CHECKED} onclick="update_action_status()" /></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_DISPLAY_NEXT_RAIDS}:</label><br />{L_DISPLAY_NEXT_RAIDS_EXPLAIN}</dt>
+		<dd><input type="text" name="disp_next_raidplans" id="disp_next_raidplans" value="{DISP_NEXT_EVENTS}" /></dd>
+	</dl>
+	
 	
    </div>
    
@@ -176,14 +185,7 @@ else
 <form id="rpsettingsadv" name="rpsettingsadv" method="post" action="{U_ACTION}" >
 <div class="tablewrap">
    
-    <dl>
-		<dt><label>{L_DISPLAY_FIRST_WEEK}:</label><br />{L_DISPLAY_FIRST_WEEK_EXPLAIN}</dt>
-		<dd><input type="checkbox" id="disp_week" name="disp_week" value="1" {DISP_WEEK_CHECKED} onclick="update_action_status()" /></dd>
-	</dl>
-	<dl>
-		<dt><label>{L_DISPLAY_NEXT_RAIDS_PORTAL}:</label><br />{L_DISPLAY_NEXT_RAIDS_PORTAL_EXPLAIN}</dt>
-		<dd><input type="text" name="disp_next_raidplans" id="disp_next_raidplans" value="{DISP_NEXT_EVENTS}" /></dd>
-	</dl>
+
 	<dl>
 		<dt><label>{L_DISPLAY_12_OR_24_HOURS}:</label><br />{L_DISPLAY_12_OR_24_HOURS_EXPLAIN}</dt>
 		<dd><select name="hour_mode" id="hour_mode">
