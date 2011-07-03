@@ -1027,37 +1027,6 @@ class raidplanner_display extends raidplanner_base
 		
 	}
 
-
-	/*
-	 * doublecheck in db if poster already signed up
-	 * 
-	 */
-	private function check_if_subscribed($user_id, $dkpmember_id, $raidplan_id)
-	{
-		global $db;
-		$signup_id = 0;
-		
-		$sql = 'select signup_id from ' . RP_SIGNUPS . ' WHERE 
-			poster_id = ' . $user_id . ' 
-			and raidplan_id = ' . $raidplan_id . ' 
-			and dkpmember_id = ' . $dkpmember_id;
-		$db->sql_query($sql);
-		
-		$result = $db->sql_query($sql);
-		if($result)
-		{
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$signup_id = (int) $row['signup_id'];
-			}
-		}
-		$db->sql_freeresult ( $result );
-		return $signup_id; 
-	}
-	
-	
-	
-	
 		
 	/* calendar_init_s_watching_raidplan_data()
 	**
@@ -1170,15 +1139,23 @@ class raidplanner_display extends raidplanner_base
 		$signup_data = $db->sql_fetchrowset($result);
 	    $db->sql_freeresult($result);
 	}
+	
+	/**
+	 * get Signup statistics
+	 *
+	 * @param int $raidplanid
+	 */
+	function get_signupstatistics($raidplanid)
+	{
 		
-	/* get_recurring_raidplan_string_via_id()
-	**
-	** Gets the displayable string that describes the frequency of a
-	** recurring raidplan
-	**
-	** INPUT
-	**   $recurr_id - the recurring raidplan id.
-	*/
+	}
+
+	/**
+	 * Gets the displayable string that describes the frequency of a recurring raidplan
+	 *
+	 * @param int $recurr_id the recurring raidplan id.
+	 * @return unknown
+	 */
 	private function get_recurring_raidplan_string_via_id( $recurr_id )
 	{
 		global $db, $user;
