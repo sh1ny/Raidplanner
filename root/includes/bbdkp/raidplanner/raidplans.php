@@ -20,24 +20,12 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 	exit;
 }
 
-// Include the base class
-if (!class_exists('raidplanner_display'))
-{
-	require($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
-}
-
 /*
  * raidplan functions
  */
-class raidplans extends raidplanner_display 
+class raidplans
 {
 	
-	public function __construct()
-	{
-		//get parent variables
-		parent::__construct();
-	}
-
 	/**
 	 * show raidinfo in calendar template
 	 *

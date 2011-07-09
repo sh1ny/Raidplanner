@@ -20,14 +20,13 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 }
 
 $user->add_lang ( array ('mods/raidplanner'));
-include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
 
 //get permissions
 if ( !$auth->acl_get('u_raidplanner_view_raidplans') )
 {
 	trigger_error( 'USER_CANNOT_VIEW_RAIDPLAN' );
 }
-	
+/*	
 if (!class_exists('calendar_watch'))
 {
 	include($phpbb_root_path . 'includes/bbdkp/raidplanner/calendar_watch.' . $phpEx);
@@ -48,10 +47,9 @@ if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 		$watchclass->calendar_mark_user_read_calendar( $user->data['user_id'] );
 	}
 }
-
+*/
 $view_mode = request_var('view', 'month');
 
-$cal = new raidplanner_display();
 switch( $view_mode )
 {
 
@@ -76,18 +74,26 @@ switch( $view_mode )
       break;
 	case "raidplan":
 		// display a single raidplan
-		$cal->displayplan('raid', request_var('calEid', 0));
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
+		$cal = new rpraid();
+		$cal->display();
 		break;
 	case "day":
 		// display all of the raidplans on this day
-		$cal->displayplan('day', 0);
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpday.' . $phpEx);
+		$cal = new rpday();
+		$cal->display();
 		break;
 	case "week":
 		// display the entire week
-		$cal->displayplan('week', 0);
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
+		$cal = new rpweek();
+		$cal->display();
 		break;
 	case "month":
-		$cal->displayplan('month', 0);
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpmonth.' . $phpEx);
+		$cal = new rpmonth();
+		$cal->display();
 		break;
 }
 
