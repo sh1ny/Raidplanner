@@ -9,7 +9,6 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 * 
-* 
 */
 
 /**
@@ -25,67 +24,46 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
  */
 class raidplans
 {
-	
 	/**
-	 * show raidinfo in calendar template
+	 * return raidinfo array to client classes that need it.
 	 *
 	 * @param int $day
 	 * @param int $month
 	 * @param int $year
-	 * @return int
+	 * @return array
 	 */
-	public function showraidinfo($month, $day, $year , $mode='x')
+	public function showraidinfo($month, $day, $year, $group_options)
 	{
 		global $db, $user, $template, $config, $phpbb_root_path, $auth, $phpEx;
 		
 		$raidplan_output = array();
 		$raidplan_counter = 0;
-		if($mode=='day')
-		{
-			// find birthdays
-			if( $auth->acl_get('u_viewprofile') )
-			{
-				$birthday_list = $this->generate_birthday_list( $day, $month,$year );
-				if( $birthday_list != "" )
-				{
-					// place birthday in the middle
-					$raidplan_output['PRE_PADDING'] = "";
-					$raidplan_output['PADDING'] = "96";
-					$raidplan_output['DATA'] = $birthday_list;
-					$raidplan_output['POST_PADDING'] = "";
-					$template->assign_block_vars('raidplans', $raidplan_output);
-					$raidplan_counter++;
-				}
-			}
-			
-		}
-			
+
 		//find any raidplans on this day
 		$start_temp_date = gmmktime(0,0,0,$month, $day, $year)  - $user->timezone - $user->dst;
 		$end_temp_date = $start_temp_date + 86399;
-		$group_options = $this->group_options;
-		$etype_url_opts = $this->get_etype_url_opts();
+		$etype_url_opts = "";
 		
-		// filter on event type ?
 		$calEType = request_var('calEType', 0);
-		if( $calEType == 0 )
-		{
-			$etype_options =  "";
-		}
-		else 
-		{
-			$etype_options = " AND etype_id = ".$db->sql_escape($calEType)." ";
-		}
-		
+
 		// build sql 
 		$sql_array = array(
    			'SELECT'    => 'r.*', 
 			'FROM'		=> array(RP_RAIDS_TABLE => 'r'), 
-			'WHERE'		=>  ' ( (raidplan_access_level = 2) OR (poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR (raidplan_access_level = 1 AND ('.$group_options.')) )  
-							   ' .  $etype_options . '
+			'WHERE'		=>  ' ( (raidplan_access_level = 2)
+								 OR (poster_id = '.$db->sql_escape($user->data['user_id']).' ) 
+								 OR (raidplan_access_level = 1 AND ('.$group_options.')) )  
 							  AND ((raidplan_start_time >= '.$db->sql_escape($start_temp_date).' AND raidplan_start_time <= '.$db->sql_escape($end_temp_date). " ) 
 							  OR ((raidplan_all_day = 1) AND (raidplan_day LIKE '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $month, $day, $year)) . "')) ) ",
 			'ORDER_BY'	=> 'r.raidplan_start_time ASC');
+		
+		// filter on event type ?
+		if( $calEType != 0 )
+		{
+			$sql_array['WHERE'] .= " AND etype_id = ".$db->sql_escape($calEType)." ";
+			$etype_url_opts = "&amp;calEType=".$calEType;
+		}
+		
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		$result = $db->sql_query($sql);
 
@@ -147,53 +125,10 @@ class raidplans
 				}
 			}
 
-			switch ($mode)
-			{
-				case "day":
-					$raidplan_output['SHOW_TIME'] = true;
-					
-					/* sets the colspan width */
-					if( $row['raidplan_start_time'] > $start_temp_date )
-					{
-						// find pre-padding value...
-						$start_diff = $row['raidplan_start_time'] - $start_temp_date;
-						$pre_padding = round($start_diff/900);
-						if( $pre_padding > 0 )
-						{
-							$raidplan_output['PRE_PADDING'] = $pre_padding;
-						}
-					}
-					if( $row['raidplan_end_time'] < $end_temp_date )
-					{
-						// find pre-padding value...
-						$end_diff = $end_temp_date - $row['raidplan_end_time'];
-						$post_padding = round($end_diff/900);
-						if( $post_padding > 0 )
-						{
-							$raidplan_output['POST_PADDING'] = $post_padding;
-						}
-					}
-					$raidplan_output['PADDING'] = 96 - $pre_padding - $post_padding;
-					
-					$template->assign_block_vars('raidplans', $raidplan_output);	
-					
-					break;
-				case "month":
-				case "week":
-					// dont show time on calendar
-					$raidplan_output['SHOW_TIME'] = false;
-					$template->assign_block_vars('calendar_days.raidplans', $raidplan_output);
-					break;
-			}
-			
-			
-			$raidplan_counter++;
 		}
-		
-		unset($raidplan_output);
 		$db->sql_freeresult($result);
 		
-		return $raidplan_counter;
+		return $raidplan_output;
 		
 		
 	}
@@ -372,7 +307,28 @@ class raidplans
 		return $signup_id; 
 	}
 	
-	
+	/**
+	 * get events
+	 *
+	 */
+	private function event_types()
+	{
+		global $db;
+		//find the available events from bbDKP, store them in a global array
+		$sql = 'SELECT * FROM ' . EVENTS_TABLE . ' ORDER BY event_id';
+		$result = $db->sql_query($sql);
+		$this->raid_plan_count = 0;
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$this->raid_plan_ids[$this->raid_plan_count] = $row['event_id'];
+			$this->raid_plan_names[$this->raid_plan_count] = $row['event_name'];
+			$this->raid_plan_displaynames[$row['event_id']] = $row['event_name'];
+			$this->raid_plan_colors[$row['event_id']] = $row['event_color'];
+			$this->raid_plan_images[$row['event_id']] = $row['event_imagename'];
+			$this->raid_plan_count++;
+		}
+		$db->sql_freeresult($result);
+	}
 	
 	
 	/**
@@ -555,8 +511,6 @@ class raidplans
 		$this->calendar_add_or_update_reply( $signup_data['raidplan_id'] );
 		
 	}
-	
-	
 	
 		
 	

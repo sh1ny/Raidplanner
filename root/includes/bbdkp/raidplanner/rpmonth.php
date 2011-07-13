@@ -176,8 +176,9 @@ class rpmonth extends calendar
 			
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 			{
-				$raidplans->showraidinfo($this->date['month_no'], $j, $this->date['year'], "month");
+				$raidplan_output = $raidplans->showraidinfo($this->date['month_no'], $j, $this->date['year'], $this->group_options);
 			}
+			$template->assign_block_vars('calendar_days.raidplans', $raidplan_output);
 	
 		}
 		$counter--;

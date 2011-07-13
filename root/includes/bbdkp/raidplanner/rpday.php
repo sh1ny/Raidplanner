@@ -101,7 +101,53 @@ class rpup extends calendar
 				include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplans.' . $phpEx);
 			}
 			$raidplans = new raidplans();
-			$raidplan_counter = $raidplans->showraidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], 'day');
+			
+			// find birthdays
+					
+			if( $auth->acl_get('u_viewprofile') )
+			{
+				$birthday_list = $this->generate_birthday_list( $day, $month,$year );
+				if( $birthday_list != "" )
+				{
+					// place birthday in the middle
+					$raidplan_output['PRE_PADDING'] = "";
+					$raidplan_output['PADDING'] = "96";
+					$raidplan_output['DATA'] = $birthday_list;
+					$raidplan_output['POST_PADDING'] = "";
+					$template->assign_block_vars('raidplans', $raidplan_output);
+					$raidplan_counter++;
+				}
+				$raidplan_output['SHOW_TIME'] = true;
+					
+				/* sets the colspan width */
+				if( $row['raidplan_start_time'] > $start_temp_date )
+				{
+					// find pre-padding value...
+					$start_diff = $row['raidplan_start_time'] - $start_temp_date;
+					$pre_padding = round($start_diff/900);
+					if( $pre_padding > 0 )
+					{
+						$raidplan_output['PRE_PADDING'] = $pre_padding;
+					}
+				}
+				if( $row['raidplan_end_time'] < $end_temp_date )
+				{
+					// find pre-padding value...
+					$end_diff = $end_temp_date - $row['raidplan_end_time'];
+					$post_padding = round($end_diff/900);
+					if( $post_padding > 0 )
+					{
+						$raidplan_output['POST_PADDING'] = $post_padding;
+					}
+				}
+				$raidplan_output['PADDING'] = 96 - $pre_padding - $post_padding;
+					
+			}
+
+			$raidplan_counter = $raidplans->showraidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options);
+			
+			$template->assign_block_vars('raidplans', $raidplan_output);
+			
 		}
 	
 		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);

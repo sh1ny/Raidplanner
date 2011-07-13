@@ -32,6 +32,7 @@ if (!class_exists('calendar'))
 class rpday extends calendar
 {
 	
+	
 	/**
 	 * 
 	 */
@@ -62,7 +63,7 @@ class rpday extends calendar
 		if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 		{
 			$subject_limit = $config['rp_display_truncated_name']; 
-			$group_options = $this->get_sql_group_options($user->data['user_id']);
+			$group_options = $this->group_options;
 			$etype_options = $this->get_etype_filter();
 	
 			$start_temp_date = time();

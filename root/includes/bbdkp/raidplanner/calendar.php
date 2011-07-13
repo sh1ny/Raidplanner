@@ -31,6 +31,8 @@ abstract class calendar
 	public $day_sel_code = "";
 	public $year_sel_code = "";
 	public $mode_sel_code = "";
+	public $group_options;
+	
 	/**
 	 * 
 	 */
@@ -96,6 +98,9 @@ abstract class calendar
 		$this->_set_date_prev_next( $view_mode );
 		$first_day_of_week = $config['rp_first_day_of_week'];
 		$sunday= $monday= $tuesday= $wednesday= $thursday= $friday= $saturday='';
+		
+		$this->group_options = $this->get_sql_group_options();
+		
 		
 		
 	}
@@ -364,6 +369,40 @@ abstract class calendar
 		}
 	
 		return $birthday_list;
+	}
+	
+	/*
+	 * return group list 
+	 */
+	private function get_sql_group_options()
+	{
+		global $user, $auth, $db;
+	
+		// What groups is this user a member of?
+	
+		/* don't check for hidden group setting -
+		  if the raidplan was made by the admin for a hidden group -
+		  members of the hidden group need to be able to see the raidplan in the calendar */
+	
+		$sql = 'SELECT g.group_id, g.group_name, g.group_type
+				FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
+				WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
+					AND g.group_id = ug.group_id
+					AND ug.user_pending = 0
+				ORDER BY g.group_type, g.group_name';
+		$result = $db->sql_query($sql);
+	
+		$group_options = '';
+		while ($row = $db->sql_fetchrow($result))
+		{
+			if( $group_options != "" )
+			{
+				$group_options .= " OR ";
+			}
+			$group_options .= "group_id = ".$row['group_id']. " OR group_id_list LIKE '%,".$row['group_id']. ",%'";
+		}
+		$db->sql_freeresult($result);
+		return $group_options;
 	}
 	
 }

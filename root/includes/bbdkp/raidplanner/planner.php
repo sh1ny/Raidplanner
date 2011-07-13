@@ -91,6 +91,7 @@ switch( $view_mode )
 		$cal->display();
 		break;
 	case "month":
+	default:	
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpmonth.' . $phpEx);
 		$cal = new rpmonth();
 		$cal->display();

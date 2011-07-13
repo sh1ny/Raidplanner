@@ -190,8 +190,11 @@ class rpweek extends calendar
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 			{
 				// insert raidplans on this day
-				$raidplans->showraidinfo($true_m, $true_j, $true_y, "week");
+				$raidplans->showraidinfo($true_m, $true_j, $true_y, $this->group_options);
 			}
+			
+			$raidplan_output['SHOW_TIME'] = false;
+			$template->assign_block_vars('calendar_days.raidplans', $raidplan_output);
 	
 		}
 	
