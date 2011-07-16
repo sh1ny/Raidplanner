@@ -26,10 +26,10 @@ if (!class_exists('calendar'))
 }
 
 /**
- * implements upcoming
+ * implements raidplan day view
  *
  */
-class rpup extends calendar
+class rpday extends calendar
 {
 	
 	/**
@@ -46,18 +46,21 @@ class rpup extends calendar
 	 */
 	public function display()
 	{
-		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
+		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		
-		$this->_init_view_selection_code("day");
+		
 		$etype_url_opts = $this->get_etype_url_opts();
+		$this->_init_view_selection_code("day");
 	
 		// create next and prev links
-		$this->set_date_prev_next( "day" );
-		$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year'].$etype_url_opts);
-		$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year'].$etype_url_opts);
+		$this->_set_date_prev_next( "day" );
+		$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".
+			$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year'].$etype_url_opts);
+		$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".
+			$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year'].$etype_url_opts);
 	
 		$calendar_header_txt = $user->lang['DAY_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], $user->lang['datetime'][$this->date['month']], $this->date['day'], $this->date['year'] );
-		
+
 		$hour_mode = $config['rp_hour_mode'];
 		if( $hour_mode == 12 )
 		{
@@ -90,66 +93,7 @@ class rpup extends calendar
 				$template->assign_block_vars('time_headers', $time_header);
 			}
 		}
-	
-		$raidplan_counter = 0;
-		// Is the user able to view ANY raidplans?
-		if ( $auth->acl_get('u_raidplanner_view_raidplans') )
-		{
-			// get raid info
-			if (!class_exists('raidplans'))
-			{
-				include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplans.' . $phpEx);
-			}
-			$raidplans = new raidplans();
-			
-			// find birthdays
-					
-			if( $auth->acl_get('u_viewprofile') )
-			{
-				$birthday_list = $this->generate_birthday_list( $day, $month,$year );
-				if( $birthday_list != "" )
-				{
-					// place birthday in the middle
-					$raidplan_output['PRE_PADDING'] = "";
-					$raidplan_output['PADDING'] = "96";
-					$raidplan_output['DATA'] = $birthday_list;
-					$raidplan_output['POST_PADDING'] = "";
-					$template->assign_block_vars('raidplans', $raidplan_output);
-					$raidplan_counter++;
-				}
-				$raidplan_output['SHOW_TIME'] = true;
-					
-				/* sets the colspan width */
-				if( $row['raidplan_start_time'] > $start_temp_date )
-				{
-					// find pre-padding value...
-					$start_diff = $row['raidplan_start_time'] - $start_temp_date;
-					$pre_padding = round($start_diff/900);
-					if( $pre_padding > 0 )
-					{
-						$raidplan_output['PRE_PADDING'] = $pre_padding;
-					}
-				}
-				if( $row['raidplan_end_time'] < $end_temp_date )
-				{
-					// find pre-padding value...
-					$end_diff = $end_temp_date - $row['raidplan_end_time'];
-					$post_padding = round($end_diff/900);
-					if( $post_padding > 0 )
-					{
-						$raidplan_output['POST_PADDING'] = $post_padding;
-					}
-				}
-				$raidplan_output['PADDING'] = 96 - $pre_padding - $post_padding;
-					
-			}
-
-			$raidplan_counter = $raidplans->showraidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options);
-			
-			$template->assign_block_vars('raidplans', $raidplan_output);
-			
-		}
-	
+		
 		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 		$add_raidplan_url = "";
@@ -159,7 +103,33 @@ class rpup extends calendar
 			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planneradd&amp;mode=newraid&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 		}
 	
+		if ( $auth->acl_get('u_raidplanner_view_raidplans') && $auth->acl_get('u_viewprofile') )
+		{
+			// find birthdays
+			$calendar_days['BIRTHDAYS'] = $this->generate_birthday_list(  $this->date['day'], $this->date['month_no'], $this->date['year'] );
+		}
+		
+		// get raid info
+		if (!class_exists('raidplans'))
+		{
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplans.' . $phpEx);
+		}
+		
+		$raidplans = new raidplans();
+		$raidplan_output = array();
+		
+		// Is the user able to view ANY raidplans?
+		if ( $auth->acl_get('u_raidplanner_view_raidplans') )
+		{
+			$raidplan_output = $raidplans->showraidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
+			foreach($raidplan_output as $raid )
+			{
+				$template->assign_block_vars('raidplans', $raid);
+			}
+		}
+		
 		$template->assign_vars(array(
+			'BIRTHDAYS'			=> $calendar_days['BIRTHDAYS'],
 			'CALENDAR_HEADER'	=> $calendar_header_txt,
 			'WEEK_IMG'			=> $user->img('button_calendar_week', 'WEEK'),
 			'MONTH_IMG'			=> $user->img('button_calendar_month', 'MONTH'),
@@ -171,8 +141,10 @@ class rpup extends calendar
 			'S_PLANNER_DAY'		=> true,		
 			'CALENDAR_VIEW_OPTIONS' => $this->mode_sel_code.' '.$this->month_sel_code.' '.$this->day_sel_code.' '.$this->year_sel_code,
 			'S_POST_ACTION'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;". $this->get_etype_post_opts() ),
-			'EVENT_COUNT'		=> $raidplan_counter,
+			'EVENT_COUNT'		=> sizeof($raidplan_output),
 		));
+		
+		
 	}
 }
 

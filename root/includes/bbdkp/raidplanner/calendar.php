@@ -105,7 +105,43 @@ abstract class calendar
 		
 	}
 	
+	/**
+	 * Displays common Calendar elements, header message
+	 * 
+	 */
+	public function displayCalframe()
+	{
+		
+		global $config, $template, $db;
+		
+		$sql = 'SELECT announcement_msg, bbcode_uid, bbcode_bitfield, bbcode_options FROM ' . RP_RAIDPLAN_ANNOUNCEMENT;
+		$db->sql_query($sql);
+		$result = $db->sql_query($sql);
+		while ( $row = $db->sql_fetchrow($result) )
+		{
+			$text = $row['announcement_msg'];
+			$bbcode_uid = $row['bbcode_uid'];
+			$bbcode_bitfield = $row['bbcode_bitfield'];
+			$bbcode_options = $row['bbcode_options'];
+		}
+		
+		$message = generate_text_for_display($text, $bbcode_uid, $bbcode_bitfield, $bbcode_options);
+		
+		$template->assign_vars(array(
+			'S_SHOW_WELCOME_MSG'	=> ($config ['rp_show_welcomemsg'] == 1) ? true : false,
+			'WELCOME_MSG'		=> $message,
+		));
+	
+	
+	}
+	
+	
+	/**
+	 * Displays week, month, day or raidplan, see implementation
+	 *
+	 */
 	public abstract function display();
+	
 	
 	protected function get_etype_filter()
 	{

@@ -46,20 +46,19 @@ class rpweek extends calendar
 	 */
 	public function display()
 	{
-		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
-	
-		$this->_init_view_selection_code("week");
-		$index_display_var = request_var('indexWk', 0);
+		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 	
 		$etype_url_opts = $this->get_etype_url_opts();
-	
+		$this->_init_view_selection_code("week");
+		
 		// create next and prev links
-		$this->set_date_prev_next( "week" );
+		$index_display = request_var('indexWk', 0);
+		$this->_set_date_prev_next( "week" );
 		$prev_link = "";
 		$next_link = "";
 	
 		//find the first day of the week
-		if( $index_display == 0 && $index_display_var == 0)
+		if( $index_display == 0)
 		{
 			$first_day_of_week = $config['rp_first_day_of_week'];
 			$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year'].$etype_url_opts);
@@ -179,6 +178,7 @@ class rpweek extends calendar
 				$calendar_days['HEADER_CLASS'] = 'highlight';
 				$calendar_days['DAY_CLASS'] = 'highlight';
 			}
+			
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') && $auth->acl_get('u_viewprofile') )
 			{
 				// find birthdays
@@ -190,11 +190,14 @@ class rpweek extends calendar
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 			{
 				// insert raidplans on this day
-				$raidplans->showraidinfo($true_m, $true_j, $true_y, $this->group_options);
+				$raidplan_output = $raidplans->showraidinfo($true_m, $true_j, $true_y, $this->group_options, "week");
+				foreach($raidplan_output as $raid )
+				{
+					$template->assign_block_vars('calendar_days.raidplans', $raid);
+				}
+				
 			}
 			
-			$raidplan_output['SHOW_TIME'] = false;
-			$template->assign_block_vars('calendar_days.raidplans', $raidplan_output);
 	
 		}
 	
@@ -206,7 +209,7 @@ class rpweek extends calendar
 				'CALENDAR_PREV'		=> $prev_link,
 				'CALENDAR_NEXT'		=> $next_link,
 				'CALENDAR_VIEW_OPTIONS' => $this->mode_sel_code.' '.$this->month_sel_code.' '.$this->day_sel_code.' '.$this->year_sel_code,
-				'S_PLANNER_WEEK'	=> true,		
+				'S_PLANNER_WEEK'	=> true,
 				'SUNDAY'			=> $sunday,
 				'MONDAY'			=> $monday,
 				'TUESDAY'			=> $tuesday,

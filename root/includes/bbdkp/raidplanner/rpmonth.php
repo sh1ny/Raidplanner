@@ -47,8 +47,8 @@ class rpmonth extends calendar
 	public function display()
 	{
 		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
-		$etype_url_opts = $this->get_etype_url_opts();
 		
+		$etype_url_opts = $this->get_etype_url_opts();
 		$this->_init_view_selection_code("month");
 		
 		//create next and prev links
@@ -67,19 +67,6 @@ class rpmonth extends calendar
 		$number_days = gmdate("t", gmmktime( 0,0,0,$this->date['month_no'], $this->date['day'], $this->date['year']));
 	
 		$calendar_header_txt = $user->lang['MONTH_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], $user->lang['datetime'][$this->date['month']], $this->date['day'], $this->date['year'] );
-		
-		$sql = 'SELECT announcement_msg, bbcode_uid, bbcode_bitfield, bbcode_options FROM ' . RP_RAIDPLAN_ANNOUNCEMENT;
-		$db->sql_query($sql);
-		$result = $db->sql_query($sql);
-		while ( $row = $db->sql_fetchrow($result) )
-		{
-			$text = $row['announcement_msg'];
-			$bbcode_uid = $row['bbcode_uid'];
-			$bbcode_bitfield = $row['bbcode_bitfield'];
-			$bbcode_options = $row['bbcode_options'];
-		}
-		
-		$message = generate_text_for_display($text, $bbcode_uid, $bbcode_bitfield, $bbcode_options);
 		
 		$counter = 0;
 		// get raid info
@@ -176,9 +163,13 @@ class rpmonth extends calendar
 			
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 			{
-				$raidplan_output = $raidplans->showraidinfo($this->date['month_no'], $j, $this->date['year'], $this->group_options);
+				$raidplan_output = $raidplans->showraidinfo($this->date['month_no'], $j, $this->date['year'], $this->group_options, "month");
+				
+				foreach($raidplan_output as $raid )
+				{
+					$template->assign_block_vars('calendar_days.raidplans', $raid);
+				}
 			}
-			$template->assign_block_vars('calendar_days.raidplans', $raidplan_output);
 	
 		}
 		$counter--;
@@ -212,8 +203,6 @@ class rpmonth extends calendar
 			'CALENDAR_NEXT'		=> $next_link,
 			'CALENDAR_VIEW_OPTIONS' => $this->mode_sel_code.' '.$this->month_sel_code.' '.$this->day_sel_code.' '.$this->year_sel_code,
 			'S_PLANNER_MONTH'	=> true,
-			'S_SHOW_WELCOME_MSG'	=> ($config ['rp_show_welcomemsg'] == 1) ? true : false,
-			'WELCOME_MSG'		=> $message,
 			'SUNDAY'			=> $sunday,
 			'MONDAY'			=> $monday,
 			'TUESDAY'			=> $tuesday,

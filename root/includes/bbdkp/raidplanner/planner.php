@@ -53,7 +53,7 @@ $view_mode = request_var('view', 'month');
 switch( $view_mode )
 {
 
-   case "next":
+   case "next":		
       // display next raidplans for specified number of days
       $template_body = "calendar_next_raidplans_for_x_days.html";
       $daycount = request_var('daycount', 60 );
@@ -76,32 +76,37 @@ switch( $view_mode )
 		// display a single raidplan
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
 		$cal = new rpraid();
-		$cal->display();
 		break;
 	case "day":
 		// display all of the raidplans on this day
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpday.' . $phpEx);
 		$cal = new rpday();
-		$cal->display();
 		break;
 	case "week":
 		// display the entire week
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
 		$cal = new rpweek();
-		$cal->display();
 		break;
 	case "month":
 	default:	
+		//display the entire month
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpmonth.' . $phpEx);
 		$cal = new rpmonth();
-		$cal->display();
 		break;
 }
 
+// display header
+$cal->displayCalframe();
+// display calendar
+$cal->display();
+
+
+/*
 $watcher = new calendar_watch(); 
 
 $s_watching_calendar = array();
 $watcher->calendar_init_s_watching_calendar( $s_watching_calendar );
+
 
 $template->assign_vars(array(
 		'U_WATCH_CALENDAR' 		=> $s_watching_calendar['link'],
@@ -109,6 +114,7 @@ $template->assign_vars(array(
 		'S_WATCHING_CALENDAR'	=> $s_watching_calendar['is_watching'],
 		)
 	);
+*/
 
 // Output the page
 page_header($user->lang['PAGE_TITLE']); 
