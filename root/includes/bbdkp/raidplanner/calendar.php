@@ -141,7 +141,7 @@ abstract class calendar
 	 * 
 	 * @param int $x init parameter
 	 */
-	public abstract function display($x);
+	public abstract function display();
 	
 	protected function get_etype_filter()
 	{

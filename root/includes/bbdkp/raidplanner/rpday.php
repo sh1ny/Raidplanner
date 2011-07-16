@@ -31,21 +31,20 @@ if (!class_exists('calendar'))
  */
 class rpday extends calendar
 {
+	private $mode = '';
 	
-	/**
-	 * 
-	 */
+
 	function __construct()
 	{
-		parent::__construct("day");
+		$this->mode="day";
+		parent::__construct($this->mode);
 	}
 	
 	/**
-	 * @see calendar::display($x)
+	 * @see calendar::display()
 	 *
-	 * @param int $x
 	 */
-	public function display($x)
+	public function display()
 	{
 		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		
@@ -122,7 +121,7 @@ class rpday extends calendar
 		// Is the user able to view ANY raidplans?
 		if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 		{
-			$raidplan_output = $raidplans->showraidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
+			$raidplan_output = $raidplans->GetRaidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
 			foreach($raidplan_output as $raid )
 			{
 				$template->assign_block_vars('raidplans', $raid);

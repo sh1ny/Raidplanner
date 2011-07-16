@@ -55,12 +55,15 @@ class raidplans
 	 * return raid plan info array to concrete template implementor class
 	 * called by display()
 	 * 
-	 * @param int $day
-	 * @param int $month
-	 * @param int $year
+	 * @param int $day		today
+	 * @param int $month	this month
+	 * @param int $year		this year
+	 * @param string	$group_options 
+	 * @param string 	$mode
+	 * @param int 		$x		  	
 	 * @return array
 	 */
-	public function showraidinfo($month, $day, $year, $group_options, $mode)
+	public function GetRaidinfo($month, $day, $year, $group_options, $mode)
 	{
 		global $db, $user, $template, $config, $phpbb_root_path, $auth, $phpEx;
 		
@@ -68,7 +71,30 @@ class raidplans
 		
 		//find any raidplans on this day
 		$start_temp_date = gmmktime(0,0,0,$month, $day, $year)  - $user->timezone - $user->dst;
-		$end_temp_date = $start_temp_date + 86399;
+		
+		
+		switch($mode)
+		{
+			case "up":
+				// get next x upcoming raids  
+				// find all day raidplans since 1 days ago
+				$start_temp_date = $start_temp_date - 30*86400+1;
+				// don't list raidplans more than 2 months in the future
+				$end_temp_date = $start_temp_date + 31536000;
+				// show only this number of raids
+				$x = $config['rp_index_display_next_raidplans'];
+				break;
+			case "next":
+				// display the upcoming raidplans for the next x number of days
+				$end_temp_date = $start_temp_date + ( $config['rp_index_display_next_raidplans'] * 86400 );
+				$x = 0;
+				break;
+			default:
+				$end_temp_date = $start_temp_date + 86399;
+				//return all rows
+				$x = 0;
+		}
+		
 		$etype_url_opts = "";
 		$raidplan_counter = 0;
 		$calEType = request_var('calEType', 0);
@@ -78,10 +104,8 @@ class raidplans
    			'SELECT'    => 'r.*', 
 			'FROM'		=> array(RP_RAIDS_TABLE => 'r'), 
 			'WHERE'		=>  ' ( (raidplan_access_level = 2)
-								 OR (poster_id = '.$db->sql_escape($user->data['user_id']).' ) 
-								 OR (raidplan_access_level = 1 AND ('.$group_options.')) )  
-							  AND ((raidplan_start_time >= '.$db->sql_escape($start_temp_date).' AND raidplan_start_time <= '.$db->sql_escape($end_temp_date). " ) 
-							  OR ((raidplan_all_day = 1) AND (raidplan_day LIKE '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $month, $day, $year)) . "')) ) ",
+							   OR (poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR (raidplan_access_level = 1 AND ('.$group_options.')) )  
+							  AND (raidplan_start_time >= '.$db->sql_escape($start_temp_date).' AND raidplan_start_time <= '.$db->sql_escape($end_temp_date). " )",
 			'ORDER_BY'	=> 'r.raidplan_start_time ASC');
 		
 		// filter on event type ?
@@ -92,7 +116,7 @@ class raidplans
 		}
 		
 		$sql = $db->sql_build_query('SELECT', $sql_array);
-		$result = $db->sql_query($sql);
+		$result = $db->sql_query_limit($sql, $x, 0);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -133,6 +157,19 @@ class raidplans
 		        }
 			}
 
+			/*
+			 * $poster_url = '';
+			$invite_list = '';
+			$raidplans->get_raidplan_invites($row, $poster_url, $invite_list );
+			$raidplan_data['POSTER'] = $poster_url;
+			$raidplan_data['INVITED'] = $invite_list;
+			$raidplan_data['ALL_DAY'] = 0;
+			$row['raidplan_all_day'] == 1 
+			list($eday['eday_day'], $eday['eday_month'], $eday['eday_year']) = explode('-', $row['raidplan_day']);
+			$row['raidplan_start_time'] = gmmktime(0,0,0,$eday['eday_month'], $eday['eday_day'], $eday['eday_year'])- $user->timezone - $user->dst;
+			$row['raidplan_end_time'] = $row['raidplan_start_time']+86399;
+			*/
+			
 			$raidplan_output[] = array(
 				'PRE_PADDING'			=> $pre_padding,
 				'POST_PADDING'			=> $post_padding,

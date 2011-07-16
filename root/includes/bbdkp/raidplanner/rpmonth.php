@@ -31,21 +31,22 @@ if (!class_exists('calendar'))
  */
 class rpmonth extends calendar
 {
+	private $mode = '';
 	
 	/**
 	 * 
 	 */
 	function __construct()
 	{
-		parent::__construct("month");
+		$this->mode="month";
+		parent::__construct($this->mode);
 	}
 	
 	/**
-	 * @see calendar::display($x)
+	 * @see calendar::display()
 	 *
-	 * @param int $x
 	 */
-	public function display($x)
+	public function display()
 	{
 		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		
@@ -164,7 +165,7 @@ class rpmonth extends calendar
 			
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 			{
-				$raidplan_output = $raidplans->showraidinfo($this->date['month_no'], $j, $this->date['year'], $this->group_options, "month");
+				$raidplan_output = $raidplans->GetRaidinfo($this->date['month_no'], $j, $this->date['year'], $this->group_options, "month");
 				
 				foreach($raidplan_output as $raid )
 				{

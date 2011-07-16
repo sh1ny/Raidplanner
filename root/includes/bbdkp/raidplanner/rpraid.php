@@ -41,11 +41,10 @@ class rpraid extends calendar
 	}
 	
 	/**
-	 * @see calendar::display($x)
+	 * @see calendar::display()
 	 *
-	 * @param int $x
 	 */
-	public function display($x)
+	public function display()
 	{
 		global $auth, $db, $user, $config, $template, $phpEx, $phpbb_root_path;
 		

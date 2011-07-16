@@ -181,8 +181,8 @@ if(isset( $config['rp_index_display_week']))
 	elseif ( $config['rp_index_display_next_raidplans'] > 0)
 	{
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpup.' . $phpEx);
-		$cal = new rpup();
-		$cal->display($config['rp_index_display_next_raidplans']);
+		$cal = new rpup("next");
+		$cal->display();
 	}
 }]]></action>
 			</edit>

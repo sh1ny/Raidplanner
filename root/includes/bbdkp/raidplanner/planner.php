@@ -98,7 +98,7 @@ switch( $view_mode )
 // display header
 $cal->displayCalframe();
 // display calendar
-$cal->display();
+$cal->display(0);
 
 
 /*

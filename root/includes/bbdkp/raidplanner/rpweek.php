@@ -31,21 +31,22 @@ if (!class_exists('calendar'))
  */
 class rpweek extends calendar
 {
+	private $mode = '';
 	
 	/**
 	 * 
 	 */
 	function __construct()
 	{
-		parent::__construct("week");
+		$this->mode = "week";
+		parent::__construct($this->mode);
 	}
 	
 	/**
-	 * @see calendar::display($x)
+	 * @see calendar::display()
 	 *
-	 * @param int $x
 	 */
-	public function display($x)
+	public function display()
 	{
 		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 	
@@ -192,7 +193,7 @@ class rpweek extends calendar
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 			{
 				// insert raidplans on this day
-				$raidplan_output = $raidplans->showraidinfo($true_m, $true_j, $true_y, $this->group_options, "week");
+				$raidplan_output = $raidplans->GetRaidinfo($true_m, $true_j, $true_y, $this->group_options, $this->mode);
 				foreach($raidplan_output as $raid )
 				{
 					$template->assign_block_vars('calendar_days.raidplans', $raid);
