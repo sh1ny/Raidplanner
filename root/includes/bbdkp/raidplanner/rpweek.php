@@ -41,12 +41,13 @@ class rpweek extends calendar
 	}
 	
 	/**
-	 * 
-	 * @see calendar::display()
+	 * @see calendar::display($x)
+	 *
+	 * @param int $x
 	 */
-	public function display()
+	public function display($x)
 	{
-		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
+		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 	
 		$etype_url_opts = $this->get_etype_url_opts();
 		$this->_init_view_selection_code("week");
@@ -66,6 +67,7 @@ class rpweek extends calendar
 		}
 		else
 		{
+			// display on index !!
 			/* get current weekday so we show this upcoming week's raidplans */
 			$temp_date = time() + $user->timezone + $user->dst;
 			$first_day_of_week = gmdate("w", $temp_date);

@@ -166,19 +166,25 @@ define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');
 			<edit>
 				<comment lang="en"><![CDATA[Include functions_calendar so we can later display the current week or next events on the index]]></comment>
 				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
-				<action type="after-add"><![CDATA[if ( !class_exists('raidplanner_display')) 
-{		
-		define('IN_BBDKP', true);
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
-}
-$cal = new raidplanner_display;]]></action>
-			</edit>
-			<edit>
-				<comment lang="en"><![CDATA[Displays Raidplanner Week view on index]]></comment>
-				<find><![CDATA[// Assign index specific vars]]></find>
-				<action type="before-add"><![CDATA[// Raidplanner Week view
-$cal->display_calendar_on_index();
-]]></action>
+				<action type="after-add"><![CDATA[
+// Raidplanner on index
+if(isset( $config['rp_index_display_week']))
+{
+	define('IN_BBDKP', true);
+	$user->add_lang ( array ('mods/raidplanner'));
+	if( $config['rp_index_display_week'] === "1" )
+	{
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
+		$cal = new rpweek();
+		$cal->display();
+	}
+	elseif ( $config['rp_index_display_next_raidplans'] > 0)
+	{
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpup.' . $phpEx);
+		$cal = new rpup();
+		$cal->display($config['rp_index_display_next_raidplans']);
+	}
+}]]></action>
 			</edit>
 		</open>
 

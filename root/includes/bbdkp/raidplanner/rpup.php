@@ -29,7 +29,7 @@ if (!class_exists('calendar'))
  * implements a dayview
  *
  */
-class rpday extends calendar
+class rpup extends calendar
 {
 	
 	
@@ -42,12 +42,13 @@ class rpday extends calendar
 	}
 	
 	/**
-	 * 
-	 * @see calendar::display()
+	 * @see calendar::display($x)
+	 *
+	 * @param int $x
 	 */
-	public function display()
+	public function display($x)
 	{
-		
+		$this->_display_next_raidplans($x);
 	}
 	
 	

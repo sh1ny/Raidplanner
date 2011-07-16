@@ -137,11 +137,11 @@ abstract class calendar
 	
 	
 	/**
-	 * Displays week, month, day or raidplan, see implementation
-	 *
+	 * Displays week, month, day or raidplan, see implementations
+	 * 
+	 * @param int $x init parameter
 	 */
-	public abstract function display();
-	
+	public abstract function display($x);
 	
 	protected function get_etype_filter()
 	{
