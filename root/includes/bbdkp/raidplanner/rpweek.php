@@ -158,7 +158,7 @@ class rpweek extends calendar
 			
 			if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 			{
-				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planneradd&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
+				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=showadd&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
 			}
 			$calendar_days['DAY_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
 			$calendar_days['MONTH_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
@@ -182,6 +182,7 @@ class rpweek extends calendar
 				$calendar_days['DAY_CLASS'] = 'highlight';
 			}
 			
+			$calendar_days['BIRTHDAYS'] = "";
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') && $auth->acl_get('u_viewprofile') )
 			{
 				// find birthdays
@@ -204,7 +205,6 @@ class rpweek extends calendar
 	
 		}
 	
-	
 		$template->assign_vars(array(
 				'CALENDAR_HEADER'	=> $calendar_header_txt,
 				'DAY_IMG'			=> $user->img('button_calendar_day', 'DAY'),
@@ -220,7 +220,7 @@ class rpweek extends calendar
 				'THURSDAY'			=> $thursday,
 				'FRIDAY'			=> $friday,
 				'SATURDAY'			=> $saturday,
-				'S_POST_ACTION'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;". $this->get_etype_post_opts() ),
+				'S_POST_ACTION'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;". $this->get_etype_post_opts() ),
 		));
 	}
 }

@@ -53,8 +53,61 @@ $view_mode = request_var('view', 'month');
 switch( $view_mode )
 {
 
+	case "raidplan":
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpevents.' . $phpEx);
+		$raidplan_id = request_var('calEid', 0);
+		$eventlist = new rpevents();
+		$raid = new rpraid($raidplan_id);
+		$mode=request_var('mode', 'show');
+		switch($mode)
+		{
+			case 'show' :
+				$raid->display($eventlist);
+				break;
+			case 'edit':
+				$raid->edit($eventlist);
+				break;			
+			case 'editall':
+				$raid->edit($eventlist);
+				break;	
+			case 'delete':
+				$raid->delete();
+				break;			
+			case 'deleteall':
+				$raid->deleteall();
+				break;	
+		}
+		break;
+	case "showadd":
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
+		$cal = new rpraid("");
+		
+		// display header
+		$cal->displayCalframe();
+		// display a raid posting form
+		$cal->showadd();
+		break;
+	case "day":
+		// display all of the raidplans on this day
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpday.' . $phpEx);
+		$cal = new rpday();
+		// display header
+		$cal->displayCalframe();
+		// display calendar
+		$cal->display(0);		
+		break;
+	case "week":
+		// display the entire week
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
+		$cal = new rpweek();
+		// display header
+		$cal->displayCalframe();
+		// display calendar
+		$cal->display(0);
+		break;
    case "next":		
-      // display next raidplans for specified number of days
+      // display upcoming raidplans
       $template_body = "calendar_next_raidplans_for_x_days.html";
       $daycount = request_var('daycount', 60 );
       $user_id = request_var('u', 0);
@@ -72,33 +125,18 @@ switch( $view_mode )
 		'S_PLANNER_UPCOMING'	=> true,
 		));
       break;
-	case "raidplan":
-		// display a single raidplan
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
-		$cal = new rpraid();
-		break;
-	case "day":
-		// display all of the raidplans on this day
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpday.' . $phpEx);
-		$cal = new rpday();
-		break;
-	case "week":
-		// display the entire week
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
-		$cal = new rpweek();
-		break;
 	case "month":
 	default:	
 		//display the entire month
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpmonth.' . $phpEx);
 		$cal = new rpmonth();
+		// display header
+		$cal->displayCalframe();
+		// display calendar
+		$cal->display(0);
 		break;
 }
 
-// display header
-$cal->displayCalframe();
-// display calendar
-$cal->display(0);
 
 
 /*

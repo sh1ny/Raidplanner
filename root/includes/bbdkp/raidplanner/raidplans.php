@@ -50,6 +50,48 @@ class raidplans
 		
 	}
 
+	/**
+	 * gets array with raid days 
+	 *
+	 * @param int $from
+	 * @param int $end
+	 * 
+	 * @return array
+	 */
+	public function GetRaiddaylist($from, $end)
+	{
+		global $db;
+		
+		// build sql 
+		$sql_array = array(
+   			'SELECT'    => 'r.raidplan_start_time ', 
+			'FROM'		=> array(RP_RAIDS_TABLE => 'r'), 
+			'WHERE'		=>  ' ( (raidplan_access_level = 2)
+							   OR (poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR (raidplan_access_level = 1 AND ('.$group_options.')) )  
+							  AND (raidplan_start_time >= '.$db->sql_escape($from).' AND raidplan_start_time <= '.$db->sql_escape($end). " )",
+			'ORDER_BY'	=> 'r.raidplan_start_time ASC');
+		
+		// filter on event type ?
+		$calEType = request_var('calEType', 0);
+		if( $calEType != 0)
+		{
+			$sql_array['WHERE'] .= " AND etype_id = ".$db->sql_escape($calEType)." ";
+			$etype_url_opts = "&amp;calEType=".$calEType;
+		}
+		
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		$result = $db->sql_query($sql);
+		
+		$raiddaylist = array();
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$raiddaylist [] = $row['raidplan_start_time']; 
+		}
+		
+		$db->sql_freeresult($result);
+		return $raiddaylist;
+		
+	}
 	
 	/**
 	 * return raid plan info array to concrete template implementor class
@@ -71,7 +113,6 @@ class raidplans
 		
 		//find any raidplans on this day
 		$start_temp_date = gmmktime(0,0,0,$month, $day, $year)  - $user->timezone - $user->dst;
-		
 		
 		switch($mode)
 		{
@@ -97,7 +138,6 @@ class raidplans
 		
 		$etype_url_opts = "";
 		$raidplan_counter = 0;
-		$calEType = request_var('calEType', 0);
 
 		// build sql 
 		$sql_array = array(
@@ -109,6 +149,7 @@ class raidplans
 			'ORDER_BY'	=> 'r.raidplan_start_time ASC');
 		
 		// filter on event type ?
+		$calEType = request_var('calEType', 0);
 		if( $calEType != 0)
 		{
 			$sql_array['WHERE'] .= " AND etype_id = ".$db->sql_escape($calEType)." ";
@@ -181,7 +222,7 @@ class raidplans
 				'IMAGE' 				=> $phpbb_root_path . "images/event_images/" . $this->event[$row['etype_id']]['imagename'] . ".png", 
 				'S_EVENT_IMAGE_EXISTS'  => (strlen( $this->event[$row['etype_id']]['imagename'] ) > 1) ? true : false,
 				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$row['raidplan_id'].$etype_url_opts), 
-				'EVENT_URL'  			=> $row['raidplan_id'],
+				'EVENT_ID'  			=> $row['raidplan_id'],
 				'INVITE_TIME'  			=> $user->format_date($row['raidplan_invite_time'], $correct_format, true), 
 				'START_TIME'			=> $user->format_date($row['raidplan_start_time'], $correct_format, true),
 				'END_TIME' 				=> $user->format_date($row['raidplan_end_time'], $correct_format, true),
@@ -249,100 +290,6 @@ class raidplans
 	}
 	
 
-	/**
-	 * get the the group invite list
-	 *
-	 * @param array $raidplan_data
-	 * @param string $poster_url
-	 * @param array $invite_list
-	 */
-	public function get_raidplan_invites($raidplan_data, &$poster_url, &$invite_list )
-	{
-		global $auth, $db, $user, $config;
-		global $phpEx, $phpbb_root_path;
-	
-		$sql = 'SELECT user_id, username, user_colour FROM ' . USERS_TABLE . '
-				WHERE user_id = '.$db->sql_escape($raidplan_data['poster_id']);
-		
-		$result = $db->sql_query($sql);
-		$poster_data = $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
-	
-		$poster_url = get_username_string( 'full', $raidplan_data['poster_id'], $poster_data['username'], $poster_data['user_colour'] );
-	
-		$invite_list = "";
-	
-		switch( $raidplan_data['raidplan_access_level'] )
-		{
-			case 0:
-				// personal raidplan... only raidplan creator is invited
-				$invite_list = $poster_url;
-				break;
-			case 1:
-				if( $raidplan_data['group_id'] != 0 )
-				{
-					// group raidplan... only phpbb accounts of this group are invited
-					$sql = 'SELECT group_name, group_type, group_colour FROM ' . GROUPS_TABLE . '
-							WHERE group_id = '.$db->sql_escape($raidplan_data['group_id']);
-					$result = $db->sql_query($sql);
-					$group_data = $db->sql_fetchrow($result);
-					$db->sql_freeresult($result);
-					$temp_list = (($group_data['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $group_data['group_name']] : $group_data['group_name']);
-					$temp_url = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g=".$raidplan_data['group_id']);
-					$temp_color_start = "";
-					$temp_color_end = "";
-					if( $group_data['group_colour'] !== "" )
-					{
-						$temp_color_start = "<span style='color:#".$group_data['group_colour']."'>";
-						$temp_color_end = "</span>";
-					}
-					$invite_list = "<a href='".$temp_url."'>".$temp_color_start.$temp_list.$temp_color_end."</a>";
-				}
-				else 
-				{
-					// multiple groups invited	
-					$group_list = explode( ',', $raidplan_data['group_id_list'] );
-					$num_groups = sizeof( $group_list );
-					for( $i = 0; $i < $num_groups; $i++ )
-					{
-						if( $group_list[$i] == "")
-						{
-							continue;
-						}
-						
-						// group raidplan... only phpbb accounts  of specified group are invited
-						$sql = 'SELECT group_name, group_type, group_colour FROM ' . GROUPS_TABLE . '
-								WHERE group_id = '.$db->sql_escape($group_list[$i]);
-						$result = $db->sql_query($sql);
-						$group_data = $db->sql_fetchrow($result);
-						$db->sql_freeresult($result);
-						$temp_list = (($group_data['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $group_data['group_name']] : $group_data['group_name']);
-						$temp_url = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g=".$raidplan_data['group_id']);
-						$temp_color_start = "";
-						$temp_color_end = "";
-						if( $group_data['group_colour'] !== "" )
-						{
-							$temp_color_start = "<span style='color:#".$group_data['group_colour']."'>";
-							$temp_color_end = "</span>";
-						}
-						if( $invite_list == "" )
-						{
-							$invite_list = "<a href='".$temp_url."'>".$temp_color_start.$temp_list.$temp_color_end."</a>";
-						}
-						else
-						{
-							$invite_list = $invite_list . ", " . "<a href='".$temp_url."'>".$temp_color_start.$temp_list.$temp_color_end."</a>";
-						}
-					}
-				}
-				break;
-			case 2:
-				// public raidplan... everyone is invited
-				$invite_list = $user->lang['EVERYONE'];
-				break;
-		}
-	
-	}
 	
 	
 	/*

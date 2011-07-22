@@ -55,8 +55,8 @@ class rpmonth extends calendar
 		
 		//create next and prev links
 		$this->_set_date_prev_next( "month" );
-		$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year'].$etype_url_opts);
-		$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year'].$etype_url_opts);
+		$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year'].$etype_url_opts);
+		$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year'].$etype_url_opts);
 	
 		//find the first day of the week
 		$first_day_of_week = $config['rp_first_day_of_week'];
@@ -78,6 +78,7 @@ class rpmonth extends calendar
 		}
 		$raidplans = new raidplans();
 		
+		//$raiddaylist = $raidplans->GetRaiddaylist()
 		
 		for ($j = 1; $j < $number_days+1; $j++, $counter++)
 		{
@@ -132,7 +133,7 @@ class rpmonth extends calendar
 			
 			if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 			{
-				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planneradd&amp;calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']. $etype_url_opts);
+				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=showadd&amp;calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']. $etype_url_opts);
 			}
 			$calendar_days['DAY_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 			$calendar_days['WEEK_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
@@ -154,7 +155,8 @@ class rpmonth extends calendar
 				$calendar_days['HEADER_CLASS'] = 'highlight';
 				$calendar_days['DAY_CLASS'] = 'highlight';
 			}
-	
+			
+			$calendar_days['BIRTHDAYS']="";
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') && $auth->acl_get('u_viewprofile') )
 			{
 				// find birthdays
@@ -212,7 +214,7 @@ class rpmonth extends calendar
 			'THURSDAY'			=> $thursday,
 			'FRIDAY'			=> $friday,
 			'SATURDAY'			=> $saturday,
-			'S_POST_ACTION'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;". $this->get_etype_post_opts() ),
+			'S_POST_ACTION'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;". $this->get_etype_post_opts() ),
 		));
 	
 	}

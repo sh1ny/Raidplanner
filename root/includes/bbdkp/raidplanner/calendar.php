@@ -32,11 +32,13 @@ abstract class calendar
 	public $year_sel_code = "";
 	public $mode_sel_code = "";
 	public $group_options;
+	public $period_start;
+	public $period_end;
 	
 	/**
 	 * 
 	 */
-	function __construct($view_mode)
+	function __construct($arg)
 	{
 		global $auth, $db, $user, $config; 
 		
@@ -61,7 +63,7 @@ abstract class calendar
 		$this->date['month'] = request_var('calM', '');
 		$this->date['month_no'] = request_var('calM', '');
 		$this->date['year'] = request_var('calY', '');
-	
+		
 		if( $this->date['day'] == "" )
 		{
 			$this->date['day'] = gmdate("d", $temp_now_time);
@@ -94,8 +96,9 @@ abstract class calendar
 		    $this->date['day'] = $number_days;
 		}
 		
-		$this->_init_view_selection_code( $view_mode );
-		$this->_set_date_prev_next( $view_mode );
+		$this->_init_view_selection_code( $arg );
+		$this->_set_date_prev_next( $arg );
+		
 		$first_day_of_week = $config['rp_first_day_of_week'];
 		$sunday= $monday= $tuesday= $wednesday= $thursday= $friday= $saturday='';
 		
@@ -103,6 +106,36 @@ abstract class calendar
 		
 		
 		
+	}
+	
+	private function Get1stdateofMonth($dateThis) 
+	{
+		$retVal = NULL;
+		if (is_numeric($dateThis)) 
+		{
+			$dateSoM = strtotime(date('Y',$dateThis) . '-' . date('m',$dateThis) . '-01');
+			if (is_numeric($dateSoM)) 
+			{
+				$retVal = $dateSoM;
+			}
+		}
+		return $retVal;
+	}
+	
+	function GetLDoM($dateThis) 
+	{
+		$retVal = NULL;
+		if (is_numeric($dateThis)) 
+		{
+			$dateSoM = strtotime(date('Y',$dateThis) . '-' . date('m',$dateThis) . '-01');
+			$dateCog = strtotime('+1 month',$dateSoM);
+			$dateEoM = strtotime('-1 day',$dateCog );
+			if (is_numeric($dateEoM)) 
+			{
+				$retVal = $dateEoM;
+			}
+		}
+		return $retVal;
 	}
 	
 	/**
@@ -139,7 +172,6 @@ abstract class calendar
 	/**
 	 * Displays week, month, day or raidplan, see implementations
 	 * 
-	 * @param int $x init parameter
 	 */
 	public abstract function display();
 	
