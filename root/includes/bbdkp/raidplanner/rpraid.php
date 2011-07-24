@@ -50,17 +50,33 @@ class rpraid
 	private $poster;
 
 	/**
-	 * access level 2 =group 
-	 * @var unknown_type
+	 * access level 0 = personal, 1 = groups, 3 = all 
+	 * @var int
 	 */
 	private $accesslevel;
+	
+	
 	private $group_id;
 	private $group_id_list;
 	
 	/**
+	 * array of possible roles
+	 *
+	 * @var array
+	 */
+	private $roles= array();
+
+	/**
+	 * array of raid roles
+	 *
+	 * @var array
+	 */
+	private $raidroles= array();
+
+	/**
 	 * aray of signups
 	 *
-	 * @var unknown_type
+	 * @var array
 	 */
 	private $signups =array();
 	
@@ -73,7 +89,6 @@ class rpraid
 	
 	// if raidplan is recurring then id > 0
 	private $recurr_id = 0;
-	
 	
 	/**
 	 * url of the poster
@@ -97,20 +112,32 @@ class rpraid
 	private $signups_allowed;
 	
 	/**
-	 * 
+	 * constructor
+	 *
+	 * @param int $id
 	 */
 	function __construct($id)
 	{
-		global $db, $user, $config, $phpEx, $phpbb_root_path, $db;
-		
-		//if $id != 0 then make object from db
-		$this->id=$id;
-		
 		if($id !=0)
 		{
-			// fabricate the raidplan object
-			
-			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . ' WHERE raidplan_id = '. (int) $id;
+			$this->id=$id;
+			// fetch raid object from db
+			$this->make_obj();
+			//can user see it ?
+			$this->auth_cansee = $this->checkauth();
+		}
+		
+	}
+
+	/**
+	 * make raid object
+	 *
+	 */
+	private function make_obj()
+	{
+			global $db, $user, $config, $phpEx, $phpbb_root_path, $db;
+				
+			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . ' WHERE raidplan_id = '. (int) $this->id;
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
@@ -134,17 +161,45 @@ class rpraid
 			$this->bbcode['uid']= $row['bbcode_uid'];
 			//enable_bbcode & enable_smilies & enable_magic_url always 1
 			
+			$this->group_id=$row['group_id'];
+			$this->group_id_list=$row['group_id_list'];
+			$this->accesslevel=$row['raidplan_access_level'];
+			
+			// is raid recurring ?
+			$this->recurr_id = $row['recurr_id'];
+			
+			//get number of signups if they are tracked
+			if ($row['track_signups'] == 1)
+			{
+				$this->signups['track'] = true;
+				$this->signups['yes'] = $row['signup_yes'];
+				$this->signups['no'] = $row['signup_no'];
+				$this->signups['maybe'] = $row['signup_maybe'];
+				
+				// get array of raid roles
+				$this->get_raid_roles();
+				
+				//get array of signups
+				$this->signups['detail'] = $this->getSignups();
+				
+				
+			}
+			else 
+			{
+				$this->signups['track'] = false;
+				$this->signups['yes'] = 0;
+				$this->signups['no'] = 0;
+				$this->signups['maybe'] = 0;
+			}
 			
 			$this->poster=$row['poster_id'];
+			unset ($row);
+			
 			$sql = 'SELECT user_id, username, user_colour FROM ' . USERS_TABLE . ' WHERE user_id = '.$db->sql_escape($this->poster);
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 			$this->poster_url = get_username_string( 'full', $this->poster, $row['username'], $row['user_colour'] );
-			
-			$this->group_id=$row['group_id'];
-			$this->group_id_list=$row['group_id_list'];
-			$this->accesslevel=$row['raidplan_access_level'];
 			
 			//depending on access level invite different groups.
 			switch( $this->accesslevel )
@@ -219,62 +274,193 @@ class rpraid
 					$this->invite_list = $user->lang['EVERYONE'];
 					break;
 			}
-			
-			//false or true
-			$this->auth_cansee = $this->checkauth();
-			
-			$this->recurr_id = $row['recurr_id'];
-			
-			if ($row['track_signups'] == 1)
-			{
-				$this->signups['track'] = true;
-				$this->signups['yes'] = $row['signup_yes'];
-				$this->signups['no'] = $row['signup_no'];
-				$this->signups['maybe'] = $row['signup_maybe'];
-			}
-			else 
-			{
-				$this->signups['track'] = false;
-				$this->signups['yes'] = 0;
-				$this->signups['no'] = 0;
-				$this->signups['maybe'] = 0;
-			}
-			
-			
-			
-			
-			
-		}
-		else 
-		{
-			$this->color = "";
-			$this->image = "";
-			$this->display_name= "";
-			$this->all_day=0;
-			
-			$this->invite_time=0;
-			$this->start_time=0;
-			$this->end_time=0;
-			$this->subject="";
-			$this->poster=0;
-			$this->body="";
-			
-			$this->signups['track'] = false;
-			$this->signups['yes'] = 0;
-			$this->signups['no'] = 0;
-			$this->signups['maybe'] = 0;
-			
-		}
 		
 	}
 	
-
 	/**
-	 * @see calendar::display()
+	 * checks if user is allowed to see raid
+	 *
+	 * @return boolean
+	 */
+	private function checkauth()
+	{
+		global $user, $auth, $db;
+		$user_auth_for_raidplan= false;
+		
+		if ($this->poster == $user->data['user_id'])
+		{
+			return true;
+		}
+		
+		switch($this->accesslevel)
+		{
+			case 0:
+				// personal raidplan... only raidplan creator is invited
+				$user_auth_for_raidplan = false;
+				break;
+			case 1:
+				// group raidplan... only members of specified phpbb usergroup are invited
+				// is this user a member of the group?
+				if($this->group_id !=0)
+				{
+					$sql = 'SELECT g.group_id
+							FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
+							WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
+								AND g.group_id = ug.group_id
+								AND g.group_id = '.$db->sql_escape($this->group_id).'
+								AND ug.user_pending = 0';
+					$result = $db->sql_query($sql);
+					if($result)
+					{
+						$row = $db->sql_fetchrow($result);
+						if( $row['group_id'] == $this->group_id )
+						{
+							$user_auth_for_raidplan = true;
+						}
+					}
+					$db->sql_freeresult($result);
+				}
+				else 
+				{
+					$group_list = explode( ',', $this->group_id_list);
+					$num_groups = sizeof( $group_list );
+					$group_options = '';
+					for( $i = 0; $i < $num_groups; $i++ )
+					{
+					    if( $group_list[$i] == "" )
+					    {
+					    	continue;
+					    }
+						if( $group_options != "" )
+						{
+							$group_options = $group_options . " OR ";
+						}
+						$group_options = $group_options . "g.group_id = ".$group_list[$i];
+					}
+					$sql = 'SELECT g.group_id
+							FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
+							WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
+								AND g.group_id = ug.group_id
+								AND ('.$group_options.')
+								AND ug.user_pending = 0';
+					$result = $db->sql_query($sql);
+					if( $result )
+					{
+						$user_auth_for_raidplan = true;
+					}
+					$db->sql_freeresult($result);
+				}
+				break;
+			case 2:
+				// public raidplan... everyone is invited
+				$user_auth_for_raidplan = true;
+				break;
+			
+		}
+		return $user_auth_for_raidplan;
+		
+	}
+	
+	
+	/**
+	 * builds raid roles property, needed sor displaying signups
 	 *
 	 */
-	public function display(rpevents $eventlist, rpsignups $signups)
+	private function get_raid_roles()
 	{
+		global $db;
+		
+		$sql_array = array(
+	    	'SELECT'    => 'rr.raidplandet_id, rr.role_needed, rr.role_signedup, rr.role_confirmed, 
+	    					r.role_id, r.role_name, r.role_color, r.role_icon ', 
+	    	'FROM'      => array(
+				RP_ROLES   => 'r',
+				RP_RAIDPLAN_ROLES   => 'rr'
+	    	),
+	    	'WHERE'		=>  'r.role_id = rr.role_id and rr.raidplan_id = ' . $this->id, 
+	    	'ORDER_BY'  => 'r.role_id'
+			);
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		$result = $db->sql_query($sql);
+		while ( $row = $db->sql_fetchrow ( $result ) )
+		{
+			$this->raidroles[$row['role_id']]['role_name'] = $row['role_name'];
+			$this->raidroles[$row['role_id']]['role_color'] = $row['role_color'];
+			$this->raidroles[$row['role_id']]['role_icon'] = $row['role_icon']; 
+			$this->raidroles[$row['role_id']]['role_needed'] = $row['role_needed']; 
+			$this->raidroles[$row['role_id']]['role_signedup'] = $row['role_signedup']; 
+			$this->raidroles[$row['role_id']]['role_confirmed'] = $row['role_confirmed']; 
+		}
+		$db->sql_freeresult($result);
+	}
+	
+	
+	/**
+	 * builds roles property, needed when you make new raid
+	 *
+	 */
+	private function get_roles()
+	{
+		global $db;
+		
+		$sql_array = array(
+	    	'SELECT'    => 'r.role_id, r.role_name, r.role_color, r.role_icon ', 
+	    	'FROM'      => array(
+				RP_ROLES   => 'r'
+	    	),
+	    	'ORDER_BY'  => 'r.role_id'
+			);
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		$result = $db->sql_query($sql);
+		while ( $row = $db->sql_fetchrow ( $result ) )
+		{
+			$this->roles[$row['role_id']]['role_name'] = $row['role_name'];
+			$this->roles[$row['role_id']]['role_color'] = $row['role_color'];
+			$this->roles[$row['role_id']]['role_icon'] = $row['role_icon']; 
+		}
+		$db->sql_freeresult($result);
+	}
+	
+	/**
+	 * selects all signups, then makes signup objects, returns array of objects
+	 *
+	 * @param int $raidplan_id
+	 */
+	private function getSignups()
+	{
+		global $db, $phpEx, $phpbb_root_path, $db;
+
+		if (!class_exists('rpsignup'))
+		{
+			require("{$phpbb_root_path}includes/bbdkp/raidplanner/rpsignups.$phpEx");
+		}
+		$rpsignup = new rpsignup();
+		
+		$sql = "select * from " . RP_SIGNUPS . " where raidplan_id = " . $this->id;
+		$result = $db->sql_query($sql);
+		$signups = array();
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$rpsignup->getSignup($row['signup_id']);
+			//get all public object vars to signup array
+			$signups[] = get_object_vars($rpsignup);
+		}
+		$db->sql_freeresult($result);
+			
+		return $signups;
+	}
+	
+	
+	
+	/**
+	 * displays a raid object
+	 *
+	 * @param rpevents $eventlist
+	 */
+	public function display(rpevents $eventlist)
+	{
+		// raid object does not need to know the events list so it‘s passed byval
+		
 		global $db, $user, $config, $template, $phpEx, $phpbb_root_path;
 		
 		// check if it is a private appointment
@@ -283,36 +469,12 @@ class rpraid
 			trigger_error( 'PRIVATE_RAIDPLAN' );
 		}
 		
-		// record every watch of this raidplan
-		/*
-		if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
-		{
-			$calWatchE = request_var( 'calWatchE', 2 );
-			if (!class_exists('calendar_watch'))
-			{
-				include($phpbb_root_path . 'includes/bbdkp/raidplanner/calendar_watch.' . $phpEx);
-			}
-	
-			$watchclass = new calendar_watch();
-			if( $calWatchE < 2 )
-			{
-				// starts watching
-				$watchclass->calendar_watch_raidplan( $raidplan_id, $calWatchE );
-			}
-			else
-			{
-				//mark that user re-visited raidplan
-				$watchclass->calendar_mark_user_read_raidplan( $raidplan_id, $user->data['user_id'] );
-			}
-		}
-		*/
-		
-		// format the dates
+		// get event name, color, image
 		$raidplan_display_name = $eventlist->events[$this->event_type]['event_name'];
 		$raidplan_color = $eventlist->events[$this->event_type]['color'];
 		$raidplan_image = $eventlist->events[$this->event_type]['imagename'];
 		
-		// 7
+		// format the raidplan message
 		$bbcode_options = OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS;
 		$message = generate_text_for_display($this->body, $this->bbcode['uid'], $this->bbcode['bitfield'], $bbcode_options);
 		
@@ -322,7 +484,6 @@ class rpraid
 		$day = gmdate("d", $raidplan_start);
 		$month_no = gmdate("n", $raidplan_start);
 		$year =	gmdate('Y', $raidplan_start);
-		$back_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;calD=".$day."&amp;calM=".$month_no."&amp;calY=".$year);
 		$raidplan_end = $this->end_time + $user->timezone + $user->dst;
 
 		// format
@@ -359,73 +520,16 @@ class rpraid
 			}
 		}
 		
-		
-		// does this raidplan have attendance tracking turned on and not personal ?
-		if( $raidplan_data['track_signups'] == 1 && $raidplan_data['raidplan_access_level'] != 0)
+		// display signups 
+		if($this->signups_allowed == true && $this->accesslevel != 0)
 		{
-			
-			$signup_data = array();
-			$signup_data['signup_id'] = 0;
-			$signup_data['raidplan_id'] = $raidplan_id;
-			$signup_data['poster_id'] = $user->data['user_id'];
-			$signup_data['poster_name'] = $user->data['username'];
-			$signup_data['poster_colour'] = $user->data['user_colour'];
-			$signup_data['poster_ip'] = $user->ip;
-			$signup_data['post_time'] = time();
-			$signup_data['dkpmember_id'] = request_var('signupchar', 0);
-			$signup_data['signup_val'] = 2;
-			$signup_data['signup_count'] = 1;
-			$signup_data['signup_detail'] = "";
-			$signup_data['signup_detail_edit'] = "";
-				
-			
-			// show signed up
-			$signup_id	= request_var('hidden_signup_id', 0);
-			
-			if ($signup_id ==0)
-			{
-				//doublecheck in database in case of repost
-				$signup_id = $this->check_if_subscribed($signup_data['poster_id'],$signup_data['dkpmember_id'], $signup_data['raidplan_id']);
-			}
-	
-			if( $signup_id !== 0 )
-			{
-				$this->get_signup_data( $signup_id, $signup_data );
-				if( $signup_data['raidplan_id'] != $raidplan_id )
-				{
-					trigger_error('NO_SIGNUP');
-				}
-			}
-
-			// Can we edit this reply ... if we're a moderator with rights then always yes
-			// else it depends on editing times, lock status and if we're the correct user
-			if ( $signup_id !== 0 && !$auth->acl_get('m_raidplanner_edit_other_users_signups'))
-			{
-				if ($user->data['user_id'] != $signup_data['poster_id'])
-				{
-					trigger_error('USER_CANNOT_EDIT_SIGNUP');
-				}
-			}
-
-			// sign up
-			$signmeup = (isset($_POST['signmeup'])) ? true : false;
-			if( $signmeup )
-			{
-				$raidplans->signup($raidplan_data, $signup_data);
-			}
-			
-			$edit_signups = 0;
-			if( $auth->acl_get('m_raidplanner_edit_other_users_signups') )
-			{
-				$edit_signups = 1;
-				$edit_signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$raidplan_id );
-				$edit_signup_url .="&amp;signup_id=";
-			}
-			
-			
 			
 			$roles = array ();
 			$total_needed = 0;
+			
+			
+			$sql = "select * from ";
+			
 			while ( $row = $db->sql_fetchrow ( $result0 ) )
 			{
 
@@ -545,9 +649,70 @@ class rpraid
 				
 			}
 			
+		}
+		
+		
+		// does this raidplan have signups turned on and is it not personal ?
+		if( $this->signups_allowed == true && $this->accesslevel != 0)
+		{
 			
-			$db->sql_freeresult($result);
-			$db->sql_freeresult($result0);
+			$signup_data = array();
+			$signup_data['signup_id'] = 0;
+			$signup_data['raidplan_id'] = $raidplan_id;
+			$signup_data['poster_id'] = $user->data['user_id'];
+			$signup_data['poster_name'] = $user->data['username'];
+			$signup_data['poster_colour'] = $user->data['user_colour'];
+			$signup_data['poster_ip'] = $user->ip;
+			$signup_data['post_time'] = time();
+			$signup_data['dkpmember_id'] = request_var('signupchar', 0);
+			$signup_data['signup_val'] = 2;
+			$signup_data['signup_count'] = 1;
+			$signup_data['signup_detail'] = "";
+			$signup_data['signup_detail_edit'] = "";
+				
+			
+			// show signed up
+			$signup_id	= request_var('hidden_signup_id', 0);
+			
+			if ($signup_id ==0)
+			{
+				//doublecheck in database in case of repost
+				$signup_id = $this->check_if_subscribed($signup_data['poster_id'],$signup_data['dkpmember_id'], $signup_data['raidplan_id']);
+			}
+	
+			if( $signup_id !== 0 )
+			{
+				$this->get_signup_data( $signup_id, $signup_data );
+				if( $signup_data['raidplan_id'] != $raidplan_id )
+				{
+					trigger_error('NO_SIGNUP');
+				}
+			}
+
+			// Can we edit this reply ... if we're a moderator with rights then always yes
+			// else it depends on editing times, lock status and if we're the correct user
+			if ( $signup_id !== 0 && !$auth->acl_get('m_raidplanner_edit_other_users_signups'))
+			{
+				if ($user->data['user_id'] != $signup_data['poster_id'])
+				{
+					trigger_error('USER_CANNOT_EDIT_SIGNUP');
+				}
+			}
+
+			// sign up
+			$signmeup = (isset($_POST['signmeup'])) ? true : false;
+			if( $signmeup )
+			{
+				$raidplans->signup($raidplan_data, $signup_data);
+			}
+			
+			$edit_signups = 0;
+			if( $auth->acl_get('m_raidplanner_edit_other_users_signups') )
+			{
+				$edit_signups = 1;
+				$edit_signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$raidplan_id );
+				$edit_signup_url .="&amp;signup_id=";
+			}
 			
 			$show_current_response = 0;
 			
@@ -715,97 +880,6 @@ class rpraid
 			
 			)
 		);
-		
-	}
-	
-	/**
-	 * checks if user is allowed to see raid
-	 *
-	 * @return boolean
-	 */
-	private function checkauth()
-	{
-		global $user, $auth, $db;
-		$user_auth_for_raidplan= false;
-		
-		if ($this->poster == $user->data['user_id'])
-		{
-			return true;
-		}
-		
-		switch($this->accesslevel)
-		{
-			case 0:
-				// personal raidplan... only raidplan creator is invited
-				$user_auth_for_raidplan = false;
-				break;
-			case 1:
-				// group raidplan... only members of specified phpbb usergroup are invited
-				// is this user a member of the group?
-				if($this->group_id !=0)
-				{
-					$sql = 'SELECT g.group_id
-							FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
-							WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
-								AND g.group_id = ug.group_id
-								AND g.group_id = '.$db->sql_escape($this->group_id).'
-								AND ug.user_pending = 0';
-					$result = $db->sql_query($sql);
-					if($result)
-					{
-						$row = $db->sql_fetchrow($result);
-						if( $row['group_id'] == $this->group_id )
-						{
-							$user_auth_for_raidplan = true;
-						}
-					}
-					$db->sql_freeresult($result);
-				}
-				else 
-				{
-					$group_list = explode( ',', $this->group_id_list);
-					$num_groups = sizeof( $group_list );
-					$group_options = '';
-					for( $i = 0; $i < $num_groups; $i++ )
-					{
-					    if( $group_list[$i] == "" )
-					    {
-					    	continue;
-					    }
-						if( $group_options != "" )
-						{
-							$group_options = $group_options . " OR ";
-						}
-						$group_options = $group_options . "g.group_id = ".$group_list[$i];
-					}
-					$sql = 'SELECT g.group_id
-							FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
-							WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
-								AND g.group_id = ug.group_id
-								AND ('.$group_options.')
-								AND ug.user_pending = 0';
-					$result = $db->sql_query($sql);
-					if( $result )
-					{
-						$user_auth_for_raidplan = true;
-					}
-					$db->sql_freeresult($result);
-				}
-				break;
-			case 2:
-				// public raidplan... everyone is invited
-				$user_auth_for_raidplan = true;
-				break;
-			
-		}
-		return $user_auth_for_raidplan;
-		
-	}
-	
-	
-
-	public function showadd()
-	{
 		
 	}
 	

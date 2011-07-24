@@ -40,7 +40,6 @@ class rpsignup
 	public $signup_time;
 	public $signup_count;
 	
-	
 	public $dkpmemberid;
 	public $dkpmembername;
 	public $classname;
@@ -61,29 +60,8 @@ class rpsignup
 	
 	public $roleid;
 	public $confirm;
-	public $roles = array();
 	
-	/**
-	 * 
-	 */
-	function __construct($id = 0)
-	{
-		global $config, $db;
-		
-		//set up the role list
-		$this->roles = $this->get_roles();
-		
-		//instantiate one signup
-		if ($id !=0)
-		{
-			$this->getSignup($id);
-		}
-	
-	}
-	
-	
-	
-	
+
 	
 	/**
 	 * makes a rpsignup object
@@ -198,6 +176,18 @@ class rpsignup
 		$this->attendanceP1 = raidcount ( true, $row ['member_dkpid'], $list_p1, $row ['member_id'],2,false );
 			
 	}
+	
+	
+		
+	/**
+	 * puts signups on template
+	 *
+	 */
+	private function _pushtemplate()
+	{
+		
+	}
+
 	public function signup()
 	{
 		$signup_data['poster_id'] = $user->data['user_id'];
@@ -212,27 +202,8 @@ class rpsignup
 		$signup_data['signup_detail_edit'] = "";
 		
 	}
-	private function get_roles()
-	{
-		global $db;
-		
-		$sql_array = array(
-	    	'SELECT'    => 'r.role_id, r.role_name, r.role_color, r.role_icon ', 
-	    	'FROM'      => array(
-				RP_ROLES   => 'r'
-	    	),
-	    	'ORDER_BY'  => 'r.role_id'
-			);
-		$sql = $db->sql_build_query('SELECT', $sql_array);
-		$result = $db->sql_query($sql);
-		while ( $row = $db->sql_fetchrow ( $result0 ) )
-		{
-			$this->roles[$row['role_id']]['role_name'] = $row['role_name'];
-			$this->roles[$row['role_id']]['role_color'] = $row['role_color'];
-			$this->roles[$row['role_id']]['role_icon'] = $row['role_icon']; 
-		}
-		$db->sql_freeresult($result);
-	}
+	
+
 	
 	
 }
