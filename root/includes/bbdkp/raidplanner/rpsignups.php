@@ -45,7 +45,6 @@ class rpsignup
 	public $classname;
 	public $imagename;
 	public $colorcode;
-	public $race;
 	public $raceimg;
 	public $genderid;
 	public $level;
@@ -66,12 +65,15 @@ class rpsignup
 	/**
 	 * makes a rpsignup object
 	 *
-	 * @param unknown_type $id
+	 * @param int $signup_id  
 	 */
-	private function getSignup($id)
+	public function getSignup($signup_id)
 	{
-		$this->signup_id=$id;
-		$sql = "select * from " . RP_SIGNUPS . " where signup_id = " . $id;
+		
+		global $db, $config, $phpbb_root_path, $db;
+		
+		$this->signup_id=$signup_id;
+		$sql = "select * from " . RP_SIGNUPS . " where signup_id = " . $this->signup_id;
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		if( !$row )
@@ -94,7 +96,7 @@ class rpsignup
 		//enable_bbcode & enable_smilies & enable_magic_url always 1
 		$this->confirm = $row['role_confirm'];
 		$this->dkpmemberid = $row['dkpmember_id'];
-		
+		$this->roleid = $row['role_id'];
 		// get memberinfo
 		$sql_array = array(
 	    	'SELECT'    => ' s.*, m.member_id, m.member_name, m.member_level,  
@@ -130,14 +132,13 @@ class rpsignup
 		$this->colorcode = $row['colorcode'];
 		$race_image = (string) (($row['member_gender_id']==0) ? $row['image_male_small'] : $row['image_female_small']);
 		$this->raceimg = (strlen($race_image) > 1) ? $phpbb_root_path . "images/race_images/" . $race_image . ".png" : '';
-		$this->race = $row['member_race_id'];
 		$this->level =  $row['member_level'];
 		$this->genderid = $row['member_gender_id'];
 		
-		/* get member dkp */
+		/* get member dkp for the dkp pool to which the raid plan event belongs. */
 		$sql_array = array(
 		    'SELECT'    => 	'm.member_dkpid, m.member_status, m.member_lastraid, 
-							sum(m.member_earned + m.member_adjustment - m.member_spent - ( ' . max(0, $config['bbdkp_basegp']) . ') ) AS member_current,',
+							sum(m.member_earned + m.member_adjustment - m.member_spent - ( ' . max(0, $config['bbdkp_basegp']) . ') ) AS member_current ',
 		 
 		    'FROM'      => array(
 		        MEMBER_DKP_TABLE 	=> 'm',
@@ -146,8 +147,11 @@ class rpsignup
 		        RP_SIGNUPS 			=> 'rs',
 		    	),
 		 
-		    'WHERE'     =>  ' m.member_dkpid = rs.dkpmember_id and rs.raidplan_id = rp.raidplan_id and rp.etype_id = e.event_id and a.event_dkpid = m.member_dkpid 
-		    				  and rs.raidplan_id = ' . $this->raidplan_id . ' and m.member_dkpid = ' . $this->dkpmemberid,  
+		    'WHERE'     =>  ' rs.raidplan_id = rp.raidplan_id 
+		    				  and rp.etype_id = e.event_id 
+		    				  and e.event_dkpid = m.member_dkpid  
+		    				  and rs.raidplan_id = ' . $this->raidplan_id . ' 
+		    				  and m.member_id = rs.dkpmember_id and m.member_id = ' . $this->dkpmemberid ,  
 		    'GROUP_BY' => 'm.member_dkpid, m.member_status, m.member_lastraid '
 		);
 		
@@ -160,20 +164,20 @@ class rpsignup
 					
 		$sql = $db->sql_build_query('SELECT_DISTINCT', $sql_array);
 		
-		if (! ($dkp_result = $db->sql_query ( $sql )))
+		if (($result = $db->sql_query ($sql)))
 		{
-			trigger_error ($user->lang['MNOTFOUND']);
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$this->dkp_current = $row ['member_current'];
+				if($config['bbdkp_epgp'] == 1)
+				{
+					$this->priority_ratio = $row ['pr'];
+				}
+				$this->lastraid = $row ['member_lastraid'];
+				// fetch the 30 day 
+				$this->attendanceP1 = raidcount ( true, $row ['member_dkpid'], $config['bbdkp_list_p1'], $this->dkpmemberid ,2,false );
+			}
 		}
-					
-		$this->dkp_current = $row ['member_current'];
-		
-		if($config['bbdkp_epgp'] == 1)
-		{
-			$this->priority_ratio = $row ['pr'];
-		}
-		
-		$this->lastraid = $row ['member_lastraid'];
-		$this->attendanceP1 = raidcount ( true, $row ['member_dkpid'], $list_p1, $row ['member_id'],2,false );
 			
 	}
 	

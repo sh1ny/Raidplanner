@@ -124,19 +124,72 @@ class rpraid
 			// fetch raid object from db
 			$this->make_obj();
 			//can user see it ?
-			$this->auth_cansee = $this->checkauth();
+			
 		}
 		
 	}
 
 	/**
 	 * make raid object
+	 * rpraid::id = (int) 1	
+		event_type = (string:2) 39	
+		rpraid::invite_time = (string:10) 1309896000	
+		rpraid::start_time = (string:10) 1309897800	
+		rpraid::end_time = (string:1) 0	
+		rpraid::all_day = (string:1) 0	
+		rpraid::day = (string:10) 00-00-0000	
+		rpraid::subject = (string:2) qs	
+		rpraid::body = (string:29) [b:1zcpogce]test[/b:1zcpogce]	
+		rpraid::bbcode = Array [2]	
+		rpraid::poster = (string:1) 2	
+		rpraid::accesslevel = (string:1) 2	
+		rpraid::group_id = (string:1) 0	
+		rpraid::group_id_list = (string:1) ,	
+		rpraid::roles = Array [0]	
+		rpraid::raidroles = Array [6]	
+		rpraid::signups = Array [4]	
+			yes = (string:1) 0	
+			no = (string:1) 0	
+			maybe = (string:1) 0	
+			detail = Array [1]	
+				0 = Array [24]	
+					signup_id = (string:1) 1	
+					raidplan_id = (string:1) 1	
+					poster_id = (string:1) 2	
+					poster_name = (string:5) admin	
+					poster_colour = (string:0) 	
+					poster_ip = (string:0) 	
+					signup_val = (string:1) 1	
+					signup_time = (string:10) 1309896000	
+					signup_count = (string:1) 0	
+					dkpmemberid = (string:2) 16	
+					dkpmembername = (string:5) Xeeni	
+					classname = (string:6) Priest	
+					imagename = (string:42) ./images/class_images/wow_Priest_small.png	
+					colorcode = (string:7) #FFFFFF	
+					raceimg = (string:47) ./images/race_images/wow_human_female_small.png	
+					genderid = (string:1) 1	
+					level = (string:2) 80	
+					dkp_current = (string:6) -30.00	
+					priority_ratio = (string:4) 0.24	
+					lastraid = (string:10) 1286391317	
+					attendanceP1 = (double) 0	
+					comment = (string:16) qdfgsdfgsdfgsfdg	
+					roleid = (string:1) 5	
+					confirm = (string:1) 0	
+		rpraid::auth_cansee = (boolean) true	
+		rpraid::recurr_id = (string:1) 0	
+		rpraid::poster_url = (string:111) <a href="./memberlist.php?mode=viewprofile&amp;u=2" style="color: #AA0000;" class="username-coloured">admin</a>	
+		rpraid::invite_list = (string:8) Everyone	
+		rpraid::signups_allowed = (boolean) true	
+	 * 
+	 * 
 	 *
 	 */
 	private function make_obj()
 	{
 			global $db, $user, $config, $phpEx, $phpbb_root_path, $db;
-				
+			
 			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . ' WHERE raidplan_id = '. (int) $this->id;
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
@@ -146,6 +199,19 @@ class rpraid
 				trigger_error( 'INVALID_RAIDPLAN' );
 			}
 			
+			// check access
+			$this->accesslevel=$row['raidplan_access_level'];
+			$this->poster=$row['poster_id'];
+			$this->group_id=$row['group_id'];
+			$this->group_id_list=$row['group_id_list'];
+
+			$this->auth_cansee = $this->checkauth();
+			if(!$this->auth_cansee)
+			{
+				trigger_error( 'NOT_AUTHORISED' );
+			}
+			
+			// now go add raid properties
 			$this->event_type= $row['etype_id'];
 			$this->invite_time=$row['raidplan_invite_time'];
 			$this->start_time=$row['raidplan_start_time'];
@@ -153,6 +219,10 @@ class rpraid
 			
 			$this->all_day=$row['raidplan_all_day'];
 			$this->day=$row['raidplan_day'];
+			
+			// is raid recurring ? 
+			// @todo not implemented yet !!
+			$this->recurr_id = $row['recurr_id'];
 
 			$this->subject=$row['raidplan_subject'];
 			$this->body=$row['raidplan_body'];
@@ -161,17 +231,10 @@ class rpraid
 			$this->bbcode['uid']= $row['bbcode_uid'];
 			//enable_bbcode & enable_smilies & enable_magic_url always 1
 			
-			$this->group_id=$row['group_id'];
-			$this->group_id_list=$row['group_id_list'];
-			$this->accesslevel=$row['raidplan_access_level'];
-			
-			// is raid recurring ?
-			$this->recurr_id = $row['recurr_id'];
-			
 			//get number of signups if they are tracked
 			if ($row['track_signups'] == 1)
 			{
-				$this->signups['track'] = true;
+				$this->signups_allowed = true;
 				$this->signups['yes'] = $row['signup_yes'];
 				$this->signups['no'] = $row['signup_no'];
 				$this->signups['maybe'] = $row['signup_maybe'];
@@ -181,18 +244,14 @@ class rpraid
 				
 				//get array of signups
 				$this->signups['detail'] = $this->getSignups();
-				
-				
 			}
 			else 
 			{
-				$this->signups['track'] = false;
+				$this->signups_allowed = false;
 				$this->signups['yes'] = 0;
 				$this->signups['no'] = 0;
 				$this->signups['maybe'] = 0;
 			}
-			
-			$this->poster=$row['poster_id'];
 			unset ($row);
 			
 			$sql = 'SELECT user_id, username, user_colour FROM ' . USERS_TABLE . ' WHERE user_id = '.$db->sql_escape($this->poster);
@@ -520,142 +579,125 @@ class rpraid
 			}
 		}
 		
-		// display signups 
+		// check if we have signups and that the appointment is not a personal 
 		if($this->signups_allowed == true && $this->accesslevel != 0)
 		{
 			
-			$roles = array ();
-			$total_needed = 0;
-			
-			
-			$sql = "select * from ";
-			
-			while ( $row = $db->sql_fetchrow ( $result0 ) )
-			{
-
-				$role_id = $row['role_id'];
-				$role_name = $row['role_name'];
-				$role_needed = $row['role_needed'];
-				$role_signedup = $row['role_signedup'];
-				$total_needed += $role_needed;
-				
-				// build divs with signups 
-				$template->assign_block_vars('raidroles', array(
-				        'ROLE_ID'        => $role_id,
-					    'ROLE_NAME'      => $role_name,
-				    	'ROLE_NEEDED'    => $role_needed,
-						'ROLE_COLOR'	 => $row['role_color'],
-						'S_ROLE_ICON_EXISTS' => (strlen($row['role_icon']) > 1) ? true : false,
-				       	'ROLE_ICON' 	 => (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $row['role_icon'] . ".png" : '',
-				    	'ROLE_SIGNEDUP'  => $role_signedup,
-				 ));
+			// build divs with signups 
+			$template->assign_block_vars('raidroles', array(
+			        'ROLE_ID'        => $role_id,
+				    'ROLE_NAME'      => $role_name,
+			    	'ROLE_NEEDED'    => $role_needed,
+					'ROLE_COLOR'	 => $row['role_color'],
+					'S_ROLE_ICON_EXISTS' => (strlen($row['role_icon']) > 1) ? true : false,
+			       	'ROLE_ICON' 	 => (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $row['role_icon'] . ".png" : '',
+			    	'ROLE_SIGNEDUP'  => $role_signedup,
+			 ));
+		 
 			 
-				 
-				// list the signups for each raid role
-				$sql_array = array(
-			    	'SELECT'    => ' s.*, m.member_id, m.member_name, m.member_level,  
-				    				 m.member_gender_id, a.image_female_small, a.image_male_small, 
-				    				 l.name as member_class , c.imagename, c.colorcode ', 
-			    	'FROM'      => array(
-				        RP_SIGNUPS	 		=> 's', 
-				        MEMBER_LIST_TABLE 	=> 'm',
-				        CLASS_TABLE  		=> 'c',
-				        RACE_TABLE  		=> 'a',
-				        BB_LANGUAGE			=> 'l', 
-				        
-			    	),
-			    
-				    'WHERE'     =>  " l.attribute_id = c.class_id 
-				    				  AND l.language = '" . $config['bbdkp_lang'] . "' 
-			    					  AND l.attribute = 'class'
-									  AND (m.member_class_id = c.class_id)
-									  AND m.member_race_id =  a.race_id  
-									  AND s.role_id = " . (int) $role_id . ' 
-									  AND s.raidplan_id = ' . $raidplan_id . '
-									  AND s.poster_id = m.phpbb_user_id
-									  AND s.dkpmember_id = m.member_id
-									  AND m.game_id = c.game_id and m.game_id = a.game_id and m.game_id = l.game_id' , 
-			    	'ORDER_BY'  => 's.signup_val DESC'
-				);
-				$sql = $db->sql_build_query('SELECT', $sql_array);
-					
-				$result = $db->sql_query($sql);
+			// list the signups for each raid role
+			$sql_array = array(
+		    	'SELECT'    => ' s.*, m.member_id, m.member_name, m.member_level,  
+			    				 m.member_gender_id, a.image_female_small, a.image_male_small, 
+			    				 l.name as member_class , c.imagename, c.colorcode ', 
+		    	'FROM'      => array(
+			        RP_SIGNUPS	 		=> 's', 
+			        MEMBER_LIST_TABLE 	=> 'm',
+			        CLASS_TABLE  		=> 'c',
+			        RACE_TABLE  		=> 'a',
+			        BB_LANGUAGE			=> 'l', 
+			        
+		    	),
+		    
+			    'WHERE'     =>  " l.attribute_id = c.class_id 
+			    				  AND l.language = '" . $config['bbdkp_lang'] . "' 
+		    					  AND l.attribute = 'class'
+								  AND (m.member_class_id = c.class_id)
+								  AND m.member_race_id =  a.race_id  
+								  AND s.role_id = " . (int) $role_id . ' 
+								  AND s.raidplan_id = ' . $raidplan_id . '
+								  AND s.poster_id = m.phpbb_user_id
+								  AND s.dkpmember_id = m.member_id
+								  AND m.game_id = c.game_id and m.game_id = a.game_id and m.game_id = l.game_id' , 
+		    	'ORDER_BY'  => 's.signup_val DESC'
+			);
+			$sql = $db->sql_build_query('SELECT', $sql_array);
 				
-				// loop signups
-				while ($signup_row = $db->sql_fetchrow($result) )
+			$result = $db->sql_query($sql);
+			
+			// loop signups
+			while ($signup_row = $db->sql_fetchrow($result) )
+			{
+				
+				if( ($signup_id == 0 && $signup_data['poster_id'] == $signup_row['poster_id']) ||
+				    ($signup_id != 0 && $signup_id == $signup_row['signup_id']) )
 				{
 					
-					if( ($signup_id == 0 && $signup_data['poster_id'] == $signup_row['poster_id']) ||
-					    ($signup_id != 0 && $signup_id == $signup_row['signup_id']) )
-					{
-						
-						$signup_data['signup_id'] = $signup_row['signup_id'];
-						$signup_data['post_time'] = $signup_row['post_time'];
-						$signup_data['signup_val'] = $signup_row['signup_val'];
-						$signup_data['signup_count'] = $signup_row['signup_count'];
-						$edit_text_array = generate_text_for_edit( $signup_row['signup_detail'], $signup_row['bbcode_uid'], $signup_row['bbcode_options']);
-						$signup_data['signup_detail_edit'] = $edit_text_array['text'];
-					}
+					$signup_data['signup_id'] = $signup_row['signup_id'];
+					$signup_data['post_time'] = $signup_row['post_time'];
+					$signup_data['signup_val'] = $signup_row['signup_val'];
+					$signup_data['signup_count'] = $signup_row['signup_count'];
+					$edit_text_array = generate_text_for_edit( $signup_row['signup_detail'], $signup_row['bbcode_uid'], $signup_row['bbcode_options']);
+					$signup_data['signup_detail_edit'] = $edit_text_array['text'];
+				}
 
-					if( $signup_row['signup_val'] == 0 )
-					{
-						$signupcolor = '#00FF00';
-						$signuptext = $user->lang['YES'];
-					}
-					else if( $signup_row['signup_val'] == 1 )
-					{
-						$signupcolor = '#FF0000';
-						$signuptext = $user->lang['NO'];
-					}
-					else
-					{
-						$signupcolor = '#FFCC33';
-						$signuptext = $user->lang['MAYBE'];
-					}
-					
-					$signup_editlink = "";
-					if( $edit_signups === 1 )
-					{
-						$signup_editlink = $edit_signup_url . $signup_row['signup_id'];
-					}
-					
-					$raceimage = (string) (($signup_row['member_gender_id']==0) ? $signup_row['image_male_small'] : $signup_row['image_female_small']);
-					
-					$template->assign_block_vars('raidroles.signups', array(
-        				'POST_TIME' => $user->format_date($signup_row['post_time']),
-						'POST_TIMESTAMP' => $signup_row['post_time'],
-						'DETAILS' => generate_text_for_display($signup_row['signup_detail'], $signup_row['bbcode_uid'], $signup_row['bbcode_bitfield'], $signup_row['bbcode_options']),
-						'HEADCOUNT' => $signup_row['signup_count'],
-						'U_EDIT' => $signup_editlink,
-						'POSTER' => $signup_row['poster_name'], 
-						'POSTER_URL' => get_username_string( 'full', $signup_row['poster_id'], $signup_row['poster_name'], $signup_row['poster_colour'] ),
-						'VALUE' => $signup_row['signup_val'], 
-						'POST_TIME' => $user->format_date($signup_row['post_time']),
-						'COLOR' => $signupcolor, 
-						'VALUE_TXT' => $signuptext, 
-						'CHARNAME'      => $signup_row['member_name'],
-						'LEVEL'         => $signup_row['member_level'],
-						'CLASS'         => $signup_row['member_class'],
-						'COLORCODE'  	=> ($signup_row['colorcode'] == '') ? '#123456' : $signup_row['colorcode'],
-				        'CLASS_IMAGE' 	=> (strlen($signup_row['imagename']) > 1) ? $phpbb_root_path . "images/class_images/" . $signup_row['imagename'] . ".png" : '',  
-						'S_CLASS_IMAGE_EXISTS' => (strlen($signup_row['imagename']) > 1) ? true : false,
-				       	'RACE_IMAGE' 	=> (strlen($raceimage) > 1) ? $phpbb_root_path . "images/race_images/" . $raceimage . ".png" : '',  
-						'S_RACE_IMAGE_EXISTS' => (strlen($raceimage) > 1) ? true : false, 			 				
-					
-					
-					));
-    
+				if( $signup_row['signup_val'] == 0 )
+				{
+					$signupcolor = '#00FF00';
+					$signuptext = $user->lang['YES'];
+				}
+				else if( $signup_row['signup_val'] == 1 )
+				{
+					$signupcolor = '#FF0000';
+					$signuptext = $user->lang['NO'];
+				}
+				else
+				{
+					$signupcolor = '#FFCC33';
+					$signuptext = $user->lang['MAYBE'];
 				}
 				
+				$signup_editlink = "";
+				if( $edit_signups === 1 )
+				{
+					$signup_editlink = $edit_signup_url . $signup_row['signup_id'];
+				}
+				
+				$raceimage = (string) (($signup_row['member_gender_id']==0) ? $signup_row['image_male_small'] : $signup_row['image_female_small']);
+				
+				$template->assign_block_vars('raidroles.signups', array(
+       				'POST_TIME' => $user->format_date($signup_row['post_time']),
+					'POST_TIMESTAMP' => $signup_row['post_time'],
+					'DETAILS' => generate_text_for_display($signup_row['signup_detail'], $signup_row['bbcode_uid'], $signup_row['bbcode_bitfield'], $signup_row['bbcode_options']),
+					'HEADCOUNT' => $signup_row['signup_count'],
+					'U_EDIT' => $signup_editlink,
+					'POSTER' => $signup_row['poster_name'], 
+					'POSTER_URL' => get_username_string( 'full', $signup_row['poster_id'], $signup_row['poster_name'], $signup_row['poster_colour'] ),
+					'VALUE' => $signup_row['signup_val'], 
+					'POST_TIME' => $user->format_date($signup_row['post_time']),
+					'COLOR' => $signupcolor, 
+					'VALUE_TXT' => $signuptext, 
+					'CHARNAME'      => $signup_row['member_name'],
+					'LEVEL'         => $signup_row['member_level'],
+					'CLASS'         => $signup_row['member_class'],
+					'COLORCODE'  	=> ($signup_row['colorcode'] == '') ? '#123456' : $signup_row['colorcode'],
+			        'CLASS_IMAGE' 	=> (strlen($signup_row['imagename']) > 1) ? $phpbb_root_path . "images/class_images/" . $signup_row['imagename'] . ".png" : '',  
+					'S_CLASS_IMAGE_EXISTS' => (strlen($signup_row['imagename']) > 1) ? true : false,
+			       	'RACE_IMAGE' 	=> (strlen($raceimage) > 1) ? $phpbb_root_path . "images/race_images/" . $raceimage . ".png" : '',  
+					'S_RACE_IMAGE_EXISTS' => (strlen($raceimage) > 1) ? true : false, 			 				
+				
+				
+				));
+   
 			}
+				
+			
 			
 		}
-		
 		
 		// does this raidplan have signups turned on and is it not personal ?
 		if( $this->signups_allowed == true && $this->accesslevel != 0)
 		{
-			
 			$signup_data = array();
 			$signup_data['signup_id'] = 0;
 			$signup_data['raidplan_id'] = $raidplan_id;
