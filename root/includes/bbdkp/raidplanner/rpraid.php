@@ -130,8 +130,10 @@ class rpraid
 	}
 
 	/**
-	 * make raid object
-	 * rpraid::id = (int) 1	
+	 * make raid object like example
+	 * 
+	 "$this" = Object of: rpraid	
+		rpraid::id = (int) 1	
 		event_type = (string:2) 39	
 		rpraid::invite_time = (string:10) 1309896000	
 		rpraid::start_time = (string:10) 1309897800	
@@ -141,50 +143,93 @@ class rpraid
 		rpraid::subject = (string:2) qs	
 		rpraid::body = (string:29) [b:1zcpogce]test[/b:1zcpogce]	
 		rpraid::bbcode = Array [2]	
+			bitfield = (string:4) QA==	
+			uid = (string:8) 1zcpogce	
 		rpraid::poster = (string:1) 2	
 		rpraid::accesslevel = (string:1) 2	
 		rpraid::group_id = (string:1) 0	
 		rpraid::group_id_list = (string:1) ,	
 		rpraid::roles = Array [0]	
 		rpraid::raidroles = Array [6]	
-		rpraid::signups = Array [4]	
-			yes = (string:1) 0	
-			no = (string:1) 0	
-			maybe = (string:1) 0	
-			detail = Array [1]	
-				0 = Array [24]	
-					signup_id = (string:1) 1	
-					raidplan_id = (string:1) 1	
-					poster_id = (string:1) 2	
-					poster_name = (string:5) admin	
-					poster_colour = (string:0) 	
-					poster_ip = (string:0) 	
-					signup_val = (string:1) 1	
-					signup_time = (string:10) 1309896000	
-					signup_count = (string:1) 0	
-					dkpmemberid = (string:2) 16	
-					dkpmembername = (string:5) Xeeni	
-					classname = (string:6) Priest	
-					imagename = (string:42) ./images/class_images/wow_Priest_small.png	
-					colorcode = (string:7) #FFFFFF	
-					raceimg = (string:47) ./images/race_images/wow_human_female_small.png	
-					genderid = (string:1) 1	
-					level = (string:2) 80	
-					dkp_current = (string:6) -30.00	
-					priority_ratio = (string:4) 0.24	
-					lastraid = (string:10) 1286391317	
-					attendanceP1 = (double) 0	
-					comment = (string:16) qdfgsdfgsdfgsfdg	
-					roleid = (string:1) 5	
-					confirm = (string:1) 0	
+			1 = Array [7]	
+				role_name = (string:10) Ranged DPS	
+				role_color = (string:7) #BB00AA	
+				role_icon = (string:5) range	
+				role_needed = (string:1) 3	
+				role_signedup = (string:1) 0	
+				role_confirmed = (string:1) 0	
+				role_signups = Array [0]	
+			2 = Array [7]	
+				role_name = (string:9) Melee DPS	
+				role_color = (string:7) #FFCC66	
+				role_icon = (string:5) melee	
+				role_needed = (string:1) 1	
+				role_signedup = (string:1) 0	
+				role_confirmed = (string:1) 0	
+				role_signups = Array [0]	
+			3 = Array [7]	
+				role_name = (string:4) Tank	
+				role_color = (string:7) #777777	
+				role_icon = (string:4) tank	
+				role_needed = (string:1) 1	
+				role_signedup = (string:1) 0	
+				role_confirmed = (string:1) 0	
+				role_signups = Array [0]	
+			4 = Array [7]	
+				role_name = (string:8) Off Tank	
+				role_color = (string:7) #AAAAAA	
+				role_icon = (string:4) tank	
+				role_needed = (string:1) 1	
+				role_signedup = (string:1) 0	
+				role_confirmed = (string:1) 0	
+				role_signups = Array [0]	
+			5 = Array [7]	
+				role_name = (string:6) Healer	
+				role_color = (string:7) #00EECC	
+				role_icon = (string:6) healer	
+				role_needed = (string:1) 2	
+				role_signedup = (string:1) 0	
+				role_confirmed = (string:1) 0	
+				role_signups = Array [1]	
+					0 = Array [24]	
+						signup_id = (string:1) 1	
+						raidplan_id = (string:1) 1	
+						poster_id = (string:1) 2	
+						poster_name = (string:5) admin	
+						poster_colour = (string:0) 	
+						poster_ip = (string:0) 	
+						signup_val = (string:1) 1	
+						signup_time = (string:10) 1309896000	
+						signup_count = (string:1) 0	
+						dkpmemberid = (string:2) 16	
+						dkpmembername = (string:5) Xeeni	
+						classname = (string:6) Priest	
+						imagename = (string:42) ./images/class_images/wow_Priest_small.png	
+						colorcode = (string:7) #FFFFFF	
+						raceimg = (string:47) ./images/race_images/wow_human_female_small.png	
+						genderid = (string:1) 1	
+						level = (string:2) 80	
+						dkp_current = (string:6) -30.00	
+						priority_ratio = (string:4) 0.24	
+						lastraid = (string:10) 1286391317	
+						attendanceP1 = (double) 0	
+						comment = (string:16) qdfgsdfgsdfgsfdg	
+						roleid = (string:1) 5	
+						confirm = (string:1) 0	
+			6 = Array [7]	
+				role_name = (string:6) Hybrid	
+				role_color = (string:7) #9999FF	
+				role_icon = (string:7) unknown	
+				role_needed = (string:1) 2	
+				role_signedup = (string:1) 0	
+				role_confirmed = (string:1) 0	
+				role_signups = Array [0]	
+		rpraid::signups = Array [3]	
 		rpraid::auth_cansee = (boolean) true	
 		rpraid::recurr_id = (string:1) 0	
 		rpraid::poster_url = (string:111) <a href="./memberlist.php?mode=viewprofile&amp;u=2" style="color: #AA0000;" class="username-coloured">admin</a>	
 		rpraid::invite_list = (string:8) Everyone	
 		rpraid::signups_allowed = (boolean) true	
-	 * 
-	 * 
-	 *
 	 */
 	private function make_obj()
 	{
@@ -239,11 +284,10 @@ class rpraid
 				$this->signups['no'] = $row['signup_no'];
 				$this->signups['maybe'] = $row['signup_maybe'];
 				
-				// get array of raid roles
+				// get array of raid roles with signups per role
 				$this->get_raid_roles();
-				
-				//get array of signups
-				$this->signups['detail'] = $this->getSignups();
+				// attach signups to roles
+				$this->getSignups();
 			}
 			else 
 			{
@@ -441,6 +485,7 @@ class rpraid
 			);
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		$result = $db->sql_query($sql);
+		$signups = array();
 		while ( $row = $db->sql_fetchrow ( $result ) )
 		{
 			$this->raidroles[$row['role_id']]['role_name'] = $row['role_name'];
@@ -449,6 +494,7 @@ class rpraid
 			$this->raidroles[$row['role_id']]['role_needed'] = $row['role_needed']; 
 			$this->raidroles[$row['role_id']]['role_signedup'] = $row['role_signedup']; 
 			$this->raidroles[$row['role_id']]['role_confirmed'] = $row['role_confirmed']; 
+			$this->raidroles[$row['role_id']]['role_signups'] =  $signups;
 		}
 		$db->sql_freeresult($result);
 	}
@@ -495,18 +541,21 @@ class rpraid
 		}
 		$rpsignup = new rpsignup();
 		
-		$sql = "select * from " . RP_SIGNUPS . " where raidplan_id = " . $this->id;
-		$result = $db->sql_query($sql);
-		$signups = array();
-		while ($row = $db->sql_fetchrow($result))
+		foreach ($this->raidroles as $id => $role)
 		{
-			$rpsignup->getSignup($row['signup_id']);
-			//get all public object vars to signup array
-			$signups[] = get_object_vars($rpsignup);
-		}
-		$db->sql_freeresult($result);
+			$sql = "select * from " . RP_SIGNUPS . " where raidplan_id = " . $this->id . " and role_id  = " . $id;
+			$result = $db->sql_query($sql);
+			$signups = array();
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$rpsignup->getSignup($row['signup_id']);
+				//get all public object vars to signup array and bind to role
+				$this->raidroles[$id]['role_signups'][] = get_object_vars($rpsignup);
+			}
+			$db->sql_freeresult($result);
 			
-		return $signups;
+		}
+
 	}
 	
 	
