@@ -55,7 +55,7 @@ class rpsignup
 	public $attendanceP1;
 	
 	public $comment;
-	private $bbcode = array();
+	public $bbcode = array();
 	
 	public $roleid;
 	public $confirm;

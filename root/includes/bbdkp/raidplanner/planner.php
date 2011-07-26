@@ -57,17 +57,22 @@ switch( $view_mode )
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpevents.' . $phpEx);
 		$raidplan_id = request_var('calEid', 0);
-		$eventlist = new rpevents();
 		$raid = new rpraid($raidplan_id);
 		$mode=request_var('mode', 'show');
 		switch($mode)
 		{
 			case 'show' :
+				$eventlist = new rpevents();
 				$raid->display($eventlist);
 				break;
 			case 'edit':
+				$eventlist = new rpevents();
 				$raid->edit($eventlist);
 				break;			
+			case 'add':
+				$eventlist = new rpevents();
+				$raid->showadd($eventlist);
+				break;	
 			case 'editall':
 				$raid->edit($eventlist);
 				break;	
@@ -76,17 +81,8 @@ switch( $view_mode )
 				break;			
 			case 'deleteall':
 				$raid->deleteall();
-				break;	
+				break;
 		}
-		break;
-	case "showadd":
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
-		$cal = new rpraid("");
-		
-		// display header
-		$cal->displayCalframe();
-		// display a raid posting form
-		$cal->showadd();
 		break;
 	case "day":
 		// display all of the raidplans on this day
