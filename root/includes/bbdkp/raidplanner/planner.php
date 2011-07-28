@@ -55,26 +55,23 @@ switch( $view_mode )
 
 	case "raidplan":
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpevents.' . $phpEx);
+		
 		$raidplan_id = request_var('calEid', 0);
 		$raid = new rpraid($raidplan_id);
 		$mode=request_var('mode', 'show');
 		switch($mode)
 		{
 			case 'show' :
-				$eventlist = new rpevents();
-				$raid->display($eventlist);
+				$raid->display();
 				break;
 			case 'edit':
-				$eventlist = new rpevents();
-				$raid->edit($eventlist);
+				$raid->edit();
 				break;			
 			case 'add':
-				$eventlist = new rpevents();
-				$raid->showadd($eventlist);
+				$raid->showadd();
 				break;	
 			case 'editall':
-				$raid->edit($eventlist);
+				$raid->edit();
 				break;	
 			case 'delete':
 				$raid->delete();
@@ -83,24 +80,6 @@ switch( $view_mode )
 				$raid->deleteall();
 				break;
 		}
-		break;
-	case "day":
-		// display all of the raidplans on this day
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpday.' . $phpEx);
-		$cal = new rpday();
-		// display header
-		$cal->displayCalframe();
-		// display calendar
-		$cal->display(0);		
-		break;
-	case "week":
-		// display the entire week
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
-		$cal = new rpweek();
-		// display header
-		$cal->displayCalframe();
-		// display calendar
-		$cal->display(0);
 		break;
    case "next":		
       // display upcoming raidplans
@@ -121,6 +100,24 @@ switch( $view_mode )
 		'S_PLANNER_UPCOMING'	=> true,
 		));
       break;
+	case "day":
+		// display all of the raidplans on this day
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpday.' . $phpEx);
+		$cal = new rpday();
+		// display header
+		$cal->displayCalframe();
+		// display calendar
+		$cal->display(0);		
+		break;
+	case "week":
+		// display the entire week
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
+		$cal = new rpweek();
+		// display header
+		$cal->displayCalframe();
+		// display calendar
+		$cal->display(0);
+		break;
 	case "month":
 	default:	
 		//display the entire month

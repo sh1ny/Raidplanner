@@ -17,6 +17,7 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 	exit;
 }
 
+
 /**
  * implements a raid plan
  *
@@ -36,6 +37,8 @@ class rpraid
 	 * @var int
 	 */
 	public $event_type; 
+	
+	private $eventlist;
 	
 	private $invite_time;
 	private $start_time;
@@ -123,8 +126,12 @@ class rpraid
 	 *
 	 * @param int $id
 	 */
-	function __construct($id)
+	function __construct($id=0)
 	{
+		global $phpEx, $phpbb_root_path;
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpevents.' . $phpEx);
+		$this->eventlist= new rpevents();
+		
 		if($id !=0)
 		{
 			$this->id=$id;
@@ -599,14 +606,12 @@ class rpraid
 	}
 	
 	
-	
-	
 	/**
 	 * displays a raid object
 	 *
 	 * @param rpevents $eventlist
 	 */
-	public function display(rpevents $eventlist)
+	public function display()
 	{
 		// raid object does not need to know the events list so it‘s passed byval
 		
@@ -803,10 +808,10 @@ class rpraid
 			'CURR_NO_COUNT'		=> $this->signups['no'],
 			'S_CURR_NO_COUNT'	=> ($this->signups['no'] > 0) ? true: false,
 		
-			'ETYPE_DISPLAY_NAME'=> $eventlist->events[$this->event_type]['event_name'],
-			'EVENT_COLOR'		=> $eventlist->events[$this->event_type]['color'],
-			'EVENT_IMAGE' 		=> $phpbb_root_path . "images/event_images/" . $eventlist->events[$this->event_type]['imagename'] . ".png", 
-           	'S_EVENT_IMAGE_EXISTS' 	=> (strlen($eventlist->events[$this->event_type]['imagename']) > 1) ? true : false, 
+			'ETYPE_DISPLAY_NAME'=> $this->eventlist->events[$this->event_type]['event_name'],
+			'EVENT_COLOR'		=> $this->eventlist->events[$this->event_type]['color'],
+			'EVENT_IMAGE' 		=> $phpbb_root_path . "images/event_images/" . $this->eventlist->events[$this->event_type]['imagename'] . ".png", 
+           	'S_EVENT_IMAGE_EXISTS' 	=> (strlen($this->eventlist->events[$this->event_type]['imagename']) > 1) ? true : false, 
 			'SUBJECT'			=> $this->subject,
 			'MESSAGE'			=> $message,
 		
@@ -834,6 +839,191 @@ class rpraid
 			)
 		);
 		
+	}
+
+	
+	
+	/**
+	 * gets array with raid days 
+	 *
+	 * @param int $from
+	 * @param int $end
+	 * 
+	 * @return array
+	 */
+	public function GetRaiddaylist($from, $end)
+	{
+		global $user, $db;
+		
+		// build sql 
+		$sql_array = array(
+   			'SELECT'    => 'r.raidplan_start_time ', 
+			'FROM'		=> array(RP_RAIDS_TABLE => 'r' ), 
+			'WHERE'		=>  '  r.raidplan_start_time >= '.$db->sql_escape($from).' 
+							 AND r.raidplan_start_time <= '. $db->sql_escape($end) ,
+			'ORDER_BY'	=> 'r.raidplan_start_time ASC');
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		$result = $db->sql_query($sql);
+		$raiddaylist = array();
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$raiddaylist [] = array(
+				'month' => date("m", $row['raidplan_start_time']),
+				'day' => date("d", $row['raidplan_start_time']),
+				'year' => date("Y", $row['raidplan_start_time'])
+			); 
+		}
+		
+		$db->sql_freeresult($result);
+		return array_unique($raiddaylist);
+		
+	}
+	
+	/**
+	 * return raid plan info array to display on day/week/month/upcoming calendar
+	 * 
+	 * @param int $day		today
+	 * @param int $month	this month
+	 * @param int $year		this year
+	 * @param string	$group_options 
+	 * @param string 	$mode
+	 * @param int 		$x		  	
+	 * @return array
+	 */
+	public function GetRaidinfo($month, $day, $year, $group_options, $mode)
+	{
+		global $db, $user, $template, $config, $phpbb_root_path, $auth, $phpEx;
+		
+		$raidplan_output = array();
+		
+		//find any raidplans on this day
+		$start_temp_date = gmmktime(0,0,0,$month, $day, $year)  - $user->timezone - $user->dst;
+		
+		switch($mode)
+		{
+			case "up":
+				// get next x upcoming raids  
+				// find all day raidplans since 1 days ago
+				$start_temp_date = $start_temp_date - 30*86400+1;
+				// don't list raidplans more than 2 months in the future
+				$end_temp_date = $start_temp_date + 31536000;
+				// show only this number of raids
+				$x = $config['rp_index_display_next_raidplans'];
+				break;
+			case "next":
+				// display the upcoming raidplans for the next x number of days
+				$end_temp_date = $start_temp_date + ( $config['rp_index_display_next_raidplans'] * 86400 );
+				$x = 0;
+				break;
+			default:
+				$end_temp_date = $start_temp_date + 86399;
+				//return all rows
+				$x = 0;
+		}
+		
+		$etype_url_opts = "";
+		$raidplan_counter = 0;
+
+		// build sql 
+		$sql_array = array(
+   			'SELECT'    => 'r.*', 
+			'FROM'		=> array(RP_RAIDS_TABLE => 'r'), 
+			'WHERE'		=>  ' ( (raidplan_access_level = 2)
+							   OR (poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR (raidplan_access_level = 1 AND ('.$group_options.')) )  
+							  AND (raidplan_start_time >= '.$db->sql_escape($start_temp_date).' AND raidplan_start_time <= '.$db->sql_escape($end_temp_date). " )",
+			'ORDER_BY'	=> 'r.raidplan_start_time ASC');
+		
+		// filter on event type ?
+		$calEType = request_var('calEType', 0);
+		if( $calEType != 0)
+		{
+			$sql_array['WHERE'] .= " AND etype_id = ".$db->sql_escape($calEType)." ";
+			$etype_url_opts = "&amp;calEType=".$calEType;
+		}
+		
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		$result = $db->sql_query_limit($sql, $x, 0);
+
+		while ($row = $db->sql_fetchrow($result))
+		{
+
+			$fsubj = $subj = censor_text($row['raidplan_subject']);
+			if( $config['rp_display_truncated_name'] > 0 )
+			{
+				if(utf8_strlen($subj) > $config['rp_display_truncated_name'])
+				{
+					$subj = truncate_string($subj, $config['rp_display_truncated_name']) . '...';
+				}
+			}
+			
+			$correct_format = $config['rp_time_format'];
+			if( $row['raidplan_end_time'] - $row['raidplan_start_time'] > 86400 )
+			{
+				$correct_format = $config['rp_date_time_format'];
+			}
+			
+			$pre_padding = 0;
+			$post_padding = 0;
+			/* if in dayview we need to shift the raid to its time */
+			if($mode =="day")
+			{
+				/* sets the colspan width */
+		        if( $row['raidplan_start_time'] > $start_temp_date )
+		        {
+		          // find pre-padding value...
+		          $start_diff = $row['raidplan_start_time'] - $start_temp_date;
+		          $pre_padding = round($start_diff/900);
+		        }
+		
+		        if( $row['raidplan_end_time'] < $end_temp_date )
+		        {
+		          // find pre-padding value...
+		          $end_diff = $end_temp_date - $row['raidplan_end_time'];
+		          $post_padding = round($end_diff/900);
+		        }
+			}
+
+			/*
+			 * $poster_url = '';
+			$invite_list = '';
+			$raidplans->get_raidplan_invites($row, $poster_url, $invite_list );
+			$raidplan_data['POSTER'] = $poster_url;
+			$raidplan_data['INVITED'] = $invite_list;
+			$raidplan_data['ALL_DAY'] = 0;
+			$row['raidplan_all_day'] == 1 
+			list($eday['eday_day'], $eday['eday_month'], $eday['eday_year']) = explode('-', $row['raidplan_day']);
+			$row['raidplan_start_time'] = gmmktime(0,0,0,$eday['eday_month'], $eday['eday_day'], $eday['eday_year'])- $user->timezone - $user->dst;
+			$row['raidplan_end_time'] = $row['raidplan_start_time']+86399;
+			*/
+			
+			$raidplan_output[] = array(
+				'RAID_ID'				=> $row['raidplan_id'],
+				'PRE_PADDING'			=> $pre_padding,
+				'POST_PADDING'			=> $post_padding,
+				'PADDING'				=> 96 - $pre_padding - $post_padding, 
+				'ETYPE_DISPLAY_NAME' 	=> $this->eventlist->events[$row['etype_id']]['event_name'], 
+				'FULL_SUBJECT' 			=> $fsubj,
+				'EVENT_SUBJECT' 		=> $subj, 
+				'COLOR' 				=> $this->eventlist->events[$row['etype_id']]['color'],
+				'IMAGE' 				=> $phpbb_root_path . "images/event_images/" . $this->eventlist->events[$row['etype_id']]['imagename'] . ".png", 
+				'S_EVENT_IMAGE_EXISTS'  => (strlen( $this->eventlist->events[$row['etype_id']]['imagename'] ) > 1) ? true : false,
+				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$row['raidplan_id'].$etype_url_opts), 
+				'EVENT_ID'  			=> $row['raidplan_id'],
+				 // for popup
+				'INVITE_TIME'  			=> $user->format_date($row['raidplan_invite_time'], $correct_format, true), 
+				'START_TIME'			=> $user->format_date($row['raidplan_start_time'], $correct_format, true),
+				'END_TIME' 				=> $user->format_date($row['raidplan_end_time'], $correct_format, true),
+				
+				'DISPLAY_BOLD'			=> ($user->data['user_id'] == $row['poster_id'] ) ? true : false,
+				'ALL_DAY'				=> ($row['raidplan_all_day'] == 1  ) ? true : false,
+				'SHOW_TIME'				=> ($mode == "day" ) ? true : false, 
+				'COUNTER'				=> $raidplan_counter++, 
+			);
+
+		}
+		$db->sql_freeresult($result);
+		
+		return $raidplan_output;
 	}
 	
 }

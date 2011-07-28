@@ -113,18 +113,17 @@ class rpday extends calendar
 		}
 		
 		// get raid info
-		if (!class_exists('raidplans'))
+		if (!class_exists('rpraid'))
 		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplans.' . $phpEx);
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
 		}
+		$rpraid = new rpraid();
 		
-		$raidplans = new raidplans();
 		$raidplan_output = array();
-		
 		// Is the user able to view ANY raidplans?
 		if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 		{
-			$raidplan_output = $raidplans->GetRaidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
+			$raidplan_output = $rpraid->GetRaidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
 			foreach($raidplan_output as $raid )
 			{
 				$template->assign_block_vars('raidplans', $raid);

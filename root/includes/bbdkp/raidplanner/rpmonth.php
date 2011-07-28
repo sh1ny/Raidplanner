@@ -72,13 +72,15 @@ class rpmonth extends calendar
 		
 		$counter = 0;
 		// get raid info
-		if (!class_exists('raidplans'))
+		if (!class_exists('rpraid'))
 		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplans.' . $phpEx);
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
 		}
-		$raidplans = new raidplans();
+		$rpraid = new rpraid();
 		
-		//$raiddaylist = $raidplans->GetRaiddaylist()
+		// array of raid days
+		$raiddays = $rpraid->GetRaiddaylist($this->Get1DoM($this->timestamp), $this->GetLDoM($this->timestamp) );
+		
 		
 		for ($j = 1; $j < $number_days+1; $j++, $counter++)
 		{
@@ -167,12 +169,29 @@ class rpmonth extends calendar
 			
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 			{
-				$raidplan_output = $raidplans->GetRaidinfo($this->date['month_no'], $j, $this->date['year'], $this->group_options, "month");
-				
-				foreach($raidplan_output as $raid )
+				$hit= false;
+				if(isset($raiddays))
 				{
-					$template->assign_block_vars('calendar_days.raidplans', $raid);
+					foreach ($raiddays as $raidday)
+					{
+						if($raidday['day'] == $j)
+						{
+							$raidplan_output = $rpraid->GetRaidinfo($this->date['month_no'], $j, $this->date['year'], $this->group_options, "month");
+							foreach($raidplan_output as $raid )
+							{
+								$template->assign_block_vars('calendar_days.raidplans', $raid);
+							}
+							$hit= true;
+						}
+					}
+					
+					// remove hit
+					if ($hit) 
+					{
+						$raiddays = array_shift($raiddays);
+					}
 				}
+				
 			}
 	
 		}

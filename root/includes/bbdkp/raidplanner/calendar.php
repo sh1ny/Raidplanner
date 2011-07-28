@@ -34,6 +34,7 @@ abstract class calendar
 	public $group_options;
 	public $period_start;
 	public $period_end;
+	public $timestamp;
 	
 	/**
 	 * 
@@ -89,6 +90,8 @@ abstract class calendar
 			$this->date['year']	= gmdate('Y', $temp_now_time);
 		}
 		
+		$this->timestamp = 	mktime(0, 0, 0, $this->date['month_no'], $this->date['day'], $this->date['year']);
+		
 		// make sure this day exists - ie there is no February 31st.
 		$number_days = gmdate("t", gmmktime( 0,0,0,$this->date['month_no'], 1, $this->date['year']));
 		if( $number_days < $this->date['day'] )
@@ -108,34 +111,32 @@ abstract class calendar
 		
 	}
 	
-	private function Get1stdateofMonth($dateThis) 
+	protected function Get1DoM($nowDate) 
 	{
-		$retVal = NULL;
-		if (is_numeric($dateThis)) 
+		$fdate = 0;
+		if (is_numeric($nowDate)) 
 		{
-			$dateSoM = strtotime(date('Y',$dateThis) . '-' . date('m',$dateThis) . '-01');
-			if (is_numeric($dateSoM)) 
-			{
-				$retVal = $dateSoM;
-			}
+			$fdate = strtotime(date('Y',$nowDate) . '-' . date('m',$nowDate) . '-01');
 		}
-		return $retVal;
+		return $fdate;
+		
+		
 	}
 	
-	function GetLDoM($dateThis) 
+	protected function GetLDoM($nowDate) 
 	{
-		$retVal = NULL;
-		if (is_numeric($dateThis)) 
+		$ldate = 0;
+		if (is_numeric($nowDate)) 
 		{
-			$dateSoM = strtotime(date('Y',$dateThis) . '-' . date('m',$dateThis) . '-01');
+			$dateSoM = strtotime(date('Y',$nowDate) . '-' . date('m',$nowDate) . '-01');
 			$dateCog = strtotime('+1 month',$dateSoM);
 			$dateEoM = strtotime('-1 day',$dateCog );
 			if (is_numeric($dateEoM)) 
 			{
-				$retVal = $dateEoM;
+				$ldate = $dateEoM;
 			}
 		}
-		return $retVal;
+		return $ldate;
 	}
 	
 	/**
@@ -406,7 +407,7 @@ abstract class calendar
 	 * @param int $year
 	 * @return string
 	 */
-	public function generate_birthday_list( $day, $month, $year )
+	protected function generate_birthday_list( $day, $month, $year )
 	{
 		global $db, $user, $config;
 	

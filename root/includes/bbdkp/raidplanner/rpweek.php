@@ -109,11 +109,16 @@ class rpweek extends calendar
 		}
 		
 		// get raid info
-		if (!class_exists('raidplans'))
+		if (!class_exists('rpraid'))
 		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplans.' . $phpEx);
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
 		}
-		$raidplans = new raidplans();
+		$rpraid = new rpraid();
+		
+		// array of raid days
+		$raiddays = $rpraid->GetRaiddaylist($this->Get1DoM($this->timestamp), $this->GetLDoM($this->timestamp) );
+		
+		
 		
 		for ($j = $j_start; $j < $j_start+7; $j++, $counter++)
 		{
@@ -190,17 +195,36 @@ class rpweek extends calendar
 			}
 	
 			$template->assign_block_vars('calendar_days', $calendar_days);
-	
+
+			// if can see raids
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 			{
-				// insert raidplans on this day
-				$raidplan_output = $raidplans->GetRaidinfo($true_m, $true_j, $true_y, $this->group_options, $this->mode);
-				foreach($raidplan_output as $raid )
+				$hit= false;
+				if(isset($raiddays))
 				{
-					$template->assign_block_vars('calendar_days.raidplans', $raid);
+					// loop all days having raids			
+					foreach ($raiddays as $raidday)
+					{
+						if($raidday['day'] == $j)
+						{
+							$raidplan_output = $rpraid->GetRaidinfo($true_m, $true_j, $true_y, $this->group_options, $this->mode);
+							foreach($raidplan_output as $raid )
+							{
+								$template->assign_block_vars('calendar_days.raidplans', $raid);
+							}
+							$hit= true;
+						}
+					}
+					
+					// remove hit
+					if ($hit) 
+					{
+						$raiddays = array_shift($raiddays);
+					}
 				}
 				
 			}
+			
 			
 	
 		}
