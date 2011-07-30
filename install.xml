@@ -236,8 +236,14 @@ if(isset( $config['rp_index_display_week']))
 				<comment lang="en"><![CDATA[Add calendar to DKP page]]></comment>
 				<find><![CDATA[<!-- [+] Raidplanner -->]]></find>
 				<action type="after-add"><![CDATA[
+<!-- IF S_PLANNER_RAIDFRAME -->
+	<!-- INCLUDE planner/planner_raidframe.html -->
+<!-- ENDIF -->
 <!-- IF S_PLANNER_RAIDPLAN -->
 	<!-- INCLUDE planner/planner_view_raidplan.html -->
+<!-- ENDIF -->
+<!-- IF S_PLANNER_ADD -->
+	<!-- INCLUDE planner/planner_post_body.html -->
 <!-- ENDIF -->
 <!-- IF S_PLANNER_DAY -->
 	<!-- INCLUDE planner/planner_view_day.html -->
@@ -253,9 +259,6 @@ if(isset( $config['rp_index_display_week']))
 <!-- ENDIF -->
 <!-- IF S_PLANNER_UPCOMING -->
 	<!-- INCLUDE planner/planner_next_events_on_index.html -->
-<!-- ENDIF -->
-<!-- IF S_PLANNER_ADD -->
-	<!-- INCLUDE planner/planner_post_body.html -->
 <!-- ENDIF -->]]></action>
 			</edit>
 		</open>		

@@ -5,7 +5,7 @@
 * @author Sajaki
 * @package bbDKP Raidplanner
 * @copyright (c) 2009 alightner
-* @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
+* @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -50,10 +50,18 @@ if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 */
 $view_mode = request_var('view', 'month');
 
+// display header
+include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpframe.' . $phpEx);
+$cal = new rpframe();
+$cal->display();
+
 switch( $view_mode )
 {
 
 	case "raidplan":
+		
+
+		// diplay raid 		
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
 		
 		$raidplan_id = request_var('calEid', 0);
@@ -67,7 +75,7 @@ switch( $view_mode )
 			case 'edit':
 				$raid->edit();
 				break;			
-			case 'add':
+			case 'showadd':
 				$raid->showadd();
 				break;	
 			case 'editall':
@@ -104,29 +112,23 @@ switch( $view_mode )
 		// display all of the raidplans on this day
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpday.' . $phpEx);
 		$cal = new rpday();
-		// display header
-		$cal->displayCalframe();
 		// display calendar
-		$cal->display(0);		
+		$cal->display();		
 		break;
 	case "week":
 		// display the entire week
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
 		$cal = new rpweek();
-		// display header
-		$cal->displayCalframe();
 		// display calendar
-		$cal->display(0);
+		$cal->display();
 		break;
 	case "month":
 	default:	
 		//display the entire month
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpmonth.' . $phpEx);
 		$cal = new rpmonth();
-		// display header
-		$cal->displayCalframe();
 		// display calendar
-		$cal->display(0);
+		$cal->display();
 		break;
 }
 

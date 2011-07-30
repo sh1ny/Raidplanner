@@ -26,7 +26,7 @@ if (!class_exists('calendar'))
 }
 
 /**
- * implements a dayview
+ * implements upcoming raids view
  *
  */
 class rpup extends calendar
@@ -54,7 +54,7 @@ class rpup extends calendar
 	
 	/**
 	 * displays the next x number of upcoming raidplans 
-	 * 
+	 * to fix
 	 *
 	 * @param string $mode (up or next)
 	 */
@@ -63,22 +63,33 @@ class rpup extends calendar
 		global $auth, $template, $phpEx, $phpbb_root_path;
 	
 		// get raid info
-		if (!class_exists('raidplans'))
+		if (!class_exists('rpraid'))
 		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplans.' . $phpEx);
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
 		}
+		$rpraid = new rpraid();
+		$raiddays = $rpraid->GetRaiddaylist($this->Get1DoM($this->timestamp), $this->GetLDoM($this->timestamp) );
 		
-		$raidplans = new raidplans();
 		$raidplan_output = array();
-		
+		// if can see raids
 		if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 		{
-			$raidplan_output = $raidplans->GetRaidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, $this->mode);
-			foreach($raidplan_output as $raid )
+			if(isset($raiddays) && is_array($raiddays))
 			{
-				$template->assign_block_vars('raidplans', $raid);
+				// loop all days having raids			
+				foreach ($raiddays as $raidday)
+				{
+					//raid(s) found get detail
+					$raidplan_output = $rpraid->GetRaidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, $this->mode);
+					foreach($raidplan_output as $raid )
+					{
+						$template->assign_block_vars('raidplans', $raid);
+					}
+				}
 			}
+			
 		}
+
 				
 		$template->assign_vars(array(
 			'S_PLANNER_UPCOMING'		=> true,

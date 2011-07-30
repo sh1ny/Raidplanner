@@ -818,7 +818,9 @@ class rpraid
 			'INVITE_TIME'		=> $invite_date_txt,
 			'START_TIME'		=> $start_date_txt,
 			'END_DATE'			=> $end_date_txt,
+
 			'S_PLANNER_RAIDPLAN'=> true,
+		
 			'IS_RECURRING'		=> $this->recurr_id,
 			'POSTER'			=> $poster_url,
 			'INVITED'			=> $this->invite_list,

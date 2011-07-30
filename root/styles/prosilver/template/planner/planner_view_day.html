@@ -1,12 +1,3 @@
-<!-- IF S_SHOW_WELCOME_MSG -->
-<div class="panel">
-<div class="inner">
-<span class="corners-top"><span></span></span>
-{WELCOME_MSG}
-<span class="corners-bottom"><span></span></span>
-</div>
-</div>
-<!-- ENDIF -->
 <script type="text/javascript"> 
 /* jqt tooltips */
 <!-- IF EVENT_COUNT -->
@@ -65,10 +56,16 @@ $(document).ready( function()
       <!-- END time_headers -->
     </tr>
     <!-- ENDIF -->
+    
+    <!-- IF BIRTHDAYS -->
+    <tr>
+      <td colspan="96" class="bg3_calDay" style="text-align: center;">
+    	{BIRTHDAYS}
+   	</td>
+   	</tr>
+    <!-- ENDIF -->
     <!-- IF EVENT_COUNT -->
 	    <!-- BEGIN raidplans -->
-
-	    <tr>
 	      <!-- IF raidplans.PRE_PADDING --><td colspan="{raidplans.PRE_PADDING}" class="bg3_calDay">&nbsp;</td><!-- ENDIF -->
 	      <td colspan="{raidplans.PADDING}" class="bg1_calDay" style="text-align: center;">
 	      		<!-- IF raidplans.EVENT_URL -->
@@ -103,10 +100,11 @@ $(document).ready( function()
 	    </tr>
 	    <!-- END raidplans -->
     <!-- ELSE -->
-	    <tr>
+    	<tr>
 	      <td colspan="96" class="bg1_calDay" style="text-align: center">&nbsp;<br />{L_NO_EVENTS_TODAY}<br />&nbsp;</td>
 	    </tr>
     <!-- ENDIF -->
+  
   </table>
   </td></tr></table>
 
