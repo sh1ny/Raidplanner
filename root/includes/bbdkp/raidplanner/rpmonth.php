@@ -80,7 +80,7 @@ class rpmonth extends calendar
 		
 		// array of raid days
 		$raiddays = $rpraid->GetRaiddaylist($this->Get1DoM($this->timestamp), $this->GetLDoM($this->timestamp) );
-		
+		$birthdays = $this->generate_birthday_list( $this->Get1DoM($this->timestamp), $this->GetLDoM($this->timestamp));
 		
 		for ($j = 1; $j < $number_days+1; $j++, $counter++)
 		{
@@ -162,7 +162,18 @@ class rpmonth extends calendar
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') && $auth->acl_get('u_viewprofile') )
 			{
 				// find birthdays
-				$calendar_days['BIRTHDAYS'] = $this->generate_birthday_list( $j, $this->date['month_no'], $this->date['year'] );
+				if(isset($birthdays))
+				{
+					//loop the bdays
+					foreach ($birthdays as $birthday)
+					{
+						if($birthday['day'] == $j)
+						{
+							$calendar_days['BIRTHDAYS'] = $birthday['bdays'];
+						}
+					}
+				}
+				
 			}
 	
 			$template->assign_block_vars('calendar_days', $calendar_days);

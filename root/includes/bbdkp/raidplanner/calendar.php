@@ -400,39 +400,68 @@ abstract class calendar
 	}
 	
 	/**
-	 * Generates the list of birthdays for the given date
+	 * Generates array of birthdays for the given range for users/founders
 	 *
 	 * @param int $day
 	 * @param int $month
 	 * @param int $year
 	 * @return string
 	 */
-	protected function generate_birthday_list( $day, $month, $year )
+	protected function generate_birthday_list($from, $end)
 	{
 		global $db, $user, $config;
-	
+		
 		$birthday_list = "";
 		if ($config['load_birthdays'] && $config['allow_birthdays'])
 		{
+			
+			$day1= date("d", $from);
+			$month1= date("m", $from);
+			$year1= date("Y", $from);
+			$day2= date("d", $end);
+			$month2= date("m", $end);
+			$year2= date("Y", $end);
+			
 			$sql = 'SELECT user_id, username, user_colour, user_birthday
 					FROM ' . USERS_TABLE . "
-					WHERE user_birthday LIKE '" . $db->sql_escape(sprintf('%2d-%2d-', $day, $month)) . "%'
-					AND user_type IN (" . USER_NORMAL . ', ' . USER_FOUNDER . ')';
+					WHERE user_birthday >= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day1, $month1,$year1 )) . "'
+					AND user_birthday <= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day2, $month2,$year2 )) . "'
+					AND user_type IN (" . USER_NORMAL . ', ' . USER_FOUNDER . ')
+					ORDER BY user_birthday ASC';
 			$result = $db->sql_query($sql);
+			$oldday= $newday = "";
 			while ($row = $db->sql_fetchrow($result))
 			{
-				// @todo TRANSLATION ISSUE HERE!!!
-				$birthday_list .= (($birthday_list != '') ? ', ' : '') . get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']);
-				if ($age = (int) substr($row['user_birthday'], -4))
+				$birthday_str = get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']);
+				$age = (int) substr($row['user_birthday'], -4);
+				$birthday_str .= ' (' . ($year1 - $age) . ')';
+				
+				$newday = trim(substr($row['user_birthday'],0, 2));
+				
+				if($oldday != $newday)
 				{
-					// @todo TRANSLATION ISSUE HERE!!!
-					$birthday_list .= ' (' . ($year - $age) . ')';
+					// new birthday found, make new string
+					$daystr = $birthday_str;
+					$birthday_list[$newday] = array(
+						'day' => $row['user_birthday'],
+						'bdays' =>  $user->lang['BIRTHDAYS'].": ". $daystr,
+					);
+					
+					
 				}
-			}
-			if( $birthday_list != "" )
-			{
-				// TBD TRANSLATION ISSUE HERE!!!
-				$birthday_list = $user->lang['BIRTHDAYS'].": ". $birthday_list;
+				else 
+				{
+					// other bday on same day, add it
+					$daystr = $birthday_list[$oldday]['bdays'] .", ". $birthday_str;
+					// modify array entry
+					$birthday_list[$oldday] = array(
+						'day' => $row['user_birthday'],
+						'bdays' =>  $daystr,
+					);
+					
+				}
+				$oldday = $newday;
+				
 			}
 			$db->sql_freeresult($result);
 		}
