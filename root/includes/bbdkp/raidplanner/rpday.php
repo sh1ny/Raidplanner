@@ -106,10 +106,13 @@ class rpday extends calendar
 				$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 		}
 		$calendar_days['BIRTHDAYS'] = "";
+		$birthdays = $this->generate_birthday_list( $this->Get1DoM($this->timestamp), $this->GetLDoM($this->timestamp));
 		if ( $auth->acl_get('u_raidplanner_view_raidplans') && $auth->acl_get('u_viewprofile') )
 		{
-			// find birthdays
-			$calendar_days['BIRTHDAYS'] = $this->generate_birthday_list(  $this->date['day'], $this->date['month_no'], $this->date['year'] );
+			if(isset($birthdays[$this->date['day']]))
+			{
+				$calendar_days['BIRTHDAYS'] = $birthdays[$this->date['day']]['bdays'];
+			}
 		}
 		
 		// get raid info
