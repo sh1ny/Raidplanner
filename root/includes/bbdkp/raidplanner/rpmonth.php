@@ -132,11 +132,12 @@ class rpmonth extends calendar
 				$calendar_days['END_WEEK'] = true;
 			}
 			$calendar_days['NUMBER'] = $j;
-			
+
 			if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 			{
 				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=showadd&amp;calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']. $etype_url_opts);
 			}
+			
 			$calendar_days['DAY_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 			$calendar_days['WEEK_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$j."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
 	
@@ -145,24 +146,31 @@ class rpmonth extends calendar
 			{
 				$calendar_days['DAY_CLASS'] = 'highlight';
 			}
+			
+			//highlight today
+			$start_hi_time = mktime( 0,0,0,$this->date['month_no'], $j, $this->date['year']) + date('Z');
+			$end_hi_time = $start_hi_time + 86399;
+			$hi_time = time() + $user->timezone + $user->dst;
 	
-			//highlight current day
-			$test_start_hi_time = mktime( 0,0,0,$this->date['month_no'], $j, $this->date['year']) + date('Z');
-			$test_end_hi_time = $test_start_hi_time + 86399;
-			$test_hi_time = time() + $user->timezone + $user->dst;
-	
-			if( ($test_start_hi_time <= $test_hi_time) &&
-			    ($test_end_hi_time >= $test_hi_time))
+			if( ($start_hi_time <= $hi_time) && ($end_hi_time >= $hi_time))
 			{
 				$calendar_days['HEADER_CLASS'] = 'highlight';
 				$calendar_days['DAY_CLASS'] = 'highlight';
 			}
 			
+			// user cannot add raid/appointments in the past
+			$calendar_days['ADD_RAID_ICON'] = false;
+			if( $j >= date('d') || $this->date['month_no'] > date('m') )
+			{
+				$calendar_days['ADD_RAID_ICON'] = true;
+			}
+			
+			// add birthdays
 			$calendar_days['BIRTHDAYS']="";
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') && $auth->acl_get('u_viewprofile') )
 			{
 				// find birthdays
-				if(isset($birthdays))
+				if(is_array($birthdays))
 				{
 					//loop the bdays
 					foreach ($birthdays as $birthday)
@@ -181,7 +189,7 @@ class rpmonth extends calendar
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 			{
 				$hit= false;
-				if(isset($raiddays))
+				if(isset($raiddays) && is_array($raiddays))
 				{
 					foreach ($raiddays as $raidday)
 					{

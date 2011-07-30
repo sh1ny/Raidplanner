@@ -188,11 +188,18 @@ class rpweek extends calendar
 				$calendar_days['DAY_CLASS'] = 'highlight';
 			}
 			
+			// user cannot add raid/appointments in the past
+			$calendar_days['ADD_RAID_ICON'] = false;
+			if( $j >= date('d') || $this->date['month_no'] > date('m') )
+			{
+				$calendar_days['ADD_RAID_ICON'] = true;
+			}
+			
 			$calendar_days['BIRTHDAYS']="";
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') && $auth->acl_get('u_viewprofile') )
 			{
 				// find birthdays
-				if(isset($birthdays))
+				if(is_array($birthdays))
 				{
 					//loop the bdays
 					foreach ($birthdays as $birthday)
@@ -213,7 +220,7 @@ class rpweek extends calendar
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 			{
 				$hit= false;
-				if(isset($raiddays))
+				if(isset($raiddays) && is_array($raiddays))
 				{
 					// loop all days having raids			
 					foreach ($raiddays as $raidday)

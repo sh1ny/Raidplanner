@@ -106,9 +106,6 @@ abstract class calendar
 		$sunday= $monday= $tuesday= $wednesday= $thursday= $friday= $saturday='';
 		
 		$this->group_options = $this->get_sql_group_options();
-		
-		
-		
 	}
 	
 	protected function Get1DoM($nowDate) 
@@ -415,18 +412,17 @@ abstract class calendar
 		if ($config['load_birthdays'] && $config['allow_birthdays'])
 		{
 			
-			$day1= date("d", $from);
-			$month1= date("m", $from);
-			$year1= date("Y", $from);
-			$day2= date("d", $end);
-			$month2= date("m", $end);
-			$year2= date("Y", $end);
+			$day1= date("j", $from);
+			$day2= date("j", $end);
+			$month= date("n", $from);
+			$year= date("Y", $from);
 			
 			$sql = 'SELECT user_id, username, user_colour, user_birthday
 					FROM ' . USERS_TABLE . "
-					WHERE user_birthday >= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day1, $month1,$year1 )) . "'
-					AND user_birthday <= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day2, $month2,$year2 )) . "'
-					AND user_type IN (" . USER_NORMAL . ', ' . USER_FOUNDER . ')
+					WHERE user_birthday >= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day1, $month,$year )) . "'
+					AND user_birthday <= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day2, $month,$year )) . "'
+					AND user_birthday " . $db->sql_like_expression($db->any_char . '-' . sprintf( ' %s', $month)  .'-' . $db->any_char) . ' 
+					AND user_type IN (' . USER_NORMAL . ', ' . USER_FOUNDER . ')
 					ORDER BY user_birthday ASC';
 			$result = $db->sql_query($sql);
 			$oldday= $newday = "";
@@ -434,7 +430,7 @@ abstract class calendar
 			{
 				$birthday_str = get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']);
 				$age = (int) substr($row['user_birthday'], -4);
-				$birthday_str .= ' (' . ($year1 - $age) . ')';
+				$birthday_str .= ' (' . ($year - $age) . ')';
 				
 				$newday = trim(substr($row['user_birthday'],0, 2));
 				
