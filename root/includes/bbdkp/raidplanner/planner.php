@@ -73,6 +73,7 @@ switch( $view_mode )
 				break;
 			case 'edit':
 				$raid->edit();
+				//$raid->edit($raidplan_id);
 				break;			
 			case 'showadd':
 				$raid->showadd();

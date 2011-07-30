@@ -96,6 +96,8 @@ class rpraid
 	 * @var boolean
 	 */
 	private $auth_cansee = false;
+	private $auth_canedit = false;
+	private $auth_candelete = false;
 	
 	// if raidplan is recurring then id > 0
 	private $recurr_id = 0;
@@ -146,9 +148,60 @@ class rpraid
 	/**
 	 * make raid object like example
 	 * 
-	 "$this" = Object of: rpraid	
+	"$this" = Object of: rpraid	
 		rpraid::id = (int) 1	
 		event_type = (string:2) 39	
+		rpraid::eventlist = Object of: rpevents	
+			events = Array [46]	
+				1 = Array [3]	
+				2 = Array [3]	
+				3 = Array [3]	
+				4 = Array [3]	
+				5 = Array [3]	
+				6 = Array [3]	
+				7 = Array [3]	
+				8 = Array [3]	
+				9 = Array [3]	
+				10 = Array [3]	
+				11 = Array [3]	
+				12 = Array [3]	
+				13 = Array [3]	
+				14 = Array [3]	
+				15 = Array [3]	
+				16 = Array [3]	
+				17 = Array [3]	
+				18 = Array [3]	
+				19 = Array [3]	
+				20 = Array [3]	
+				21 = Array [3]	
+				22 = Array [3]	
+				23 = Array [3]	
+				24 = Array [3]	
+				25 = Array [3]	
+				26 = Array [3]	
+				27 = Array [3]	
+				28 = Array [3]	
+				29 = Array [3]	
+				30 = Array [3]	
+					event_name = (string:11) Ulduar (25)	
+					color = (string:7) #0088EE	
+					imagename = (string:0) 	
+				31 = Array [3]	
+				32 = Array [3]	
+				33 = Array [3]	
+				34 = Array [3]	
+				35 = Array [3]	
+				36 = Array [3]	
+				37 = Array [3]	
+				38 = Array [3]	
+				39 = Array [3]	
+				40 = Array [3]	
+				41 = Array [3]	
+				42 = Array [3]	
+				43 = Array [3]	
+				44 = Array [3]	
+				45 = Array [3]	
+				46 = Array [3]	
 		rpraid::invite_time = (string:10) 1309896000	
 		rpraid::start_time = (string:10) 1309897800	
 		rpraid::end_time = (string:1) 0	
@@ -164,39 +217,12 @@ class rpraid
 		rpraid::group_id = (string:1) 0	
 		rpraid::group_id_list = (string:1) ,	
 		rpraid::roles = Array [0]	
+		rpraid::signoffs = Array [0]	
 		rpraid::raidroles = Array [6]	
 			1 = Array [7]	
-				role_name = (string:10) Ranged DPS	
-				role_color = (string:7) #BB00AA	
-				role_icon = (string:5) range	
-				role_needed = (string:1) 3	
-				role_signedup = (string:1) 0	
-				role_confirmed = (string:1) 0	
-				role_signups = Array [0]	
 			2 = Array [7]	
-				role_name = (string:9) Melee DPS	
-				role_color = (string:7) #FFCC66	
-				role_icon = (string:5) melee	
-				role_needed = (string:1) 1	
-				role_signedup = (string:1) 0	
-				role_confirmed = (string:1) 0	
-				role_signups = Array [0]	
 			3 = Array [7]	
-				role_name = (string:4) Tank	
-				role_color = (string:7) #777777	
-				role_icon = (string:4) tank	
-				role_needed = (string:1) 1	
-				role_signedup = (string:1) 0	
-				role_confirmed = (string:1) 0	
-				role_signups = Array [0]	
 			4 = Array [7]	
-				role_name = (string:8) Off Tank	
-				role_color = (string:7) #AAAAAA	
-				role_icon = (string:4) tank	
-				role_needed = (string:1) 1	
-				role_signedup = (string:1) 0	
-				role_confirmed = (string:1) 0	
-				role_signups = Array [0]	
 			5 = Array [7]	
 				role_name = (string:6) Healer	
 				role_color = (string:7) #00EECC	
@@ -205,7 +231,7 @@ class rpraid
 				role_signedup = (string:1) 0	
 				role_confirmed = (string:1) 0	
 				role_signups = Array [1]	
-					0 = Array [24]	
+					0 = Array [25]	
 						signup_id = (string:1) 1	
 						raidplan_id = (string:1) 1	
 						poster_id = (string:1) 2	
@@ -228,17 +254,16 @@ class rpraid
 						lastraid = (string:10) 1286391317	
 						attendanceP1 = (double) 0	
 						comment = (string:16) qdfgsdfgsdfgsfdg	
+						bbcode = Array [2]	
+							bitfield = (string:0) 	
+							uid = (string:0) 	
 						roleid = (string:1) 5	
 						confirm = (string:1) 0	
 			6 = Array [7]	
-				role_name = (string:6) Hybrid	
-				role_color = (string:7) #9999FF	
-				role_icon = (string:7) unknown	
-				role_needed = (string:1) 2	
-				role_signedup = (string:1) 0	
-				role_confirmed = (string:1) 0	
-				role_signups = Array [0]	
 		rpraid::signups = Array [3]	
+			yes = (string:1) 0	
+			no = (string:1) 0	
+			maybe = (string:1) 0	
 		rpraid::auth_cansee = (boolean) true	
 		rpraid::recurr_id = (string:1) 0	
 		rpraid::poster_url = (string:111) <a href="./memberlist.php?mode=viewprofile&amp;u=2" style="color: #AA0000;" class="username-coloured">admin</a>	
@@ -481,6 +506,67 @@ class rpraid
 			
 		}
 		return $user_auth_for_raidplan;
+		
+	}
+	
+	/**
+	 * checks if user can edit the raid(s)
+	 *
+	 * @return void
+	 */
+	private function checkauth_canedit()
+	{
+		global $user;
+		
+		$this->auth_canedit = true;
+		
+		if ($user->data['is_bot'])
+		{
+			$this->auth_canedit = false;
+		}
+		elseif ($user->data['is_registered'] )
+		{
+			// has user right to edit (own) raidplans?
+			if (!$auth->acl_get('u_raidplanner_edit_raidplans') )
+			{
+				$this->auth_canedit = false;
+				// @todo 
+				// if raid expired then no edits possible even if user can edit others raids...
+				// this way officers can not fiddle with statistics
+				// assign editing expired raids only to administrator.
+			}
+
+			// has user right to edit others raids ?
+			if (!$auth->acl_get('m_raidplanner_edit_other_users_raidplans') && ($user->data['user_id'] != $this->poster) )
+			{
+				$this->auth_canedit = false;
+			}
+			
+		}
+		
+	}
+	
+	/**
+	 * checks if user can delete raid(s)
+	 *
+	 */
+	private function checkauth_candelete()
+	{
+		$this->auth_candelete = false;
+		
+		if ($user->data['is_registered'] )
+		{
+			if($auth->acl_get('u_raidplanner_delete_raidplans'))
+			{
+				$this->auth_candelete = true;
+			}
+			
+			// is raidleader trying to delete own raid ?
+			if (($user->data['user_id'] != $raidplan_data['poster_id']) && !$auth->acl_get('m_raidplanner_delete_other_users_raidplans'))
+			{
+				$this->auth_candelete = false;
+			}
+		}
 		
 	}
 	
@@ -841,7 +927,34 @@ class rpraid
 		
 	}
 
+	/**
+	 * 
+	 *
+	 */
+	public function edit()
+	{
+		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
+		$user->add_lang ( array ('posting'));
+		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+		
+		//check if user can edit
+		$this->checkauth_canedit();
+		if($this->auth_canedit == false)
+		{
+			trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
+			
+		}
+	}
 	
+	public function delete()
+	{
+		$this->checkauth_candelete();
+		if($this->auth_canedit == false)
+		{
+			trigger_error('USER_CANNOT_DELETE_RAIDPLAN');
+		}
+		
+	}
 	
 	/**
 	 * gets array with raid days 
