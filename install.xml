@@ -239,27 +239,7 @@ if(isset( $config['rp_index_display_week']))
 <!-- IF S_PLANNER_RAIDFRAME -->
 	<!-- INCLUDE planner/planner_raidframe.html -->
 <!-- ENDIF -->
-<!-- IF S_PLANNER_RAIDPLAN -->
-	<!-- INCLUDE planner/planner_view_raidplan.html -->
-<!-- ENDIF -->
-<!-- IF S_PLANNER_ADD -->
-	<!-- INCLUDE planner/planner_post_body.html -->
-<!-- ENDIF -->
-<!-- IF S_PLANNER_DAY -->
-	<!-- INCLUDE planner/planner_view_day.html -->
-<!-- ENDIF -->
-<!-- IF S_PLANNER_WEEK -->
-	<!-- INCLUDE planner/planner_view_month.html -->
-<!-- ENDIF -->
-<!-- IF S_PLANNER_MONTH -->
-	<!-- INCLUDE planner/planner_view_month.html -->
-<!-- ENDIF -->
-<!-- IF S_PLANNER_WEEK_ON_INDEX -->
-	<!-- INCLUDE planner/planner_week_on_index.html -->
-<!-- ENDIF -->
-<!-- IF S_PLANNER_UPCOMING -->
-	<!-- INCLUDE planner/planner_next_events_on_index.html -->
-<!-- ENDIF -->]]></action>
+]]></action>
 			</edit>
 		</open>		
 		

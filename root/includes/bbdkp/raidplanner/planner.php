@@ -60,7 +60,6 @@ switch( $view_mode )
 
 	case "raidplan":
 		
-
 		// diplay raid 		
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
 		

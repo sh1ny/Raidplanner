@@ -613,8 +613,6 @@ class rpraid
 	 */
 	public function display()
 	{
-		// raid object does not need to know the events list so it‘s passed byval
-		
 		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		
 		// check if it is a private appointment
