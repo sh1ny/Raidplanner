@@ -98,6 +98,7 @@ class rpraid
 	private $auth_cansee = false;
 	private $auth_canedit = false;
 	private $auth_candelete = false;
+	private $auth_canadd = false;
 	
 	// if raidplan is recurring then id > 0
 	private $recurr_id = 0;
@@ -289,7 +290,7 @@ class rpraid
 			$this->group_id=$row['group_id'];
 			$this->group_id_list=$row['group_id_list'];
 
-			$this->auth_cansee = $this->checkauth();
+			$this->checkauth();
 			if(!$this->auth_cansee)
 			{
 				trigger_error( 'NOT_AUTHORISED' );
@@ -426,86 +427,129 @@ class rpraid
 	}
 	
 	/**
-	 * checks if user is allowed to see raid
+	 * checks if user is allowed to *see* raid
 	 *
-	 * @return boolean
+	 * @return void
 	 */
 	private function checkauth()
 	{
 		global $user, $auth, $db;
-		$user_auth_for_raidplan= false;
+		
+		$this->auth_cansee = false;
 		
 		if ($this->poster == $user->data['user_id'])
 		{
-			return true;
+			//own raids - creator always can see
+			$this->auth_cansee = true;
+		}
+		else 
+		{
+			// if not own raid then look at access level.	
+			switch($this->accesslevel)
+			{
+				case 0:
+					// personal raidplan... only raidplan creator is invited
+					$this->auth_cansee = false;
+					break;
+				case 1:
+					// group raidplan... only members of specified phpbb usergroup are invited
+					// is this user a member of the group?
+					if($this->group_id !=0)
+					{
+						$sql = 'SELECT g.group_id
+								FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
+								WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
+									AND g.group_id = ug.group_id
+									AND g.group_id = '.$db->sql_escape($this->group_id).'
+									AND ug.user_pending = 0';
+						$result = $db->sql_query($sql);
+						if($result)
+						{
+							$row = $db->sql_fetchrow($result);
+							if( $row['group_id'] == $this->group_id )
+							{
+								$this->auth_cansee = true;
+							}
+						}
+						$db->sql_freeresult($result);
+					}
+					else 
+					{
+						$group_list = explode( ',', $this->group_id_list);
+						$num_groups = sizeof( $group_list );
+						$group_options = '';
+						for( $i = 0; $i < $num_groups; $i++ )
+						{
+						    if( $group_list[$i] == "" )
+						    {
+						    	continue;
+						    }
+							if( $group_options != "" )
+							{
+								$group_options = $group_options . " OR ";
+							}
+							$group_options = $group_options . "g.group_id = ".$group_list[$i];
+						}
+						$sql = 'SELECT g.group_id
+								FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
+								WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
+									AND g.group_id = ug.group_id
+									AND ('.$group_options.')
+									AND ug.user_pending = 0';
+						$result = $db->sql_query($sql);
+						if( $result )
+						{
+							$this->auth_cansee = true;
+						}
+						$db->sql_freeresult($result);
+					}
+					break;
+				case 2:
+					// public raidplan... everyone is invited
+					$this->auth_cansee = true;
+					break;
+				
+			}
+			
 		}
 		
-		switch($this->accesslevel)
+		
+	}
+	
+	/**
+	 * checks if user can post new raid
+	 *
+	 * @return void
+	 */
+	private function checkauth_canadd()
+	{
+		global $user;
+		$this->auth_canadd = false;
+		switch ($this->accesslevel)
 		{
 			case 0:
-				// personal raidplan... only raidplan creator is invited
-				$user_auth_for_raidplan = false;
+				// can create personal appointment ?
+				if ( $auth->acl_get('u_raidplanner_create_private_raidplans') )
+				{
+					$this->auth_canadd = true;
+				}
 				break;
 			case 1:
-				// group raidplan... only members of specified phpbb usergroup are invited
-				// is this user a member of the group?
-				if($this->group_id !=0)
+				// can create group raid ? -- only group members can attend
+				if ( $auth->acl_get('u_raidplanner_create_group_raidplans') )
 				{
-					$sql = 'SELECT g.group_id
-							FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
-							WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
-								AND g.group_id = ug.group_id
-								AND g.group_id = '.$db->sql_escape($this->group_id).'
-								AND ug.user_pending = 0';
-					$result = $db->sql_query($sql);
-					if($result)
-					{
-						$row = $db->sql_fetchrow($result);
-						if( $row['group_id'] == $this->group_id )
-						{
-							$user_auth_for_raidplan = true;
-						}
-					}
-					$db->sql_freeresult($result);
-				}
-				else 
-				{
-					$group_list = explode( ',', $this->group_id_list);
-					$num_groups = sizeof( $group_list );
-					$group_options = '';
-					for( $i = 0; $i < $num_groups; $i++ )
-					{
-					    if( $group_list[$i] == "" )
-					    {
-					    	continue;
-					    }
-						if( $group_options != "" )
-						{
-							$group_options = $group_options . " OR ";
-						}
-						$group_options = $group_options . "g.group_id = ".$group_list[$i];
-					}
-					$sql = 'SELECT g.group_id
-							FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
-							WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
-								AND g.group_id = ug.group_id
-								AND ('.$group_options.')
-								AND ug.user_pending = 0';
-					$result = $db->sql_query($sql);
-					if( $result )
-					{
-						$user_auth_for_raidplan = true;
-					}
-					$db->sql_freeresult($result);
+					$this->auth_canadd = true;
 				}
 				break;
 			case 2:
-				// public raidplan... everyone is invited
-				$user_auth_for_raidplan = true;
+				//can make public raid ? -- every member can attend
+				if ( $auth->acl_get('u_raidplanner_create_public_raidplans') )
+				{
+					$this->auth_canadd = true;
+				}
 				break;
-			
+				
 		}
-		return $user_auth_for_raidplan;
 		
 	}
 	
@@ -561,7 +605,7 @@ class rpraid
 				$this->auth_candelete = true;
 			}
 			
-			// is raidleader trying to delete own raid ?
+			// is raidleader trying to delete other raid ?
 			if (($user->data['user_id'] != $raidplan_data['poster_id']) && !$auth->acl_get('m_raidplanner_delete_other_users_raidplans'))
 			{
 				$this->auth_candelete = false;
