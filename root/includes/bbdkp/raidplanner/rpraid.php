@@ -99,7 +99,9 @@ class rpraid
 	private $auth_canedit = false;
 	private $auth_candelete = false;
 	private $auth_canadd = false;
-	
+	private $auth_canaddsignups = false;
+	private $auth_addrecurring = false;
+
 	// if raidplan is recurring then id > 0
 	private $recurr_id = 0;
 	
@@ -433,7 +435,7 @@ class rpraid
 	 */
 	private function checkauth()
 	{
-		global $user, $auth, $db;
+		global $user, $db;
 		
 		$this->auth_cansee = false;
 		
@@ -523,7 +525,7 @@ class rpraid
 	 */
 	private function checkauth_canadd()
 	{
-		global $user;
+		global $auth;
 		$this->auth_canadd = false;
 		switch ($this->accesslevel)
 		{
@@ -560,7 +562,7 @@ class rpraid
 	 */
 	private function checkauth_canedit()
 	{
-		global $user;
+		global $user, $auth;
 		
 		$this->auth_canedit = true;
 		
@@ -593,9 +595,11 @@ class rpraid
 	/**
 	 * checks if user can delete raid(s)
 	 *
+	 * @return void
 	 */
 	private function checkauth_candelete()
 	{
+		global $user, $auth;
 		$this->auth_candelete = false;
 		
 		if ($user->data['is_registered'] )
@@ -614,6 +618,37 @@ class rpraid
 		
 	}
 	
+	/**
+	 * checks if the new event is one that members can sign up to (rsvp) only valid for accesslevel 1/2 
+	 *
+	 * @return void
+	 */
+	private function checkauth_canaddsignup()
+	{
+		global $auth;
+		$this->auth_canaddsignups = false;
+		if( $auth->acl_get('u_raidplanner_track_signups'))
+		{
+			$this->auth_canaddsignups = true;
+		}
+		
+	}
+	
+	/**
+	 * checks if raid can be created as recurring
+	 *
+	 */
+	private function checkauth_addrecurring()
+	{
+		global $auth;
+		$this->auth_addrecurring = false;
+		if( $auth->acl_get('u_raidplanner_create_recurring_raidplans') )
+		{
+			$this->auth_addrecurring = true;
+		}
+			
+	}
+
 	
 	/**
 	 * builds raid roles property, needed sor displaying signups
@@ -973,6 +1008,18 @@ class rpraid
 
 	/**
 	 * 
+	 */
+	public function showadd()
+	{
+		trigger_error('NOT IMPLEMENTED');
+		$test_raidplan_level = request_var('calELevel', 0);
+		
+		
+		
+	}
+	
+	/**
+	 * 
 	 *
 	 */
 	public function edit()
@@ -988,6 +1035,8 @@ class rpraid
 			trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
 			
 		}
+		
+		trigger_error('NOT IMPLEMENTED');
 	}
 	
 	public function delete()
@@ -997,6 +1046,8 @@ class rpraid
 		{
 			trigger_error('USER_CANNOT_DELETE_RAIDPLAN');
 		}
+		
+		trigger_error('NOT IMPLEMENTED');
 		
 	}
 	
