@@ -1007,16 +1007,244 @@ class rpraid
 	}
 
 	/**
-	 * 
+	 * shows the form to add a raidplan
 	 */
 	public function showadd()
 	{
-		trigger_error('NOT IMPLEMENTED');
-		$test_raidplan_level = request_var('calELevel', 0);
+		global $user, $config; 
+		
+		//$test_raidplan_level = request_var('calELevel', 0);
+		//test if user can add
+		$page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
+		
+		$this->checkauth_canadd();
+		if(!$this->auth_canadd)
+		{
+			trigger_error('USER_CANNOT_POST_RAIDPLAN');
+		}
+				
+		// action URL, include session_id for security purpose
+		$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=showaddmode=$mode", true, $user->session_id);
+		
+		
+
+		// Raid date
+		$month_sel_code  = " ";
+		for( $i = 1; $i <= 12; $i++ )
+		{
+			$selected = ($newraid->date['month_no']==$i) ?   ' selected="selected"': '';
+			$month_sel_code .= '<option value="'.$i.'"' . $selected . '>'.$user->lang['datetime'][$newraid->month_names[$i]].'</option>';
+		}
+		
+		$day_sel_code= "";
+		for( $i = 1; $i <= 31; $i++ )
+		{
+			$selected = ($newraid->date['day']==$i) ?  ' selected="selected"': '';
+			$day_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+		}
+		
+		$year_sel_code  = " ";
+		for( $i = $newraid->date['year']; $i < ($newraid->date['year']+5); $i++ )
+		{
+			$selected = ($newraid->date['year'] == $i) ?  ' selected="selected"': '';
+			$year_sel_code .= '<option value="'.$i.'"'.$selected. '>'.$i.'</option>';
+		}
+		
+		/**
+		 *	Raid invite time 
+		 */ 
+		$hour_mode = $config['rp_hour_mode'];
+		$presetinvhour = intval($config['rp_default_invite_time'] / 60);
+		$hour_invite_selcode = "";
+		if( $hour_mode == 12 )
+		{
+			for( $i = 0; $i < 24; $i++ )
+			{
+				$selected = ($i == $presetinvhour ) ? ' selected="selected"' : '';
+				$mod_12 = $i % 12;
+				if( $mod_12 == 0 )
+				{
+					$mod_12 = 12;
+				}
+				$am_pm = $user->lang['PM'];
+				if( $i < 12 )
+				{
+					$am_pm = $user->lang['AM'];
+				}
+				$hour_invite_selcode .= '<option value="'.$i.'"'.$selected.'>'.$mod_12.' '.$am_pm.'</option>';
+			}
+		}
+		else
+		{
+			for( $i = 0; $i < 24; $i++ )
+			{
+				$selected = ($i == $presetinvhour) ? ' selected="selected"' : '';
+				$hour_invite_selcode .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+			}
+		}
+		$min_invite_sel_code = "";
+		$presetinvmin = (int) $config['rp_default_invite_time'] - ($presetinvhour * 60) ;
+		for( $i = 0; $i < 59; $i++ )
+		{
+			$selected = ($i == $presetinvmin ) ? ' selected="selected"' : '';
+			$min_invite_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+		}
+		
+		/**
+		 *	Raid start time 
+		 */ 
+		$hour_start_selcode = "";
+		$presetstarthour = intval($config['rp_default_start_time'] / 60);
+		if( $hour_mode == 12 )
+		{
+			for( $i = 0; $i < 24; $i++ )
+			{
+				$selected = ($i == $presetstarthour) ? ' selected="selected"' : '';
+				$mod_12 = $i % 12;
+				if( $mod_12 == 0 )
+				{
+					$mod_12 = 12;
+				}
+				$am_pm = $user->lang['PM'];
+				if( $i < 12 )
+				{
+					$am_pm = $user->lang['AM'];
+				}
+				$hour_start_selcode .= '<option value="'.$i.'"'.$selected.'>'.$mod_12.' '.$am_pm.'</option>';
+			}
+		}
+		else
+		{
+			for( $i = 0; $i < 24; $i++ )
+			{
+				$selected = ($i == $presetstarthour) ? ' selected="selected"' : '';
+				$hour_start_selcode .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+			}
+		}
+		$min_start_sel_code = "";
+		$presetstartmin = (int) $config['rp_default_start_time'] - ($presetstarthour * 60) ;
+		for( $i = 0; $i < 59; $i++ )
+		{
+			$selected = ($i == $presetstartmin ) ? ' selected="selected"' : '';
+			$min_start_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+		}
+		
+		
+		/**
+		 *	Raid END time 
+		 */ 
+		$hour_end_selcode = "";
+		$presetendhour = intval($config['rp_default_end_time'] / 60);
+		if( $hour_mode == 12 )
+		{
+			for( $i = 0; $i < 24; $i++ )
+			{
+				$selected = ($i == $presetendhour) ? ' selected="selected"' : '';
+				$mod_12 = $i % 12;
+				if( $mod_12 == 0 )
+				{
+					$mod_12 = 12;
+				}
+				$am_pm = $user->lang['PM'];
+				if( $i < 12 )
+				{
+					$am_pm = $user->lang['AM'];
+				}
+				$hour_end_selcode .= '<option value="'.$i.'"'.$selected.'>'.$mod_12.' '.$am_pm.'</option>';
+			}
+		}
+		else
+		{
+			for( $i = 0; $i < 24; $i++ )
+			{
+				$selected = ($i == $presetendhour) ? ' selected="selected"' : '';
+				$hour_end_selcode .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+			}
+		}
+		
+		$min_end_sel_code = "";
+		$presetendmin = (int) $config['rp_default_end_time'] - ($presetendhour * 60) ;
+		for( $i = 0; $i < 59; $i++ )
+		{
+			$selected = ($i == $presetendmin ) ? ' selected="selected"' : '';
+			$min_end_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+		}
+				
+
+		
+
+		
+	}
+	
+	
+	/**
+	 * collects data from form, constructs new raidplan object
+	 *
+	 */
+	private function addraidplan()
+	{
+
+		global $user;
+		
+		$error = array();
+				
+		// read subjectline
+		$this->subject = = utf8_normalize_nfc(request_var('subject', '', true)); 
+
+		//read comment section
+		$this->body = = utf8_normalize_nfc(request_var('message', '', true));
+
+		//get event type 
+		$this->event_type = request_var('calEType', 0);
+		
+		// get raidsize from form
+		$this->raidroles = request_var('role_needed', array(0=> 0));
+		
+		// get member group id
+		$this->group_id_list = ',';
+		$this->group_id = 0;
+		
+		$group_id_array = request_var('calGroupId', array(0));
+		$num_group_ids = sizeof( $group_id_array );
+	    if( $num_group_ids == 1 )
+	    {
+	    	// if only one group pass the groupid
+			$this->group_id = $group_id_array[0];
+	
+	    }
+		elseif( $num_group_ids > 1 )
+		{
+			// if we want multiple groups then pass the array 
+			$group_index = 0;
+			for( $group_index = 0; $group_index < $num_group_ids; $group_index++ )
+			{
+			    if( $group_id_array[$group_index] == "" )
+			    {
+			    	continue;
+			    }
+			    $this->group_id_list .= $group_id_array[$group_index] . ",";
+			}
+		}
+		
+		$this->accesslevel = request_var('calELevel', 0);
+		
+		// if we selected group but didn't actually a group then throw error
+		if( $this->accesslevel == 1 && $num_group_ids < 1 )
+		{
+			$error[] = $user->lang['NO_GROUP_SELECTED'];
+		}
+		
+		//do we track signups ?
+		$this->signups_allowed = request_var('calTrackRsvps', 0);
+		
+		
+		
 		
 		
 		
 	}
+	
+	
 	
 	/**
 	 * 
