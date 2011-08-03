@@ -68,17 +68,7 @@
 		<copy>
 			<file from="root/includes/ucp/info/ucp_planner.php" to="includes/ucp/info/ucp_planner.php" />
 			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php" />
-
-			<file from="root/includes/bbdkp/raidplanner/calendar.php" to="includes/bbdkp/raidplanner/calendar.php" />
-			<file from="root/includes/bbdkp/raidplanner/planner.php" to="includes/bbdkp/raidplanner/planner.php" />
-			<file from="root/includes/bbdkp/raidplanner/planneradd.php" to="includes/bbdkp/raidplanner/planneradd.php" />			
-			<file from="root/includes/bbdkp/raidplanner/raidplanner.php" to="includes/bbdkp/raidplanner/raidplanner.php" />			
-			<file from="root/includes/bbdkp/raidplanner/raidplans.php" to="includes/bbdkp/raidplanner/raidplans.php" />
-			<file from="root/includes/bbdkp/raidplanner/rpday.php" to="includes/bbdkp/raidplanner/rpday.php" />
-			<file from="root/includes/bbdkp/raidplanner/rpmonth.php" to="includes/bbdkp/raidplanner/rpmonth.php" />
-			<file from="root/includes/bbdkp/raidplanner/rpraid.php" to="includes/bbdkp/raidplanner/rpraid.php" />
-			<file from="root/includes/bbdkp/raidplanner/rpup.php" to="includes/bbdkp/raidplanner/rpup.php" />
-			<file from="root/includes/bbdkp/raidplanner/rpweek.php" to="includes/bbdkp/raidplanner/rpweek.php" />			
+			<file from="root/includes/bbdkp/raidplanner/*.*" to="includes/bbdkp/raidplanner/*.*" />
 			<file from="root/plannerajax.php" to="plannerajax.php" />
 
 			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php" />

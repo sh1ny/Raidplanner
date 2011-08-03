@@ -1189,10 +1189,10 @@ class rpraid
 		$error = array();
 				
 		// read subjectline
-		$this->subject = = utf8_normalize_nfc(request_var('subject', '', true)); 
+		$this->subject = utf8_normalize_nfc(request_var('subject', '', true)); 
 
 		//read comment section
-		$this->body = = utf8_normalize_nfc(request_var('message', '', true));
+		$this->body = utf8_normalize_nfc(request_var('message', '', true));
 
 		//get event type 
 		$this->event_type = request_var('calEType', 0);
