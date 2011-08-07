@@ -90,6 +90,7 @@
 			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
 			<file from="root/styles/prosilver/theme/raidplanner.css" to="styles/prosilver/theme/raidplanner.css"/>
 		</copy>
+		
 		<open src="includes/bbdkp/constants_bbdkp.php">
 			<edit>
 				<comment lang="en"><![CDATA[adding tablenames to constants file]]></comment>
@@ -107,38 +108,16 @@ define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');
 ]]></action>
 			</edit>
 		</open>
+		
 		<open src="includes/functions.php">
 			<edit>
 				<comment lang="en"><![CDATA[ adding Planner link in functions.php right after bbdkp]]></comment>
 				<find><![CDATA[		'SITENAME'						=> $config['sitename'],]]></find>
-				<action type="after-add"><![CDATA[		'U_PLANNER'            => append_sid("{$phpbb_root_path}dkp.$phpEx", 'page=planner'),
+				<action type="after-add"><![CDATA[        'U_PLANNER'            => append_sid("{$phpbb_root_path}dkp.$phpEx", 'page=planner'),
 				]]></action>
 			</edit>
 		</open>
-		<open src="language/en/common.php">
-			<edit>
-				<comment lang="en"><![CDATA[Define Calendar string]]></comment>
-				<find><![CDATA[=> 'Bytes',]]></find>
-				<action type="after-add"><![CDATA[	'PLANNER'				=> 'Raidplanner',
-]]></action>
-			</edit>
-			<edit>
-				<comment lang="en"><![CDATA[Define Calendar view online strings]]></comment>
-				<find><![CDATA['VIEWED'					=> 'Viewed',
-]]></find>
-				<action type="after-add"><![CDATA[	'VIEWING_CALENDAR'			=> 'Viewing Planner',
-	'VIEWING_CALENDAR_DAY'		=> 'Viewing Planner day',
-	'VIEWING_CALENDAR_EVENT'	=> 'Viewing Planner event',
-	'VIEWING_CALENDAR_MONTH'	=> 'Viewing Planner month',
-	'VIEWING_CALENDAR_WEEK'		=> 'Viewing Planner week',
-	'EDITING_CALENDAR_EVENT'	=> 'Editing Planner event',
-	'CREATING_CALENDAR_EVENT'	=> 'Creating Planner event',
-
-]]></action>
-			</edit>
-		</open>
-		
-		<open src="language/en/ucp.php">
+<open src="language/en/ucp.php">
 			<edit>
 				<comment lang="en"><![CDATA[Add Raidplanner UCP strings]]></comment>
 				<find><![CDATA['DISABLE_CENSORS'			=> 'Enable word censoring',
@@ -146,6 +125,7 @@ define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');
 				<action type="after-add"><![CDATA[	'DISPLAY_EVENTS_DAYCOUNT'	=> 'How many days into the future do you want to display?',
 		]]></action>
 			</edit>
+
 			<edit>
 				<comment lang="en"><![CDATA[Define Calendar UCP module name strings]]></comment>
 				<find><![CDATA['UCP_MAIN_ATTACHMENTS'		=> 'Manage attachments',]]></find>
@@ -154,73 +134,16 @@ define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');
 		]]></action>
 			</edit>
 		</open>
-		
-		<open src="index.php">
-			<edit>
-				<comment lang="en"><![CDATA[Include functions_calendar so we can later display the current week or next events on the index]]></comment>
-				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
-				<action type="after-add"><![CDATA[
-// Raidplanner on index
-if(isset( $config['rp_index_display_week']))
-{
-	define('IN_BBDKP', true);
-	$user->add_lang ( array ('mods/raidplanner'));
-	if( $config['rp_index_display_week'] === "1" )
-	{
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
-		$cal = new rpweek();
-		$cal->display();
-	}
-	elseif ( $config['rp_index_display_next_raidplans'] > 0)
-	{
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpup.' . $phpEx);
-		$cal = new rpup("next");
-		$cal->display();
-	}
-}]]></action>
-			</edit>
-		</open>
 
-		<open src="cron.php">
-			<edit>
-				<comment lang="en"><![CDATA[Add auto prune/populate event support]]></comment>
-				<find><![CDATA[	case 'prune_forum':]]></find>
-				<action type="before-add"><![CDATA[	case 'prune_calendar':
-		if ( !class_exists('raidplanner_population')) 
-        {
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_population.' . $phpEx);
-		}
-		$populate = new raidplanner_population;
-		$populate->prune_calendar();
-
-	break;
-	case 'populate_calendar':
-		if ( !class_exists('raidplanner_population')) 
-        {
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_population.' . $phpEx);
-		}
-		$populate = new raidplanner_population;
-		$populate->populate_calendar(0);
-
-	break;
-	
+		<open src="language/en/common.php">
+            <edit>
+                <comment lang="en"><![CDATA[Define Calendar string]]></comment>
+               <find><![CDATA[=> 'Bytes',]]></find>
+                <action type="after-add"><![CDATA[    'PLANNER'                => 'Raidplanner',
 ]]></action>
 			</edit>
 		</open>
 
-<open src="styles/prosilver/template/index_body.html">
-			<edit>
-				<comment lang="en"><![CDATA[Add calendar to index page]]></comment>
-				<find><![CDATA[<!-- INCLUDE forumlist_body.html -->]]></find>
-				<action type="after-add"><![CDATA[<!-- IF S_PLANNER_WEEK -->
-		<!-- INCLUDE planner/planner_week_on_index.html -->
-		<!-- ELSEIF S_CALENDAR_NEXT_EVENTS -->
-			<!-- INCLUDE planner/planner_next_events_on_index.html -->
-		<!-- ENDIF -->
-		]]></action>
-			</edit>
-		</open>
-	
 		<open src="styles/prosilver/template/dkp/dkpmain.html">
 			<edit>
 				<comment lang="en"><![CDATA[Add calendar to DKP page]]></comment>
@@ -243,17 +166,7 @@ if(isset( $config['rp_index_display_week']))
 ]]></action>
 			</edit>
 		</open>
-		
-		<open src="styles/prosilver/template/overall_footer.html">
-			<edit>
-				<comment lang="en"><![CDATA[Add calendar subscription links]]></comment>
-				<find><![CDATA[<!-- IF U_WATCH_TOPIC --><li <!-- IF S_WATCHING_TOPIC -->class="icon-unsubscribe"<!-- ELSE -->class="icon-subscribe"<!-- ENDIF -->><a href="{U_WATCH_TOPIC}" title="{L_WATCH_TOPIC}">{L_WATCH_TOPIC}</a></li><!-- ENDIF -->]]></find>
-				<action type="after-add"><![CDATA[					<!-- IF U_WATCH_EVENT --><li <!-- IF S_WATCHING_EVENT -->class="icon-unsubscribe"<!-- ELSE -->class="icon-subscribe"<!-- ENDIF -->><a href="{U_WATCH_EVENT}" title="{L_WATCH_EVENT}">{L_WATCH_EVENT}</a></li><!-- ENDIF -->
-							<!-- IF U_WATCH_CALENDAR --><li <!-- IF S_WATCHING_CALENDAR -->class="icon-unsubscribe"<!-- ELSE -->class="icon-subscribe"<!-- ENDIF -->><a href="{U_WATCH_CALENDAR}" title="{L_WATCH_CALENDAR}">{L_WATCH_CALENDAR}</a></li><!-- ENDIF -->
-		]]></action>
-			</edit>
-		</open>
-		
+				
 		<open src="/styles/prosilver/theme/stylesheet.css">
 			<edit>
 				<comment lang="en"><![CDATA[raidplanner css]]></comment>
