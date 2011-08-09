@@ -24,13 +24,34 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
  */
 abstract class calendar
 {
-	
+	/**
+	 * core date object. 
+	 *
+	 * @var array
+	 */
 	public $date = array();
+	
+	/**
+	 * month names
+	 *
+	 * @var unknown_type
+	 */
 	public $month_names = array();
+	
+	/**
+	 * selectors
+	 *
+	 */
 	public $month_sel_code = "";
 	public $day_sel_code = "";
 	public $year_sel_code = "";
 	public $mode_sel_code = "";
+	
+	/**
+	 * 
+	 *
+	 * @var unknown_type
+	 */
 	public $group_options;
 	public $period_start;
 	public $period_end;
@@ -42,19 +63,6 @@ abstract class calendar
 	function __construct($arg)
 	{
 		global $auth, $db, $user, $config; 
-		
-		$this->month_names[1] = "January";
-		$this->month_names[2] = "February";
-		$this->month_names[3] = "March";
-		$this->month_names[4] = "April";
-		$this->month_names[5] = "May";
-		$this->month_names[6] = "June";
-		$this->month_names[7] = "July";
-		$this->month_names[8] = "August";
-		$this->month_names[9] = "September";
-		$this->month_names[10] = "October";
-		$this->month_names[11] = "November";
-		$this->month_names[12] = "December";
 		
 		// always refresh the date...
 		$temp_now_time = time() + $user->timezone + $user->dst;
@@ -80,6 +88,18 @@ abstract class calendar
 		}
 		else
 		{
+			$this->month_names[1] = "January";
+			$this->month_names[2] = "February";
+			$this->month_names[3] = "March";
+			$this->month_names[4] = "April";
+			$this->month_names[5] = "May";
+			$this->month_names[6] = "June";
+			$this->month_names[7] = "July";
+			$this->month_names[8] = "August";
+			$this->month_names[9] = "September";
+			$this->month_names[10] = "October";
+			$this->month_names[11] = "November";
+			$this->month_names[12] = "December";
 			$this->date['month'] = $this->month_names[$this->date['month']];
 			$this->date['prev_month'] = $this->date['month'] - 1;
 			$this->date['next_month'] = $this->date['month'] + 1;
@@ -90,15 +110,16 @@ abstract class calendar
 			$this->date['year']	= gmdate('Y', $temp_now_time);
 		}
 		
-		$this->timestamp = 	mktime(0, 0, 0, $this->date['month_no'], $this->date['day'], $this->date['year']);
-		
 		// make sure this day exists - ie there is no February 31st.
 		$number_days = gmdate("t", gmmktime( 0,0,0,$this->date['month_no'], 1, $this->date['year']));
 		if( $number_days < $this->date['day'] )
 		{
 		    $this->date['day'] = $number_days;
 		}
+
 		
+		$this->timestamp = 	mktime(0, 0, 0, $this->date['month_no'], $this->date['day'], $this->date['year']);
+				
 		$this->_init_view_selection_code( $arg );
 		$this->_set_date_prev_next( $arg );
 		
