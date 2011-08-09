@@ -77,7 +77,20 @@ abstract class calendar
 		{
 			$this->date['day'] = gmdate("d", $temp_now_time);
 		}
-	
+
+		$this->month_names[1] = "January";
+		$this->month_names[2] = "February";
+		$this->month_names[3] = "March";
+		$this->month_names[4] = "April";
+		$this->month_names[5] = "May";
+		$this->month_names[6] = "June";
+		$this->month_names[7] = "July";
+		$this->month_names[8] = "August";
+		$this->month_names[9] = "September";
+		$this->month_names[10] = "October";
+		$this->month_names[11] = "November";
+		$this->month_names[12] = "December";
+			
 		if( $this->date['month'] == "" )
 		{
 			$this->date['month'] = gmdate("F", $temp_now_time);
@@ -88,18 +101,7 @@ abstract class calendar
 		}
 		else
 		{
-			$this->month_names[1] = "January";
-			$this->month_names[2] = "February";
-			$this->month_names[3] = "March";
-			$this->month_names[4] = "April";
-			$this->month_names[5] = "May";
-			$this->month_names[6] = "June";
-			$this->month_names[7] = "July";
-			$this->month_names[8] = "August";
-			$this->month_names[9] = "September";
-			$this->month_names[10] = "October";
-			$this->month_names[11] = "November";
-			$this->month_names[12] = "December";
+
 			$this->date['month'] = $this->month_names[$this->date['month']];
 			$this->date['prev_month'] = $this->date['month'] - 1;
 			$this->date['next_month'] = $this->date['month'] + 1;
