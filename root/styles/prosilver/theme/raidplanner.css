@@ -2,44 +2,6 @@
    raidplanner css
   ------------------------- */
 
-/* overrides prosilver */
-.blockhead {
-    border-bottom-color: transparent;
-    color: #cadceb;
-    font-size: 1.5em;
-    font-weight: normal;
-    margin-bottom: 0.5em;
-    margin-top: 0.5em;
-    padding-bottom: 0.5em;
-}
-
-a.prev_planner {
-	background: transparent url('{T_THEME_PATH}/images/left_arrow.png') no-repeat scroll 50% 0;
-	display: inline-block;
-	overflow: hidden;
-	width: 16px;
-	height: 16px;
-}
-
-a.next_planner {
-	background: transparent url('{T_THEME_PATH}/images/right_arrow.png') no-repeat scroll 0 0;
-	display: inline-block;
-	overflow: hidden;
-	width: 16px;
-	height: 16px;
-}
-
-.raidplanner_bg {
-    clear: both;
-    margin-bottom: 5px;
-    padding: 0 5px;
-}
-
-.navbar {
-    background-color: #CADCEB;
-}
-
-
 /* uses border-top-color = .bg3 background-color
  (the line between events in the month display) */
 
@@ -204,6 +166,17 @@ td.bg3_calDay a:hover {
 	text-align: left;
 }
 
+div.planner_back {
+	background: transparent url("{T_IMAGESET_PATH}/planner/leftarrow.png") no-repeat;
+	width: 32px;
+	height: 32px;
+}
+
+div.planner_to {
+	background: transparent url("{T_IMAGESET_PATH}/planner/rightarrow.png") no-repeat;
+	width: 32px;
+	height: 32px;
+}
 
 .edit-all-icon, .edit-all-icon a {
 	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_calendar_edit_all.gif");
