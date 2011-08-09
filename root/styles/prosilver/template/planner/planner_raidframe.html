@@ -20,7 +20,19 @@
 <div class="inner">
 <span class="corners-top"><span></span></span>
 
+<h3>{L_RAIDPLANNER}</h3>
 
+<div class="navbar raidplanner_bg">
+	<div class="inner"><span class="corners-inner-top"><span></span></span>
+	      	<div style="float: left;"><a class="prev_planner" title="{L_SHOW_PREV}" type="button" href="{CALENDAR_PREV}"></a></div>
+			<form id="viewOpts" method="post" action="{S_POST_ACTION}">
+	      	<div style="float: left;"> {CALENDAR_VIEW_OPTIONS}<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_GO}" class="button2" /></div>
+	    	</form>
+		    <div style="float: left;"><a class="next_planner" title="{L_SHOW_PREV}" type="button" href="{CALENDAR_NEXT}"></a></div>
+	    <span class="corners-inner-bottom"><span></span></span>
+    </div>
+</div>
+							
 <!-- IF S_PLANNER_RAIDPLAN -->
 	<!-- INCLUDE planner/raidplan/planner_view_raidplan.html -->
 <!-- ENDIF -->
