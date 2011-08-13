@@ -1,9 +1,3 @@
-
-<div class="forabg" >
-<span class="corners-top"><span></span></span>
-<div style="width:50%; float: left;">
-<h2 style = "color:#dfc065">{L_NEWRAID}</h2>
-</div>
 <div style="width:50%; float: right;">
 <div class="buttons" style="float: right;">
 <div class="planner-day-icon"><a href="{DAY_VIEW_URL}" title="{L_DAY}"><span></span></a></div>
@@ -11,30 +5,24 @@
 <div class="planner-month-icon"><a href="{MONTH_VIEW_URL}" title="{L_MONTH}"><span></span></a></div>
 </div>
 </div>
-<span class="corners-bottom"><span></span></span>
-</div>
+
 <form id="postform" name="postform" method="post" action="{S_POST_ACTION}" onsubmit="return checkForm(this);">
 
 <div id="postingbox">
 	<!-- INCLUDE planner/raidplan/planner_post_body_editor.html -->
 </div>
 
-<div class="panel bg2">
-		<div class="inner"><span class="corners-top"><span></span></span>
-		<fieldset class="submit-buttons">
-			{S_HIDDEN_ADDRESS_FIELD}
-			{S_HIDDEN_FIELDS}
-			<!-- IF S_HAS_DRAFTS --><input type="submit" accesskey="d" tabindex="9" name="load" value="{L_LOAD}" class="button2" onclick="load_draft = true;" />&nbsp; <!-- ENDIF -->
-			<!-- IF S_DELETE_ALLOWED -->
-			<input type="submit" accesskey="d" tabindex="7" name="delete" id="delete" value="{L_DELETE}" class="button1" />&nbsp;
-			<!-- ENDIF -->
-			<!-- IF S_SAVE_ALLOWED -->
-			<input type="submit" accesskey="k" tabindex="8" name="save" value="{L_SAVE}" class="button2" />&nbsp;
-			<!-- ENDIF -->
-			<input type="submit" accesskey="s" tabindex="6" name="addraid" value="{L_SUBMIT}" class="button1" />&nbsp;
-		</fieldset>
-
-		<span class="corners-bottom"><span></span></span></div>
-</div>
+<fieldset class="submit-buttons">
+	{S_HIDDEN_ADDRESS_FIELD}
+	{S_HIDDEN_FIELDS}
+	<!-- IF S_HAS_DRAFTS --><input type="submit" accesskey="d" tabindex="9" name="load" value="{L_LOAD}" class="button2" onclick="load_draft = true;" />&nbsp; <!-- ENDIF -->
+	<!-- IF S_DELETE_ALLOWED -->
+	<input type="submit" accesskey="d" tabindex="7" name="delete" id="delete" value="{L_DELETE}" class="button1" />&nbsp;
+	<!-- ENDIF -->
+	<!-- IF S_SAVE_ALLOWED -->
+	<input type="submit" accesskey="k" tabindex="8" name="save" value="{L_SAVE}" class="button2" />&nbsp;
+	<!-- ENDIF -->
+	<input type="submit" accesskey="s" tabindex="6" name="addraid" value="{L_SUBMIT}" class="button1" />&nbsp;
+</fieldset>
 </form>
 

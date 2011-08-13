@@ -491,6 +491,85 @@ abstract class calendar
 		return $group_options;
 	}
 	
+	/**
+	* Fill smiley templates (or just the variables) with smilies, either in a window or inline
+	* 
+	*/
+	public function generate_calendar_smilies($mode)
+	{
+		global $auth, $db, $user, $config, $template, $phpEx, $phpbb_root_path;
+	
+		if ($mode == 'window')
+		{
+			page_header($user->lang['SMILIES']);
+	
+			$template->set_filenames(array(
+				'body' => 'posting_smilies.html')
+			);
+		}
+	
+		$display_link = false;
+		if ($mode == 'inline')
+		{
+			$sql = 'SELECT smiley_id
+				FROM ' . SMILIES_TABLE . '
+				WHERE display_on_posting = 0';
+			$result = $db->sql_query_limit($sql, 1, 0, 3600);
+	
+			if ($row = $db->sql_fetchrow($result))
+			{
+				$display_link = true;
+			}
+			$db->sql_freeresult($result);
+		}
+	
+		$last_url = '';
+	
+		$sql = 'SELECT *
+			FROM ' . SMILIES_TABLE .
+			(($mode == 'inline') ? ' WHERE display_on_posting = 1 ' : '') . '
+			ORDER BY smiley_order';
+		$result = $db->sql_query($sql, 3600);
+	
+		$smilies = array();
+		while ($row = $db->sql_fetchrow($result))
+		{
+			if (empty($smilies[$row['smiley_url']]))
+			{
+				$smilies[$row['smiley_url']] = $row;
+			}
+		}
+		$db->sql_freeresult($result);
+	
+		if (sizeof($smilies))
+		{
+			foreach ($smilies as $row)
+			{
+				$template->assign_block_vars('smiley', array(
+					'SMILEY_CODE'	=> $row['code'],
+					'A_SMILEY_CODE'	=> addslashes($row['code']),
+					'SMILEY_IMG'	=> $phpbb_root_path . $config['smilies_path'] . '/' . $row['smiley_url'],
+					'SMILEY_WIDTH'	=> $row['smiley_width'],
+					'SMILEY_HEIGHT'	=> $row['smiley_height'],
+					'SMILEY_DESC'	=> $row['emotion'])
+				);
+			}
+		}
+	
+		if ($mode == 'inline' && $display_link)
+		{
+			$template->assign_vars(array(
+				'S_SHOW_SMILEY_LINK' 	=> true,
+				'U_MORE_SMILIES' 		=> append_sid("{$phpbb_root_path}calendarpost.$phpEx", 'mode=smilies'))
+			);
+		}
+	
+		if ($mode == 'window')
+		{
+			page_footer();
+		}
+	}
+	
 }
 
 ?>

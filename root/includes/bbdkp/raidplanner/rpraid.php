@@ -1009,10 +1009,14 @@ class rpraid
 	/**
 	 * shows the form to add a raidplan
 	 */
-	public function showadd()
+	public function showadd(calendar $cal)
 	{
 		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
+		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 		
+		$user->setup('posting');
+		$user->add_lang ( array ('posting', 'mods/dkp_common','mods/raidplanner'  ));
+
 		//$test_raidplan_level = request_var('calELevel', 0);
 		//test if user can add
 		$page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
@@ -1026,28 +1030,81 @@ class rpraid
 		// action URL 
 		$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&mode=showadd", true, $user->session_id);
 
-		// Raid date
-		$month_sel_code  = " ";
-		for( $i = 1; $i <= 12; $i++ )
+		//count events from bbDKP, put them in a pulldown...
+		$e_type_sel_code  = "";
+		foreach( $this->eventlist->events as $eventid => $event)
 		{
-			$selected = ($newraid->date['month_no']==$i) ?   ' selected="selected"': '';
-			$month_sel_code .= '<option value="'.$i.'"' . $selected . '>'.$user->lang['datetime'][$newraid->month_names[$i]].'</option>';
+			$e_type_sel_code .= '<option value="' . $eventid . '">'. $event['event_name'].'</option>';
 		}
+
+		// raidplan acces level
+		$level_sel_code ="";
 		
-		$day_sel_code= "";
-		for( $i = 1; $i <= 31; $i++ )
+		// Find what groups this user is a member of and add them to the list of groups to invite
+		$disp_hidden_groups = $config['rp_display_hidden_groups'];
+	
+		if ( $auth->acl_get('u_raidplanner_nonmember_groups') )
 		{
-			$selected = ($newraid->date['day']==$i) ?  ' selected="selected"': '';
-			$day_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+			if( $disp_hidden_groups == 1 )
+			{
+				$sql = 'SELECT g.group_id, g.group_name, g.group_type
+						FROM ' . GROUPS_TABLE . ' g
+						ORDER BY g.group_type, g.group_name';
+			}
+			else
+			{
+				$sql = 'SELECT g.group_id, g.group_name, g.group_type
+						FROM ' . GROUPS_TABLE . ' g
+						' . ((!$auth->acl_gets('a_group', 'a_groupadd', 'a_groupdel')) ? ' 	WHERE g.group_type <> ' . GROUP_HIDDEN : '') . '
+						ORDER BY g.group_type, g.group_name';
+			}
 		}
-		
-		$year_sel_code  = " ";
-		for( $i = $newraid->date['year']; $i < ($newraid->date['year']+5); $i++ )
+		else
 		{
-			$selected = ($newraid->date['year'] == $i) ?  ' selected="selected"': '';
-			$year_sel_code .= '<option value="'.$i.'"'.$selected. '>'.$i.'</option>';
+			if( $disp_hidden_groups == 1 )
+			{
+				$sql = 'SELECT g.group_id, g.group_name, g.group_type
+						FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . " ug
+						WHERE ug.user_id = ". $db->sql_escape($user->data['user_id']).'
+							AND g.group_id = ug.group_id
+							AND ug.user_pending = 0
+						ORDER BY g.group_type, g.group_name';
+			}
+			else
+			{
+				$sql = 'SELECT g.group_id, g.group_name, g.group_type
+						FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . " ug
+						WHERE ug.user_id = ". $db->sql_escape($user->data['user_id'])."
+							AND g.group_id = ug.group_id" . ((!$auth->acl_gets('a_group', 'a_groupadd', 'a_groupdel')) ? ' 	AND g.group_type <> ' . GROUP_HIDDEN : '') . '
+							AND ug.user_pending = 0
+						ORDER BY g.group_type, g.group_name';
+			}
 		}
+	
+		$result = $db->sql_query($sql);
+	
+		$group_sel_code = "<select name='calGroupId[]' id='calGroupId[]' disabled='disabled' multiple='multiple' size='6' >\n";
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$group_sel_code .= "<option value='" . $row['group_id'] . "'>" . (($row['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $row['group_name']] : $row['group_name']) . "</option>\n";
+		}
+		$db->sql_freeresult($result);
+		$group_sel_code .= "</select>\n";
 		
+
+		if( $auth->acl_get('u_raidplanner_create_public_raidplans') )
+		{
+			$level_sel_code .= '<option value="2">'.$user->lang['EVENT_ACCESS_LEVEL_PUBLIC'].'</option>';
+		}
+		if( $auth->acl_get('u_raidplanner_create_group_raidplans') )
+		{
+			$level_sel_code .= '<option value="1">'.$user->lang['EVENT_ACCESS_LEVEL_GROUP'].'</option>';
+		}
+		if( $auth->acl_get('u_raidplanner_create_private_raidplans') )
+		{
+			$level_sel_code .= '<option value="0">'.$user->lang['EVENT_ACCESS_LEVEL_PERSONAL'].'</option>';
+		}
+				
 		/**
 		 *	Raid invite time 
 		 */ 
@@ -1167,10 +1224,114 @@ class rpraid
 			$selected = ($i == $presetendmin ) ? ' selected="selected"' : '';
 			$min_end_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 		}
-				
-
 		
+		// translate raidplan start and end time into user's timezone
+		$raidplan_invite = $this->invite_time + $user->timezone + $user->dst;
+		$raidplan_start = $this->start_time + $user->timezone + $user->dst;
+		$day = gmdate("d", $raidplan_start);
+		$month = gmdate("n", $raidplan_start);
+		$year =	gmdate('Y', $raidplan_start);
+		$raidplan_end = $this->end_time + $user->timezone + $user->dst;
 
+		// format
+		$invite_date_txt = $user->format_date($raidplan_invite, $config['rp_date_time_format'], true);
+		$start_date_txt = $user->format_date($raidplan_start, $config['rp_date_time_format'], true);
+		$end_date_txt = $user->format_date($raidplan_end, $config['rp_date_time_format'], true);
+		
+		$day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$day ."&amp;calM=".$month."&amp;calY=".$year);
+		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$day ."&amp;calM=".$month."&amp;calY=".$year);
+		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
+		
+				
+		$template->assign_vars(array(
+			'L_POST_A'					=> $page_title,
+			'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
+			//'SUBJECT'					=> $raidplan_data['raidplan_subject'],
+			//'MESSAGE'					=> $raidplan_data['raidplan_body'],
+			'MINI_POST_IMG'				=> $user->img('icon_post_target', $user->lang['POST']),
+			//'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
+			//'U_CALENDAR'				=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner"),
+			//'S_DATE_TIME_OPTS'			=> $s_date_time_opts,
+			'MONTH_SEL'					=> $cal->month_sel_code,
+			'DAY_SEL'					=> $cal->day_sel_code,
+			'YEAR_SEL'					=> $cal->year_sel_code,
+		
+			'INVITE_HOUR_SEL'			=> $hour_invite_selcode, 
+			'INVITE_MIN_SEL'			=> $min_invite_sel_code, 
+		
+			'START_HOUR_SEL'			=> $hour_start_selcode,
+			'START_MIN_SEL'				=> $min_start_sel_code,
+		
+			'END_HOUR_SEL'				=> $hour_end_selcode,
+			'END_MIN_SEL'				=> $min_end_sel_code,
+		
+			'EVENT_TYPE_SEL'			=> $e_type_sel_code,
+			'EVENT_ACCESS_LEVEL_SEL'	=> $level_sel_code,
+			'EVENT_GROUP_SEL'			=> $group_sel_code,
+		
+			'DAY_VIEW_URL'				=> $day_view_url,
+			'WEEK_VIEW_URL'				=> $week_view_url,
+			'MONTH_VIEW_URL'			=> $month_view_url,
+
+			//'TRACK_RSVP_CHECK'			=> ($raidplan_data['track_signups'] == 1) ? ' checked="checked"' : '',
+			//'S_RECURRING_OPTS'			=> $raidplan_data['s_recurring_opts'],
+			//'S_UPDATE_RECURRING_OPTIONS'=> $raidplan_data['s_update_recurring_options'],
+			//'RECURRING_EVENT_CHECK'		=> $recurr_raidplan_check,
+			//'RECURRING_EVENT_TYPE_SEL'	=> $recurr_raidplan_freq_sel_code,
+			//'RECURRING_EVENT_FREQ_IN'	=> $recurr_raidplan_freq_val_code,
+			//'END_RECURR_MONTH_SEL'		=> $end_recurr_month_sel_code,
+			//'END_RECURR_DAY_SEL'		=> $end_recurr_day_sel_code,
+			//'END_RECURR_YEAR_SEL'		=> $end_recurr_year_sel_code,
+			
+		
+			'S_POST_ACTION'				=> $s_action,
+			//'S_HIDDEN_FIELDS'			=> $s_hidden_fields, 
+		
+			//javascript alerts
+			'LA_ALERT_OLDBROWSER' 		=> $user->lang['ALERT_OLDBROWSER'],
+			//'UA_AJAXHANDLER1'		  	=> append_sid($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/planner/plannerajax.'. $phpEx),
+			'UA_AJAXHANDLER1'		  	=> 'plannerajax.'. $phpEx
+		)
+		);
+		
+		// HTML, BBCode, Smilies, Images and Flash status
+		$bbcode_status	= ($config['allow_bbcode']) ? true : false;
+		$img_status		= ($bbcode_status) ? true : false;
+		$flash_status	= ($bbcode_status && $config['allow_post_flash']) ? true : false;
+		$url_status		= ($config['allow_post_links']) ? true : false;
+		$smilies_status	= ($bbcode_status && $config['allow_smilies']) ? true : false;
+		
+		if ($smilies_status)
+		{
+			// Generate smiley listing
+			$cal->generate_calendar_smilies('inline');
+		}
+		
+		$quote_status	= false;
+		
+		$template->assign_vars(array(
+			'BBCODE_STATUS'				=> ($bbcode_status) ? 
+				sprintf($user->lang['BBCODE_IS_ON'], '<a href="' . append_sid("{$phpbb_root_path}faq.$phpEx", 'mode=bbcode') . '">', '</a>') : 
+				sprintf($user->lang['BBCODE_IS_OFF'], '<a href="' . append_sid("{$phpbb_root_path}faq.$phpEx", 'mode=bbcode') . '">', '</a>'),
+			'IMG_STATUS'				=> ($img_status) ? $user->lang['IMAGES_ARE_ON'] : $user->lang['IMAGES_ARE_OFF'],
+			'FLASH_STATUS'				=> ($flash_status) ? $user->lang['FLASH_IS_ON'] : $user->lang['FLASH_IS_OFF'],
+			'SMILIES_STATUS'			=> ($smilies_status) ? $user->lang['SMILIES_ARE_ON'] : $user->lang['SMILIES_ARE_OFF'],
+			'URL_STATUS'				=> ($bbcode_status && $url_status) ? $user->lang['URL_IS_ON'] : $user->lang['URL_IS_OFF'],
+		
+			//'S_DELETE_ALLOWED'			=> $allow_delete,
+			'S_BBCODE_ALLOWED'			=> $bbcode_status,
+			'S_SMILIES_ALLOWED'			=> $smilies_status,
+			'S_LINKS_ALLOWED'			=> $url_status,
+			'S_BBCODE_IMG'				=> $img_status,
+			'S_BBCODE_URL'				=> $url_status,
+			'S_BBCODE_FLASH'			=> $flash_status,
+			'S_BBCODE_QUOTE'			=> $quote_status,
+			'S_PLANNER_ADD'				=> true,
+		)
+		);
+		
+		// Build custom bbcodes array
+		display_custom_bbcodes();
 		
 	}
 	
@@ -1459,6 +1620,10 @@ class rpraid
 		
 		return $raidplan_output;
 	}
+	
+	
+
+	
 	
 }
 

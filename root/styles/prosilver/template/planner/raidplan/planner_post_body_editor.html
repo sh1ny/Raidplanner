@@ -1,12 +1,6 @@
 <!-- post editor start -->
 <script type="text/javascript">
-  window.onload = start;
-  function start()
-  {
-    subPanels('raidinfo-panel');
-  }
-
-  
+// <![CDATA[
   function update_group_id_state()
   {
       if( document.getElementById('calELevel').value == 1 )
@@ -317,18 +311,12 @@
   	 	}
   	}
   }
+//]]> 
+</script>
   
-
-  
-  </script>
-  
-  <!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
-  
-  
+<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
   
 <!-- IF S_POST_ACTION -->
-
-
 
 <div class="panel bg2">
 <div class="inner">
@@ -377,7 +365,6 @@
 <span class="corners-bottom"><span></span></span>
 </div>
 </div>
-
 
 <div id="tabs">
 	<ul>
@@ -451,9 +438,8 @@
 <span class="corners-bottom"><span></span></span>
 </div>
 </div>
-
   
- <!-- IF S_DATE_TIME_OPTS -->
+<!-- IF S_DATE_TIME_OPTS -->
  <div class="panel bg2" id="raidwhen-panel">
 <div class="inner">
 <span class="corners-top"><span></span></span>
@@ -532,8 +518,6 @@
 <!-- ENDIF -->
 
 
-
-
 <!-- ELSE -->
 <div>
 	<input type="hidden" name="calEditAll" id="calEditAll" value="1">
@@ -543,7 +527,11 @@
 
 <!-- ENDIF -->
 
-	
+<script type="text/javascript">
+// <![CDATA[
+	subPanels(show_panel);
+// ]]>
+</script>
 
 
 <!-- post editor end -->
