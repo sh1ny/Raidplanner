@@ -229,7 +229,7 @@ abstract class calendar
 		for( $i = $temp_year-1; $i < ($temp_year+5); $i++ )
 		{
 			$selected = ( (int) $this->date['year'] == $i ) ? ' selected="selected"' : '';
-			$this->year_sel_code .= "<option value='".$i."'>".$i."</option>";
+			$this->year_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 		}
 		$this->year_sel_code .= "</select>";
 		

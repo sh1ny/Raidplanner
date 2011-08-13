@@ -75,7 +75,7 @@ switch( $view_mode )
 				$raid->edit();
 				break;			
 			case 'showadd':
-				$raid->showadd();
+				$raid->showadd($cal);
 				break;	
 			case 'editall':
 				$raid->edit();

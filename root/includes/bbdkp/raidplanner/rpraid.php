@@ -1011,7 +1011,7 @@ class rpraid
 	 */
 	public function showadd()
 	{
-		global $user, $config; 
+		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		
 		//$test_raidplan_level = request_var('calELevel', 0);
 		//test if user can add
@@ -1023,10 +1023,8 @@ class rpraid
 			trigger_error('USER_CANNOT_POST_RAIDPLAN');
 		}
 				
-		// action URL, include session_id for security purpose
-		$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=showaddmode=$mode", true, $user->session_id);
-		
-		
+		// action URL 
+		$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&mode=showadd", true, $user->session_id);
 
 		// Raid date
 		$month_sel_code  = " ";
