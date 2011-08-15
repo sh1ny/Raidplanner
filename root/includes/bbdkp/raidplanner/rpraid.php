@@ -1336,7 +1336,7 @@ class rpraid
 	
 	
 	/**
-	 * collects data from form, constructs new raidplan object
+	 * collects data from form, constructs new raidplan object (object not stored in Db yet)
 	 *
 	 */
 	private function addraidplan()

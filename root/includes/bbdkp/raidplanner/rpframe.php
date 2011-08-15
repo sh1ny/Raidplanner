@@ -74,6 +74,7 @@ class rpframe extends calendar
 		
 		// create RP_VIEW_OPTIONS
 		$view_mode=request_var('view', 'month');
+		
 		$this->month_sel_code  = "<select name='calM' id='calM'>\n";
 		for( $i = 1; $i <= 12; $i++ )
 		{
@@ -153,11 +154,13 @@ class rpframe extends calendar
 				$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']);
 			
 			}
-			elseif($view_mode === "day")
+			elseif($view_mode === "raidplan")
 			{
-				$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year']);
-				$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']);
+				$mode=request_var('mode', 'showadd');
+				$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=$mode&amp;calD=".$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year']);
+				$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=$mode&amp;calD=".$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']);
 			}
+			
 		}
 		
 		$template->assign_vars(array(

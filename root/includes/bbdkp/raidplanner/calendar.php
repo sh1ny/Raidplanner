@@ -157,7 +157,7 @@ abstract class calendar
 	}
 	
 	/**
-	 * Displays week, month, day or raidplan, see implementations
+	 * Displays header, week, month, or day (see implementations)
 	 * 
 	 */
 	public abstract function display();
