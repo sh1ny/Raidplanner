@@ -49,14 +49,9 @@ class rpmonth extends calendar
 	public function display()
 	{
 		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
-		
-		//find the first day of the week
-		$first_day_of_week = $config['rp_first_day_of_week'];
-		$this->get_weekday_names( $first_day_of_week, $sunday, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday );
 	
-		//get the first day of the month
 		$this->date['num'] = "01";
-		$this->date['fday'] = $this->get_fday( $this->date['num'], $this->date['month_no'], $this->date['year'], $first_day_of_week );
+		$this->date['fday'] = $this->get_fday( $this->date['num'], $this->date['month_no'], $this->date['year'],  $config['rp_first_day_of_week']);
 	
 		$number_days = gmdate("t", gmmktime( 0,0,0,$this->date['month_no'], $this->date['day'], $this->date['year']));
 	
@@ -234,13 +229,13 @@ class rpmonth extends calendar
 			'DAY_IMG'			=> $user->img('button_calendar_day', 'DAY'),
 			'WEEK_IMG'			=> $user->img('button_calendar_week', 'WEEK'),
 			'S_PLANNER_MONTH'	=> true,
-			'SUNDAY'			=> $sunday,
-			'MONDAY'			=> $monday,
-			'TUESDAY'			=> $tuesday,
-			'WEDNESDAY'			=> $wednesday,
-			'THURSDAY'			=> $thursday,
-			'FRIDAY'			=> $friday,
-			'SATURDAY'			=> $saturday,
+			'D0'				=> $this->daynames[0],
+			'D1'				=> $this->daynames[1],
+			'D2'				=> $this->daynames[2],
+			'D3'				=> $this->daynames[3],
+			'D4'				=> $this->daynames[4],
+			'D5'				=> $this->daynames[5],
+			'D6'				=> $this->daynames[6],
 			'S_POST_ACTION'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month"),
 		));
 	

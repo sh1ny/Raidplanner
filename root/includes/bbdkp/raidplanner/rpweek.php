@@ -52,9 +52,7 @@ class rpweek extends calendar
 	
 		// create next and prev links
 		$index_display = request_var('indexWk', 0);
-		$prev_link = "";
-		$next_link = "";
-	
+		
 		//find the first day of the week
 		if( $index_display == 0)
 		{
@@ -67,10 +65,14 @@ class rpweek extends calendar
 			$temp_date = time() + $user->timezone + $user->dst;
 			$first_day_of_week = gmdate("w", $temp_date);
 	
-			$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year']."&amp;indexWk=1".$etype_url_opts);
-			$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']."&amp;indexWk=1".$etype_url_opts);
+			$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year']."&amp;indexWk=1");
+			$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']."&amp;indexWk=1");
+		
+			$template->assign_vars(array(
+				'CALENDAR_PREV'		=> $prev_link,
+				'CALENDAR_NEXT'		=> $next_link,
+			));
 		}
-		$this->get_weekday_names( $first_day_of_week, $sunday, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday );
 	
 		$this->date['fday'] = $this->get_fday($this->date['day'], $this->date['month_no'], $this->date['year'], $first_day_of_week);
 	
@@ -249,13 +251,13 @@ class rpweek extends calendar
 				'DAY_IMG'			=> $user->img('button_calendar_day', 'DAY'),
 				'MONTH_IMG'			=> $user->img('button_calendar_month', 'MONTH'),
 				'S_PLANNER_WEEK'	=> true,
-				'SUNDAY'			=> $sunday,
-				'MONDAY'			=> $monday,
-				'TUESDAY'			=> $tuesday,
-				'WEDNESDAY'			=> $wednesday,
-				'THURSDAY'			=> $thursday,
-				'FRIDAY'			=> $friday,
-				'SATURDAY'			=> $saturday,
+				'D0'				=> $this->daynames[0],
+				'D1'				=> $this->daynames[1],
+				'D2'				=> $this->daynames[2],
+				'D3'				=> $this->daynames[3],
+				'D4'				=> $this->daynames[4],
+				'D5'				=> $this->daynames[5],
+				'D6'				=> $this->daynames[6],
 				'S_POST_ACTION'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week" ),
 		));
 	}

@@ -46,7 +46,7 @@ class rpday extends calendar
 	 */
 	public function display()
 	{
-		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
+		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		
 		$calendar_header_txt = $user->lang['DAY_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], $user->lang['datetime'][$this->date['month']], $this->date['day'], $this->date['year'] );
 
@@ -89,8 +89,7 @@ class rpday extends calendar
 	
 		if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 		{
-			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=showadd&amp;mode=newraid&amp;calD=".
-				$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
+			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
 		}
 		$calendar_days['BIRTHDAYS'] = "";
 		$birthdays = $this->generate_birthday_list( $this->Get1DoM($this->timestamp), $this->GetLDoM($this->timestamp));

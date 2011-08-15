@@ -34,9 +34,16 @@ abstract class calendar
 	/**
 	 * month names
 	 *
-	 * @var unknown_type
+	 * @var array
 	 */
 	public $month_names = array();
+
+	/**
+	 * names of days. depends on acp setting
+	 *
+	 * @var array
+	 */
+	public $daynames = array();
 	
 	/**
 	 * selectors
@@ -78,6 +85,11 @@ abstract class calendar
 			$this->date['day'] = gmdate("d", $temp_now_time);
 		}
 
+				
+		//set $daynames
+		$this->get_weekday_names();
+		
+		//set month names
 		$this->month_names[1] = "January";
 		$this->month_names[2] = "February";
 		$this->month_names[3] = "March";
@@ -162,87 +174,102 @@ abstract class calendar
 	 */
 	public abstract function display();
 	
+	
 	/* 
 	 * "shift" names of weekdays depending on which day we want to display as the first day of the week
 	*/
-	protected function get_weekday_names( $first_day_of_week, &$sunday, &$monday, &$tuesday, &$wednesday, &$thursday, &$friday, &$saturday )
+	protected function get_weekday_names()
 	{
-		global $user;
-		switch( $first_day_of_week )
+		global $config, $user;
+		switch((int) $config['rp_first_day_of_week'])
 		{
 			case 0:
-				$sunday = $user->lang['datetime']['Sunday'];
-				$monday = $user->lang['datetime']['Monday'];
-				$tuesday = $user->lang['datetime']['Tuesday'];
-				$wednesday = $user->lang['datetime']['Wednesday'];
-				$thursday = $user->lang['datetime']['Thursday'];
-				$friday = $user->lang['datetime']['Friday'];
-				$saturday = $user->lang['datetime']['Saturday'];
+				//monday
+				$this->daynames[6] = $user->lang['datetime']['Sunday'];
+				$this->daynames[0] = $user->lang['datetime']['Monday'];
+				$this->daynames[1] = $user->lang['datetime']['Tuesday'];
+				$this->daynames[2] = $user->lang['datetime']['Wednesday'];
+				$this->daynames[3] = $user->lang['datetime']['Thursday'];
+				$this->daynames[4] = $user->lang['datetime']['Friday'];
+				$this->daynames[5] = $user->lang['datetime']['Saturday'];
 				break;
 			case 1:
-				$saturday = $user->lang['datetime']['Sunday'];
-				$sunday = $user->lang['datetime']['Monday'];
-				$monday = $user->lang['datetime']['Tuesday'];
-				$tuesday = $user->lang['datetime']['Wednesday'];
-				$wednesday = $user->lang['datetime']['Thursday'];
-				$thursday = $user->lang['datetime']['Friday'];
-				$friday = $user->lang['datetime']['Saturday'];
+				//tue
+				$this->daynames[5] = $user->lang['datetime']['Sunday'];
+				$this->daynames[6] = $user->lang['datetime']['Monday'];
+				$this->daynames[0] = $user->lang['datetime']['Tuesday'];
+				$this->daynames[1] = $user->lang['datetime']['Wednesday'];
+				$this->daynames[2] = $user->lang['datetime']['Thursday'];
+				$this->daynames[3] = $user->lang['datetime']['Friday'];
+				$this->daynames[4] = $user->lang['datetime']['Saturday'];
 				break;
 			case 2:
-				$friday = $user->lang['datetime']['Sunday'];
-				$saturday = $user->lang['datetime']['Monday'];
-				$sunday = $user->lang['datetime']['Tuesday'];
-				$monday = $user->lang['datetime']['Wednesday'];
-				$tuesday = $user->lang['datetime']['Thursday'];
-				$wednesday = $user->lang['datetime']['Friday'];
-				$thursday = $user->lang['datetime']['Saturday'];
+				//wed
+				$this->daynames[4] = $user->lang['datetime']['Sunday'];
+				$this->daynames[5] = $user->lang['datetime']['Monday'];
+				$this->daynames[6] = $user->lang['datetime']['Tuesday'];
+				$this->daynames[0] = $user->lang['datetime']['Wednesday'];
+				$this->daynames[1] = $user->lang['datetime']['Thursday'];
+				$this->daynames[2] = $user->lang['datetime']['Friday'];
+				$this->daynames[3] = $user->lang['datetime']['Saturday'];
 				break;
 			case 3:
-				$thursday = $user->lang['datetime']['Sunday'];
-				$friday = $user->lang['datetime']['Monday'];
-				$saturday = $user->lang['datetime']['Tuesday'];
-				$sunday = $user->lang['datetime']['Wednesday'];
-				$monday = $user->lang['datetime']['Thursday'];
-				$tuesday = $user->lang['datetime']['Friday'];
-				$wednesday = $user->lang['datetime']['Saturday'];
+				//thu
+				$this->daynames[3] = $user->lang['datetime']['Sunday'];
+				$this->daynames[4] = $user->lang['datetime']['Monday'];
+				$this->daynames[5] = $user->lang['datetime']['Tuesday'];
+				$this->daynames[6] = $user->lang['datetime']['Wednesday'];
+				$this->daynames[0] = $user->lang['datetime']['Thursday'];
+				$this->daynames[1] = $user->lang['datetime']['Friday'];
+				$this->daynames[2] = $user->lang['datetime']['Saturday'];
 				break;
 			case 4:
-				$wednesday = $user->lang['datetime']['Sunday'];
-				$thursday = $user->lang['datetime']['Monday'];
-				$friday = $user->lang['datetime']['Tuesday'];
-				$saturday = $user->lang['datetime']['Wednesday'];
-				$sunday = $user->lang['datetime']['Thursday'];
-				$monday = $user->lang['datetime']['Friday'];
-				$tuesday = $user->lang['datetime']['Saturday'];
+				//fri
+				$this->daynames[2] = $user->lang['datetime']['Sunday'];
+				$this->daynames[3] = $user->lang['datetime']['Monday'];
+				$this->daynames[4] = $user->lang['datetime']['Tuesday'];
+				$this->daynames[5] = $user->lang['datetime']['Wednesday'];
+				$this->daynames[6] = $user->lang['datetime']['Thursday'];
+				$this->daynames[0] = $user->lang['datetime']['Friday'];
+				$this->daynames[1] = $user->lang['datetime']['Saturday'];
 				break;
 			case 5:
-				$tuesday = $user->lang['datetime']['Sunday'];
-				$wednesday = $user->lang['datetime']['Monday'];
-				$thursday = $user->lang['datetime']['Tuesday'];
-				$friday = $user->lang['datetime']['Wednesday'];
-				$saturday = $user->lang['datetime']['Thursday'];
-				$sunday = $user->lang['datetime']['Friday'];
-				$monday = $user->lang['datetime']['Saturday'];
+				//sat
+				$this->daynames[1] = $user->lang['datetime']['Sunday'];
+				$this->daynames[2] = $user->lang['datetime']['Monday'];
+				$this->daynames[3] = $user->lang['datetime']['Tuesday'];
+				$this->daynames[4] = $user->lang['datetime']['Wednesday'];
+				$this->daynames[5] = $user->lang['datetime']['Thursday'];
+				$this->daynames[6] = $user->lang['datetime']['Friday'];
+				$this->daynames[0] = $user->lang['datetime']['Saturday'];
 				break;
 			case 6:
-				$monday = $user->lang['datetime']['Sunday'];
-				$tuesday = $user->lang['datetime']['Monday'];
-				$wednesday = $user->lang['datetime']['Tuesday'];
-				$thursday = $user->lang['datetime']['Wednesday'];
-				$friday = $user->lang['datetime']['Thursday'];
-				$saturday = $user->lang['datetime']['Friday'];
-				$sunday = $user->lang['datetime']['Saturday'];
+				//sun
+				$this->daynames[0] = $user->lang['datetime']['Sunday'];
+				$this->daynames[1] = $user->lang['datetime']['Monday'];
+				$this->daynames[2] = $user->lang['datetime']['Tuesday'];
+				$this->daynames[3] = $user->lang['datetime']['Wednesday'];
+				$this->daynames[4] = $user->lang['datetime']['Thursday'];
+				$this->daynames[5] = $user->lang['datetime']['Friday'];
+				$this->daynames[6] = $user->lang['datetime']['Saturday'];
 				break;
 		}
 	}
 	
-	/* fday is used to determine in what day we are starting with */
+	
+	/**
+	 * fday is used to determine in what day we are starting with 
+	 *
+	 * @param int $day
+	 * @param int $month
+	 * @param int $year
+	 * @param int $first_day_of_week
+	 * @return int
+	 */
 	protected function get_fday($day, $month, $year, $first_day_of_week)
 	{
-		$fday = 0;
-	
-		
-		$fday = gmdate("N",gmmktime(0,0,0, $month, $day, $year));
+		//1 (for Monday) through 7 (for Sunday). sutract 1 because our day index starts at 0
+		$fday = gmdate("N",gmmktime(0,0,0, $month, $day, $year)) - 1;
 		$fday = $fday - $first_day_of_week;
 		if( $fday < 0 )
 		{
