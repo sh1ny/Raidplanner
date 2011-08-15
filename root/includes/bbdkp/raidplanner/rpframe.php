@@ -75,6 +75,16 @@ class rpframe extends calendar
 		// create RP_VIEW_OPTIONS
 		$view_mode=request_var('view', 'month');
 		
+		$this->mode_sel_code = "<select name='view' id='view'>";
+		$this->mode_sel_code .= "<option value='month'>".$user->lang['MONTH']."</option>";
+		$this->mode_sel_code .= "<option value='week'>".$user->lang['WEEK']."</option>";
+		$this->mode_sel_code .= "<option value='day'>".$user->lang['DAY']."</option>";
+		$this->mode_sel_code .= "</select>";
+				
+		$temp_find_str = "value='".$view_mode."'>";
+		$temp_replace_str = "value='".$view_mode."' selected='selected'>";
+		$this->mode_sel_code = str_replace( $temp_find_str, $temp_replace_str, $this->mode_sel_code );
+		
 		$this->month_sel_code  = "<select name='calM' id='calM'>\n";
 		for( $i = 1; $i <= 12; $i++ )
 		{
@@ -100,15 +110,6 @@ class rpframe extends calendar
 		}
 		$this->year_sel_code .= "</select>";
 		
-		$this->mode_sel_code = "<select name='view' id='view'>";
-		$this->mode_sel_code .= "<option value='month'>".$user->lang['MONTH']."</option>";
-		$this->mode_sel_code .= "<option value='week'>".$user->lang['WEEK']."</option>";
-		$this->mode_sel_code .= "<option value='day'>".$user->lang['DAY']."</option>";
-		$this->mode_sel_code .= "</select>";
-		
-		$temp_find_str = "value='".$view_mode."'>";
-		$temp_replace_str = "value='".$view_mode."' selected='selected'>";
-		$this->mode_sel_code = str_replace( $temp_find_str, $temp_replace_str, $this->mode_sel_code );
 		
 		//create next and prev links
 		if( $view_mode === "month" )

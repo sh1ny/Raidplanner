@@ -1251,10 +1251,7 @@ class rpraid
 			//'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
 			//'U_CALENDAR'				=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner"),
 			//'S_DATE_TIME_OPTS'			=> $s_date_time_opts,
-			'MONTH_SEL'					=> $cal->month_sel_code,
-			'DAY_SEL'					=> $cal->day_sel_code,
-			'YEAR_SEL'					=> $cal->year_sel_code,
-		
+
 			'INVITE_HOUR_SEL'			=> $hour_invite_selcode, 
 			'INVITE_MIN_SEL'			=> $min_invite_sel_code, 
 		

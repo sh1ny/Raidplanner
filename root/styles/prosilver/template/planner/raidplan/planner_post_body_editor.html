@@ -370,19 +370,13 @@
 	<ul>
 		<li id="raidinfo-panel-tab" class="activetab"><a href="#tabs" onclick="subPanels('raidinfo-panel'); return false;"><span>{L_RAIDINFO}</span></a></li>
 		<li id="raidroles-panel-tab"><a href="#tabs" onclick="subPanels('raidroles-panel'); return false;"><span>{L_RAIDROLES}</span></a></li>
-		<!-- IF S_DATE_TIME_OPTS -->
 		<li id="raidwhen-panel-tab"><a href="#tabs" onclick="subPanels('raidwhen-panel'); return false;"><span>{L_RAIDWHEN}</span></a></li>
-		<!-- IF S_RECURRING_OPTS -->
-		<li id="raidrecurring-panel-tab"><a href="#tabs" onclick="subPanels('raidrecurring-panel'); return false;"><span>{L_RAIDREPEAT}</span></a></li>
-		<!-- ENDIF -->
-		<!-- ENDIF -->
 	</ul>
 </div>
 		
 <div class="panel bg2" id="raidinfo-panel">
 <div class="inner">
 <span class="corners-top"><span></span></span>
-
   <h3>{L_RAIDINFO}</h3>
   <fieldset class="fields1">
   	<br/>
@@ -437,21 +431,15 @@
 	</fieldset>
 <span class="corners-bottom"><span></span></span>
 </div>
-</div>
-  
-<!-- IF S_DATE_TIME_OPTS -->
- <div class="panel bg2" id="raidwhen-panel">
+</div> 
+
+<div class="panel bg2" id="raidwhen-panel">
 <div class="inner">
 <span class="corners-top"><span></span></span>
 
- <h3>{L_RAIDWHEN}</h3>
+<h3>{L_RAIDWHEN}</h3>
 <fieldset class="fields1"> 
-  <dl style="clear: right;">
-			<dt><label for="calM">{L_RAID_DATE}:</label></dt>
-			<dd><select name='calM' id='calM'>{MONTH_SEL}</select><select name='calD' id='calD'>{DAY_SEL}</select><select name='calY' id='calY'>{YEAR_SEL}</select>
-		  	</dd>
-		</dl>
-
+	  
 		<dl style="clear: right;">
 			<dt><label for="calinvHr">{L_RAID_INVITE_TIME}:</label></dt>
 			<dd>
@@ -486,43 +474,6 @@
 </div>
 </div>
 
-<!-- IF S_RECURRING_OPTS -->
-<div class="panel bg2" id="raidwhen-panel">
-<div class="inner">
-<span class="corners-top"><span></span></span>
-
-	<fieldset class="fields1"><legend><h4>{L_RAIDREPEAT}</h4></legend> 
-		<br/>			
-			
-			<dl style="clear: left;">
-				<dt><label>{L_RECURRING_RAIDPLAN}:</label></dt>
-				<dd>{RECURRING_EVENT_CHECK}</dd>
-			</dl>
-			<dl style="clear: left;">
-				<dt title="{L_RECURRING_EVENT_FREQ_EXPLAIN}"><label for="calRFreq">{L_RECURRING_EVENT_FREQ}</label><br /></dt>
-				<dd>{RECURRING_EVENT_FREQ_IN}</dd>
-			</dl>
-			<dl style="clear: left;">
-				<dt><label for="calMEnd">{L_END_RECURRING_EVENT_DATE}</label></dt>
-				<dd>{END_RECURR_MONTH_SEL} {END_RECURR_DAY_SEL} {END_RECURR_YEAR_SEL}</dd>
-			</dl>
-			<dl style="clear: left;">
-				<dt title="{L_RECURRING_EVENT_TYPE_EXPLAIN}"><label for="calRType">{L_RECURRING_EVENT_TYPE}</label><br /></dt>
-				<dd ">{RECURRING_EVENT_TYPE_SEL}</dd>
-			</dl>
-			
-			</fieldset>
-<span class="corners-bottom"><span></span></span>
-</div>
-</div>
-<!-- ENDIF -->
-
-
-<!-- ELSE -->
-<div>
-	<input type="hidden" name="calEditAll" id="calEditAll" value="1">
-</div>
-<!-- ENDIF -->
 
 
 <!-- ENDIF -->
