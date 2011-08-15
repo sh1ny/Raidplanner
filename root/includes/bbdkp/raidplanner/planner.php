@@ -49,6 +49,7 @@ if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
 }
 */
 $view_mode = request_var('view', 'month');
+$mode=request_var('mode', 'show');
 
 // display header
 include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpframe.' . $phpEx);
@@ -65,7 +66,7 @@ switch( $view_mode )
 		
 		$raidplan_id = request_var('calEid', 0);
 		$raid = new rpraid($raidplan_id);
-		$mode=request_var('mode', 'show');
+		
 		switch($mode)
 		{
 			case 'show' :

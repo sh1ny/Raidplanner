@@ -1106,7 +1106,7 @@ class rpraid
 		}
 				
 		/**
-		 *	Raid invite time 
+		 *	populate Raid invite time select 
 		 */ 
 		$hour_mode = $config['rp_hour_mode'];
 		$presetinvhour = intval($config['rp_default_invite_time'] / 60);
@@ -1146,7 +1146,7 @@ class rpraid
 		}
 		
 		/**
-		 *	Raid start time 
+		 *	populate Raid start time pulldown
 		 */ 
 		$hour_start_selcode = "";
 		$presetstarthour = intval($config['rp_default_start_time'] / 60);
@@ -1186,7 +1186,7 @@ class rpraid
 		
 		
 		/**
-		 *	Raid END time 
+		 *	populate Raid END time pulldown 
 		 */ 
 		$hour_end_selcode = "";
 		$presetendhour = intval($config['rp_default_end_time'] / 60);
@@ -1242,7 +1242,6 @@ class rpraid
 		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$day ."&amp;calM=".$month."&amp;calY=".$year);
 		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
 		
-				
 		$template->assign_vars(array(
 			'L_POST_A'					=> $page_title,
 			'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
@@ -1516,7 +1515,7 @@ class rpraid
 				$x = 0;
 		}
 		
-		$etype_url_opts = "";
+		
 		$raidplan_counter = 0;
 
 		// build sql 
@@ -1527,14 +1526,6 @@ class rpraid
 							   OR (poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR (raidplan_access_level = 1 AND ('.$group_options.')) )  
 							  AND (raidplan_start_time >= '.$db->sql_escape($start_temp_date).' AND raidplan_start_time <= '.$db->sql_escape($end_temp_date). " )",
 			'ORDER_BY'	=> 'r.raidplan_start_time ASC');
-		
-		// filter on event type ?
-		$calEType = request_var('calEType', 0);
-		if( $calEType != 0)
-		{
-			$sql_array['WHERE'] .= " AND etype_id = ".$db->sql_escape($calEType)." ";
-			$etype_url_opts = "&amp;calEType=".$calEType;
-		}
 		
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		$result = $db->sql_query_limit($sql, $x, 0);
@@ -1602,7 +1593,7 @@ class rpraid
 				'COLOR' 				=> $this->eventlist->events[$row['etype_id']]['color'],
 				'IMAGE' 				=> $phpbb_root_path . "images/event_images/" . $this->eventlist->events[$row['etype_id']]['imagename'] . ".png", 
 				'S_EVENT_IMAGE_EXISTS'  => (strlen( $this->eventlist->events[$row['etype_id']]['imagename'] ) > 1) ? true : false,
-				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$row['raidplan_id'].$etype_url_opts), 
+				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$row['raidplan_id']), 
 				'EVENT_ID'  			=> $row['raidplan_id'],
 				 // for popup
 				'INVITE_TIME'  			=> $user->format_date($row['raidplan_invite_time'], $correct_format, true), 

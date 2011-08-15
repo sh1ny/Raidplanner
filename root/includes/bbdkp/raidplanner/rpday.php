@@ -48,17 +48,6 @@ class rpday extends calendar
 	{
 		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		
-		
-		$etype_url_opts = $this->get_etype_url_opts();
-		$this->_init_view_selection_code("day");
-	
-		// create next and prev links
-		$this->_set_date_prev_next( "day" );
-		$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".
-			$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year'].$etype_url_opts);
-		$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".
-			$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year'].$etype_url_opts);
-	
 		$calendar_header_txt = $user->lang['DAY_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], $user->lang['datetime'][$this->date['month']], $this->date['day'], $this->date['year'] );
 
 		$hour_mode = $config['rp_hour_mode'];
@@ -94,16 +83,14 @@ class rpday extends calendar
 			}
 		}
 		
-		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".
-				$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
-		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".
-				$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
+		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
+		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
 		$add_raidplan_url = "";
 	
 		if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 		{
 			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=showadd&amp;mode=newraid&amp;calD=".
-				$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year'].$etype_url_opts);
+				$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
 		}
 		$calendar_days['BIRTHDAYS'] = "";
 		$birthdays = $this->generate_birthday_list( $this->Get1DoM($this->timestamp), $this->GetLDoM($this->timestamp));
@@ -141,11 +128,8 @@ class rpday extends calendar
 			'ADD_LINK'			=> $add_raidplan_url,
 			'WEEK_VIEW_URL'		=> $week_view_url,
 			'MONTH_VIEW_URL'	=> $month_view_url,
-			'CALENDAR_PREV'		=> $prev_link,
-			'CALENDAR_NEXT'		=> $next_link,
 			'S_PLANNER_DAY'		=> true,		
-			'CALENDAR_VIEW_OPTIONS' => $this->mode_sel_code.' '.$this->month_sel_code.' '.$this->day_sel_code.' '.$this->year_sel_code,
-			'S_POST_ACTION'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;". $this->get_etype_post_opts() ),
+			'S_POST_ACTION'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;" ),
 			'EVENT_COUNT'		=> sizeof($raidplan_output),
 		));
 		

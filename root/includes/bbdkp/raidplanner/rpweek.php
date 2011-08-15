@@ -50,12 +50,8 @@ class rpweek extends calendar
 	{
 		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 	
-		$etype_url_opts = $this->get_etype_url_opts();
-		$this->_init_view_selection_code("week");
-		
 		// create next and prev links
 		$index_display = request_var('indexWk', 0);
-		$this->_set_date_prev_next( "week" );
 		$prev_link = "";
 		$next_link = "";
 	
@@ -63,8 +59,6 @@ class rpweek extends calendar
 		if( $index_display == 0)
 		{
 			$first_day_of_week = $config['rp_first_day_of_week'];
-			$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year'].$etype_url_opts);
-			$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year'].$etype_url_opts);
 		}
 		else
 		{
@@ -164,10 +158,10 @@ class rpweek extends calendar
 			
 			if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 			{
-				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
+				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y);
 			}
-			$calendar_days['DAY_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
-			$calendar_days['MONTH_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y.$etype_url_opts);
+			$calendar_days['DAY_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y);
+			$calendar_days['MONTH_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y);
 	
 			if( ($true_j == $this->date['day']) &&
 			    ($true_m == $this->date['month_no']) &&
@@ -254,9 +248,6 @@ class rpweek extends calendar
 				'CALENDAR_HEADER'	=> $calendar_header_txt,
 				'DAY_IMG'			=> $user->img('button_calendar_day', 'DAY'),
 				'MONTH_IMG'			=> $user->img('button_calendar_month', 'MONTH'),
-				'CALENDAR_PREV'		=> $prev_link,
-				'CALENDAR_NEXT'		=> $next_link,
-				'CALENDAR_VIEW_OPTIONS' => $this->mode_sel_code.' '.$this->month_sel_code.' '.$this->day_sel_code.' '.$this->year_sel_code,
 				'S_PLANNER_WEEK'	=> true,
 				'SUNDAY'			=> $sunday,
 				'MONDAY'			=> $monday,
@@ -265,7 +256,7 @@ class rpweek extends calendar
 				'THURSDAY'			=> $thursday,
 				'FRIDAY'			=> $friday,
 				'SATURDAY'			=> $saturday,
-				'S_POST_ACTION'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;". $this->get_etype_post_opts() ),
+				'S_POST_ACTION'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week" ),
 		));
 	}
 }
