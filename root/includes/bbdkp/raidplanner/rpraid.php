@@ -684,6 +684,7 @@ class rpraid
 		{
 			// add a raid
 			$this->addraidplan();
+			$this->storeplan(0);
 		}
 		
 		
@@ -1029,12 +1030,6 @@ class rpraid
 		global $user;
 		
 		$error = array();
-				
-		// read subjectline
-		$this->subject = utf8_normalize_nfc(request_var('subject', '', true)); 
-
-		//read comment section
-		$this->body = utf8_normalize_nfc(request_var('message', '', true));
 
 		// raidmaster
 		$this->poster = $user->data['user_id']; 
@@ -1112,16 +1107,91 @@ class rpraid
 		
 		$this->end_time=$event_end_date;
 		
+		//if this is not an "all day event"
+		$this->all_day=0;
+		$this->day = sprintf('%2d-%2d-%4d', $inv_d, $inv_m, $inv_y);
+		
+		
+		// recurring ? @todo
+		
+						
+		// read subjectline
+		$this->subject = utf8_normalize_nfc(request_var('subject', '', true)); 
+
+		//read comment section
+		$this->body = utf8_normalize_nfc(request_var('message', '', true));
+		
+		$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
+		$allow_bbcode = $allow_urls = $allow_smilies = true;
+		generate_text_for_storage($this->body, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+			
+		
 		// get raidsize from form
 		$this->raidroles = request_var('role_needed', array(0=> 0));
-		
 		
 		//do we track signups ?
 		$this->signups_allowed = request_var('calTrackRsvps', 0);
 		
-		
-		
-		
+	}
+	
+	/**
+	 * 
+	 * insert new or update existing raidplan object
+	 *
+	 * @param int $raidplan_id
+	 */
+	private function storeplan($raidplan_id = 0)
+	{
+		global $db;
+		if($raidplan_id !=0)
+		{
+			//insert new
+			
+			/*
+			 * start transaction
+			 */
+			$db->sql_transaction('begin');
+				
+			$sql_raid = array(
+				'etype_id'		 		=> (int) $this->event_type,
+				'poster_id'		 		=> $this->poster,
+				'sort_timestamp'		=> $this->raidend, 
+				'raidplan_invite_time'	=> $this->globalcomments[$this->batchid],
+				'raidplan_start_time'	=> 'RaidTracker (by ' . $user->data ['username'] . ')',
+				'raidplan_end_time'		=> '',
+				'raidplan_all_day'		=> '',
+				'raidplan_day'			=> '',
+				'raidplan_subject'		=> '',
+				'raidplan_body'			=> '',	
+				'poster_id'				=> '',
+				'raidplan_access_level'	=> '',
+				'group_id'				=> '',
+				'group_id_list'			=> '',
+				'enable_bbcode'			=> '',
+				'enable_smilies'		=> '',
+				'enable_magic_url'		=> '',
+				'bbcode_bitfield'		=> '',
+				'bbcode_uid'			=> '',
+				'bbcode_options'		=> '',
+				'track_signups'			=> '',
+				'signup_yes'			=> '',
+				'signup_no'				=> '',
+				'signup_maybe'			=> '',
+				'recurr_id'				=> '',
+				);
+			
+			$sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_raid);
+			$db->sql_query($sql);	
+			$raidplan_id = $db->sql_nextid();
+			unset ($sql_raid);
+		}
+		else
+		{
+			// update
+			
+			
+			
+		}
 		
 		
 	}
