@@ -1,6 +1,6 @@
 <?php
 /**
- * returns profile xml based on ajax call from 
+ * returns profile xml based on ajax call from planner_post_body_editor.js
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @version $Id$
  */

@@ -66,7 +66,7 @@ function update_group_id_state()
 	  {
 		  return;  
 	  }
-	   var strURL="{UA_AJAXHANDLER1}?role="+role;
+	   var strURL= ajaxpath + "?role=" + role;
 	   xmlhttp.onreadystatechange=stateChanged;
 	   xmlhttp.open("GET", strURL, true);
 	   // send to server
@@ -127,7 +127,7 @@ function update_group_id_state()
   		}
   		else 
   		{
-     	   		alert("{LA_ALERT_AJAX}:\n" + xmlhttp.statusText);
+     	   		alert( ajaxalert + ":\n" + xmlhttp.statusText);
   	 	}
   	}
   }
