@@ -1007,7 +1007,7 @@ class rpraid
 	}
 
 	/**
-	 * shows the form to add a raidplan
+	 * shows the form to add/edit raidplan
 	 */
 	public function showadd(calendar $cal)
 	{
@@ -1225,12 +1225,13 @@ class rpraid
 			$min_end_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 		}
 		
+		$day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$cal->date['day'] ."&amp;calM=".$cal->date['month_no']."&amp;calY=".$cal->date['year']);
+		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$cal->date['day'] ."&amp;calM=".$cal->date['month_no']."&amp;calY=".$cal->date['year']);
+		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$cal->date['day']."&amp;calM=".$cal->date['month_no']."&amp;calY=".$cal->date['year']);
+
 		// translate raidplan start and end time into user's timezone
 		$raidplan_invite = $this->invite_time + $user->timezone + $user->dst;
 		$raidplan_start = $this->start_time + $user->timezone + $user->dst;
-		$day = gmdate("d", $raidplan_start);
-		$month = gmdate("n", $raidplan_start);
-		$year =	gmdate('Y', $raidplan_start);
 		$raidplan_end = $this->end_time + $user->timezone + $user->dst;
 
 		// format
@@ -1238,19 +1239,31 @@ class rpraid
 		$start_date_txt = $user->format_date($raidplan_start, $config['rp_date_time_format'], true);
 		$end_date_txt = $user->format_date($raidplan_end, $config['rp_date_time_format'], true);
 		
-		$day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$day ."&amp;calM=".$month."&amp;calY=".$year);
-		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$day ."&amp;calM=".$month."&amp;calY=".$year);
-		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
 		
+		// make raid composition proposal, always choose primary role first
+		$sql_array = array(
+		    'SELECT'    => 'r.role_id, r.role_name, role_needed1 ', 
+		    'FROM'      => array(
+		        RP_ROLES   => 'r'
+		    ),
+		    'ORDER_BY'  => 'r.role_id'
+		);
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+		    $template->assign_block_vars('raidroles', array(
+		        'ROLE_ID'        => $row['role_id'],
+			    'ROLE_NAME'      => $row['role_name'],
+		    	'ROLE_NEEDED'    => $row['role_needed1'],
+		    ));
+		}
+		$db->sql_freeresult($result);
+	
 		$template->assign_vars(array(
 			'L_POST_A'					=> $page_title,
-			'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
 			//'SUBJECT'					=> $raidplan_data['raidplan_subject'],
 			//'MESSAGE'					=> $raidplan_data['raidplan_body'],
-			'MINI_POST_IMG'				=> $user->img('icon_post_target', $user->lang['POST']),
-			//'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
-			//'U_CALENDAR'				=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner"),
-			//'S_DATE_TIME_OPTS'			=> $s_date_time_opts,
 
 			'INVITE_HOUR_SEL'			=> $hour_invite_selcode, 
 			'INVITE_MIN_SEL'			=> $min_invite_sel_code, 
@@ -1285,8 +1298,9 @@ class rpraid
 		
 			//javascript alerts
 			'LA_ALERT_OLDBROWSER' 		=> $user->lang['ALERT_OLDBROWSER'],
-			//'UA_AJAXHANDLER1'		  	=> append_sid($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/planner/plannerajax.'. $phpEx),
-			'UA_AJAXHANDLER1'		  	=> 'plannerajax.'. $phpEx
+			'UA_AJAXHANDLER1'		  	=> append_sid($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/planner/raidplan/ajax1.'. $phpEx),
+			//'UA_AJAXHANDLER1'		  	=> append_sid($phpbb_root_path . 'includes/bbdkp/raidplanner/ajax1.'. $phpEx),
+			//'UA_AJAXHANDLER1'		  	=> 'plannerajax.'. $phpEx
 		)
 		);
 		

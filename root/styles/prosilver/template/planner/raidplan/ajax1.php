@@ -1,15 +1,15 @@
 <?php
 /**
- * returns profile xml based on ajax call 
+ * returns profile xml based on ajax call from 
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @version $Id$
  */
 define('IN_PHPBB', true);
-define('IN_BBDKP', true);
-define('ADMIN_START', true);
-$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
+// go up 5 directories 
+$phpbb_root_path = './../../../../../';
 include($phpbb_root_path . 'common.' . $phpEx);
+
 $role_id = request_var('role', 0);
 $sql_array = array(
 	    'SELECT'    => 'r.role_id, r.role_name, ' ,  
