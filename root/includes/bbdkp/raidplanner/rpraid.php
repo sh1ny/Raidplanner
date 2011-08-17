@@ -1075,7 +1075,7 @@ class rpraid
 	
 	
 	/**
-	 * collects data from form, constructs new raidplan object (object not stored in Db yet)
+	 * collects data from form, constructs new raidplan object for storage
 	 *
 	 */
 	private function addraidplan()
@@ -1175,16 +1175,27 @@ class rpraid
 		//read comment section
 		$this->body = utf8_normalize_nfc(request_var('message', '', true));
 		
-		$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
+		$this->bbcode['uid'] = $this->bbcode['bitfield'] = $options = ''; // will be modified by generate_text_for_storage
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
-		generate_text_for_storage($this->body, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+		generate_text_for_storage($this->body, $this->bbcode['uid'], $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
 			
 		
-		// get raidsize from form
-		$this->raidroles = request_var('role_needed', array(0=> 0));
+		// get wanted raidsize from form
+		$raidroles = request_var('role_needed', array(0=> 0));
+		foreach($raidroles as $role_id => $needed)
+		{
+			$this->raidroles[$role_id] = array(
+				'role_needed' => (int) $needed,
+			);			
+		}
 		
 		//do we track signups ?
 		$this->signups_allowed = request_var('calTrackRsvps', 0);
+		
+		$this->signups['yes'] = 0;
+		$this->signups['no'] = 0;
+		$this->signups['maybe'] = 0;
+				
 		
 	}
 	
@@ -1219,10 +1230,10 @@ class rpraid
 			'bbcode_bitfield'		=> $this->bbcode['bitfield'],
 			'bbcode_uid'			=> $this->bbcode['uid'], 
 			'track_signups'			=> $this->signups_allowed,
-			'signup_yes'			=> 0,
-			'signup_no'				=> 0,
-			'signup_maybe'			=> 0,
-			'recurr_id'				=> 0,
+			'signup_yes'			=> $this->signups['yes'],
+			'signup_no'				=> $this->signups['no'],
+			'signup_maybe'			=> $this->signups['maybe'],
+			'recurr_id'				=> $this->recurr_id,
 			);
 		
 		/*
@@ -1230,7 +1241,7 @@ class rpraid
 		 */
 		$db->sql_transaction('begin');
 			
-		if($raidplan_id !=0)
+		if($raidplan_id == 0)
 		{
 			//insert new
 			$sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_raid);
@@ -1543,6 +1554,53 @@ class rpraid
 		$db->sql_freeresult($result);
 	}
 	
+	/**
+	 * inserts or updates raidroles
+	 *
+	 */
+	private function store_raidroles($raidplandet_id = 0)
+	{
+		global $db;
+		
+		/*
+		 * start transaction
+		 */
+		$db->sql_transaction('begin');
+		
+		foreach($this->raidroles as $role_id => $role)
+		{
+			
+			$sql_raidroles = array(
+				'raidplan_id'		=> $this->id,				
+				'role_id'			=> $role_id,
+				'role_needed'		=> $role['role_needed'],
+				'role_signedup'		=> $role['role_signedup'],
+				'role_confirmed'	=> $role['role_confirmed'],					
+				);
+				
+			if($raidplandet_id == 0)
+			{
+				//insert new
+				$sql = 'INSERT INTO ' . RP_RAIDPLAN_ROLES . ' ' . $db->sql_build_array('INSERT', $sql_raidroles);
+				$db->sql_query($sql);	
+				$raidplan_id = $db->sql_nextid();
+			}
+			else
+			{
+				// update
+				$sql = 'UPDATE ' . RP_RAIDPLAN_ROLES . '
+	    		SET ' . $db->sql_build_array('UPDATE', $sql_raidroles) . '
+			    WHERE raidplandet_id = ' . (int) $raidplandet_id;
+				$db->sql_query($sql);
+			}
+		}
+						
+			
+		unset ($sql_raidroles);
+		
+		$db->sql_transaction('commit');
+		
+	}
 	
 	/**
 	 * builds roles property, needed when you make new raid
