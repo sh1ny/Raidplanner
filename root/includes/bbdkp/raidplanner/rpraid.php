@@ -25,14 +25,16 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 class rpraid
 {
 	/**
-	 * raidplan pk
+	 * pk
+	 * raidplan_id
 	 *
 	 * @var int
 	 */
 	private $id; 
 	
 	/**
-	 * raidplan event type
+	 * raidplan event type 
+	 * etype_id
 	 *
 	 * @var int
 	 */
@@ -40,20 +42,72 @@ class rpraid
 	
 	private $eventlist;
 	
+	/**
+	 * Invite time timestamp
+	 * raidplan_invite_time
+	 *
+	 * @var int
+	 */
 	private $invite_time;
+	
+	/**
+	 * Start time timestamp
+	 * raidplan_start_time
+	 *
+	 * @var int
+	 */
 	private $start_time;
+	
+	/**
+	 * endtime timestamp
+	 * raidplan_end_time
+	 *
+	 * @var int
+	 */
 	private $end_time;
+	
+	/**
+	 * 1 if allday event, 0 if timed event
+	 * raidplan_all_day
+	 *
+	 * @var int
+	 */
 	private $all_day;
+	
+	/**
+	 * day of alldayevent (dd-mm-yyyy)
+	 * raidplan_day
+	 *
+	 * @var string
+	 */
 	private $day;
 
+	/**
+	 * one line subject
+	 * raidplan_subject VARCHAR 255
+	 *
+	 * @var string
+	 */
 	private $subject;
+	
+	/**
+	 * raidplan_body MEDIUMTEXT
+	 * 
+	 * @var unknown_type
+	 */
 	private $body;
 	private $bbcode = array();
 	
+	/**
+	 * poster_id
+	 *
+	 * @var unknown_type
+	 */
 	private $poster;
 
 	/**
 	 * access level 0 = personal, 1 = groups, 3 = all 
+	 * raidplan_access_level  TINYINT
 	 * @var int
 	 */
 	private $accesslevel;
@@ -1143,56 +1197,58 @@ class rpraid
 	private function storeplan($raidplan_id = 0)
 	{
 		global $db;
+		
+		$sql_raid = array(
+			'etype_id'		 		=> (int) $this->event_type,
+			'poster_id'		 		=> $this->poster,
+			'sort_timestamp'		=> $this->start_time, 
+			'raidplan_invite_time'	=> $this->invite_time,
+			'raidplan_start_time'	=> $this->start_time,
+			'raidplan_end_time'		=> $this->end_time,
+			'raidplan_all_day'		=> $this->all_day,
+			'raidplan_day'			=> $this->day,
+			'raidplan_subject'		=> $this->subject,
+			'raidplan_body'			=> $this->body,	
+			'poster_id'				=> $this->poster,
+			'raidplan_access_level'	=> $this->accesslevel,
+			'group_id'				=> $this->group_id,
+			'group_id_list'			=> $this->group_id_list,
+			'enable_bbcode'			=> 1,
+			'enable_smilies'		=> 1,
+			'enable_magic_url'		=> 1,
+			'bbcode_bitfield'		=> $this->bbcode['bitfield'],
+			'bbcode_uid'			=> $this->bbcode['uid'], 
+			'track_signups'			=> $this->signups_allowed,
+			'signup_yes'			=> 0,
+			'signup_no'				=> 0,
+			'signup_maybe'			=> 0,
+			'recurr_id'				=> 0,
+			);
+		
+		/*
+		 * start transaction
+		 */
+		$db->sql_transaction('begin');
+			
 		if($raidplan_id !=0)
 		{
 			//insert new
-			
-			/*
-			 * start transaction
-			 */
-			$db->sql_transaction('begin');
-				
-			$sql_raid = array(
-				'etype_id'		 		=> (int) $this->event_type,
-				'poster_id'		 		=> $this->poster,
-				'sort_timestamp'		=> $this->raidend, 
-				'raidplan_invite_time'	=> $this->globalcomments[$this->batchid],
-				'raidplan_start_time'	=> 'RaidTracker (by ' . $user->data ['username'] . ')',
-				'raidplan_end_time'		=> '',
-				'raidplan_all_day'		=> '',
-				'raidplan_day'			=> '',
-				'raidplan_subject'		=> '',
-				'raidplan_body'			=> '',	
-				'poster_id'				=> '',
-				'raidplan_access_level'	=> '',
-				'group_id'				=> '',
-				'group_id_list'			=> '',
-				'enable_bbcode'			=> '',
-				'enable_smilies'		=> '',
-				'enable_magic_url'		=> '',
-				'bbcode_bitfield'		=> '',
-				'bbcode_uid'			=> '',
-				'bbcode_options'		=> '',
-				'track_signups'			=> '',
-				'signup_yes'			=> '',
-				'signup_no'				=> '',
-				'signup_maybe'			=> '',
-				'recurr_id'				=> '',
-				);
-			
 			$sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_raid);
 			$db->sql_query($sql);	
 			$raidplan_id = $db->sql_nextid();
-			unset ($sql_raid);
 		}
 		else
 		{
 			// update
-			
-			
+			$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
+    		SET ' . $db->sql_build_array('UPDATE', $sql_raid) . '
+		    WHERE raidplan_id = ' . (int) $raidplan_id;
+			$db->sql_query($sql);
 			
 		}
+		unset ($sql_raid);
 		
+		$db->sql_transaction('commit');
 		
 	}
 	
