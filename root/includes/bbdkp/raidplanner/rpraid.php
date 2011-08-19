@@ -196,8 +196,6 @@ class rpraid
 			$this->id=$id;
 			// fetch raid object from db
 			$this->make_obj();
-			//can user see it ?
-			
 		}
 		
 	}
@@ -816,7 +814,6 @@ class rpraid
 		}
 		$db->sql_freeresult($result);
 		$group_sel_code .= "</select>\n";
-		
 
 		if( $auth->acl_get('u_raidplanner_create_public_raidplans') )
 		{
@@ -1396,6 +1393,7 @@ class rpraid
 	private function checkauth_canadd()
 	{
 		global $auth;
+		$this->accesslevel = request_var('calELevel', 0);
 		$this->auth_canadd = false;
 		switch ($this->accesslevel)
 		{

@@ -65,6 +65,8 @@ $language_file = 'mods/raidplanner';
 */
 //$logo_img = 'images/bbdkp.png';
 
+$announce = encode_announcement($user->lang['RP_WELCOME_DEFAULT']);
+
 /*
 * Run Options 
 */
@@ -411,8 +413,10 @@ $versions = array(
            array(
                   array(
                   	'announcement_title' => 'Raid sign-up tool', 
-                  	'announcement_msg' => $user->lang['RP_WELCOME_DEFAULT'],
                   	'announcement_timestamp' => (int) time(),
+                  	'announcement_msg' => $announce['text'],
+                  	'bbcode_uid' => $announce['uid'],
+                  	'bbcode_bitfield' => $announce['bitfield'],
                   	'user_id' => $user->data['user_id'] ),          
            ))),
                       
@@ -424,6 +428,23 @@ $versions = array(
 
 // Include the UMIF Auto file and everything else will be handled automatically.
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
+
+/**
+ * encode announcement text
+ *
+ * @param unknown_type $text
+ * @return unknown
+ */
+function encode_announcement($text)
+{
+	$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
+	$allow_bbcode = $allow_urls = $allow_smilies = true;
+	generate_text_for_storage($text, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+	$announce['text']=$text;
+	$announce['uid']=$uid;
+	$announce['bitfield']=$bitfield;
+	return $announce;
+}
 
 /**************************************
  *  
