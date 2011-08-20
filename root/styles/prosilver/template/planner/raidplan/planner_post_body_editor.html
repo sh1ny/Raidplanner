@@ -1,10 +1,8 @@
 <!-- post editor start -->
 <script type="text/javascript" src="{T_TEMPLATE_PATH}/planner/raidplan/planner_post_body_editor.js"></script>
 
-
 <script type="text/javascript">
 // <![CDATA[
-
 var ajaxpath = '{UA_AJAXHANDLER1}';
 var ajaxalert = '{LA_ALERT_AJAX}';
 //]]>
@@ -95,7 +93,6 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 		<dt><label for="calGroupId">{L_EVENT_GROUP}:</label></dt>
 		<dd>{EVENT_GROUP_SEL}</dd>
 	</dl>
-	
   </fieldset>
  
 <span class="corners-bottom"><span></span></span>
@@ -153,12 +150,12 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 		<dl style="clear: right;">
 			<dt><label for="calEndHr">{L_RAID_END_TIME}:</label></dt>
 			<dd>
+				{ENDDAYSEL}
 				<select name='calEndHr' id='calHr'>{END_HOUR_SEL}</select>
 				<select name='calEndMn' id='calMn'>{END_MIN_SEL}</select>
 			</dd>
 		</dl>
 				
-		
 		<dl style="clear: left;">
 		<dt><label>{L_TRACK_SIGNUPS}:</label></dt>
 		<dd><input type='checkbox' name='calTrackRsvps' value='1' {TRACK_RSVP_CHECK} /></dd>
@@ -169,8 +166,6 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 <span class="corners-bottom"><span></span></span>
 </div>
 </div>
-
-
 
 <!-- ENDIF -->
 

@@ -217,10 +217,11 @@ class rpframe extends calendar
 		$template->assign_vars(array(
 			'S_PLANNER_RAIDFRAME'	=> true,
 			'S_SHOW_WELCOME_MSG'	=> ($config ['rp_show_welcomemsg'] == 1) ? true : false,
-			'CALENDAR_VIEW_OPTIONS' => $this->mode_sel_code.' '.$this->month_sel_code.' '.$this->day_sel_code.' '.$this->year_sel_code,
-			'CALENDAR_PREV'		=> $prev_link,
-			'CALENDAR_NEXT'		=> $next_link,
-			'WELCOME_MSG'		=> $this->message,
+			'MODE_VIEW_OPTIONS' 	=> $this->mode_sel_code, 
+			'CALENDAR_VIEW_OPTIONS' => $this->month_sel_code.' '.$this->day_sel_code.' '.$this->year_sel_code,
+			'CALENDAR_PREV'			=> $prev_link,
+			'CALENDAR_NEXT'			=> $next_link,
+			'WELCOME_MSG'			=> $this->message,
 		));
 		
 		
