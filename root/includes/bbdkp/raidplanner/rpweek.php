@@ -52,39 +52,18 @@ class rpweek extends calendar
 	
 		// create next and prev links
 		$index_display = request_var('indexWk', 0);
+		$first_day_of_week = $config['rp_first_day_of_week'];
 		
-		//find the first day of the week
-		if( $index_display == 0)
-		{
-			$first_day_of_week = $config['rp_first_day_of_week'];
-		}
-		else
-		{
-			// display on index !!
-			/* get current weekday so we show this upcoming week's raidplans */
-			$temp_date = time() + $user->timezone + $user->dst;
-			$first_day_of_week = gmdate("w", $temp_date);
-	
-			$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year']."&amp;indexWk=1");
-			$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']."&amp;indexWk=1");
-		
-			$template->assign_vars(array(
-				'CALENDAR_PREV'		=> $prev_link,
-				'CALENDAR_NEXT'		=> $next_link,
-			));
-		}
-	
+		// get date number 
 		$this->date['fday'] = $this->get_fday($this->date['day'], $this->date['month_no'], $this->date['year'], $first_day_of_week);
 	
 		$number_days = 7;
-		$calendar_header_txt = $user->lang['WEEK_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], $user->lang['datetime'][$this->date['month']], $this->date['day'], $this->date['year'] );
+		$calendar_header_txt = $user->lang['WEEK_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], 
+			$user->lang['datetime'][$this->date['month']], $this->date['day'], $this->date['year'] );
 	
 		$counter = 0;
-		$j_start = $this->date['day'];
-		if( $this->date['fday'] < $number_days )
-		{
-			$j_start = $this->date['day']-$this->date['fday'];
-		}
+		$j_start = $this->date['day']-$this->date['fday'];
+		
 		$prev_month_no = $this->date['month_no'] - 1;
 		$prev_year_no = $this->date['year'];
 		if( $prev_month_no == 0 )
@@ -104,17 +83,34 @@ class rpweek extends calendar
 			$next_year_no++;
 		}
 		
-		// get raid info
+				
+		if ($j_start < 0)
+		{
+			$fdaystamp = gmmktime(0,0,0, $this->date['month_no']-1, $j_start + $prev_month_day_count, $prev_year_no);
+		}
+		else 
+		{
+			$fdaystamp = gmmktime(0,0,0, $this->date['month_no'], $j_start, $this->date['year']);
+		}
+		
+		if ($j_start + $number_days > $month_day_count)
+		{
+			$ldaystamp = gmmktime(0,0,0, $next_month_no, $j_start + $number_days - $month_day_count, $next_year_no);
+		}
+		else 
+		{
+			$ldaystamp = gmmktime(0,0,0, $this->date['month_no'], $j_start + $number_days, $this->date['year']);
+		}
+		
+		// array of raid days
 		if (!class_exists('rpraid'))
 		{
 			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
 		}
 		$rpraid = new rpraid();
-		
-		// array of raid days
-		$raiddays = $rpraid->GetRaiddaylist($this->Get1DoM($this->timestamp), $this->GetLDoM($this->timestamp) );
+		$raiddays = $rpraid->GetRaiddaylist($fdaystamp, $ldaystamp);
 		// array of bdays
-		$birthdays = $this->generate_birthday_list( $this->Get1DoM($this->timestamp), $this->GetLDoM($this->timestamp));
+		$birthdays = $this->generate_birthday_list( $fdaystamp, $ldaystamp);
 		
 		
 		for ($j = $j_start; $j < $j_start+7; $j++, $counter++)
@@ -127,12 +123,14 @@ class rpweek extends calendar
 			}
 			else if ($j > $month_day_count )
 			{
+				
 				$true_j = $j - $month_day_count;
 				$true_m = $next_month_no;
 				$true_y = $next_year_no;
 			}
 			else
 			{
+				// 1 <= $j <= $month_day_count 
 				$true_j = $j;
 				$true_m = $this->date['month_no'];
 				$true_y = $this->date['year'];
@@ -221,7 +219,7 @@ class rpweek extends calendar
 					// loop all days having raids			
 					foreach ($raiddays as $raidday)
 					{
-						if($raidday['day'] == $j)
+						if($raidday['day'] == $true_j)
 						{
 							//raid(s) found get detail
 							$raidplan_output = $rpraid->GetRaidinfo($true_m, $true_j, $true_y, $this->group_options, $this->mode);
@@ -236,7 +234,7 @@ class rpweek extends calendar
 					// remove hit
 					if ($hit) 
 					{
-						$raiddays = array_shift($raiddays);
+						$shifted = array_shift($raiddays);
 					}
 				}
 				

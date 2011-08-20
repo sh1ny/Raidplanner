@@ -194,7 +194,7 @@ class rpmonth extends calendar
 					// remove hit
 					if ($hit) 
 					{
-						$raiddays = array_shift($raiddays);
+						$shifted = array_shift($raiddays);
 					}
 				}
 				

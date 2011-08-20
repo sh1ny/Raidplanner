@@ -1729,7 +1729,7 @@ class rpraid
 		$sql_array = array(
    			'SELECT'    => 'r.raidplan_start_time ', 
 			'FROM'		=> array(RP_RAIDS_TABLE => 'r' ), 
-			'WHERE'		=>  '  r.raidplan_start_time >= '.$db->sql_escape($from).' 
+			'WHERE'		=>  ' r.raidplan_start_time >= '. $db->sql_escape($from) . ' 
 							 AND r.raidplan_start_time <= '. $db->sql_escape($end) ,
 			'ORDER_BY'	=> 'r.raidplan_start_time ASC');
 		$sql = $db->sql_build_query('SELECT', $sql_array);
@@ -1737,7 +1737,9 @@ class rpraid
 		$raiddaylist = array();
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$raiddaylist [] = array(
+			// key is made to be unique
+			$raiddaylist [date("m", $row['raidplan_start_time']) . '-' . date("d", $row['raidplan_start_time']) . '-' . date("Y", $row['raidplan_start_time'])] = array(
+				'sig' => date("m", $row['raidplan_start_time']) . '-' . date("d", $row['raidplan_start_time']) . '-' . date("Y", $row['raidplan_start_time']), 
 				'month' => date("m", $row['raidplan_start_time']),
 				'day' => date("d", $row['raidplan_start_time']),
 				'year' => date("Y", $row['raidplan_start_time'])
@@ -1745,7 +1747,7 @@ class rpraid
 		}
 		
 		$db->sql_freeresult($result);
-		return array_unique($raiddaylist);
+		return $raiddaylist;
 		
 	}
 	

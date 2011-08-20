@@ -139,30 +139,22 @@ abstract class calendar
 		$this->group_options = $this->get_sql_group_options();
 	}
 	
-	protected function Get1DoM($nowDate) 
+	protected function Get1DoM($inDate) 
 	{
-		$fdate = 0;
-		if (is_numeric($nowDate)) 
-		{
-			$fdate = strtotime(date('Y',$nowDate) . '-' . date('m',$nowDate) . '-01');
-		}
-		return $fdate;
+		global $user;
+		//$debug1 = $user->format_date($inDate, 'd.m.y h:m', false);
+		$xdate = mktime(0,0,0, date('m',$inDate), 01, date('Y',$inDate));
+		//$debug = $user->format_date($xdate, 'd.m.y h:m', false);
+		return $xdate;
 	}
 	
-	protected function GetLDoM($nowDate) 
+	protected function GetLDoM($inDate) 
 	{
-		$ldate = 0;
-		if (is_numeric($nowDate)) 
-		{
-			$dateSoM = strtotime(date('Y',$nowDate) . '-' . date('m',$nowDate) . '-01');
-			$dateCog = strtotime('+1 month',$dateSoM);
-			$dateEoM = strtotime('-1 day',$dateCog );
-			if (is_numeric($dateEoM)) 
-			{
-				$ldate = $dateEoM;
-			}
-		}
-		return $ldate;
+		global $user;
+		$dateBegin = $this->Get1DoM($inDate);
+		$dateEnd = strtotime('+1 month',$dateBegin);
+		//$debug = $user->format_date($dateEnd, 'd.m.y h:m', false);
+		return $dateEnd;
 	}
 	
 	/**
@@ -173,7 +165,7 @@ abstract class calendar
 	
 	
 	/**
-	 * fday is used to determine in what day we are starting with 
+	 * fday is used to determine in what day we are starting with in week view
 	 *
 	 * @param int $day
 	 * @param int $month
@@ -183,8 +175,18 @@ abstract class calendar
 	 */
 	protected function get_fday($day, $month, $year, $first_day_of_week)
 	{
-		//1 (for Monday) through 7 (for Sunday). sutract 1 because our day index starts at 0
+		/**
+		 * 0=mon
+		 * 1=tue
+		 * 2=wed
+		 * 3=thu
+		 * 4=fri
+		 * 5=sat
+		 * 6=sun
+		 */
 		$fday = gmdate("N",gmmktime(0,0,0, $month, $day, $year)) - 1;
+		
+		// first day 0 being monday in acp, 
 		$fday = $fday - $first_day_of_week;
 		if( $fday < 0 )
 		{
