@@ -142,9 +142,9 @@ abstract class calendar
 	protected function Get1DoM($inDate) 
 	{
 		global $user;
-		//$debug1 = $user->format_date($inDate, 'd.m.y h:m', false);
+		//$debug1 = $user->format_date($inDate, 'd.m.y h:i', false);
 		$xdate = mktime(0,0,0, date('m',$inDate), 01, date('Y',$inDate));
-		//$debug = $user->format_date($xdate, 'd.m.y h:m', false);
+		//$debug = $user->format_date($xdate, 'd.m.y h:i', false);
 		return $xdate;
 	}
 	
@@ -153,7 +153,7 @@ abstract class calendar
 		global $user;
 		$dateBegin = $this->Get1DoM($inDate);
 		$dateEnd = strtotime('+1 month',$dateBegin);
-		//$debug = $user->format_date($dateEnd, 'd.m.y h:m', false);
+		//$debug = $user->format_date($dateEnd, 'd.m.y h:i', false);
 		return $dateEnd;
 	}
 	

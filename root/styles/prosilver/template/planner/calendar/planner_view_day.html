@@ -49,7 +49,7 @@ $(document).ready( function()
           			<!-- IF raidplans.DISPLAY_BOLD --></strong><!-- ENDIF --><br /><span class="smCalText">
           					<!-- IF calendar_days.raidplans.SHOW_TIME -->
           					<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}
-          					<!-- ELSE -->{L_FROM_TIME}: {raidplans.START_TIME}
+          					<!-- ELSE -->{L_INVITE}: {raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {raidplans.START_TIME}
           					<br />{L_TO_TIME}: {raidplans.END_TIME}
           					<!-- ENDIF --></span>
           					<!-- ENDIF -->
@@ -60,7 +60,11 @@ $(document).ready( function()
 					    <div class="t"></div>
 					    	<!-- IF raidplans.S_EVENT_IMAGE_EXISTS --><img src="{raidplans.IMAGE}" alt="{raidplans.ETYPE_DISPLAY_NAME}" /> <br/><!-- ENDIF -->
 							<br/><h4>{calendar_days.raidplans.EVENT_SUBJECT}</h4>
-							{L_INVITE}
+							<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}
+          					<!-- ELSE -->
+							{L_INVITE}: {raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {raidplans.START_TIME}
+          					<br />{L_TO_TIME}: {raidplans.END_TIME}
+          					<!-- ENDIF -->
 				    </div>
 		     		<div class="b"><div></div></div> 
 		     	</div>

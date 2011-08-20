@@ -1172,15 +1172,14 @@ class rpraid
 		$end_d = request_var('calDEnd', 0);
 		$end_y = request_var('calYEnd', 0);
 		
-		$end_hr = request_var('calHrEnd', 0);
-		$end_mn = request_var('calMnEnd', 0);
-		$event_end_date = gmmktime($end_hr, $end_mn, 0, $end_m, $end_d, $end_y ) - $user->timezone - $user->dst;
+		$end_hr = request_var('calEndHr', 0);
+		$end_mn = request_var('calEndMn', 0);
+		$event_end_date = gmmktime( $end_hr, $end_mn, 0, $end_m, $end_d, $end_y ) - $user->timezone - $user->dst;
 		if ($event_end_date < $event_start_date)
 		{	
 			//check for correct enddate
 			$event_end_date = gmmktime($end_hr, $end_mn, 0, $inv_m, $inv_d, $inv_y ) - $user->timezone - $user->dst;	
 		}
-		
 		if($end_hr < $start_hr)
 		{
 		// validate start and end times
@@ -1188,6 +1187,7 @@ class rpraid
 			$event_end_date += 3600*24;
 		}
 		
+		$debug1 = $user->format_date($event_end_date, 'd.m.y h:i', false);
 		$this->end_time=$event_end_date;
 		
 		//if this is not an "all day event"
@@ -1212,7 +1212,7 @@ class rpraid
 		{
 			$this->raidroles[$role_id] = array(
 				'role_needed' => (int) $needed,
-			);			
+			);
 		}
 		
 		//do we track signups ?
@@ -1276,8 +1276,7 @@ class rpraid
 		else
 		{
 			// update
-			$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
-    		SET ' . $db->sql_build_array('UPDATE', $sql_raid) . '
+			$sql = 'UPDATE ' . RP_RAIDS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_raid) . '
 		    WHERE raidplan_id = ' . (int) $raidplan_id;
 			$db->sql_query($sql);
 			
@@ -1752,7 +1751,7 @@ class rpraid
 	}
 	
 	/**
-	 * return raid plan info array to display on day/week/month/upcoming calendar
+	 * return raid plan info array to display on grid and tooltips in day/week/month/upcoming calendar
 	 * 
 	 * @param int $day		today
 	 * @param int $month	this month
@@ -1800,9 +1799,9 @@ class rpraid
 		$sql_array = array(
    			'SELECT'    => 'r.*', 
 			'FROM'		=> array(RP_RAIDS_TABLE => 'r'), 
-			'WHERE'		=>  ' ( (raidplan_access_level = 2)
-							   OR (poster_id = '.$db->sql_escape($user->data['user_id']).' ) OR (raidplan_access_level = 1 AND ('.$group_options.')) )  
-							  AND (raidplan_start_time >= '.$db->sql_escape($start_temp_date).' AND raidplan_start_time <= '.$db->sql_escape($end_temp_date). " )",
+			'WHERE'		=>  ' ( (raidplan_access_level = 2 )
+					   OR (r.poster_id = '. $db->sql_escape($user->data['user_id']).' ) OR (r.raidplan_access_level = 1 AND ('. $group_options.')) )  
+					  AND (r.raidplan_start_time >= '. $db->sql_escape($start_temp_date).' AND r.raidplan_start_time <= '. $db->sql_escape($end_temp_date). " )",
 			'ORDER_BY'	=> 'r.raidplan_start_time ASC');
 		
 		$sql = $db->sql_build_query('SELECT', $sql_array);
