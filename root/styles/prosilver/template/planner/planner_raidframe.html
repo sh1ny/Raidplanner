@@ -26,19 +26,23 @@
 <h3>{L_RAIDPLANNER}</h3>
 <!-- ENDIF -->
 
-<!-- IF S_PLANNER_DAY || S_PLANNER_WEEK || S_PLANNER_MONTH -->
 <div class="navbar raidplanner_bg">
 	<div class="inner"><span class="corners-inner-top"><span></span></span>
 	      	<div style="float: left;"><a class="prev_planner" title="{L_SHOW_PREV}" type="button" href="{CALENDAR_PREV}"></a></div>
 			<form id="viewOpts" method="post" action="{S_POST_ACTION}">
-	      	<div style="float: left;"> {MODE_VIEW_OPTIONS} &nbsp; {CALENDAR_VIEW_OPTIONS}<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_GO}" class="button2" /></div>
+	      	<div style="float: left;"> {CALENDAR_VIEW_OPTIONS}<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_GO}" class="button2" /></div>
 	    	</form>
 		    <div style="float: left;"><a class="next_planner" title="{L_SHOW_PREV}" type="button" href="{CALENDAR_NEXT}"></a></div>
 	    <span class="corners-inner-bottom"><span></span></span>
     </div>
 </div>
+							
+<!-- IF S_PLANNER_RAIDPLAN -->
+	<!-- INCLUDE planner/raidplan/planner_view_raidplan.html -->
 <!-- ENDIF -->
-
+<!-- IF S_PLANNER_ADD -->
+	<!-- INCLUDE planner/raidplan/planner_post_body.html -->
+<!-- ENDIF -->
 <!-- IF S_PLANNER_DAY -->
 	<!-- INCLUDE planner/calendar/planner_view_day.html -->
 <!-- ENDIF -->
@@ -47,13 +51,6 @@
 <!-- ENDIF -->
 <!-- IF S_PLANNER_MONTH -->
 	<!-- INCLUDE planner/calendar/planner_view_month.html -->
-<!-- ENDIF -->
-
-<!-- IF S_PLANNER_RAIDPLAN -->
-	<!-- INCLUDE planner/raidplan/planner_view_raidplan.html -->
-<!-- ENDIF -->
-<!-- IF S_PLANNER_ADD -->
-	<!-- INCLUDE planner/raidplan/planner_post_body.html -->
 <!-- ENDIF -->
 <!-- IF S_PLANNER_WEEK_ON_INDEX -->
 	<!-- INCLUDE planner/calendar/planner_week_on_index.html -->

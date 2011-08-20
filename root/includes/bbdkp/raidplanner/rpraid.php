@@ -735,7 +735,7 @@ class rpraid
 		if($submit)
 		{
 			// add a raid
-			$this->addraidplan($cal);
+			$this->addraidplan();
 			$this->storeplan(0);
 		}
 		
@@ -948,34 +948,6 @@ class rpraid
 			$min_end_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 		}
 		
-		/**
-		 * populate end day pulldown 
-		 */
-		$monthend_sel_code  = "<select name='calMEnd' id='calMEnd'>\n";
-		for( $i = 1; $i <= 12; $i++ )
-		{
-			$selected = ($cal->date['month_no'] == $i ) ? ' selected="selected"' : '';
-			$monthend_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$user->lang['datetime'][$cal->month_names[$i]].'</option>';
-		}
-		$monthend_sel_code .= "</select>";
-	
-		$dayend_sel_code  = "<select name='calDEnd' id='calDEnd'>";
-		for( $i = 1; $i <= 31; $i++ )
-		{
-			$selected = ( (int) $cal->date['day'] == $i ) ? ' selected="selected"' : '';
-			$dayend_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
-		}
-		$dayend_sel_code .= "</select>";
-	
-		$temp_year	=	gmdate('Y');
-		$year_sel_code  = "<select name='calYEnd' id='calYEnd'>";
-		for( $i = $temp_year-1; $i < ($temp_year+5); $i++ )
-		{
-			$selected = ( (int) $cal->date['year'] == $i ) ? ' selected="selected"' : '';
-			$year_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
-		}
-		$year_sel_code .= "</select>";
-		
 		$day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$cal->date['day'] ."&amp;calM=".$cal->date['month_no']."&amp;calY=".$cal->date['year']);
 		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$cal->date['day'] ."&amp;calM=".$cal->date['month_no']."&amp;calY=".$cal->date['year']);
 		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$cal->date['day']."&amp;calM=".$cal->date['month_no']."&amp;calY=".$cal->date['year']);
@@ -1027,7 +999,6 @@ class rpraid
 			'END_HOUR_SEL'				=> $hour_end_selcode,
 			'END_MIN_SEL'				=> $min_end_sel_code,
 		
-			'ENDDAYSEL'					=> $monthend_sel_code .' '. $dayend_sel_code . ' ' . $year_sel_code, 
 			'EVENT_TYPE_SEL'			=> $e_type_sel_code,
 			'EVENT_ACCESS_LEVEL_SEL'	=> $level_sel_code,
 			'EVENT_GROUP_SEL'			=> $group_sel_code,
@@ -1099,12 +1070,12 @@ class rpraid
 		
 	}
 	
+	
 	/**
 	 * collects data from form, constructs new raidplan object for storage
 	 *
-	 * @param calendar $cal
 	 */
-	private function addraidplan(calendar $cal)
+	private function addraidplan()
 	{
 
 		global $user;
@@ -1153,38 +1124,35 @@ class rpraid
 		//set event type 
 		$this->event_type = request_var('calEType', 0);
 		
-		// set timesx
-		$inv_d = request_var('calD', 0);
+		// set times
 		$inv_m = request_var('calM', 0);
+		$inv_d = request_var('calD', 0);
 		$inv_y = request_var('calY', 0);
-		
 		$inv_hr = request_var('calinvHr', 0);
 		$inv_mn = request_var('calinvMn', 0);
-		$event_inv_date = gmmktime($inv_hr, $inv_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;	
+		$event_inv_date = gmmktime($inv_hr, $inv_mn, 0, $inv_m, $inv_d, $inv_y ) - $user->timezone - $user->dst;	
 		$this->invite_time=$event_inv_date;
-
+		
+		$start_m = request_var('calM', 0);
+		$start_d = request_var('calD', 0);
+		$start_y = request_var('calY', 0);
 		$start_hr = request_var('calHr', 0);
 		$start_mn = request_var('calMn', 0);
-		$event_start_date = gmmktime($start_hr, $start_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;	
+		$event_start_date = gmmktime($start_hr, $start_mn, 0, $start_m, $start_d, $start_y ) - $user->timezone - $user->dst;	
 		$this->start_time=$event_start_date;
 		
 		$end_m = request_var('calMEnd', 0);
 		$end_d = request_var('calDEnd', 0);
 		$end_y = request_var('calYEnd', 0);
-		
 		$end_hr = request_var('calHrEnd', 0);
 		$end_mn = request_var('calMnEnd', 0);
-		$event_end_date = gmmktime($end_hr, $end_mn, 0, $end_m, $end_d, $end_y ) - $user->timezone - $user->dst;
-		if ($event_end_date < $event_start_date)
-		{	
-			//check for correct enddate
-			$event_end_date = gmmktime($end_hr, $end_mn, 0, $inv_m, $inv_d, $inv_y ) - $user->timezone - $user->dst;	
-		}
 		
-		if($end_hr < $start_hr)
-		{
+		$event_end_date = gmmktime($end_hr, $end_mn, 0, $end_m, $end_d, $end_y ) - $user->timezone - $user->dst;
+		
 		// validate start and end times
 		// if the end hour is earlier than start hour then roll over a day
+		if($end_hr < $start_hr)
+		{
 			$event_end_date += 3600*24;
 		}
 		
@@ -1193,8 +1161,10 @@ class rpraid
 		//if this is not an "all day event"
 		$this->all_day=0;
 		$this->day = sprintf('%2d-%2d-%4d', $inv_d, $inv_m, $inv_y);
-
+		
+		
 		// recurring ? @todo
+		
 						
 		// read subjectline
 		$this->subject = utf8_normalize_nfc(request_var('subject', '', true)); 
@@ -1206,6 +1176,7 @@ class rpraid
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
 		generate_text_for_storage($this->body, $this->bbcode['uid'], $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
 			
+		
 		// get wanted raidsize from form
 		$raidroles = request_var('role_needed', array(0=> 0));
 		foreach($raidroles as $role_id => $needed)
@@ -1221,6 +1192,7 @@ class rpraid
 		$this->signups['yes'] = 0;
 		$this->signups['no'] = 0;
 		$this->signups['maybe'] = 0;
+				
 		
 	}
 	

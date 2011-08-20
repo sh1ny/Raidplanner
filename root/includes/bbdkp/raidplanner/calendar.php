@@ -147,6 +147,8 @@ abstract class calendar
 			$fdate = strtotime(date('Y',$nowDate) . '-' . date('m',$nowDate) . '-01');
 		}
 		return $fdate;
+		
+		
 	}
 	
 	protected function GetLDoM($nowDate) 
