@@ -1,3 +1,14 @@
+<form id="postform" name="postform" method="post" action="{S_POST_ACTION}" onsubmit="return checkForm(this);">
+
+<div class="navbar raidplanner_bg">
+	<div class="inner"><span class="corners-inner-top"><span></span></span>
+	      	<div style="float: left;"><a class="prev_planner" title="{L_SHOW_PREV}" type="button" href="{CALENDAR_PREV}"></a></div>
+	      	<div style="float: left;"> {CALENDAR_VIEW_OPTIONS}<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_GO}" class="button2" /></div>
+		    <div style="float: left;"><a class="next_planner" title="{L_SHOW_PREV}" type="button" href="{CALENDAR_NEXT}"></a></div>
+	    <span class="corners-inner-bottom"><span></span></span>
+    </div>
+</div>
+
 <div style="width:50%; float: right;">
 <div class="buttons" style="float: right;">
 <div class="planner-day-icon"><a href="{DAY_VIEW_URL}" title="{L_DAY}"><span></span></a></div>
@@ -5,8 +16,6 @@
 <div class="planner-month-icon"><a href="{MONTH_VIEW_URL}" title="{L_MONTH}"><span></span></a></div>
 </div>
 </div>
-
-<form id="postform" name="postform" method="post" action="{S_POST_ACTION}" onsubmit="return checkForm(this);">
 
 <div id="postingbox">
 	<!-- INCLUDE planner/raidplan/planner_post_body_editor.html -->
