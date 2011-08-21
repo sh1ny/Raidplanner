@@ -8,7 +8,6 @@
 *
 */
 
-
 /**
  * @ignore
  */
@@ -547,7 +546,7 @@ class rpraid
 		$add_raidplan_url = "";
 		if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans'))
 		{
-			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=add&amp;calD=".$day."&amp;calM=". $month. "&amp;calY=".$year);
+			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".$day."&amp;calM=". $month. "&amp;calY=".$year);
 		}
 		$day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$day ."&amp;calM=".$month."&amp;calY=".$year);
 		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$day ."&amp;calM=".$month."&amp;calY=".$year);
@@ -642,15 +641,15 @@ class rpraid
 		foreach($this->signoffs as $key => $signoff)
 		{
 			$template->assign_block_vars('raidroles.signups', array(
-    			'POST_TIME' => $user->format_date($signoff['signup_time']),
+    			'POST_TIME' 	=> $user->format_date($signoff['signup_time']),
 				'POST_TIMESTAMP' => $signoff['signup_time'],
-				'DETAILS' => generate_text_for_display($signup['comment'], $signoff['bbcode']['uid'], $signoff['bbcode']['bitfield'], 7),
-				'POSTER' => $signoff['poster_name'], 
-				'POSTER_URL' => get_username_string( 'full', $signoff['poster_id'], $signoff['poster_name'], $signoff['poster_colour'] ),
-				'VALUE' => $signoff['signup_val'], 
-				'POST_TIME' => $user->format_date($signoff['signup_time']),
-				'COLOR' => '#FF0000', 
-				'VALUE_TXT' => $user->lang['NO'], 
+				'DETAILS' 		=> generate_text_for_display($signup['comment'], $signoff['bbcode']['uid'], $signoff['bbcode']['bitfield'], 7),
+				'POSTER' 		=> $signoff['poster_name'], 
+				'POSTER_URL' 	=> get_username_string( 'full', $signoff['poster_id'], $signoff['poster_name'], $signoff['poster_colour'] ),
+				'VALUE' 		=> $signoff['signup_val'], 
+				'POST_TIME' 	=> $user->format_date($signoff['signup_time']),
+				'COLOR' 		=> '#FF0000', 
+				'VALUE_TXT' 	=> $user->lang['NO'], 
 				'CHARNAME'      => $signoff['dkpmembername'],
 				'LEVEL'         => $signoff['level'],
 				'CLASS'         => $signoff['classname'],
@@ -710,7 +709,6 @@ class rpraid
 			'MONTH_VIEW_URL'	=> $month_view_url,
 			'S_CALENDAR_SIGNUPS'	=> $this->signups_allowed,
 			'S_SIGNUP_HEADCOUNT'	=> $s_signup_headcount,
-				
 			)
 		);
 		
@@ -723,7 +721,6 @@ class rpraid
 	{
 		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-		
 		
 		$this->checkauth_canadd();
 		if(!$this->auth_canadd)
@@ -744,7 +741,6 @@ class rpraid
 		 * fill template
 		 * 
 		 */
-		
 		$user->setup('posting');
 		$user->add_lang ( array ('posting', 'mods/dkp_common','mods/raidplanner'  ));
 
@@ -1012,6 +1008,9 @@ class rpraid
 		    ));
 		}
 		$db->sql_freeresult($result);
+		
+		//set rsvp flag to checked by default
+		$track_signups = 'checked="checked"';
 	
 		$template->assign_vars(array(
 			'L_POST_A'					=> $page_title,
@@ -1036,7 +1035,8 @@ class rpraid
 			'WEEK_VIEW_URL'				=> $week_view_url,
 			'MONTH_VIEW_URL'			=> $month_view_url,
 
-			//'TRACK_RSVP_CHECK'			=> ($raidplan_data['track_signups'] == 1) ? ' checked="checked"' : '',
+			'TRACK_RSVP_CHECK'			=> $track_signups,
+			
 			//'S_RECURRING_OPTS'			=> $raidplan_data['s_recurring_opts'],
 			//'S_UPDATE_RECURRING_OPTIONS'=> $raidplan_data['s_update_recurring_options'],
 			//'RECURRING_EVENT_CHECK'		=> $recurr_raidplan_check,
@@ -1045,7 +1045,6 @@ class rpraid
 			//'END_RECURR_MONTH_SEL'		=> $end_recurr_month_sel_code,
 			//'END_RECURR_DAY_SEL'		=> $end_recurr_day_sel_code,
 			//'END_RECURR_YEAR_SEL'		=> $end_recurr_year_sel_code,
-			
 		
 			'S_POST_ACTION'				=> $s_action,
 			//'S_HIDDEN_FIELDS'			=> $s_hidden_fields, 
@@ -1053,8 +1052,6 @@ class rpraid
 			//javascript alerts
 			'LA_ALERT_OLDBROWSER' 		=> $user->lang['ALERT_OLDBROWSER'],
 			'UA_AJAXHANDLER1'		  	=> append_sid($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/planner/raidplan/ajax1.'. $phpEx),
-			//'UA_AJAXHANDLER1'		  	=> append_sid($phpbb_root_path . 'includes/bbdkp/raidplanner/ajax1.'. $phpEx),
-			//'UA_AJAXHANDLER1'		  	=> 'plannerajax.'. $phpEx
 		)
 		);
 		
@@ -1457,7 +1454,7 @@ class rpraid
 	 */
 	private function checkauth_canedit()
 	{
-		global $user, $auth;
+		global $user, $auth, $config;
 		
 		$this->auth_canedit = true;
 		
@@ -1467,22 +1464,32 @@ class rpraid
 		}
 		elseif ($user->data['is_registered'] )
 		{
-			// has user right to edit (own) raidplans?
+			// has user right to edit raidplans?
 			if (!$auth->acl_get('u_raidplanner_edit_raidplans') )
 			{
 				$this->auth_canedit = false;
-				// @todo 
-				// if raid expired then no edits possible even if user can edit others raids...
-				// this way officers can not fiddle with statistics
-				// assign editing expired raids only to administrator.
+			}
+			else
+			{
+				// has user right to edit others raids ?
+				if (!$auth->acl_get('m_raidplanner_edit_other_users_raidplans') && ($user->data['user_id'] != $this->poster) )
+				{
+					$this->auth_canedit = false;
+				}
+				
+				// if raid expired then no edits possible even if user can edit own raids...
+				// this way officers cant fiddle with statistics
+				if (time() + $user->timezone + $user->dst - date('Z') - $this->end_time > $config['rp_default_expiretime']*60)
+				{
+					// assign editing expired raids only to administrator.
+					if (!$auth->acl_get('a_raid_config') )
+					{
+						$this->auth_canedit = false;
+					}
+				}
+				
 			}
 
-			// has user right to edit others raids ?
-			if (!$auth->acl_get('m_raidplanner_edit_other_users_raidplans') && ($user->data['user_id'] != $this->poster) )
-			{
-				$this->auth_canedit = false;
-			}
-			
 		}
 		
 	}
@@ -1751,7 +1758,7 @@ class rpraid
 	}
 	
 	/**
-	 * return raid plan info array to display on grid and tooltips in day/week/month/upcoming calendar
+	 * return raid plan info array to send to template for tooltips in day/week/month/upcoming calendar
 	 * 
 	 * @param int $day		today
 	 * @param int $month	this month
@@ -1797,9 +1804,10 @@ class rpraid
 
 		// build sql 
 		$sql_array = array(
-   			'SELECT'    => 'r.*', 
-			'FROM'		=> array(RP_RAIDS_TABLE => 'r'), 
-			'WHERE'		=>  ' ( (raidplan_access_level = 2 )
+   			'SELECT'    => 'r.*, e.* ',   
+			'FROM'		=> array(RP_RAIDS_TABLE => 'r', 
+								EVENTS_TABLE => 'e'), 
+			'WHERE'		=>  ' e.event_id = r.etype_id AND ( (raidplan_access_level = 2 )
 					   OR (r.poster_id = '. $db->sql_escape($user->data['user_id']).' ) OR (r.raidplan_access_level = 1 AND ('. $group_options.')) )  
 					  AND (r.raidplan_start_time >= '. $db->sql_escape($start_temp_date).' AND r.raidplan_start_time <= '. $db->sql_escape($end_temp_date). " )",
 			'ORDER_BY'	=> 'r.raidplan_start_time ASC');
@@ -1888,11 +1896,7 @@ class rpraid
 		
 		return $raidplan_output;
 	}
-	
-	
 
-	
-	
 }
 
 ?>

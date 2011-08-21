@@ -69,9 +69,6 @@ switch( $view_mode )
 		
 		switch($mode)
 		{
-			case 'show' :
-				$raid->display();
-				break;
 			case 'edit':
 				$raid->edit();
 				break;			
@@ -86,6 +83,10 @@ switch( $view_mode )
 				break;			
 			case 'deleteall':
 				$raid->deleteall();
+				break;
+			case 'show' :
+			default:
+				$raid->display();
 				break;
 		}
 		break;
@@ -151,6 +152,5 @@ $template->assign_vars(array(
 
 // Output the page
 page_header($user->lang['PAGE_TITLE']); 
-
 
 ?>
