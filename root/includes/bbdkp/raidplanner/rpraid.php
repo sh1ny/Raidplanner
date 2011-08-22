@@ -739,9 +739,12 @@ class rpraid
 		$submit		= (isset($_POST['addraid'])) ? true : false;
 		if($submit)
 		{
-			// add a raid
+			// collect data
 			$this->addraidplan($cal);
+			// store it
 			$this->storeplan(0);
+			// store the raid roles 
+			$this->store_raidroles(0);
 		}
 		
 		
@@ -1277,6 +1280,7 @@ class rpraid
 			$sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_raid);
 			$db->sql_query($sql);	
 			$raidplan_id = $db->sql_nextid();
+			$this->id = $raidplan_id;
 		}
 		else
 		{
@@ -1292,6 +1296,61 @@ class rpraid
 		
 	}
 	
+	/**
+	 * inserts or updates raidroles
+	 *
+	 */
+	private function store_raidroles($raidplanrole_id = 0)
+	{
+		global $db;
+		
+		/*
+		 * start transaction
+		 */
+		$db->sql_transaction('begin');
+		
+		foreach($this->raidroles as $role_id => $role)
+		{
+				
+			if($raidplanrole_id == 0)
+			{
+				$sql_raidroles = array(
+					'raidplan_id'		=> $this->id,				
+					'role_id'			=> $role_id,
+					'role_needed'		=> $role['role_needed'],
+					'role_signedup'		=> 0,
+					'role_confirmed'	=> 0,					
+					);
+					
+				//insert new
+				$sql = 'INSERT INTO ' . RP_RAIDPLAN_ROLES . ' ' . $db->sql_build_array('INSERT', $sql_raidroles);
+				$db->sql_query($sql);	
+				$raidplanrole_id = $db->sql_nextid();
+			}
+			else
+			{
+				// update
+				$sql_raidroles = array(
+					'raidplan_id'		=> $this->id,				
+					'role_id'			=> $role_id,
+					'role_needed'		=> $role['role_needed'],
+					'role_signedup'		=> $role['role_signedup'],
+					'role_confirmed'	=> $role['role_confirmed'],					
+					);
+				
+				$sql = 'UPDATE ' . RP_RAIDPLAN_ROLES . '
+	    		SET ' . $db->sql_build_array('UPDATE', $sql_raidroles) . '
+			    WHERE raidplandet_id = ' . (int) $raidplanrole_id;
+				$db->sql_query($sql);
+			}
+		}
+						
+			
+		unset ($sql_raidroles);
+		
+		$db->sql_transaction('commit');
+		
+	}
 	
 	
 	/**
@@ -1594,54 +1653,7 @@ class rpraid
 		$db->sql_freeresult($result);
 	}
 	
-	/**
-	 * inserts or updates raidroles
-	 *
-	 */
-	private function store_raidroles($raidplandet_id = 0)
-	{
-		global $db;
 		
-		/*
-		 * start transaction
-		 */
-		$db->sql_transaction('begin');
-		
-		foreach($this->raidroles as $role_id => $role)
-		{
-			
-			$sql_raidroles = array(
-				'raidplan_id'		=> $this->id,				
-				'role_id'			=> $role_id,
-				'role_needed'		=> $role['role_needed'],
-				'role_signedup'		=> $role['role_signedup'],
-				'role_confirmed'	=> $role['role_confirmed'],					
-				);
-				
-			if($raidplandet_id == 0)
-			{
-				//insert new
-				$sql = 'INSERT INTO ' . RP_RAIDPLAN_ROLES . ' ' . $db->sql_build_array('INSERT', $sql_raidroles);
-				$db->sql_query($sql);	
-				$raidplan_id = $db->sql_nextid();
-			}
-			else
-			{
-				// update
-				$sql = 'UPDATE ' . RP_RAIDPLAN_ROLES . '
-	    		SET ' . $db->sql_build_array('UPDATE', $sql_raidroles) . '
-			    WHERE raidplandet_id = ' . (int) $raidplandet_id;
-				$db->sql_query($sql);
-			}
-		}
-						
-			
-		unset ($sql_raidroles);
-		
-		$db->sql_transaction('commit');
-		
-	}
-	
 	/**
 	 * builds roles property, needed when you make new raid
 	 *
