@@ -8,9 +8,9 @@
     color: #cadceb;
     font-size: 1.5em;
     font-weight: normal;
-    margin-bottom: 0.5em;
+   /* margin-bottom: 0.5em;
     margin-top: 0.5em;
-    padding-bottom: 0.5em;
+    padding-bottom: 0.5em; */
 }
 
 a.prev_planner {
@@ -204,23 +204,34 @@ td.bg3_calDay a:hover {
 	text-align: left;
 }
 
-
-.edit-all-icon, .edit-all-icon a {
+.buttons div.planner-edit-all-icon {
 	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_calendar_edit_all.gif");
-	background-color: transparent;
-}
-
-.delete-all-icon, .delete-all-icon a {
-	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_calendar_delete_all.gif");
-	background-color: transparent;
-}
-
-ul.profile-icons li.edit-all-icon {
+	/*background-color: transparent;*/
 	width: 61px;
 	height: 20px;
+	text-align: left;
 }
 
-ul.profile-icons li.delete-all-icon {
+.buttons div.planner-delete-all-icon {
+	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_calendar_delete_all.gif");
+	/*background-color: transparent;*/
 	width: 40px;
 	height: 20px;
+	text-align: left;
+}
+
+.buttons div.planner-edit-icon {
+	background-image: url("{T_IMAGESET_LANG_PATH}/icon_post_edit.gif");
+	/*background-color: transparent;*/
+	width: 42px;
+	height: 20px;
+	
+}
+
+.buttons div.planner-delete-icon {
+	background-image: url("{T_IMAGESET_PATH}/icon_post_delete.gif");
+	/*background-color: transparent;*/
+	width: 20px;
+	height: 20px;
+	
 }

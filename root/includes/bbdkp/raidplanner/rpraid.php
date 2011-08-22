@@ -506,7 +506,7 @@ class rpraid
 		$month = gmdate("n", $raidplan_start);
 		$year =	gmdate('Y', $raidplan_start);
 		$raidplan_end = $this->end_time + $user->timezone + $user->dst;
-
+		
 		// format
 		$invite_date_txt = $user->format_date($raidplan_invite, $config['rp_date_time_format'], true);
 		$start_date_txt = $user->format_date($raidplan_start, $config['rp_date_time_format'], true);
@@ -517,15 +517,15 @@ class rpraid
 		$edit_all_url = "";
 		if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_raidplans') &&
 		    (($user->data['user_id'] == $this->poster )|| $auth->acl_get('m_raidplanner_edit_other_users_raidplans')))
-		{
-			$edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=edit&amp;calEid=".
-				$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
-			if( $this->recurr_id > 0 )
 			{
-				$edit_all_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editall=1&amp;calEid=".
-				$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
+				$edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=edit&amp;calEid=".
+					$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
+				if( $this->recurr_id > 0 )
+				{
+					$edit_all_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editall=1&amp;calEid=".
+					$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
+				}
 			}
-		}
 		
 		/* make the url for the delete button */
 		$delete_url = "";
@@ -670,16 +670,24 @@ class rpraid
 		
 			'CURR_INVITED_COUNT' => 0,
 			'S_CURR_INVITED_COUNT'	=> false,
-		
+			'CURR_INVITEDPCT'		=> ($total_needed > 0 ? round(($this->signups['yes']) /  $total_needed, 2) : 0),
+			
 			'CURR_YES_COUNT'	=> $this->signups['yes'],
 			'S_CURR_YES_COUNT'	=> ($this->signups['yes'] + $this->signups['maybe'] > 0) ? true: false,
-			
+			'CURR_YESPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['yes']) /  $total_needed, 2) : 0)),
+		
 			'CURR_MAYBE_COUNT'	=> $this->signups['maybe'],
 			'S_CURR_MAYBE_COUNT' => ($this->signups['maybe'] > 0) ? true: false,
-
+			'CURR_MAYBEPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['maybe']) /  $total_needed, 2) : 0)), 
 			'CURR_NO_COUNT'		=> $this->signups['no'],
 			'S_CURR_NO_COUNT'	=> ($this->signups['no'] > 0) ? true: false,
+			'CURR_NOPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['no']) /  $total_needed, 2) : 0)),
 		
+		
+			'CURR_TOTAL_COUNT'  => $this->signups['yes'] + $this->signups['maybe'],
+
+			
+		 
 			'ETYPE_DISPLAY_NAME'=> $this->eventlist->events[$this->event_type]['event_name'],
 			'EVENT_COLOR'		=> $this->eventlist->events[$this->event_type]['color'],
 			'EVENT_IMAGE' 		=> $phpbb_root_path . "images/event_images/" . $this->eventlist->events[$this->event_type]['imagename'] . ".png", 
@@ -689,12 +697,12 @@ class rpraid
 		
 			'INVITE_TIME'		=> $invite_date_txt,
 			'START_TIME'		=> $start_date_txt,
-			'END_DATE'			=> $end_date_txt,
+			'END_TIME'			=> $end_date_txt,
 
 			'S_PLANNER_RAIDPLAN'=> true,
 		
 			'IS_RECURRING'		=> $this->recurr_id,
-			'POSTER'			=> $poster_url,
+			'POSTER'			=> $this->poster_url,
 			'INVITED'			=> $this->invite_list,
 			'U_EDIT'			=> $edit_url,
 			'U_EDIT_ALL'		=> $edit_all_url,
