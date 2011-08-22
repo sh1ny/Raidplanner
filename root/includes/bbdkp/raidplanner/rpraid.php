@@ -613,15 +613,15 @@ class rpraid
 					$template->assign_block_vars('raidroles.signups', array(
 	       				'POST_TIME' => $user->format_date($signup['signup_time']),
 						'POST_TIMESTAMP' => $signup['signup_time'],
-						'DETAILS' => generate_text_for_display($signup['comment'], $signup['bbcode']['uid'], $signup['bbcode']['bitfield'], 7),
-						'HEADCOUNT' => $signup['signup_count'],
-						'U_EDIT' => '',
-						'POSTER' => $signup['poster_name'], 
-						'POSTER_URL' => get_username_string( 'full', $signup['poster_id'], $signup['poster_name'], $signup['poster_colour'] ),
-						'VALUE' => $signup['signup_val'], 
-						'POST_TIME' => $user->format_date($signup['signup_time']),
-						'COLOR' => $signupcolor, 
-						'VALUE_TXT' => $signuptext, 
+						'DETAILS' 		=> generate_text_for_display($signup['comment'], $signup['bbcode']['uid'], $signup['bbcode']['bitfield'], 7),
+						'HEADCOUNT' 	=> $signup['signup_count'],
+						'U_EDIT' 		=> '',
+						'POSTER' 		=> $signup['poster_name'], 
+						'POSTER_URL' 	=> get_username_string( 'full', $signup['poster_id'], $signup['poster_name'], $signup['poster_colour'] ),
+						'VALUE' 		=> $signup['signup_val'], 
+						'POST_TIME' 	=> $user->format_date($signup['signup_time']),
+						'COLOR' 		=> $signupcolor, 
+						'VALUE_TXT' 	=> $signuptext, 
 						'CHARNAME'      => $signup['dkpmembername'],
 						'LEVEL'         => $signup['level'],
 						'CLASS'         => $signup['classname'],
@@ -679,6 +679,7 @@ class rpraid
 			'CURR_MAYBE_COUNT'	=> $this->signups['maybe'],
 			'S_CURR_MAYBE_COUNT' => ($this->signups['maybe'] > 0) ? true: false,
 			'CURR_MAYBEPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['maybe']) /  $total_needed, 2) : 0)), 
+			
 			'CURR_NO_COUNT'		=> $this->signups['no'],
 			'S_CURR_NO_COUNT'	=> ($this->signups['no'] > 0) ? true: false,
 			'CURR_NOPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['no']) /  $total_needed, 2) : 0)),
@@ -715,8 +716,8 @@ class rpraid
 			'DAY_VIEW_URL'		=> $day_view_url,
 			'WEEK_VIEW_URL'		=> $week_view_url,
 			'MONTH_VIEW_URL'	=> $month_view_url,
-			'S_CALENDAR_SIGNUPS'	=> $this->signups_allowed,
-			'S_SIGNUP_HEADCOUNT'	=> $s_signup_headcount,
+			'S_CANSIGNUP'		=> $this->signups_allowed
+		
 			)
 		);
 		

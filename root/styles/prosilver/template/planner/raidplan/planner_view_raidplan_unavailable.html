@@ -1,19 +1,10 @@
-<h4><img src="{T_IMAGESET_PATH}/planner/icon_queue.png" alt="{L_AVAILABLE}"></img>&nbsp;{L_AVAILABLE}</h4>
+<h4><img src="{T_IMAGESET_PATH}/planner/icon_cancel.png" alt="{L_NOTAVAILABLE}"></img>&nbsp;{L_NOTAVAILABLE}</h4>
 
 <div class="panel bg1" >
 <div class="inner"><span class="corners-top"><span></span></span>
 
 <div style="width:95%; margin-left:auto;margin-right:auto;text-align:left" > 
 
-<!-- BEGIN raidroles -->
-<div style="width:160px; float:left ;">
-<table class="table1" style="width:100%; cellspacing:0; cellpadding:5">
-<thead>
-	<th class="rolesignup" style="background-color:{raidroles.ROLE_COLOR}; border-bottom:0px solid"> 
-	<!-- IF raidroles.S_ROLE_ICON_EXISTS --><img src="{raidroles.ROLE_ICON}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
-	<strong>{raidroles.ROLE_NAME}: {raidroles.ROLE_SIGNEDUP}/{raidroles.ROLE_NEEDED}</strong></th>
-</thead>
-<tbody>
 
 <!-- BEGIN signups -->
 <tr style="background-color:{raidroles.ROLE_COLOR}; border-bottom:0px solid">
@@ -32,10 +23,6 @@
 </tr>
 <!-- END signups -->
 
-</tbody>
-</table>
-</div>
-<!-- END raidroles -->
 </div>
 <span class="corners-bottom"><span></span></span>
 </div>
