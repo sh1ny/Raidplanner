@@ -53,7 +53,7 @@ class rpmonth extends calendar
 		$this->date['num'] = "01";
 		$this->date['fday'] = $this->get_fday( $this->date['num'], $this->date['month_no'], $this->date['year'],  $config['rp_first_day_of_week']);
 	
-		$number_days = gmdate("t", gmmktime( 0,0,0,$this->date['month_no'], $this->date['day'], $this->date['year']));
+		$number_days = date("t", mktime( 0,0,0,$this->date['month_no'], $this->date['day'], $this->date['year']));
 	
 		$calendar_header_txt = $user->lang['MONTH_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], $user->lang['datetime'][$this->date['month']], $this->date['day'], $this->date['year'] );
 		

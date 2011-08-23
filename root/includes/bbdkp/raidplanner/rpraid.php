@@ -500,17 +500,9 @@ class rpraid
 		$message = generate_text_for_display($this->body, $this->bbcode['uid'], $this->bbcode['bitfield'], $bbcode_options);
 
 		// translate raidplan start and end time into user's timezone
-		$raidplan_invite = $this->invite_time + $user->timezone + $user->dst;
-		$raidplan_start = $this->start_time + $user->timezone + $user->dst;
-		$day = gmdate("d", $raidplan_start);
-		$month = gmdate("n", $raidplan_start);
-		$year =	gmdate('Y', $raidplan_start);
-		$raidplan_end = $this->end_time + $user->timezone + $user->dst;
-		
-		// format
-		$invite_date_txt = $user->format_date($raidplan_invite, $config['rp_date_time_format'], true);
-		$start_date_txt = $user->format_date($raidplan_start, $config['rp_date_time_format'], true);
-		$end_date_txt = $user->format_date($raidplan_end, $config['rp_date_time_format'], true);
+		$day = gmdate("d", $this->start_time);
+		$month = gmdate("n", $this->start_time);
+		$year =	gmdate('Y', $this->start_time);
 
 		/* make the url for the edit button */
 		$edit_url = "";
@@ -611,7 +603,7 @@ class rpraid
 					}
 			
 					$template->assign_block_vars('raidroles.signups', array(
-	       				'POST_TIME' => $user->format_date($signup['signup_time']),
+	       				'POST_TIME' => $user->format_date($signup['signup_time'], $config['rp_date_time_format'], true),
 						'POST_TIMESTAMP' => $signup['signup_time'],
 						'DETAILS' 		=> generate_text_for_display($signup['comment'], $signup['bbcode']['uid'], $signup['bbcode']['bitfield'], 7),
 						'HEADCOUNT' 	=> $signup['signup_count'],
@@ -641,13 +633,12 @@ class rpraid
 		foreach($this->signoffs as $key => $signoff)
 		{
 			$template->assign_block_vars('raidroles.signups', array(
-    			'POST_TIME' 	=> $user->format_date($signoff['signup_time']),
+    			'POST_TIME' 	=> $user->format_date($signoff['signup_time'], $config['rp_date_time_format'], true),
 				'POST_TIMESTAMP' => $signoff['signup_time'],
 				'DETAILS' 		=> generate_text_for_display($signup['comment'], $signoff['bbcode']['uid'], $signoff['bbcode']['bitfield'], 7),
 				'POSTER' 		=> $signoff['poster_name'], 
 				'POSTER_URL' 	=> get_username_string( 'full', $signoff['poster_id'], $signoff['poster_name'], $signoff['poster_colour'] ),
 				'VALUE' 		=> $signoff['signup_val'], 
-				'POST_TIME' 	=> $user->format_date($signoff['signup_time']),
 				'COLOR' 		=> '#FF0000', 
 				'VALUE_TXT' 	=> $user->lang['NO'], 
 				'CHARNAME'      => $signoff['dkpmembername'],
@@ -667,6 +658,7 @@ class rpraid
 		
 		$template->assign_vars( array(
 			'RAID_TOTAL'		=> $total_needed,
+			'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']], 
 		
 			'CURR_INVITED_COUNT' => 0,
 			'S_CURR_INVITED_COUNT'	=> false,
@@ -696,10 +688,10 @@ class rpraid
 			'SUBJECT'			=> $this->subject,
 			'MESSAGE'			=> $message,
 		
-			'INVITE_TIME'		=> $invite_date_txt,
-			'START_TIME'		=> $start_date_txt,
-			'END_TIME'			=> $end_date_txt,
-
+			'INVITE_TIME'		=> $user->format_date($this->invite_time, $config['rp_date_time_format'], true),
+			'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
+			'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
+		
 			'S_PLANNER_RAIDPLAN'=> true,
 		
 			'IS_RECURRING'		=> $this->recurr_id,
@@ -744,7 +736,7 @@ class rpraid
 			$this->addraidplan($cal);
 			// store it
 			$this->storeplan(0);
-			// store the raid roles 
+			// store the raid roles.
 			$this->store_raidroles(0);
 		}
 		
@@ -988,17 +980,6 @@ class rpraid
 		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$cal->date['day'] ."&amp;calM=".$cal->date['month_no']."&amp;calY=".$cal->date['year']);
 		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$cal->date['day']."&amp;calM=".$cal->date['month_no']."&amp;calY=".$cal->date['year']);
 
-		// translate raidplan start and end time into user's timezone
-		$raidplan_invite = $this->invite_time + $user->timezone + $user->dst;
-		$raidplan_start = $this->start_time + $user->timezone + $user->dst;
-		$raidplan_end = $this->end_time + $user->timezone + $user->dst;
-
-		// format
-		$invite_date_txt = $user->format_date($raidplan_invite, $config['rp_date_time_format'], true);
-		$start_date_txt = $user->format_date($raidplan_start, $config['rp_date_time_format'], true);
-		$end_date_txt = $user->format_date($raidplan_end, $config['rp_date_time_format'], true);
-		
-		
 		/*
 		 * make raid composition proposal, always choose primary role first
 		 */ 
@@ -1024,6 +1005,11 @@ class rpraid
 		//set rsvp flag to checked by default
 		$track_signups = 'checked="checked"';
 	
+		// format and translate to user timezone + dst
+		//$invite_date_txt = $user->format_date($this->invite_time, $config['rp_date_time_format'], true);
+		//$start_date_txt = $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+		//$end_date_txt = $user->format_date($this->end_time, $config['rp_date_time_format'], true);
+		
 		$template->assign_vars(array(
 			'L_POST_A'					=> $page_title,
 			//'SUBJECT'					=> $raidplan_data['raidplan_subject'],
@@ -1151,7 +1137,7 @@ class rpraid
 		
 		$this->accesslevel = request_var('calELevel', 0);
 		
-		// if we selected group but didn't actually a group then throw error
+		// if we selected group access but didn't actually choose group then throw error
 		if( $this->accesslevel == 1 && $num_group_ids < 1 )
 		{
 			$error[] = $user->lang['NO_GROUP_SELECTED'];
@@ -1167,15 +1153,14 @@ class rpraid
 		$inv_m = request_var('calM', 0);
 		$inv_y = request_var('calY', 0);
 		
+		//convert user times to UCT-GMT. all dates are stored in GMT
 		$inv_hr = request_var('calinvHr', 0);
 		$inv_mn = request_var('calinvMn', 0);
-		$event_inv_date = gmmktime($inv_hr, $inv_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;	
-		$this->invite_time=$event_inv_date;
+		$this->invite_time = gmmktime($inv_hr, $inv_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;
 
 		$start_hr = request_var('calHr', 0);
 		$start_mn = request_var('calMn', 0);
-		$event_start_date = gmmktime($start_hr, $start_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;	
-		$this->start_time=$event_start_date;
+		$this->start_time = gmmktime($start_hr, $start_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;
 		
 		$end_m = request_var('calMEnd', 0);
 		$end_d = request_var('calDEnd', 0);
@@ -1183,21 +1168,13 @@ class rpraid
 		
 		$end_hr = request_var('calEndHr', 0);
 		$end_mn = request_var('calEndMn', 0);
-		$event_end_date = gmmktime( $end_hr, $end_mn, 0, $end_m, $end_d, $end_y ) - $user->timezone - $user->dst;
-		if ($event_end_date < $event_start_date)
+		$this->end_time = gmmktime( $end_hr, $end_mn, 0, $end_m, $end_d, $end_y ) - $user->timezone - $user->dst;
+		if ($this->end_time < $this->start_time)
 		{	
-			//check for correct enddate
-			$event_end_date = gmmktime($end_hr, $end_mn, 0, $inv_m, $inv_d, $inv_y ) - $user->timezone - $user->dst;	
+			//check for enddate before begindate
+			// if the end hour is earlier than start hour then roll over a day
+			$this->end_time += 3600*24;
 		}
-		if($end_hr < $start_hr)
-		{
-		// validate start and end times
-		// if the end hour is earlier than start hour then roll over a day
-			$event_end_date += 3600*24;
-		}
-		
-		$debug1 = $user->format_date($event_end_date, 'd.m.y h:i', false);
-		$this->end_time=$event_end_date;
 		
 		//if this is not an "all day event"
 		$this->all_day=0;
@@ -1226,11 +1203,9 @@ class rpraid
 		
 		//do we track signups ?
 		$this->signups_allowed = request_var('calTrackRsvps', 0);
-		
 		$this->signups['yes'] = 0;
 		$this->signups['no'] = 0;
 		$this->signups['maybe'] = 0;
-		
 	}
 	
 	/**
@@ -1300,8 +1275,9 @@ class rpraid
 	/**
 	 * inserts or updates raidroles
 	 *
+	 * @param int $raidplan_id
 	 */
-	private function store_raidroles($raidplanrole_id = 0)
+	private function store_raidroles($raidplan_id = 0)
 	{
 		global $db;
 		
@@ -1313,43 +1289,42 @@ class rpraid
 		foreach($this->raidroles as $role_id => $role)
 		{
 				
-			if($raidplanrole_id == 0)
+			if($raidplan_id == 0)
 			{
 				$sql_raidroles = array(
-					'raidplan_id'		=> $this->id,				
+					'raidplan_id'		=> $raidplan_id,				
 					'role_id'			=> $role_id,
-					'role_needed'		=> $role['role_needed'],
-					'role_signedup'		=> 0,
-					'role_confirmed'	=> 0,					
+					'role_needed'		=> $role['role_needed']					
 					);
 					
 				//insert new
 				$sql = 'INSERT INTO ' . RP_RAIDPLAN_ROLES . ' ' . $db->sql_build_array('INSERT', $sql_raidroles);
 				$db->sql_query($sql);	
-				$raidplanrole_id = $db->sql_nextid();
+				
 			}
 			else
 			{
 				// update
 				$sql_raidroles = array(
-					'raidplan_id'		=> $this->id,				
 					'role_id'			=> $role_id,
-					'role_needed'		=> $role['role_needed'],
-					'role_signedup'		=> $role['role_signedup'],
-					'role_confirmed'	=> $role['role_confirmed'],					
+					'role_needed'		=> $role['role_needed']				
 					);
 				
 				$sql = 'UPDATE ' . RP_RAIDPLAN_ROLES . '
 	    		SET ' . $db->sql_build_array('UPDATE', $sql_raidroles) . '
-			    WHERE raidplandet_id = ' . (int) $raidplanrole_id;
+			    WHERE raidplan_id = ' . (int) $raidplan_id . ' 
+			    AND role_id = ' . $role_id;
+				
 				$db->sql_query($sql);
 			}
 		}
 						
+		$db->sql_transaction('commit');
 			
 		unset ($sql_raidroles);
+		unset($role_id);
+		unset($role);
 		
-		$db->sql_transaction('commit');
 		
 	}
 	

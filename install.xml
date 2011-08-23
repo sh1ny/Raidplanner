@@ -70,6 +70,7 @@
 			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php" />
 			<file from="root/includes/bbdkp/raidplanner/*.*" to="includes/bbdkp/raidplanner/*.*" />
 
+			<file from="root/images/raidrole_images/*.*" to="root/images/raidrole_images/*.*" />
 			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php" />
 			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php" />
 			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html" />
