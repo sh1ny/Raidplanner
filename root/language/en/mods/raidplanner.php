@@ -246,6 +246,7 @@ $lang = array_merge($lang, array(
 	'DEFAULT_RAID_END_TIME'   	=> 'Default Raid end time',
 	'TO_TIME'					=> 'To',
 	'TENTATIVE'					=> 'Tentative',
+	'TIME_ZONE'					=> 'All times are ', 
 	'TRACK_SIGNUPS'				=> 'Track attendance',
 	'TRACK_SIGNUPS_ON'			=> 'Attendance tracking is enabled.',
 	'TRACK_SIGNUPS_OFF'			=> 'Attendance tracking is disabled.',
