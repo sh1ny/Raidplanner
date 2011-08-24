@@ -182,6 +182,45 @@ class rpsignup
 	}
 	
 	
+	/**
+	 * cherche mes chars qui n'ont pas encore ete choisis et qui sont eligibles
+	 *
+	 * @param int $userid
+	 * @param int $raidplan_id
+	 */
+	public function getmychars($rpraidid)
+	{
+		global $db, $user;
+		
+		// get memberinfo
+		
+		$sql_array = array();
+		
+		
+		$sql_array['SELECT'] = ' s.*,  m.member_id, m.member_name, m.member_level, m.member_gender_id '; 
+	    $sql_array['FROM'] 	= array(MEMBER_LIST_TABLE 	=> 'm');
+	    $sql_array['LEFT_JOIN'] = array(
+			array( 'FROM'	=> array( RP_SIGNUPS => 's'),
+				   'ON'	=> 's.dkpmember_id = m.member_id and s.raidplan_id = ' . (int) $rpraidid
+				)
+		);
+	    $sql_array['WHERE'] = 'm.member_rank_id !=90 AND m.phpbb_user_id =  ' . $user->data['user_id']; 		    	
+		
+		$mychars = array();
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$mychars[] = array(
+				'signedup' => (isset($row['role_id']) ? 1: 0), 
+				'role_id' => (isset($row['role_id']) ? $row['role_id'] : ''), 
+				'id' => $row['member_id'], 
+				'name' => $row['member_name'] );	
+		}
+		$db->sql_freeresult($result);
+		return $mychars;
+	}
+	
 		
 	/**
 	 * puts signups on template
@@ -192,6 +231,7 @@ class rpsignup
 		
 	}
 
+	
 	public function signup()
 	{
 		$signup_data['poster_id'] = $user->data['user_id'];

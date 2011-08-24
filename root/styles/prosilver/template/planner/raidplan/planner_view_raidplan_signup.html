@@ -8,13 +8,31 @@
 	<fieldset>
 	<dl>
 		<dt>{L_CALENDAR_WILL_ATTEND}</dt>
-		<dd>{SEL_ATTEND}</dd>
+		<dd>
+		<select name='signuprole' id='signuprole'>
+		<option value='0'>{L_YES}</option>
+		<option value='1'>{L_NO}</option>
+		<option value='2'>{L_MAYBE}</option>
+		</select>
+		</dd>
 	
 		<dt>{L_RAIDROLE}</dt>
-		<dd><select id="signuprole" name="signuprole">{S_ROLE_OPTIONS}</select></dd>
-	
+		<dd>
+		<select id="signuprole" name="signuprole">
+		<!-- BEGIN raidroles -->
+			<option value='{raidroles.ROLE_ID}'>{raidroles.ROLE_NAME} {raidroles.ROLE_SELECTED}</option>
+		<!-- END raidroles -->
+		</select>
+		</dd>
+		
 		<dt>{L_RAIDCHARACTER}</dt>
-		<dd><select id="signupchar" name="signupchar">{S_RAIDMEMBER_OPTIONS}</select></dd>
+		<dd>
+		<select id="signupchar" name="signupchar">
+		<!-- BEGIN mychars -->
+			<option value='{mychars.MEMBER_ID}'>{mychars.MEMBER_NAME} {mychars.MEMBER_SELECTED}</option>
+		<!-- END mychars -->
+		</select>
+		</dd>
 	
 		<dt>&nbsp;<br />
 		{L_COMMENTS}</dt>

@@ -75,8 +75,8 @@ switch( $view_mode )
 			case 'showadd':
 				$raid->showadd($cal);
 				break;	
-			case 'editall':
-				$raid->edit();
+			case 'signup':
+				$raid->signup();
 				break;	
 			case 'delete':
 				$raid->delete();

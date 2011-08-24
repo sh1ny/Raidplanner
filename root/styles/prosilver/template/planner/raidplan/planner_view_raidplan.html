@@ -117,7 +117,9 @@
 <br/>
 <!-- INCLUDE planner/raidplan/planner_view_raidplan_unavailable.html -->
 <br/>
-<!-- INCLUDE planner/raidplan/planner_view_raidplan_signup.html -->
+<!-- IF S_CANSIGNUP && S_LEGITUSER -->
+	<!-- INCLUDE planner/raidplan/planner_view_raidplan_signup.html -->
+<!-- ENDIF -->
 
 <hr />
 <!-- raidplan view end -->
