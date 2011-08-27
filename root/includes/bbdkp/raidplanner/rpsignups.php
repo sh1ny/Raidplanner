@@ -231,20 +231,80 @@ class rpsignup
 		
 	}
 
-	
-	public function signup()
+	/**
+	 * 
+	 * registers signup
+	 *
+	 * @param unknown_type $raidplan_id
+	 */
+	public function signup($raidplan_id)
 	{
-		$signup_data['poster_id'] = $user->data['user_id'];
-		$signup_data['poster_name'] = $user->data['username'];
-		$signup_data['poster_colour'] = $user->data['user_colour'];
-		$signup_data['poster_ip'] = $user->ip;
-		$signup_data['post_time'] = time();
-		$signup_data['dkpmember_id'] = request_var('signupchar', 0);
-		$signup_data['signup_val'] = 2;
-		$signup_data['signup_count'] = 1;
-		$signup_data['signup_detail'] = "";
-		$signup_data['signup_detail_edit'] = "";
+		global $user;
 		
+		$this->raidplan_id = $raidplan_id;
+		
+		$this->poster_id = $user->data['user_id'];
+		$this->poster_name = $user->data['username'];
+		$this->poster_colour = $user->data['user_colour'];
+		$this->poster_ip = $user->ip;
+		$this->signup_time = time();
+		
+		$this->dkpmemberid = request_var('signupchar', 0);
+		$this->signup_val = 2;
+		$this->signup_count = 1;
+		
+		$this->roleid = request_var('signuprole', 0);   
+		
+		$this->comment = utf8_normalize_nfc(request_var('subject', '', true));
+		$this->bbcode['uid'] = $this->bbcode['bitfield'] = $options = ''; // will be modified by generate_text_for_storage
+		$allow_bbcode = $allow_urls = $allow_smilies = true;
+		generate_text_for_storage($this->comment, $this->bbcode['uid'], $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
+		
+	}
+	
+	private function storesignup()
+	{
+		global $db;
+		
+		$sql_raid = array(
+			'raidplan_id'	=> $this->raidplan_id,
+			'poster_id'		=> $this->start_time, 
+			'poster_name'	=> $this->poster_name,
+			'poster_colour'	=> $this->poster_colour,
+			'poster_ip'		=> $this->poster_ip,
+			'post_time'		=> $this->signup_time,
+			'signup_val'	=> $this->signup_val,
+			'signup_count'	=> $this->signup_count,
+			'signup_detail'	=> $this->comment,
+			'bbcode_bitfield' 	=> $this->bbcode['bitfield'],
+			'bbcode_uid'		=> $this->bbcode['uid'],
+			'bbcode_options'	=> 7, 
+			);
+		
+		/*
+		 * start transaction
+		 */
+		$db->sql_transaction('begin');
+			
+		if($this->signup_id == 0)
+		{
+			//insert new
+			$sql = 'INSERT INTO ' . RP_SIGNUPS . ' ' . $db->sql_build_array('INSERT', $sql_raid);
+			$db->sql_query($sql);	
+			$signup_id = $db->sql_nextid();
+			$this->signup_id = $signup_id;
+		}
+		else
+		{
+			// update
+			$sql = 'UPDATE ' . RP_RAIDS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_raid) . '
+		    WHERE raidplan_id = ' . (int) $this->signup_id;
+			$db->sql_query($sql);
+			
+		}
+		unset ($sql_raid);
+		
+		$db->sql_transaction('commit');
 	}
 	
 
