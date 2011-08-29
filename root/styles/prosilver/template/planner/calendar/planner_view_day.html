@@ -4,7 +4,14 @@
 $(document).ready( function() 
 {
 <!-- BEGIN raidplans -->
-	$("#raid_id{raidplans.RAID_ID}").tooltip({ offset: [50, 120],  effect: 'fade', opacity: 0.95});  
+	$("#raid_id{raidplans.RAID_ID}").tooltip(
+			{ offset: [50, 120],  
+			  effect: 'slide',  
+			  onShow: function() {this.getTrigger().fadeTo("slow", 0.2);}
+				}).dynamic({
+					 bottom: 
+						 { direction: 'down', bounce: true } 
+				 		});  
 <!-- END raidplans -->
 }
 );
@@ -58,6 +65,7 @@ $(document).ready( function()
           		<div class="bbtooltip">
 			 	    <div class="bbinner">
 					    <div class="t"></div>
+					    	<div style="text-align: left">
 					    	<!-- IF raidplans.S_EVENT_IMAGE_EXISTS --><img src="{raidplans.IMAGE}" alt="{raidplans.ETYPE_DISPLAY_NAME}" /> <br/><!-- ENDIF -->
 							<br/><h4>{calendar_days.raidplans.EVENT_SUBJECT}</h4>
 							<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}
@@ -65,8 +73,54 @@ $(document).ready( function()
 							{L_INVITE}: {raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {raidplans.START_TIME}
           					<br />{L_TO_TIME}: {raidplans.END_TIME}
           					<!-- ENDIF -->
+          					<!-- IF S_CANSIGNUP && S_LEGITUSER -->
+          					<hr />
+         						<form method="post" action="{S_SIGNUP_MODE_ACTION}" name="signup_form" id="signup_form">
+          						<fieldset>
+								<dl>
+									<dt>{L_CALENDAR_WILL_ATTEND}</dt>
+									<dd>
+									<select name='signuprole' id='signuprole'>
+									<option value='0'>{L_AVAILABLE}</option>
+									<option value='1'>{L_NOTAVAILABLE}</option>
+									<option value='2'>{L_MAYBE}</option>
+									</select>
+									</dd>
+									
+									<dt>{L_RAIDROLE}</dt>
+									<dd>
+									<select id="signuprole" name="signuprole">
+									<!-- BEGIN raidroles -->
+										<option value='{raidroles.ROLE_ID}' {raidroles.ROLE_SELECTED}>{raidroles.ROLE_NAME}</option>
+									<!-- END raidroles -->
+									</select>
+									</dd>
+									
+									<dt>{L_RAIDCHARACTER}</dt>
+									<dd>
+									<select id="signupchar" name="signupchar">
+									<!-- BEGIN mychars -->
+										<option value='{mychars.MEMBER_ID}' {mychars.MEMBER_SELECTED}>{mychars.MEMBER_NAME}</option>
+									<!-- END mychars -->
+									</select>
+									</dd>
+								
+									<dt>&nbsp;<br />
+									{L_COMMENTS}</dt>
+									<dd><textarea name="signup_detail" id="signup_detail" rows="4"
+										cols="25">{CURR_SIGNUP_DETAIL}</textarea></dd>
+									<dt>&nbsp;</dt>
+									<dd><input type="hidden" name="hidden_signup_id" id="hidden_signup_id" value="{CURR_SIGNUP_ID}" />
+										<input type="submit" name="signmeup" value="{L_SUBMIT}" class="button1" /></dd>
+								</dl>
+								</fieldset>
+								</form>
+								<!-- ENDIF -->
+							</div>
 				    </div>
-		     		<div class="b"><div></div></div> 
+		     		<div class="b">
+		     			<div></div>
+		     		</div> 
 		     	</div>
           		<!-- ELSE -->
           		{raidplans.DATA}

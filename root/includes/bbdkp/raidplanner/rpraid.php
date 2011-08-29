@@ -194,7 +194,11 @@ class rpraid
 	function __construct($id=0)
 	{
 		global $phpEx, $phpbb_root_path;
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpevents.' . $phpEx);
+		
+		if (!class_exists('rpevents'))
+		{
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpevents.' . $phpEx);
+		}
 		$this->eventlist= new rpevents();
 		
 		if($id !=0)
@@ -1187,6 +1191,9 @@ class rpraid
 			}
 		}
 		
+		/* make url for signup action */
+		$signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=signup&amp;calEid=". $this->id);
+				
 		// url to add raid
 		$add_raidplan_url = "";
 		if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans'))
@@ -1313,7 +1320,7 @@ class rpraid
 			$template->assign_block_vars('raidroles.signups', array(
     			'POST_TIME' 	=> $user->format_date($signoff['signup_time'], $config['rp_date_time_format'], true),
 				'POST_TIMESTAMP' => $signoff['signup_time'],
-				'DETAILS' 		=> generate_text_for_display($signup['comment'], $signoff['bbcode']['uid'], $signoff['bbcode']['bitfield'], 7),
+				'DETAILS' 		=> generate_text_for_display($signoff['comment'], $signoff['bbcode']['uid'], $signoff['bbcode']['bitfield'], 7),
 				'POSTER' 		=> $signoff['poster_name'], 
 				'POSTER_URL' 	=> get_username_string( 'full', $signoff['poster_id'], $signoff['poster_name'], $signoff['poster_colour'] ),
 				'VALUE' 		=> $signoff['signup_val'], 
@@ -1334,8 +1341,6 @@ class rpraid
 		unset($signoff);
 			
 		// fixed content
-		
-		$poster_url = ''; 
 		
 		$template->assign_vars( array(
 			'RAID_TOTAL'		=> $total_needed,
@@ -1369,7 +1374,9 @@ class rpraid
 			'INVITE_TIME'		=> $user->format_date($this->invite_time, $config['rp_date_time_format'], true),
 			'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
 			'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
-		
+
+			'U_SIGNUP_MODE_ACTION' => $signup_url,  
+		 	'RAID_ID'			=> $this->id, 
 			'S_PLANNER_RAIDPLAN'=> true,
 		
 			'IS_RECURRING'		=> $this->recurr_id,
@@ -1715,7 +1722,7 @@ class rpraid
 			{
 				$rpsignup->getSignup($row['signup_id']);
 				//get all public object vars of signup class to signup array and bind to role array 
-				$this->raidroles[$id]['role_signups'][] = get_object_vars($rpsignup);
+				$this->raidroles[$this->id]['role_signups'][] = get_object_vars($rpsignup);
 			}
 		}
 		$db->sql_freeresult($result);
@@ -1836,10 +1843,9 @@ class rpraid
 
 		// build sql 
 		$sql_array = array(
-   			'SELECT'    => 'r.*, e.* ',   
-			'FROM'		=> array(RP_RAIDS_TABLE => 'r', 
-								EVENTS_TABLE => 'e'), 
-			'WHERE'		=>  ' e.event_id = r.etype_id AND ( (raidplan_access_level = 2 )
+   			'SELECT'    => 'r.raidplan_id ',   
+			'FROM'		=> array(RP_RAIDS_TABLE => 'r'), 
+			'WHERE'		=>  '(raidplan_access_level = 2 
 					   OR (r.poster_id = '. $db->sql_escape($user->data['user_id']).' ) OR (r.raidplan_access_level = 1 AND ('. $group_options.')) )  
 					  AND (r.raidplan_start_time >= '. $db->sql_escape($start_temp_date).' AND r.raidplan_start_time <= '. $db->sql_escape($end_temp_date). " )",
 			'ORDER_BY'	=> 'r.raidplan_start_time ASC');
@@ -1849,8 +1855,11 @@ class rpraid
 
 		while ($row = $db->sql_fetchrow($result))
 		{
-
-			$fsubj = $subj = censor_text($row['raidplan_subject']);
+			unset($this);
+			$this->id= $row['raidplan_id'];
+			$this->make_obj();
+			
+			$fsubj = $subj = censor_text($this->subject);
 			if( $config['rp_display_truncated_name'] > 0 )
 			{
 				if(utf8_strlen($subj) > $config['rp_display_truncated_name'])
@@ -1860,7 +1869,7 @@ class rpraid
 			}
 			
 			$correct_format = $config['rp_time_format'];
-			if( $row['raidplan_end_time'] - $row['raidplan_start_time'] > 86400 )
+			if( $this->end_time - $this->start_time > 86400 )
 			{
 				$correct_format = $config['rp_date_time_format'];
 			}
@@ -1871,57 +1880,77 @@ class rpraid
 			if($mode =="day")
 			{
 				/* sets the colspan width */
-		        if( $row['raidplan_start_time'] > $start_temp_date )
+		        if( $this->start_time > $start_temp_date )
 		        {
 		          // find pre-padding value...
-		          $start_diff = $row['raidplan_start_time'] - $start_temp_date;
+		          $start_diff = $this->start_time - $start_temp_date;
 		          $pre_padding = round($start_diff/900);
 		        }
 		
-		        if( $row['raidplan_end_time'] < $end_temp_date )
+		        if( $this->end_time < $end_temp_date )
 		        {
 		          // find pre-padding value...
-		          $end_diff = $end_temp_date - $row['raidplan_end_time'];
+		          $end_diff = $end_temp_date - $this->end_time;
 		          $post_padding = round($end_diff/900);
 		        }
 			}
 
-			/*
-			 * $poster_url = '';
-			$invite_list = '';
-			$raidplans->get_raidplan_invites($row, $poster_url, $invite_list );
-			$raidplan_data['POSTER'] = $poster_url;
-			$raidplan_data['INVITED'] = $invite_list;
-			$raidplan_data['ALL_DAY'] = 0;
-			$row['raidplan_all_day'] == 1 
-			list($eday['eday_day'], $eday['eday_month'], $eday['eday_year']) = explode('-', $row['raidplan_day']);
-			$row['raidplan_start_time'] = gmmktime(0,0,0,$eday['eday_month'], $eday['eday_day'], $eday['eday_year'])- $user->timezone - $user->dst;
-			$row['raidplan_end_time'] = $row['raidplan_start_time']+86399;
-			*/
-			
-			$raidplan_output[] = array(
-				'RAID_ID'				=> $row['raidplan_id'],
+			$raidinfo = array(
+				'RAID_ID'				=> $this->id,
 				'PRE_PADDING'			=> $pre_padding,
 				'POST_PADDING'			=> $post_padding,
 				'PADDING'				=> 96 - $pre_padding - $post_padding, 
-				'ETYPE_DISPLAY_NAME' 	=> $this->eventlist->events[$row['etype_id']]['event_name'], 
+				'ETYPE_DISPLAY_NAME' 	=> $this->eventlist->events[$this->event_type]['event_name'], 
 				'FULL_SUBJECT' 			=> $fsubj,
 				'EVENT_SUBJECT' 		=> $subj, 
-				'COLOR' 				=> $this->eventlist->events[$row['etype_id']]['color'],
-				'IMAGE' 				=> $phpbb_root_path . "images/event_images/" . $this->eventlist->events[$row['etype_id']]['imagename'] . ".png", 
-				'S_EVENT_IMAGE_EXISTS'  => (strlen( $this->eventlist->events[$row['etype_id']]['imagename'] ) > 1) ? true : false,
-				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$row['raidplan_id']), 
-				'EVENT_ID'  			=> $row['raidplan_id'],
+				'COLOR' 				=> $this->eventlist->events[$this->event_type]['color'],
+				'IMAGE' 				=> $phpbb_root_path . "images/event_images/" . $this->eventlist->events[$this->event_type]['imagename'] . ".png", 
+				'S_EVENT_IMAGE_EXISTS'  => (strlen( $this->eventlist->events[$this->event_type]['imagename'] ) > 1) ? true : false,
+				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id), 
+				'EVENT_ID'  			=> $this->id,
 				 // for popup
-				'INVITE_TIME'  			=> $user->format_date($row['raidplan_invite_time'], $correct_format, true), 
-				'START_TIME'			=> $user->format_date($row['raidplan_start_time'], $correct_format, true),
-				'END_TIME' 				=> $user->format_date($row['raidplan_end_time'], $correct_format, true),
+				'INVITE_TIME'  			=> $user->format_date($this->invite_time, $correct_format, true), 
+				'START_TIME'			=> $user->format_date($this->start_time, $correct_format, true),
+				'END_TIME' 				=> $user->format_date($this->end_time, $correct_format, true),
 				
-				'DISPLAY_BOLD'			=> ($user->data['user_id'] == $row['poster_id'] ) ? true : false,
-				'ALL_DAY'				=> ($row['raidplan_all_day'] == 1  ) ? true : false,
+				'DISPLAY_BOLD'			=> ($user->data['user_id'] == $this->poster) ? true : false,
+				'ALL_DAY'				=> ($this->all_day == 1  ) ? true : false,
 				'SHOW_TIME'				=> ($mode == "day" ) ? true : false, 
 				'COUNTER'				=> $raidplan_counter++, 
+				'S_CANSIGNUP'			=> $this->signups_allowed, 
+				'S_LEGITUSER'			=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true, 
+			
 			);
+			
+			
+			$rolesinfo = array();
+			$userchars = array();
+			if($this->signups_allowed == true && $this->accesslevel != 0 && !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS)
+			{
+				foreach ($this->mychars as $key => $mychar)
+				{
+					$userchars[] = array(
+					        'MEMBER_ID'      	=> $mychar['id'],
+							'MEMBER_NAME'  	 	=> $mychar['name'],							
+							
+					 );
+				}
+				
+				foreach($this->raidroles as $key => $role)
+				{
+					$rolesinfo[] = array(
+						'ROLE_ID'        => $key,
+						'ROLE_NAME'      => $role['role_name'],
+					);
+				}
+			}
+			
+			$raidplan_output[] = array(
+				'raidinfo' => $raidinfo,
+				'userchars' => $userchars,
+				'raidroles' => $rolesinfo
+			);
+			
 
 		}
 		$db->sql_freeresult($result);

@@ -58,39 +58,46 @@ $cal->display();
 
 switch( $view_mode )
 {
-
 	case "raidplan":
 		
-		$raidplan_id = request_var('calEid', 0);
-		if(isset($_POST['signmeup']))
-		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
-			$signup = new rpsignup();
-			$signup->signup($raidplan_id);
-		}
-		else
+		if (!class_exists('rpraid', false))
 		{
 			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
-			$raidplan_id = request_var('calEid', 0);
-			$raid = new rpraid($raidplan_id);
-			switch($mode)
-			{
-				case 'edit':
-					$raid->edit();
-					break;			
-				case 'showadd':
-					$raid->showadd($cal);
-					break;	
-				case 'delete':
-					$raid->delete();
-					break;			
-				case 'deleteall':
-					$raid->deleteall();
-					break;
-				default:
+		}
+		$raidplan_id = request_var('calEid', 0);
+		
+		$raid = new rpraid($raidplan_id);
+		switch($mode)
+		{
+			case 'signup':
+				if(isset($_POST['signmeup' . $raidplan_id]))
+				{
+					if (!class_exists('rpsignup', false))
+					{
+						include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
+					}
+					$signup = new rpsignup();
+					$signup->signup($raidplan_id);
+					
+					$raid = new rpraid($raidplan_id);
 					$raid->display();
-					break;
-			}
+				}
+				break;
+			case 'edit':
+				$raid->edit();
+				break;			
+			case 'showadd':
+				$raid->showadd($cal);
+				break;	
+			case 'delete':
+				$raid->delete();
+				break;			
+			case 'deleteall':
+				$raid->deleteall();
+				break;
+			default:
+				$raid->display();
+				break;
 		}
 		break;
    case "next":		

@@ -249,26 +249,31 @@ class rpsignup
 		$this->poster_ip = $user->ip;
 		$this->signup_time = time();
 		
-		$this->dkpmemberid = request_var('signupchar', 0);
-		$this->signup_val = 2;
+		$this->signup_val = request_var('signup_val'. $raidplan_id, 2);
+		$this->roleid = request_var('signuprole'. $raidplan_id, 0);   
+		$this->dkpmemberid = request_var('signupchar'. $raidplan_id, 0);
+		$this->comment = utf8_normalize_nfc(request_var('signup_detail'. $raidplan_id, '', true));
 		$this->signup_count = 1;
 		
-		$this->roleid = request_var('signuprole', 0);   
-		
-		$this->comment = utf8_normalize_nfc(request_var('subject', '', true));
 		$this->bbcode['uid'] = $this->bbcode['bitfield'] = $options = ''; // will be modified by generate_text_for_storage
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
 		generate_text_for_storage($this->comment, $this->bbcode['uid'], $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
 		
+		$this->storesignup();
+		return true;
 	}
 	
+	/**
+	 * stores a signup
+	 *
+	 */
 	private function storesignup()
 	{
-		global $db;
+		global $user, $db;
 		
 		$sql_raid = array(
 			'raidplan_id'	=> $this->raidplan_id,
-			'poster_id'		=> $this->start_time, 
+			'poster_id'		=> $this->poster_id, 
 			'poster_name'	=> $this->poster_name,
 			'poster_colour'	=> $this->poster_colour,
 			'poster_ip'		=> $this->poster_ip,
@@ -279,6 +284,9 @@ class rpsignup
 			'bbcode_bitfield' 	=> $this->bbcode['bitfield'],
 			'bbcode_uid'		=> $this->bbcode['uid'],
 			'bbcode_options'	=> 7, 
+			'dkpmember_id'	=> $this->dkpmemberid, 
+			'role_id'		=> $this->roleid
+			
 			);
 		
 		/*
@@ -288,11 +296,32 @@ class rpsignup
 			
 		if($this->signup_id == 0)
 		{
-			//insert new
-			$sql = 'INSERT INTO ' . RP_SIGNUPS . ' ' . $db->sql_build_array('INSERT', $sql_raid);
-			$db->sql_query($sql);	
-			$signup_id = $db->sql_nextid();
-			$this->signup_id = $signup_id;
+			//prevent double submit, check if signup for char already exists (ip+charname), ignore if it does 
+			$sql = "SELECT count(*) as doublecheck from " . RP_SIGNUPS . " WHERE raidplan_id = " . $this->raidplan_id . 
+			" and poster_ip = '" . $this->poster_ip . "' 
+			  and dkpmember_id = '" .  $this->dkpmemberid . "'";
+			$result = $db->sql_query($sql);
+			$check = (int) $db->sql_fetchfield('doublecheck');
+			$db->sql_freeresult($result);
+			if($check == 0)
+			{
+				//insert new
+				$sql = 'INSERT INTO ' . RP_SIGNUPS . ' ' . $db->sql_build_array('INSERT', $sql_raid);
+				$db->sql_query($sql);	
+				$signup_id = $db->sql_nextid();
+				$this->signup_id = $signup_id;
+			}
+			else 
+			{
+				$sql = "SELECT signup_id from " . RP_SIGNUPS . " WHERE raidplan_id = " . $this->raidplan_id . 
+				" and poster_ip = '" . $this->poster_ip . "' 
+				  and dkpmember_id = '" .  $this->dkpmemberid . "'";
+				$result = $db->sql_query($sql);
+				$check = (int) $db->sql_fetchfield('signup_id');
+			
+				$this->getSignup($check);
+				trigger_error(sprintf($user->lang['USER_ALREADY_SIGNED_UP'], $this->dkpmembername));
+			}
 		}
 		else
 		{
@@ -305,6 +334,7 @@ class rpsignup
 		unset ($sql_raid);
 		
 		$db->sql_transaction('commit');
+		return true;
 	}
 	
 

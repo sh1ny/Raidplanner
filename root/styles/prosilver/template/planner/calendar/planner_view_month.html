@@ -69,11 +69,56 @@ $(document).ready( function()
 		<div class="bbtooltip">
 			<div class="bbinner">
 			<div class="t"></div>
-			<br/>
-			<h4>{calendar_days.raidplans.EVENT_SUBJECT}</h4>
-			{L_INVITE}: {calendar_days.raidplans.INVITE_TIME}<br />
-			{L_START}: {calendar_days.raidplans.START_TIME}<br />
-			{L_TO_TIME}: {calendar_days.raidplans.END_TIME}
+		    	<div style="text-align: left">
+		    	<!-- IF calendar_days.raidplans.S_EVENT_IMAGE_EXISTS --><img src="{calendar_days.raidplans.IMAGE}" alt="{calendar_days.raidplans.ETYPE_DISPLAY_NAME}" /> <br/><!-- ENDIF -->
+				<br/><h4>{calendar_days.raidplans.EVENT_SUBJECT}</h4>
+				<!-- IF calendar_days.raidplans.ALL_DAY -->{L_ALL_DAY}
+       					<!-- ELSE -->
+				{L_INVITE}: {calendar_days.raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {calendar_days.raidplans.START_TIME}
+       					<br />{L_TO_TIME}: {calendar_days.raidplans.END_TIME}
+       					<!-- ENDIF -->
+       					
+       					<!-- IF calendar_days.raidplans.S_CANSIGNUP && calendar_days.raidplans.S_LEGITUSER -->
+       					<hr />
+      					<form method="post" action="{calendar_days.raidplans.S_SIGNUP_MODE_ACTION}" name="signup_form{calendar_days.raidplans.RAID_ID}" id="signup_form{calendar_days.raidplans.RAID_ID}">
+       					<fieldset>
+						<dl>
+						<dt>{L_CALENDAR_WILL_ATTEND}</dt>
+						<dd>
+						<select name='signup_val{calendar_days.raidplans.RAID_ID}' id='signup_val{calendar_days.raidplans.RAID_ID}'>
+						<option value='0'>{L_AVAILABLE}</option>
+						<option value='1'>{L_NOTAVAILABLE}</option>
+						<option value='2'>{L_MAYBE}</option>
+						</select>
+						</dd>
+						
+						<dt>{L_RAIDROLE}</dt>
+						<dd>
+						<select id="signuprole{calendar_days.raidplans.RAID_ID}" name="signuprole{calendar_days.raidplans.RAID_ID}">
+						<!-- BEGIN raidroles -->
+							<option value='{calendar_days.raidplans.raidroles.ROLE_ID}'>{calendar_days.raidplans.raidroles.ROLE_NAME}</option><!-- END raidroles -->
+						</select>
+						</dd>
+						
+						<dt>{L_RAIDCHARACTER}</dt>
+						<dd>
+						<select id="signupchar{calendar_days.raidplans.RAID_ID}" name="signupchar{calendar_days.raidplans.RAID_ID}">
+						<!-- BEGIN userchars -->
+							<option value='{calendar_days.raidplans.userchars.MEMBER_ID}'>{calendar_days.raidplans.userchars.MEMBER_NAME}</option><!-- END userchars -->
+						</select>
+						</dd>
+					
+						<dt>&nbsp;<br />
+						{L_COMMENTS}</dt>
+						<dd><textarea name="signup_detail{calendar_days.raidplans.RAID_ID}" id="signup_detail{calendar_days.raidplans.RAID_ID}" rows="4" cols="25">{calendar_days.raidplans.CURR_SIGNUP_DETAIL}</textarea></dd>
+						<dt>&nbsp;</dt>
+						<dd><input type="hidden" name="hidden_signup_id{calendar_days.raidplans.RAID_ID}" id="hidden_signup_id{calendar_days.raidplans.RAID_ID}" value="{calendar_days.raidplans.CURR_SIGNUP_ID}" />
+							<input type="submit" name="signmeup{calendar_days.raidplans.RAID_ID}" value="{L_SUBMIT}" class="button1" /></dd>
+						</dl>
+					</fieldset>
+					</form>
+					<!-- ENDIF -->
+				</div>
 			</div>
 			<div class="b"><div></div></div> 
 		</div>

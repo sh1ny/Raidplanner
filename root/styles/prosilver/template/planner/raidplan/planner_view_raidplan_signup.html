@@ -1,7 +1,7 @@
 <fieldset>
 <div id="rpsignup">
 <!-- IF S_CANSIGNUP -->
-	<form method="post" action="{S_SIGNUP_MODE_ACTION}" name="signup_form" id="signup_form">
+	<form method="post" action="{U_SIGNUP_MODE_ACTION}" name="signup_form{RAID_ID}" id="signup_form{RAID_ID}">
 	<div class="panel bg1">
 	<div class="inner"><span class="corners-top"><span></span></span>
 	
@@ -9,7 +9,7 @@
 	<dl>
 		<dt>{L_CALENDAR_WILL_ATTEND}</dt>
 		<dd>
-		<select name='signuprole' id='signuprole'>
+		<select name='signup_val{RAID_ID}' id='signup_val{RAID_ID}'>
 		<option value='0'>{L_YES}</option>
 		<option value='1'>{L_NO}</option>
 		<option value='2'>{L_MAYBE}</option>
@@ -18,29 +18,26 @@
 	
 		<dt>{L_RAIDROLE}</dt>
 		<dd>
-		<select id="signuprole" name="signuprole">
+		<select id="signuprole{RAID_ID}" name="signuprole{RAID_ID}">
 		<!-- BEGIN raidroles -->
-			<option value='{raidroles.ROLE_ID}'>{raidroles.ROLE_NAME} {raidroles.ROLE_SELECTED}</option>
-		<!-- END raidroles -->
+		<option value='{raidroles.ROLE_ID}' {raidroles.ROLE_SELECTED}>{raidroles.ROLE_NAME}</option><!-- END raidroles -->
 		</select>
 		</dd>
 		
 		<dt>{L_RAIDCHARACTER}</dt>
 		<dd>
-		<select id="signupchar" name="signupchar">
+		<select id="signupchar{RAID_ID}" name="signupchar{RAID_ID}">
 		<!-- BEGIN mychars -->
-			<option value='{mychars.MEMBER_ID}'>{mychars.MEMBER_NAME} {mychars.MEMBER_SELECTED}</option>
-		<!-- END mychars -->
+		<option value='{mychars.MEMBER_ID}' {mychars.MEMBER_SELECTED}>{mychars.MEMBER_NAME}</option><!-- END mychars -->
 		</select>
 		</dd>
 	
 		<dt>&nbsp;<br />
 		{L_COMMENTS}</dt>
-		<dd><textarea name="signup_detail" id="signup_detail" rows="4"
-			cols="25">{CURR_SIGNUP_DETAIL}</textarea></dd>
+		<dd><textarea name="signup_detail{RAID_ID}" id="signup_detail{RAID_ID}" rows="4" cols="25">{CURR_SIGNUP_DETAIL}</textarea></dd>
 		<dt>&nbsp;</dt>
-		<dd><input type="hidden" name="hidden_signup_id" id="hidden_signup_id" value="{CURR_SIGNUP_ID}" />
-			<input type="submit" name="signmeup" value="{L_SUBMIT}" class="button1" /></dd>
+		<dd><input type="hidden" name="hidden_signup_id{RAID_ID}" id="hidden_signup_id{RAID_ID}" value="{CURR_SIGNUP_ID}" />
+			<input type="submit" name="signmeup{RAID_ID}" value="{L_SUBMIT}" class="button1" /></dd>
 	</dl>
 	</fieldset>
 	<span class="corners-bottom"><span></span></span></div>
@@ -55,3 +52,4 @@
 <!-- ENDIF -->
 </div>
 </fieldset>
+

@@ -117,7 +117,7 @@ $lang = array_merge($lang, array(
 	'CALENDAR_NUMBER_ATTEND'=> 'The number of people you are bringing to this raid',
 	'CALENDAR_NUMBER_ATTEND_EXPLAIN'=> '(enter 1 for yourself)',
 	'CALENDAR_RESPOND'		=> 'Please register here',
-	'CALENDAR_WILL_ATTEND'	=> 'Are you available for this raid?',
+	'CALENDAR_WILL_ATTEND'	=> 'Signup as',
 
 	'CANNOTSIGNUP'			=> 'you cannot sign up because you have no DKP characters linked to your account.',
 	
@@ -257,7 +257,8 @@ $lang = array_merge($lang, array(
 	'USER_CANNOT_EDIT_RAIDPLAN'	=> 'You do not have permission to edit raids.',
 	'USER_CANNOT_POST_RAIDPLAN'	=> 'You do not have permission to create raids.',
 	'USER_CANNOT_VIEW_RAIDPLAN'	=> 'You do not have permission to view raids.',
-	
+	'USER_ALREADY_SIGNED_UP'	=> '%s is already signed up to this raid.',
+
 	'VIEW_RAIDPLAN'				=> '%sView your submitted raid%s',
 	'WEEK'						=> 'Week',
 
