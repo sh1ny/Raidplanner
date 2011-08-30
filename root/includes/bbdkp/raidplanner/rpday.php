@@ -115,7 +115,21 @@ class rpday extends calendar
 			$raidplan_output = $rpraid->GetRaidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
 			foreach($raidplan_output as $raid )
 			{
-				$template->assign_block_vars('raidplans', $raid);
+				$template->assign_block_vars('raidplans', $raid['raidinfo']);
+				foreach($raid['userchars'] as $key => $char)
+				{
+					$template->assign_block_vars('raidplans.userchars', $char);
+				}
+				unset($char);
+				unset($key);
+				foreach($raid['raidroles'] as $key => $raidrole)
+				{
+					$template->assign_block_vars('raidplans.raidroles', $raidrole);
+				}
+				unset($raidrole);
+				unset($key);
+			
+								
 			}
 		}
 		

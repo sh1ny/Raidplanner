@@ -48,7 +48,7 @@ class rpmonth extends calendar
 	 */
 	public function display()
 	{
-		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
+		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 	
 		$this->date['num'] = "01";
 		$this->date['fday'] = $this->get_fday( $this->date['num'], $this->date['month_no'], $this->date['year'],  $config['rp_first_day_of_week']);

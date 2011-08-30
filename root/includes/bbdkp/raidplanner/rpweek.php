@@ -51,7 +51,6 @@ class rpweek extends calendar
 		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 	
 		// create next and prev links
-		$index_display = request_var('indexWk', 0);
 		$first_day_of_week = $config['rp_first_day_of_week'];
 		
 		// get date number 
@@ -225,7 +224,21 @@ class rpweek extends calendar
 							$raidplan_output = $rpraid->GetRaidinfo($true_m, $true_j, $true_y, $this->group_options, $this->mode);
 							foreach($raidplan_output as $raid )
 							{
-								$template->assign_block_vars('calendar_days.raidplans', $raid);
+								$template->assign_block_vars('calendar_days.raidplans', $raid['raidinfo']);
+								foreach($raid['userchars'] as $key => $char)
+								{
+									$template->assign_block_vars('calendar_days.raidplans.userchars', $char);
+								}
+								unset($char);
+								unset($key);
+								foreach($raid['raidroles'] as $key => $raidrole)
+								{
+									$template->assign_block_vars('calendar_days.raidplans.raidroles', $raidrole);
+								}
+								unset($raidrole);
+								unset($key);
+							
+								
 							}
 							$hit= true;
 						}
