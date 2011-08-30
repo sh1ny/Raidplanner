@@ -83,6 +83,14 @@ $(document).ready( function()
       					<form method="post" action="{calendar_days.raidplans.S_SIGNUP_MODE_ACTION}" name="signup_form{calendar_days.raidplans.RAID_ID}" id="signup_form{calendar_days.raidplans.RAID_ID}">
        					<fieldset>
 						<dl>
+						<dt>{L_RAIDCHARACTER}</dt>
+						<dd>
+						<select id="signupchar{calendar_days.raidplans.RAID_ID}" name="signupchar{calendar_days.raidplans.RAID_ID}">
+						<!-- BEGIN userchars -->
+							<option value='{calendar_days.raidplans.userchars.MEMBER_ID}'>{calendar_days.raidplans.userchars.MEMBER_NAME}</option><!-- END userchars -->
+						</select>
+						</dd>
+						
 						<dt>{L_CALENDAR_WILL_ATTEND}</dt>
 						<dd>
 						<select name='signup_val{calendar_days.raidplans.RAID_ID}' id='signup_val{calendar_days.raidplans.RAID_ID}'>
@@ -100,13 +108,6 @@ $(document).ready( function()
 						</select>
 						</dd>
 						
-						<dt>{L_RAIDCHARACTER}</dt>
-						<dd>
-						<select id="signupchar{calendar_days.raidplans.RAID_ID}" name="signupchar{calendar_days.raidplans.RAID_ID}">
-						<!-- BEGIN userchars -->
-							<option value='{calendar_days.raidplans.userchars.MEMBER_ID}'>{calendar_days.raidplans.userchars.MEMBER_NAME}</option><!-- END userchars -->
-						</select>
-						</dd>
 					
 						<dt>&nbsp;<br />
 						{L_COMMENTS}</dt>

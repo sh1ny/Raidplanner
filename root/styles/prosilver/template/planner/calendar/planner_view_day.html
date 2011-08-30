@@ -78,6 +78,15 @@ $(document).ready( function()
          						<form method="post" action="{S_SIGNUP_MODE_ACTION}" name="signup_form" id="signup_form">
           						<fieldset>
 								<dl>
+									<dt>{L_RAIDCHARACTER}</dt>
+									<dd>
+									<select id="signupchar" name="signupchar">
+									<!-- BEGIN mychars -->
+										<option value='{mychars.MEMBER_ID}' {mychars.MEMBER_SELECTED}>{mychars.MEMBER_NAME}</option>
+									<!-- END mychars -->
+									</select>
+									</dd>
+									
 									<dt>{L_CALENDAR_WILL_ATTEND}</dt>
 									<dd>
 									<select name='signuprole' id='signuprole'>
@@ -96,14 +105,6 @@ $(document).ready( function()
 									</select>
 									</dd>
 									
-									<dt>{L_RAIDCHARACTER}</dt>
-									<dd>
-									<select id="signupchar" name="signupchar">
-									<!-- BEGIN mychars -->
-										<option value='{mychars.MEMBER_ID}' {mychars.MEMBER_SELECTED}>{mychars.MEMBER_NAME}</option>
-									<!-- END mychars -->
-									</select>
-									</dd>
 								
 									<dt>&nbsp;<br />
 									{L_COMMENTS}</dt>
