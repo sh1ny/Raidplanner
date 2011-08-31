@@ -175,7 +175,7 @@ td.bg3_calDay a:hover {
 	text-decoration: none;
 }
 
-/* imagesets */
+/* images */
 .buttons div.planner-new-icon {
 	background: url("{T_IMAGESET_PATH}/planner/date_add.png") no-repeat;
 	width: 16px;
@@ -235,3 +235,9 @@ td.bg3_calDay a:hover {
 	height: 20px;
 	
 }
+
+/* raid view pane: less space in datalist */
+fieldset.rpfields dl {
+	padding: 0.5px 0;
+}
+

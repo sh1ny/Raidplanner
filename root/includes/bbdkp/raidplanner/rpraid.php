@@ -390,14 +390,6 @@ class rpraid
 				$this->signups['no'] = $row['signup_no'];
 				$this->signups['maybe'] = $row['signup_maybe'];
 				
-				// get array of raid roles with signups per role
-				$this->get_raid_roles();
-				
-				// attach signups to roles
-				$this->getSignups();
-				
-				//get all that signed unavailable 
-				$this->get_unavailable();
 			}
 			else 
 			{
@@ -406,6 +398,13 @@ class rpraid
 				$this->signups['no'] = 0;
 				$this->signups['maybe'] = 0;
 			}
+
+			// get array of raid roles with signups per role
+			$this->get_raid_roles();
+			// attach signups to roles
+			$this->getSignups();
+			//get all that signed unavailable 
+			$this->get_unavailable();
 			unset ($row);
 			
 			$sql = 'SELECT user_id, username, user_colour FROM ' . USERS_TABLE . ' WHERE user_id = '.$db->sql_escape($this->poster);
@@ -1211,7 +1210,10 @@ class rpraid
 			$s_signup_headcount = true;
 		}
 
-		if($this->signups_allowed == true && $this->accesslevel != 0)
+		$total_needed = 0;		
+
+		//display signups only if this is not a personal appointment
+		if($this->accesslevel != 0)
 		{
 			foreach ($this->mychars as $key => $mychar)
 			{
@@ -1228,7 +1230,6 @@ class rpraid
 			
 			//loop all roles
 			// @ : role 0 is declined
-			$total_needed = 0;		
 			foreach($this->raidroles as $key => $role)
 			{
 				$total_needed += $role['role_needed'];
