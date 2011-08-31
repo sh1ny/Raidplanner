@@ -19,20 +19,24 @@ $(document).ready( function()
 );
 </script>
 				
-<div class="forabg">
+<div class="forumbg">
   	<div class="inner">
   	<span class="corners-inner-top"><span></span></span>
-    <div class="blockhead">{CALENDAR_HEADER}</div>
+    <ul class="topiclist">
+    	<li class= "header">
+    	<h1 style="color:#dfc065; white-space:nowrap;">{CALENDAR_HEADER}</h1>
+    	</li>
+    </ul>
 
   <table class="table1" cellspacing="1" cellpadding="0">
     <tr>
-      <td style="width: 14%; height: 24px; text-align: center" class="bg4">{D0}</td>
-      <td style="width: 14%; height: 24px; text-align: center" class="bg4">{D1}</td>
-      <td style="width: 14%; height: 24px; text-align: center" class="bg4">{D2}</td>
-      <td style="width: 14%; height: 24px; text-align: center" class="bg4">{D3}</td>
-      <td style="width: 14%; height: 24px; text-align: center" class="bg4">{D4}</td>
-      <td style="width: 14%; height: 24px; text-align: center" class="bg4">{D5}</td>
-      <td style="width: 14%; height: 24px; text-align: center" class="bg4">{D6}</td>
+      <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D0}</td>
+      <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D1}</td>
+      <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D2}</td>
+      <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D3}</td>
+      <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D4}</td>
+      <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D5}</td>
+      <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D6}</td>
     </tr>
     <!-- BEGIN calendar_days -->
     <!-- IF calendar_days.START_WEEK --><tr style="height: 100px"><!-- ENDIF -->
@@ -60,7 +64,7 @@ $(document).ready( function()
 		<!-- BEGIN raidplans -->
 		<!-- IF calendar_days.raidplans.S_FIRST_ROW --><!-- IF calendar_days.BIRTHDAYS --><hr class="hrCal"><!-- ENDIF --><!-- ELSE --><hr class="hrCal"><!-- ENDIF -->
 		<a id="raid_id{calendar_days.raidplans.RAID_ID}" href="{calendar_days.raidplans.EVENT_URL}">
-		<!-- IF calendar_days.raidplans.COLOR --><span style="color:{calendar_days.raidplans.COLOR}"><!-- ENDIF -->
+		<!-- IF calendar_days.raidplans.COLOR --><span><!-- ENDIF -->
 			<!-- IF calendar_days.raidplans.DISPLAY_BOLD --><strong><!-- ENDIF -->
 			<!-- IF calendar_days.raidplans.S_EVENT_IMAGE_EXISTS --><img src="{calendar_days.raidplans.IMAGE}" alt="{calendar_days.raidplans.ETYPE_DISPLAY_NAME}" /> <br/><!-- ENDIF -->
 			<!-- IF calendar_days.raidplans.ETYPE_DISPLAY_NAME -->{calendar_days.raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{calendar_days.raidplans.EVENT_SUBJECT}

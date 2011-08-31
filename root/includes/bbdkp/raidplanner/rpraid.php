@@ -211,7 +211,7 @@ class rpraid
 	}
 
 	/**
-	 * make raid object like example
+	 * make raidplan object for display
 	 * 
 	"$this" = Object of: rpraid	
 		rpraid::id = (int) 1	
@@ -380,7 +380,7 @@ class rpraid
 			$this->bbcode['uid']= $row['bbcode_uid'];
 			//enable_bbcode & enable_smilies & enable_magic_url always 1
 			
-			//if signups are allowed and if raid is not expired
+			//if signups are allowed if and only if raid is not expired
 			if ($row['track_signups'] == 1 &&
 				$this->invite_time > time())
 			{
@@ -512,6 +512,11 @@ class rpraid
 			$this->storeplan(0);
 			// store the raid roles.
 			$this->store_raidroles(0);
+			//make object
+			$this->make_obj();
+			// display it
+			$this->display();
+			return 0;
 		}
 		
 		
@@ -1920,7 +1925,7 @@ class rpraid
 				
 				'DISPLAY_BOLD'			=> ($user->data['user_id'] == $this->poster) ? true : false,
 				'ALL_DAY'				=> ($this->all_day == 1  ) ? true : false,
-				'SHOW_TIME'				=> ($mode == "day" ) ? true : false, 
+				'SHOW_TIME'				=> ($mode == "day" || $mode == "week" ) ? true : false, 
 				'COUNTER'				=> $raidplan_counter++, 
 				'S_CANSIGNUP'			=> $this->signups_allowed, 
 				'S_LEGITUSER'			=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true, 

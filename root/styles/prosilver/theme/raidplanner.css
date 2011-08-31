@@ -1,20 +1,8 @@
 /* -------------------------
    raidplanner css
   ------------------------- */
-
-/* overrides prosilver */
-.blockhead {
-    border-bottom-color: transparent;
-    color: #cadceb;
-    font-size: 1.5em;
-    font-weight: normal;
-   /* margin-bottom: 0.5em;
-    margin-top: 0.5em;
-    padding-bottom: 0.5em; */
-}
-
 a.prev_planner {
-	background: transparent url('{T_THEME_PATH}/images/left_arrow.png') no-repeat scroll 50% 0;
+	background: transparent url('{T_THEME_PATH}/images/dkp/left_arrow.png') no-repeat scroll 50% 0;
 	display: inline-block;
 	overflow: hidden;
 	width: 16px;
@@ -22,7 +10,7 @@ a.prev_planner {
 }
 
 a.next_planner {
-	background: transparent url('{T_THEME_PATH}/images/right_arrow.png') no-repeat scroll 0 0;
+	background: transparent url('{T_THEME_PATH}/images/dkp/right_arrow.png') no-repeat scroll 0 0;
 	display: inline-block;
 	overflow: hidden;
 	width: 16px;
@@ -35,54 +23,80 @@ a.next_planner {
     padding: 0 5px;
 }
 
-.navbar {
-    background-color: #CADCEB;
-}
-
-
-/* uses border-top-color = .bg3 background-color
- (the line between events in the month display) */
-
+/* uses border-top-color = .bg3 background-color (the line between events in the month display) */
 hr.hrCal {
 	border-top-color: #cadceb;
 }
 
-/* uses color from h1
-		   (calendar header previous and next links) */
-
-.calH1 {
-	color: #FFFFFF;
-	font-weight: bold;
-	font-size: 200%
-}
-
-/* The from and to times take up a lot of 
-		  space in the calendar display.
-		  Use this to shrink them */
+/* The from and to times take up a lot of space in the calendar display. Use this to shrink them */
 
 .smCalText {
 	font-size: 85%
 }
 
-/* bg4 is just slightly darker then bg3 
-		  (used in calendar headers) */
-
-.bg4 {
-	background-color: #8DB8DE;
-}
-
+/* signup th */
 table.table1 thead th.rolesignup {
 	border-top: medium;
 	border-top-color: #12A3EB;
 	font-weight: bold;
 }
 
-/* uses background-color of .bg3
-		    (used to display the numbers and icons for 
-		    each day in the month and week view displays ) */
+/* display days in calendar day/month/week view) */
+
+table.table1 tbody td.bg1_calMon {
+	background-color: #1C1C1C;
+	color:#FFFFDD;
+	padding-top: 2px;
+	padding-bottom: 5px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+/* today and highlighted day */
+table.table1 tbody td.bg2_calMon {
+	background-color: #3A3A3A;
+	color:#FFFFDD;
+	padding-top: 2px;
+	padding-bottom: 5px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+table.table1 tbody td.bg1_calDay {
+	background-color: #1C1C1C;
+	border-top-color: #12A3EB;
+	color:#FFFFDD;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 3px;
+	padding-right: 3px;
+}
+
+/* hovering over day */
+table.table1 tbody td.bg1_calMon:hover {
+	background-color: #3A3A3A;
+}
+
+td.bg1_calMon a:hover {
+	text-decoration: none;
+}
+/* hover over highlighted day */
+td.bg2_calMon a:hover {
+	text-decoration: none;
+}
+
+table.table1 tbody td.bg1_calDay:hover {
+	background-color: #3A3A3A;
+}
+
+td.bg1_calDay a:hover {
+	text-decoration: none;
+}
+
+/* filler headers */
 
 table tbody td.bg3_calMonH {
-	background-color: #cadceb;
+	background-color: #232B2D;
 	font-size: 85%
 }
 
@@ -90,51 +104,9 @@ td.bg3_calMonH a:hover {
 	text-decoration: none;
 }
 
-/* uses background-color of .bg4
-		    (used to display the numbers and icons for 
-		    each day in the month and week view displays ) */
-
-table tbody td.bg4_calMonH {
-	background-color: #8DB8DE;
-	font-size: 85%
-}
-
-td.bg4_calMonH a:hover {
-	text-decoration: none;
-}
-
-/* uses background-color of .bg1 (used to display days in calendar month/week view) */
-
-table.table1 tbody td.bg1_calMon {
-	background-color: #ECF3F7;
-	padding-top: 2px;
-	padding-bottom: 5px;
-	padding-left: 4px;
-	padding-right: 4px;
-}
-
-td.bg1_calMon a:hover {
-	text-decoration: none;
-}
-
-/* uses background-color of .bg2 (used to display days in calendar month/week view) */
-
-table.table1 tbody td.bg2_calMon {
-	background-color: #e1ebf2;
-	padding-top: 2px;
-	padding-bottom: 5px;
-	padding-left: 4px;
-	padding-right: 4px;
-}
-
-td.bg2_calMon a:hover {
-	text-decoration: none;
-}
-
-/* uses background-color of .bg3 (used to display days in calendar month/week view) */
-
+/* filler day */
 table.table1 tbody td.bg3_calMon {
-	background-color: #cadceb;
+	background-color: #161616;
 	padding-top: 2px;
 	padding-bottom: 5px;
 	padding-left: 4px;
@@ -145,29 +117,8 @@ td.bg3_calMon a:hover {
 	text-decoration: none;
 }
 
-/* uses background-color of .bg1
-		   uses border-top-color = .forumbg background-color
-		   (used to display events in calendar day view) */
-
-table.table1 tbody td.bg1_calDay {
-	background-color: #ECF3F7;
-	border-top-color: #12A3EB;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	padding-left: 3px;
-	padding-right: 3px;
-}
-
-td.bg1_calDay a:hover {
-	text-decoration: none;
-}
-
-/* uses background-color of .bg3
-		   uses border-top-color = .forumbg background-color
-		   (used to display negative space in calendar day view) */
-
 table.table1 tbody td.bg3_calDay {
-	background-color: #cadceb;
+	background-color: #232B2D;
 	border-top-color: #12A3EB;
 }
 
@@ -175,7 +126,17 @@ td.bg3_calDay a:hover {
 	text-decoration: none;
 }
 
-/* images */
+/* highlight header */
+table tbody td.bg4_calMonH {
+	background-color: #1E3339;
+	font-size: 85%
+}
+
+td.bg4_calMonH a:hover {
+	text-decoration: none;
+}
+
+/* imagesets */
 .buttons div.planner-new-icon {
 	background: url("{T_IMAGESET_PATH}/planner/date_add.png") no-repeat;
 	width: 16px;
@@ -206,38 +167,28 @@ td.bg3_calDay a:hover {
 
 .buttons div.planner-edit-all-icon {
 	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_calendar_edit_all.gif");
-	/*background-color: transparent;*/
 	width: 61px;
 	height: 20px;
 	text-align: left;
 }
 
 .buttons div.planner-delete-all-icon {
-	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_calendar_delete_all.gif");
-	/*background-color: transparent;*/
+	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_calendar_delete_all.png");
 	width: 40px;
 	height: 20px;
 	text-align: left;
 }
 
 .buttons div.planner-edit-icon {
-	background-image: url("{T_IMAGESET_LANG_PATH}/icon_post_edit.gif");
-	/*background-color: transparent;*/
+	background-image: url("{T_IMAGESET_LANG_PATH}/icon_post_edit.png");
 	width: 42px;
 	height: 20px;
 	
 }
 
 .buttons div.planner-delete-icon {
-	background-image: url("{T_IMAGESET_PATH}/icon_post_delete.gif");
-	/*background-color: transparent;*/
+	background-image: url("{T_IMAGESET_PATH}/icon_post_delete.png");
 	width: 20px;
 	height: 20px;
 	
 }
-
-/* raid view pane: less space in datalist */
-fieldset.rpfields dl {
-	padding: 0.5px 0;
-}
-

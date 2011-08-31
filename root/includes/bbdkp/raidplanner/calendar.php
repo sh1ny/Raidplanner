@@ -218,9 +218,9 @@ abstract class calendar
 			
 			$sql = 'SELECT user_id, username, user_colour, user_birthday
 					FROM ' . USERS_TABLE . "
-					WHERE user_birthday >= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day1, $month,$year )) . "'
-					AND user_birthday <= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day2, $month,$year )) . "'
-					AND user_birthday " . $db->sql_like_expression($db->any_char . '-' . sprintf( ' %s', $month)  .'-' . $db->any_char) . ' 
+					WHERE (( user_birthday >= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day1, $month,$year )) . "'
+					AND user_birthday <= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day2, $month,$year )) . "')
+					OR user_birthday " . $db->sql_like_expression($db->any_char . '-' . sprintf( ' %s', $month)  .'-' . $db->any_char) . ' ) 
 					AND user_type IN (' . USER_NORMAL . ', ' . USER_FOUNDER . ')
 					ORDER BY user_birthday ASC';
 			$result = $db->sql_query($sql);
