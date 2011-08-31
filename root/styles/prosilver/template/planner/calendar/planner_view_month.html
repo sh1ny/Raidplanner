@@ -4,7 +4,15 @@ $(document).ready( function()
 {
 <!-- BEGIN calendar_days -->
 <!-- BEGIN raidplans -->
-	$("#raid_id{calendar_days.raidplans.RAID_ID}").tooltip({ offset: [20, 130],  effect: 'fade', opacity: 0.95});  
+	$("#raid_id{calendar_days.raidplans.RAID_ID}").tooltip(
+			{ offset: [0, 120],  
+				  effect: 'slide',  
+				  onShow: function() {this.getTrigger().fadeTo("slow", 0.25);},
+				  onHide: function() {this.getTrigger().fadeTo(300,1);}
+			}).dynamic({
+						 bottom: 
+							 { direction: 'up', bounce: true } 
+					 		});  
 <!-- END raidplans -->
 <!-- END calendar_days -->
 }
@@ -108,7 +116,6 @@ $(document).ready( function()
 						</select>
 						</dd>
 						
-					
 						<dt>&nbsp;<br />
 						{L_COMMENTS}</dt>
 						<dd><textarea name="signup_detail{calendar_days.raidplans.RAID_ID}" id="signup_detail{calendar_days.raidplans.RAID_ID}" rows="4" cols="25">{calendar_days.raidplans.CURR_SIGNUP_DETAIL}</textarea></dd>

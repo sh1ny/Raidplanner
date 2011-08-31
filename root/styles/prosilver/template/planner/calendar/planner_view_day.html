@@ -5,13 +5,14 @@ $(document).ready( function()
 {
 <!-- BEGIN raidplans -->
 	$("#raid_id{raidplans.RAID_ID}").tooltip(
-			{ offset: [50, 120],  
+			{ offset: [0, 120],  
 			  effect: 'slide',  
-			  onShow: function() {this.getTrigger().fadeTo("slow", 0.2);}
-				}).dynamic({
+			  onShow: function() {this.getTrigger().fadeTo("slow", 0.25);},
+			  onHide: function() {this.getTrigger().fadeTo(300,1);}
+			}).dynamic({
 					 bottom: 
 						 { direction: 'down', bounce: true } 
-				 		});  
+				 		});
 <!-- END raidplans -->
 }
 );
@@ -73,23 +74,23 @@ $(document).ready( function()
 							{L_INVITE}: {raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {raidplans.START_TIME}
           					<br />{L_TO_TIME}: {raidplans.END_TIME}
           					<!-- ENDIF -->
-          					<!-- IF S_CANSIGNUP && S_LEGITUSER -->
+          					<!-- IF raidplans.S_CANSIGNUP && raidplans.S_LEGITUSER -->
           					<hr />
-         						<form method="post" action="{S_SIGNUP_MODE_ACTION}" name="signup_form" id="signup_form">
+         						<form method="post" action="{raidplans.S_SIGNUP_MODE_ACTION}" name="signup_form{raidplans.RAID_ID}" id="signup_form{raidplans.RAID_ID}">
           						<fieldset>
 								<dl>
 									<dt>{L_RAIDCHARACTER}</dt>
 									<dd>
-									<select id="signupchar" name="signupchar">
-									<!-- BEGIN mychars -->
-										<option value='{mychars.MEMBER_ID}' {mychars.MEMBER_SELECTED}>{mychars.MEMBER_NAME}</option>
-									<!-- END mychars -->
+									<select id="signupchar{raidplans.RAID_ID}" name="signupchar{raidplans.RAID_ID}">
+									<!-- BEGIN userchars -->
+										<option value='{raidplans.userchars.MEMBER_ID}' {raidplans.userchars.MEMBER_SELECTED}>{raidplans.userchars.MEMBER_NAME}</option>
+									<!-- END userchars -->
 									</select>
 									</dd>
 									
 									<dt>{L_CALENDAR_WILL_ATTEND}</dt>
 									<dd>
-									<select name='signuprole' id='signuprole'>
+									<select name='signup_val{raidplans.RAID_ID}' id='signup_val{raidplans.RAID_ID}'>
 									<option value='0'>{L_AVAILABLE}</option>
 									<option value='1'>{L_NOTAVAILABLE}</option>
 									<option value='2'>{L_MAYBE}</option>
@@ -98,9 +99,9 @@ $(document).ready( function()
 									
 									<dt>{L_RAIDROLE}</dt>
 									<dd>
-									<select id="signuprole" name="signuprole">
+									<select id="signuprole{raidplans.RAID_ID}" name="signuprole{raidplans.RAID_ID}">
 									<!-- BEGIN raidroles -->
-										<option value='{raidroles.ROLE_ID}' {raidroles.ROLE_SELECTED}>{raidroles.ROLE_NAME}</option>
+										<option value='{raidplans.raidroles.ROLE_ID}' {raidplans.raidroles.ROLE_SELECTED}>{raidplans.raidroles.ROLE_NAME}</option>
 									<!-- END raidroles -->
 									</select>
 									</dd>
@@ -108,11 +109,10 @@ $(document).ready( function()
 								
 									<dt>&nbsp;<br />
 									{L_COMMENTS}</dt>
-									<dd><textarea name="signup_detail" id="signup_detail" rows="4"
-										cols="25">{CURR_SIGNUP_DETAIL}</textarea></dd>
+									<dd><textarea name="signup_detail{raidplans.RAID_ID}" id="signup_detail{raidplans.RAID_ID}" rows="4" cols="25">{raidplans.CURR_SIGNUP_DETAIL}</textarea></dd>
 									<dt>&nbsp;</dt>
-									<dd><input type="hidden" name="hidden_signup_id" id="hidden_signup_id" value="{CURR_SIGNUP_ID}" />
-										<input type="submit" name="signmeup" value="{L_SUBMIT}" class="button1" /></dd>
+									<dd><input type="hidden" name="hidden_signup_id{raidplans.RAID_ID}" id="hidden_signup_id{raidplans.RAID_ID}" value="{raidplans.CURR_SIGNUP_ID}" />
+										<input type="submit" name="signmeup{raidplans.RAID_ID}" value="{L_SUBMIT}" class="button1" /></dd>
 								</dl>
 								</fieldset>
 								</form>
