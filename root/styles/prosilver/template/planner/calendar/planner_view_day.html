@@ -5,7 +5,7 @@ $(document).ready( function()
 {
 <!-- BEGIN raidplans -->
 	$("#raid_id{raidplans.RAID_ID}").tooltip(
-			{ offset: [0, 120],  
+			{ offset: [10, 60],  
 			  effect: 'slide',  
 			  onShow: function() {this.getTrigger().fadeTo("slow", 0.25);},
 			  onHide: function() {this.getTrigger().fadeTo(300,1);}
@@ -91,9 +91,9 @@ $(document).ready( function()
 									<dt>{L_CALENDAR_WILL_ATTEND}</dt>
 									<dd>
 									<select name='signup_val{raidplans.RAID_ID}' id='signup_val{raidplans.RAID_ID}'>
-									<option value='0'>{L_AVAILABLE}</option>
-									<option value='1'>{L_NOTAVAILABLE}</option>
-									<option value='2'>{L_MAYBE}</option>
+									<option value='2'>{L_AVAILABLE}</option>
+									<option value='1'>{L_MAYBE}</option>
+									<option value='0'>{L_NOTAVAILABLE}</option>
 									</select>
 									</dd>
 									

@@ -32,9 +32,9 @@ class rpsignup
 	public $poster_ip;
 	
 	/**
-	 * 0=yes, 1=no, 2=maybe 
+	 * 0 unavailable 1 maybe 2 available 3 confirmed
 	 *
-	 * @var unknown_type
+	 * @var int
 	 */
 	public $signup_val;
 	public $signup_time;
@@ -183,7 +183,7 @@ class rpsignup
 	
 	
 	/**
-	 * cherche mes chars qui n'ont pas encore ete choisis et qui sont eligibles
+	 * get all my chars
 	 *
 	 * @param int $userid
 	 * @param int $raidplan_id
@@ -212,25 +212,16 @@ class rpsignup
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$mychars[] = array(
-				'signedup' => (isset($row['role_id']) ? 1: 0), 
-				'role_id' => (isset($row['role_id']) ? $row['role_id'] : ''), 
-				'id' => $row['member_id'], 
-				'name' => $row['member_name'] );	
+				'is_signedup'  => (isset($row['signedup_val']) ? 1: 0),
+				'signedup_val' => (isset($row['signedup_val']) ? $row['signedup_val']: 0), 
+				'role_id' 	   => (isset($row['role_id']) ? $row['role_id'] : ''), 
+				'id' 		   => $row['member_id'], 
+				'name' 		   => $row['member_name'] );	
 		}
 		$db->sql_freeresult($result);
 		return $mychars;
 	}
 	
-		
-	/**
-	 * puts signups on template
-	 *
-	 */
-	private function _pushtemplate()
-	{
-		
-	}
-
 	/**
 	 * 
 	 * registers signup
@@ -248,7 +239,7 @@ class rpsignup
 		$this->poster_colour = $user->data['user_colour'];
 		$this->poster_ip = $user->ip;
 		$this->signup_time = time();
-		
+		// 0 unavailable 1 maybe 2 available 3 confirmed
 		$this->signup_val = request_var('signup_val'. $raidplan_id, 2);
 		$this->roleid = request_var('signuprole'. $raidplan_id, 0);   
 		$this->dkpmemberid = request_var('signupchar'. $raidplan_id, 0);

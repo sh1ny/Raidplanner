@@ -380,8 +380,9 @@ class rpraid
 			$this->bbcode['uid']= $row['bbcode_uid'];
 			//enable_bbcode & enable_smilies & enable_magic_url always 1
 			
-			//get number of signups if they are tracked
-			if ($row['track_signups'] == 1)
+			//if signups are allowed and if raid is not expired
+			if ($row['track_signups'] == 1 &&
+				$this->invite_time > time())
 			{
 				//track
 				$this->signups_allowed = true;
@@ -1217,7 +1218,7 @@ class rpraid
 				$template->assign_block_vars('mychars', array(
 				        'MEMBER_ID'      	=> $mychar['id'],
 						'MEMBER_NAME'  	 	=> $mychar['name'],
-						'MEMBER_SELECTED'	=> ($mychar['signedup'] == 1) ? ' selected="selected"' : ''
+						'MEMBER_SELECTED'	=> ($mychar['signedup_val'] >= 1) ? ' selected="selected"' : ''
 						
 				 ));
 			}
@@ -1285,7 +1286,7 @@ class rpraid
 					}
 					
 					$template->assign_block_vars('raidroles.signups', array(
-	       				'POST_TIME' => $user->format_date($signup['signup_time'], $config['rp_date_time_format'], true),
+	       				'POST_TIME' 	=> $user->format_date($signup['signup_time'], $config['rp_date_time_format'], true),
 						'POST_TIMESTAMP' => $signup['signup_time'],
 						'DETAILS' 		=> generate_text_for_display($signup['comment'], $signup['bbcode']['uid'], $signup['bbcode']['bitfield'], 7),
 						'HEADCOUNT' 	=> $signup['signup_count'],
@@ -1317,7 +1318,7 @@ class rpraid
 		// display signoffs
 		foreach($this->signoffs as $key => $signoff)
 		{
-			$template->assign_block_vars('raidroles.signups', array(
+			$template->assign_block_vars('unavailable', array(
     			'POST_TIME' 	=> $user->format_date($signoff['signup_time'], $config['rp_date_time_format'], true),
 				'POST_TIMESTAMP' => $signoff['signup_time'],
 				'DETAILS' 		=> generate_text_for_display($signoff['comment'], $signoff['bbcode']['uid'], $signoff['bbcode']['bitfield'], 7),
@@ -1696,7 +1697,8 @@ class rpraid
 	
 	/**
 	 * selects all signups that have a role, then makes signup objects, returns array of objects to role code
-	 *
+	 * 0 unavailable 1 maybe 2 available 3 confirmed
+	 * 
 	 * @param int $raidplan_id
 	 */
 	private function getSignups()
@@ -1722,7 +1724,7 @@ class rpraid
 			{
 				$rpsignup->getSignup($row['signup_id']);
 				//get all public object vars of signup class to signup array and bind to role array 
-				$this->raidroles[$this->id]['role_signups'][] = get_object_vars($rpsignup);
+				$this->raidroles[$roleid]['role_signups'][] = get_object_vars($rpsignup);
 			}
 		}
 		$db->sql_freeresult($result);
@@ -1733,6 +1735,7 @@ class rpraid
 	
 	/**
 	 * get all those that signed unavailable
+	 * 0 unavailable 1 maybe 2 available 3 confirmed
 	 *
 	 * @param int $raidplan_id
 	 */
@@ -1909,6 +1912,7 @@ class rpraid
 				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id), 
 				'EVENT_ID'  			=> $this->id,
 				 // for popup
+				'S_SIGNUP_MODE_ACTION' 	=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id. "&amp;mode=signup"), 
 				'INVITE_TIME'  			=> $user->format_date($this->invite_time, $correct_format, true), 
 				'START_TIME'			=> $user->format_date($this->start_time, $correct_format, true),
 				'END_TIME' 				=> $user->format_date($this->end_time, $correct_format, true),
@@ -1925,7 +1929,10 @@ class rpraid
 			
 			$rolesinfo = array();
 			$userchars = array();
-			if($this->signups_allowed == true && $this->accesslevel != 0 && !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS)
+			if($this->signups_allowed == true 
+				&& $this->accesslevel != 0 
+				&& !$user->data['is_bot'] 
+				&& $user->data['user_id'] != ANONYMOUS)
 			{
 				foreach ($this->mychars as $key => $mychar)
 				{
