@@ -116,6 +116,7 @@ class rpweek extends calendar
 		{
 			if( $j < 1 )
 			{
+				//past month
 				$true_j = $prev_month_day_count + $j;
 				$true_m = $prev_month_no;
 				$true_y = $prev_year_no;
@@ -183,7 +184,7 @@ class rpweek extends calendar
 			
 			// user cannot add raid/appointments in the past
 			$calendar_days['ADD_RAID_ICON'] = false;
-			if( $j >= date('d') || $this->date['month_no'] > date('m') )
+			if( $true_m >= date('m') || ($true_m == date('m')  && $true_j >= date('d') ) )
 			{
 				$calendar_days['ADD_RAID_ICON'] = true;
 			}
