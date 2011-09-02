@@ -1717,7 +1717,7 @@ class rpraid
 		}
 		$rpsignup = new rpsignup();
 		
-		// fill mychars array 
+		// fill mychars array for popup
 		$this->mychars = $rpsignup->getmychars($this->id);
 		
 		//fill signups array 
@@ -1903,7 +1903,40 @@ class rpraid
 		          $post_padding = round($end_diff/900);
 		        }
 			}
-
+			
+			$rolesinfo = array();
+			$userchars = array();
+			if($this->signups_allowed == true 
+				&& $this->accesslevel != 0 
+				&& !$user->data['is_bot'] 
+				&& $user->data['user_id'] != ANONYMOUS)
+			{
+				foreach ($this->mychars as $key => $mychar)
+				{
+					if($mychar['role_id'] == '')
+					{
+						$userchars[] = array(
+						        'MEMBER_ID'      	=> $mychar['id'],
+								'MEMBER_NAME'  	 	=> $mychar['name'],							
+								
+						 );
+					}
+				}
+				
+				if(count($userchars)==0)
+				{
+					$this->signups_allowed = false; 	
+				}
+				
+				foreach($this->raidroles as $key => $role)
+				{
+					$rolesinfo[] = array(
+						'ROLE_ID'        => $key,
+						'ROLE_NAME'      => $role['role_name'],
+					);
+				}
+			}
+			
 			$raidinfo = array(
 				'RAID_ID'				=> $this->id,
 				'PRE_PADDING'			=> $pre_padding,
@@ -1932,37 +1965,13 @@ class rpraid
 			
 			);
 			
-			
-			$rolesinfo = array();
-			$userchars = array();
-			if($this->signups_allowed == true 
-				&& $this->accesslevel != 0 
-				&& !$user->data['is_bot'] 
-				&& $user->data['user_id'] != ANONYMOUS)
-			{
-				foreach ($this->mychars as $key => $mychar)
-				{
-					$userchars[] = array(
-					        'MEMBER_ID'      	=> $mychar['id'],
-							'MEMBER_NAME'  	 	=> $mychar['name'],							
-							
-					 );
-				}
-				
-				foreach($this->raidroles as $key => $role)
-				{
-					$rolesinfo[] = array(
-						'ROLE_ID'        => $key,
-						'ROLE_NAME'      => $role['role_name'],
-					);
-				}
-			}
-			
 			$raidplan_output[] = array(
 				'raidinfo' => $raidinfo,
 				'userchars' => $userchars,
 				'raidroles' => $rolesinfo
 			);
+			
+
 			
 
 		}
