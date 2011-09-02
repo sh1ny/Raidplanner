@@ -146,6 +146,20 @@ fieldset.rpfields dl {
 	padding: 0.5px 0;
 }
 
+
+.raidplanbody {
+    clear: both;
+    color: #333333;
+    line-height: 1.48em;
+    padding: 0;
+}
+
+.raidplanbody .content {
+    font-size: 1.3em;
+}
+
+
+
 /* imagesets */
 .buttons div.planner-new-icon {
 	background: url("{T_IMAGESET_PATH}/planner/date_add.png") no-repeat;
