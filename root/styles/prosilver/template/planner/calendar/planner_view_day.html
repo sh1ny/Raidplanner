@@ -23,7 +23,7 @@ $(document).ready( function()
 <div class="forumbg">
   	<div class="inner">
   	<span class="corners-inner-top"><span></span></span>
-    <ul class="topiclist">
+	 <ul class="topiclist">
     	<li class= "header">
     	<h1 style="color:#dfc065; white-space:nowrap;">{CALENDAR_HEADER}</h1>
     	</li>
@@ -76,6 +76,22 @@ $(document).ready( function()
 							{L_INVITE}: {raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {raidplans.START_TIME}
           					<br />{L_TO_TIME}: {raidplans.END_TIME}
           					<!-- ENDIF -->
+          					<br />
+							<br />
+							<strong>{L_SIGNUPS}</strong>
+							<br />
+							<!--
+							{L_CONFIRMED}
+							{raidplans.CURR_INVITED_COUNT} / {raidplans.RAID_TOTAL}
+							 -->
+							{L_AVAILABLE} : 
+							{raidplans.CURR_YES_COUNT}/{raidplans.RAID_TOTAL} ({raidplans.CURR_YESPCT})<br />
+							{L_MAYBE} :
+							{raidplans.CURR_MAYBE_COUNT}/{raidplans.RAID_TOTAL} ({raidplans.CURR_MAYBEPCT})<br />
+							{L_NOTAVAILABLE} :
+							{raidplans.CURR_NO_COUNT}/{raidplans.RAID_TOTAL} ({raidplans.CURR_NOPCT})<br />
+							<br />
+							
           					<!-- IF raidplans.S_CANSIGNUP && raidplans.S_LEGITUSER -->
           					<hr />
          						<form method="post" action="{raidplans.S_SIGNUP_MODE_ACTION}" name="signup_form{raidplans.RAID_ID}" id="signup_form{raidplans.RAID_ID}">

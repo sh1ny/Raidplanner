@@ -22,14 +22,14 @@ $(document).ready( function()
 <div class="forumbg">
   	<div class="inner">
   	<span class="corners-inner-top"><span></span></span>
-        <ul class="topiclist">
+    <ul class="topiclist">
     	<li class= "header">
     	<h1 style="color:#dfc065; white-space:nowrap;">{CALENDAR_HEADER}</h1>
     	</li>
     </ul>
 
   <table class="table1" cellspacing="1" cellpadding="0">
-    <tr class="daynames">
+     <tr class="daynames">
       <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D0}</td>
       <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D1}</td>
       <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D2}</td>
@@ -89,6 +89,22 @@ $(document).ready( function()
 				{L_INVITE}: {calendar_days.raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {calendar_days.raidplans.START_TIME}
        					<br />{L_TO_TIME}: {calendar_days.raidplans.END_TIME}
        					<!-- ENDIF -->
+						<br />
+						<br />
+						<strong>{L_SIGNUPS}</strong>
+						<br />
+						<!--
+						{L_CONFIRMED}
+						{calendar_days.raidplans.CURR_INVITED_COUNT} / {calendar_days.raidplans.RAID_TOTAL}
+						 -->
+						{L_AVAILABLE} : 
+						{calendar_days.raidplans.CURR_YES_COUNT}/{calendar_days.raidplans.RAID_TOTAL} ({calendar_days.raidplans.CURR_YESPCT})<br />
+						{L_MAYBE} :
+						{calendar_days.raidplans.CURR_MAYBE_COUNT}/{calendar_days.raidplans.RAID_TOTAL} ({calendar_days.raidplans.CURR_MAYBEPCT})<br />
+						{L_NOTAVAILABLE} :
+						{calendar_days.raidplans.CURR_NO_COUNT}/{calendar_days.raidplans.RAID_TOTAL} ({calendar_days.raidplans.CURR_NOPCT})<br />
+						<br />
+						
        					
        					<!-- IF calendar_days.raidplans.S_CANSIGNUP && calendar_days.raidplans.S_LEGITUSER -->
        					<hr />

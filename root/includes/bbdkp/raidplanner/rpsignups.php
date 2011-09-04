@@ -262,7 +262,7 @@ class rpsignup
 	{
 		global $user, $db;
 		
-		$sql_raid = array(
+		$sql_signup = array(
 			'raidplan_id'	=> $this->raidplan_id,
 			'poster_id'		=> $this->poster_id, 
 			'poster_name'	=> $this->poster_name,
@@ -297,10 +297,39 @@ class rpsignup
 			if($check == 0)
 			{
 				//insert new
-				$sql = 'INSERT INTO ' . RP_SIGNUPS . ' ' . $db->sql_build_array('INSERT', $sql_raid);
+				$sql = 'INSERT INTO ' . RP_SIGNUPS . ' ' . $db->sql_build_array('INSERT', $sql_signup);
 				$db->sql_query($sql);	
 				$signup_id = $db->sql_nextid();
 				$this->signup_id = $signup_id;
+				
+				switch ( (int) $this->signup_val)
+				{
+					case 0:
+						// no
+						$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1 WHERE raidplan_id = " . $this->raidplan_id;
+						$db->sql_query($sql);
+						 break;
+					case 1:
+						// maybe
+						$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_maybe = signup_maybe + 1 WHERE raidplan_id = " . $this->raidplan_id;
+						$db->sql_query($sql);
+						
+						$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup + 1 WHERE raidplan_id = " . $this->raidplan_id .  
+						" AND role_id = " . $this->roleid ;
+						$db->sql_query($sql);
+						break;
+					case 2:
+						//yes
+						$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_yes = signup_yes + 1 WHERE raidplan_id = " . $this->raidplan_id;
+						$db->sql_query($sql);
+						
+						$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup + 1 WHERE raidplan_id = " . $this->raidplan_id .  
+					" AND role_id = " . $this->roleid ;
+						
+						$db->sql_query($sql);
+						break; 
+				}
+			
 			}
 			else 
 			{
@@ -317,8 +346,8 @@ class rpsignup
 		else
 		{
 			// update
-			$sql = 'UPDATE ' . RP_RAIDS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_raid) . '
-		    WHERE raidplan_id = ' . (int) $this->signup_id;
+			$sql = 'UPDATE ' . RP_SIGNUPS . ' SET ' . $db->sql_build_array('UPDATE', $sql_signup) . '
+		    WHERE signup_id = ' . (int) $this->signup_id;
 			$db->sql_query($sql);
 			
 		}
@@ -328,7 +357,6 @@ class rpsignup
 		return true;
 	}
 	
-
 	
 	
 }

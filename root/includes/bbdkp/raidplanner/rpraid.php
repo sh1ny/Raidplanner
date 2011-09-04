@@ -1906,6 +1906,7 @@ class rpraid
 			
 			$rolesinfo = array();
 			$userchars = array();
+			$total_needed = 0;
 			if($this->signups_allowed == true 
 				&& $this->accesslevel != 0 
 				&& !$user->data['is_bot'] 
@@ -1934,6 +1935,10 @@ class rpraid
 						'ROLE_ID'        => $key,
 						'ROLE_NAME'      => $role['role_name'],
 					);
+					
+					$total_needed += $role['role_needed'];
+				
+				
 				}
 			}
 			
@@ -1962,6 +1967,23 @@ class rpraid
 				'COUNTER'				=> $raidplan_counter++, 
 				'S_CANSIGNUP'			=> $this->signups_allowed, 
 				'S_LEGITUSER'			=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true, 
+			
+				'RAID_TOTAL'			=> $total_needed,
+				'CURR_YES_COUNT'		=> $this->signups['yes'],
+				'S_CURR_YES_COUNT'		=> ($this->signups['yes'] + $this->signups['maybe'] > 0) ? true: false,
+				'CURR_YESPCT'			=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['yes']) /  $total_needed, 2) : 0)),
+			
+				'CURR_MAYBE_COUNT'		=> $this->signups['maybe'],
+				'S_CURR_MAYBE_COUNT' 	=> ($this->signups['maybe'] > 0) ? true: false,
+				'CURR_MAYBEPCT'			=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['maybe']) /  $total_needed, 2) : 0)), 
+				
+				'CURR_NO_COUNT'			=> $this->signups['no'],
+				'S_CURR_NO_COUNT'		=> ($this->signups['no'] > 0) ? true: false,
+				'CURR_NOPCT'			=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['no']) /  $total_needed, 2) : 0)),
+			
+				'CURR_TOTAL_COUNT'  	=> $this->signups['yes'] + $this->signups['maybe'],
+				
+			
 			
 			);
 			
