@@ -27,7 +27,10 @@
 		<a href="{raidroles.signups.U_DELETE}"><img src="{T_IMAGESET_PATH}/planner/icon_cancel.png" alt="{L_NOTAVAILABLE}"></a>
 		<input type="hidden" name="keycheck" value="{raidroles.signups.DELETEKEY}">
 	<!-- ENDIF -->
-	
+	<!-- IF raidroles.signups.S_CANCONFIRM -->
+		<a href="{raidroles.signups.U_CONFIRM}"><img src="{T_IMAGESET_PATH}/planner/icon_signed_up.png" alt="{L_CONFIRMED}"></a>
+	<!-- ENDIF -->
+		
 	</td>
 </tr>
 <!-- END signups -->

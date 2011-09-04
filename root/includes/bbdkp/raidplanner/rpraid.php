@@ -1209,12 +1209,6 @@ class rpraid
 		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$day ."&amp;calM=".$month."&amp;calY=".$year);
 		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
 
-		$s_signup_headcount = false;
-		if($user->data['user_id'] == $this->poster || $auth->acl_get('u_raidplanner_view_headcount') )
-		{
-			$s_signup_headcount = true;
-		}
-
 		$total_needed = 0;		
 
 		//display signups only if this is not a personal appointment
@@ -1251,14 +1245,14 @@ class rpraid
 						'ROLE_SELECTED'  => $role_selected,
 						'ROLE_NAME'      => $role['role_name'],
 				    	'ROLE_NEEDED'    => $role['role_needed'],
-				    	'ROLE_CONFIRMED' => $role['role_confirmed'],
 				    	'ROLE_SIGNEDUP'  => $role['role_signedup'],
+				    	'ROLE_CONFIRMED' => $role['role_confirmed'],
 						'ROLE_COLOR'	 => $role['role_color'],
 						'S_ROLE_ICON_EXISTS' => (strlen($role['role_icon']) > 1) ? true : false,
 				       	'ROLE_ICON' 	 => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $role['role_icon'] . ".png" : '',
 				 ));
 				 
-				 // loop signups per role
+				 // loop available signups per role
 				 foreach($role['role_signups'] as $signup)
 				 {
 				 	
@@ -1267,35 +1261,34 @@ class rpraid
 					$editcomment = $edit_text_array['text'];
 					if( $signup['signup_val'] == 1 )
 					{
-						$signupcolor = '#FFCC33';
+						$signupcolor = '#C9B634';
 						$signuptext = $user->lang['MAYBE'];
-					}
-					elseif( $signup['signup_val'] == 1 )
-					{
-						$signupcolor = '#00FF00';
-						$signuptext = $user->lang['YES'];
 					}
 					elseif( $signup['signup_val'] == 2 )
 					{
-						$signupcolor = '#000000';
+						$signupcolor = '#FFB100';
+						$signuptext = $user->lang['YES'];
+					}
+					elseif( $signup['signup_val'] == 3 )
+					{
+						$signupcolor = '#006B02';
 						$signuptext = $user->lang['CONFIRMED'];
 					}
 					
-					// can user edit signup ?
-					// depends on freeze time and who you are
-				 	$edit_signups = 0;
+					// if user can delete other signups ?
+				 	$confirm_signup_url = "";
+				 	$canconfirmsignup = false;
 					if( $auth->acl_get('m_raidplanner_edit_other_users_signups') )
 					{
-						$edit_signups = 1;
-						$edit_signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=". $this->id );
-						$edit_signup_url .="&amp;signup_id=" . $signup['signup_id'];
+						$canconfirmsignup=true;
+						$confirm_signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=confirm&amp;calEid=". $this->id . "&amp;signup_id=" . $signup['signup_id']);
 					}
 					
 					// if user can delete other signups or if own signup
 					$candeletesignup= false;
 					$deletesignupurl="";
 					$deletekey=0;
-					if( $auth->acl_get('m_acl_m_raidplanner_delete_other_users_raidplans') || $signup['poster_id'] == $user->data['user_id']  )
+					if( $auth->acl_get('m_raidplanner_edit_other_users_signups') || $signup['poster_id'] == $user->data['user_id']  )
 					{
 						// then if signup is not frozen then show deletion button
 						//@todo calculate frozen
@@ -1326,6 +1319,8 @@ class rpraid
 						'S_DELETE_SIGNUP'	=> 	$candeletesignup, 
 						'U_DELETE'		=> $deletesignupurl, 
 						'DELETEKEY' 	=> $deletekey, 
+						'S_CANCONFIRM'	=> $canconfirmsignup, 
+						'U_CONFIRM'		=> $confirm_signup_url,
 								 				
 					));
 						
@@ -1340,6 +1335,16 @@ class rpraid
 		// display signoffs
 		foreach($this->signoffs as $key => $signoff)
 		{
+			$requeue=false;
+			$requeueurl="";
+			// allow requeueing your character
+			if( $auth->acl_get('m_acl_m_raidplanner_delete_other_users_raidplans') || $signoff['poster_id'] == $user->data['user_id']  )
+			{
+				$requeue = true;
+				$requeueurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=requeue&amp;calEid=". $this->id . "&amp;signup_id=" . $signoff['signup_id']);
+				
+			}
+			
 			$template->assign_block_vars('unavailable', array(
     			'POST_TIME' 	=> $user->format_date($signoff['signup_time'], $config['rp_date_time_format'], true),
 				'POST_TIMESTAMP' => $signoff['signup_time'],
@@ -1356,7 +1361,10 @@ class rpraid
 		        'CLASS_IMAGE' 	=> (strlen($signoff['imagename']) > 1) ? $signoff['imagename']: '',  
 				'S_CLASS_IMAGE_EXISTS' => (strlen($signoff['imagename']) > 1) ? true : false,
 		       	'RACE_IMAGE' 	=> (strlen($signoff['raceimg']) > 1) ? $signoff['raceimg'] : '',  
-				'S_RACE_IMAGE_EXISTS' => (strlen($signoff['raceimg']) > 1) ? true : false, 			 				
+				'S_RACE_IMAGE_EXISTS' => (strlen($signoff['raceimg']) > 1) ? true : false, 	
+				'S_REQUEUE_SIGNUP'	=> $requeue, 
+				'U_REQUEUE'		=> $requeueurl, 	
+			 				
 			));
 		}
 
@@ -1375,15 +1383,15 @@ class rpraid
 			
 			'CURR_YES_COUNT'	=> $this->signups['yes'],
 			'S_CURR_YES_COUNT'	=> ($this->signups['yes'] + $this->signups['maybe'] > 0) ? true: false,
-			'CURR_YESPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['yes']) /  $total_needed, 2) : 0)),
+			'CURR_YESPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['yes']) /  $total_needed, 2)*100 : 0)),
 		
 			'CURR_MAYBE_COUNT'	=> $this->signups['maybe'],
 			'S_CURR_MAYBE_COUNT' => ($this->signups['maybe'] > 0) ? true: false,
-			'CURR_MAYBEPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['maybe']) /  $total_needed, 2) : 0)), 
+			'CURR_MAYBEPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['maybe']) /  $total_needed, 2)*100 : 0)), 
 			
 			'CURR_NO_COUNT'		=> $this->signups['no'],
 			'S_CURR_NO_COUNT'	=> ($this->signups['no'] > 0) ? true: false,
-			'CURR_NOPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['no']) /  $total_needed, 2) : 0)),
+			'CURR_NOPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['no']) /  $total_needed, 2)*100 : 0)),
 		
 			'CURR_TOTAL_COUNT'  => $this->signups['yes'] + $this->signups['maybe'],
 

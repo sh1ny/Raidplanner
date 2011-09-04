@@ -361,7 +361,8 @@ class rpsignup
 	
 	/**
 	 * delete this signup and change to not available
-	 *
+	 * 
+	 * @param int $signup_id
 	 */
 	public function deletesignup($signup_id)
 	{
@@ -407,7 +408,74 @@ class rpsignup
 		return false;
 	}
 	
+	/**
+	 * requeues a deleted signup
+	 *
+	 * @param int $signup_id
+	 */
+	public function requeuesignup($signup_id)
+	{
+		global $db;
+		//make object
+		$this->getSignup($signup_id);
+			
+		switch ( (int) $this->signup_val)
+		{
+			case 0:
+				// maybe
+				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no - 1, signup_maybe = signup_maybe + 1 WHERE raidplan_id = " . $this->raidplan_id;
+				$db->sql_query($sql);
+				
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup + 1 WHERE raidplan_id = " . $this->raidplan_id .  
+				" AND role_id = " . $this->roleid ;
+				$db->sql_query($sql);
+				
+				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 1 WHERE signup_id = ' . (int) $this->signup_id;
+				$db->sql_query($sql);
+				
+				return true;
+				break;
+		}
+		
+		// if already >0 then don't do anything
+		return false;
+		
+	}
 	
+	/**
+	 * confirms a signup
+	 *
+	 * @param int $signup_id
+	 */
+	public function confirmsignup($signup_id)
+	{
+		global $db;
+		//make object
+		$this->getSignup($signup_id);
+			
+		switch ( (int) $this->signup_val)
+		{
+			case 1:
+			case 2:	
+				// maybe
+				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_confirmed = signup_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id;
+				$db->sql_query($sql);
+				
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_confirmed = role_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id .  
+				" AND role_id = " . $this->roleid ;
+				$db->sql_query($sql);
+				
+				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET role_confirm = 1 WHERE signup_id = ' . (int) $this->signup_id;
+				$db->sql_query($sql);
+
+				return true;
+				break;
+		}
+		
+		// if already >0 then don't do anything
+		return false;
+		
+	}
 	
 }
 
