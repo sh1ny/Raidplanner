@@ -2,34 +2,34 @@
 
 <div class="panel bg2"  >
 <div class="inner"><span class="corners-top"><span></span></span>
-
 <div style="width:95%; margin-left:auto;margin-right:auto;text-align:left" > 
 
-<!-- BEGIN raidrolesconfirmed -->
-
+<!-- BEGIN raidroles -->
 <div style="width:160px; float:left ;">
-<table style="width:100%; cellspacing="0" cellpadding="5">
+<table class="table1" style="width:100%; cellspacing:0; cellpadding:5">
+<thead>
+	<th class="rolesignup" style="background-color:{raidroles.ROLE_COLOR}; border-bottom:0px solid"> 
+	<!-- IF raidroles.S_ROLE_ICON_EXISTS --><img src="{raidroles.ROLE_ICON}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
+	<strong>{raidroles.ROLE_NAME}: {raidroles.ROLE_CONFIRMED}/{raidroles.ROLE_NEEDED}</strong></th>
+</thead>
 <tbody>
-<tr>
-	<td style="border-bottom:1px solid"> <strong>{raidrolesconfirmed.ROLE_NAME}: {raidrolesconfirmed.ROLE_SIGNEDUP}/{raidrolesconfirmed.ROLE_NEEDED}</strong></td>
-</tr>
-
-<!-- BEGIN signups -->
-<tr>
-	<td> <strong><a>{raidrolesconfirmed.signups.POSTER_URL}</a></strong><br />
-	<span><!-- IF raidrolesconfirmed.signups.S_RACE_IMAGE_EXISTS --><img src="{raidrolesconfirmed.signups.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
-	<!-- IF raidrolesconfirmed.signups.S_CLASS_IMAGE_EXISTS --><img src="{raidrolesconfirmed.signups.CLASS_IMAGE}" alt="{raidrolesconfirmed.signups.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
-	<strong><h4> <span style="color:{raidrolesconfirmed.signups.COLORCODE}">{raidrolesconfirmed.signups.CHARNAME}</span></h4></strong></span> <br />
-	{raidrolesconfirmed.signups.POST_TIME} <br />
-	{raidrolesconfirmed.signups.DETAILS} <br /> 
+<!-- BEGIN confirmations -->
+<tr style="background-color:{raidroles.ROLE_COLOR}; border-bottom:0px solid">
+	<td> <strong><a>{raidroles.confirmations.POSTER_URL}</a></strong><br />
+	
+	<span><!-- IF raidroles.confirmations.S_RACE_IMAGE_EXISTS --><img src="{raidroles.confirmations.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
+	<!-- IF raidroles.confirmations.S_CLASS_IMAGE_EXISTS --><img src="{raidroles.confirmations.CLASS_IMAGE}" alt="{raidroles.confirmations.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
+	<strong><span style="color:{raidroles.confirmations.COLORCODE}">{raidroles.confirmations.CHARNAME}</span></strong></span> <br />
+	{raidroles.confirmations.POST_TIME} <br />
+	{raidroles.confirmations.DETAILS} <br /> 
 	</td>
 </tr>
-<!-- END signups -->
+<!-- END confirmations -->
 
 </tbody>
 </table>
 </div>
-<!-- END raidrolesconfirmed -->
+<!-- END raidroles -->
 </div>
 <span class="corners-bottom"><span></span></span>
 </div>

@@ -386,9 +386,10 @@ class rpraid
 			{
 				//track
 				$this->signups_allowed = true;
-				$this->signups['yes'] = $row['signup_yes'];
 				$this->signups['no'] = $row['signup_no'];
 				$this->signups['maybe'] = $row['signup_maybe'];
+				$this->signups['yes'] = $row['signup_yes'];
+				$this->signups['confirmed'] = $row['signup_confirmed'];
 				
 			}
 			else 
@@ -397,11 +398,12 @@ class rpraid
 				$this->signups['yes'] = 0;
 				$this->signups['no'] = 0;
 				$this->signups['maybe'] = 0;
+				$this->signups['confirmed'] = 0;
 			}
 
-			// get array of raid roles with signups per role
+			// get array of raid roles with signups and confirmations per role (available+confirmed)
 			$this->get_raid_roles();
-			// attach signups to roles
+			// attach signups to roles (available+confirmed)
 			$this->getSignups();
 			//get all that signed unavailable 
 			$this->get_unavailable();
@@ -413,7 +415,7 @@ class rpraid
 			$db->sql_freeresult($result);
 			$this->poster_url = get_username_string( 'full', $this->poster, $row['username'], $row['user_colour'] );
 			
-			//depending on access level invite different groups.
+			//depending on access level invite different phpbb groups.
 			switch( $this->accesslevel )
 			{
 				case 0:
@@ -1149,7 +1151,7 @@ class rpraid
 	 */
 	public function display()
 	{
-		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
+		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		
 		// check if it is a private appointment
 		if( !$this->auth_cansee)
@@ -1325,6 +1327,40 @@ class rpraid
 					));
 						
 				 }
+				 
+				 
+				 // loop confirmed signups per role
+				 foreach($role['role_confirmations'] as $confirmation)
+				 {
+				 	
+					$edit_text_array = generate_text_for_edit( $confirmation['comment'], $confirmation['bbcode']['uid'], 7);
+					
+					$editcomment = $edit_text_array['text'];
+					$signupcolor = '#006B02';
+					$signuptext = $user->lang['CONFIRMED'];
+					
+					$template->assign_block_vars('raidroles.confirmations', array(
+	       				'POST_TIME' 	=> $user->format_date($confirmation['signup_time'], $config['rp_date_time_format'], true),
+						'POST_TIMESTAMP' => $confirmation['signup_time'],
+						'DETAILS' 		=> generate_text_for_display($confirmation['comment'], $confirmation['bbcode']['uid'], $confirmation['bbcode']['bitfield'], 7),
+						'HEADCOUNT' 	=> $confirmation['signup_count'],
+						'POSTER' 		=> $confirmation['poster_name'], 
+						'POSTER_URL' 	=> get_username_string( 'full', $confirmation['poster_id'], $confirmation['poster_name'], $confirmation['poster_colour'] ),
+						'VALUE' 		=> $confirmation['signup_val'], 
+						'COLOR' 		=> $signupcolor, 
+						'VALUE_TXT' 	=> $signuptext, 
+						'CHARNAME'      => $confirmation['dkpmembername'],
+						'LEVEL'         => $confirmation['level'],
+						'CLASS'         => $confirmation['classname'],
+						'COLORCODE'  	=> ($confirmation['colorcode'] == '') ? '#123456' : $confirmation['colorcode'],
+				        'CLASS_IMAGE' 	=> (strlen($confirmation['imagename']) > 1) ? $confirmation['imagename'] : '',  
+						'S_CLASS_IMAGE_EXISTS' => (strlen($confirmation['imagename']) > 1) ? true : false,
+				       	'RACE_IMAGE' 	=> (strlen($confirmation['raceimg']) > 1) ? $confirmation['raceimg'] : '',  
+						'S_RACE_IMAGE_EXISTS' => (strlen($confirmation['raceimg']) > 1) ? true : false, 
+					));
+						
+				 }
+				 
 			 
 			}
 			
@@ -1377,10 +1413,10 @@ class rpraid
 			'RAID_TOTAL'		=> $total_needed,
 			'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']], 
 		
-			'CURR_INVITED_COUNT' => 0,
-			'S_CURR_INVITED_COUNT'	=> false,
-			'CURR_INVITEDPCT'		=> ($total_needed > 0 ? round(($this->signups['yes']) /  $total_needed, 2) : 0),
-			
+			'CURR_CONFIRMED_COUNT'	 => $this->signups['confirmed'],
+			'S_CURR_CONFIRMED_COUNT' => ($this->signups['confirmed'] > 0) ? true: false,
+			'CURR_CONFIRMEDPCT'	=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['confirmed']) /  $total_needed, 2)*100 : 0)),
+		
 			'CURR_YES_COUNT'	=> $this->signups['yes'],
 			'S_CURR_YES_COUNT'	=> ($this->signups['yes'] + $this->signups['maybe'] > 0) ? true: false,
 			'CURR_YESPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['yes']) /  $total_needed, 2)*100 : 0)),
@@ -1624,7 +1660,7 @@ class rpraid
 			}
 			
 			// is raidleader trying to delete other raid ?
-			if (($user->data['user_id'] != $raidplan_data['poster_id']) && !$auth->acl_get('m_raidplanner_delete_other_users_raidplans'))
+			if (($user->data['user_id'] != $this->poster) && !$auth->acl_get('m_raidplanner_delete_other_users_raidplans'))
 			{
 				$this->auth_candelete = false;
 			}
@@ -1685,6 +1721,7 @@ class rpraid
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		$result = $db->sql_query($sql);
 		$signups = array();
+		$confirmations = array();
 		while ( $row = $db->sql_fetchrow ( $result ) )
 		{
 			$this->raidroles[$row['role_id']]['role_name'] = $row['role_name'];
@@ -1693,6 +1730,7 @@ class rpraid
 			$this->raidroles[$row['role_id']]['role_needed'] = $row['role_needed']; 
 			$this->raidroles[$row['role_id']]['role_signedup'] = $row['role_signedup']; 
 			$this->raidroles[$row['role_id']]['role_confirmed'] = $row['role_confirmed']; 
+			$this->raidroles[$row['role_id']]['role_confirmations'] =  $confirmations;
 			$this->raidroles[$row['role_id']]['role_signups'] =  $signups;
 		}
 		$db->sql_freeresult($result);
@@ -1752,9 +1790,19 @@ class rpraid
 			$signups = array();
 			while ($row = $db->sql_fetchrow($result))
 			{
+				//bind all public object vars of signup class instance to signup array and add to role array 
 				$rpsignup->getSignup($row['signup_id']);
-				//get all public object vars of signup class to signup array and bind to role array 
-				$this->raidroles[$roleid]['role_signups'][] = get_object_vars($rpsignup);
+				if($rpsignup->signup_val == 1 || $rpsignup->signup_val == 2)
+				{
+					// maybe + available
+					$this->raidroles[$roleid]['role_signups'][] = get_object_vars($rpsignup);
+				}
+				elseif($rpsignup->signup_val == 3)
+				{
+					//confirmed
+					$this->raidroles[$roleid]['role_confirmations'][] = get_object_vars($rpsignup);
+				}
+				
 			}
 		}
 		$db->sql_freeresult($result);
@@ -1993,6 +2041,11 @@ class rpraid
 				'S_LEGITUSER'			=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true, 
 			
 				'RAID_TOTAL'			=> $total_needed,
+			
+				'CURR_CONFIRMED_COUNT'	 => $this->signups['confirmed'],
+				'S_CURR_CONFIRMED_COUNT' => ($this->signups['confirmed'] > 0) ? true: false,
+				'CURR_CONFIRMEDPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['confirmed']) /  $total_needed, 2) : 0)),
+				
 				'CURR_YES_COUNT'		=> $this->signups['yes'],
 				'S_CURR_YES_COUNT'		=> ($this->signups['yes'] + $this->signups['maybe'] > 0) ? true: false,
 				'CURR_YESPCT'			=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['yes']) /  $total_needed, 2) : 0)),

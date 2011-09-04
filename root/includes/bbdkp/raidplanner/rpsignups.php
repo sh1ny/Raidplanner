@@ -465,7 +465,7 @@ class rpsignup
 				" AND role_id = " . $this->roleid ;
 				$db->sql_query($sql);
 				
-				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET role_confirm = 1 WHERE signup_id = ' . (int) $this->signup_id;
+				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 3, role_confirm = 1 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);
 
 				return true;
