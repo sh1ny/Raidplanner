@@ -1291,6 +1291,19 @@ class rpraid
 						$edit_signup_url .="&amp;signup_id=" . $signup['signup_id'];
 					}
 					
+					// if user can delete other signups or if own signup
+					$candeletesignup= false;
+					$deletesignupurl="";
+					$deletekey=0;
+					if( $auth->acl_get('m_acl_m_raidplanner_delete_other_users_raidplans') || $signup['poster_id'] == $user->data['user_id']  )
+					{
+						// then if signup is not frozen then show deletion button
+						//@todo calculate frozen
+						$candeletesignup = true;
+						$deletekey = rand(1, 1000);
+						$deletesignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delsign&amp;calEid=". $this->id . "&amp;signup_id=" . $signup['signup_id'] . '&amp;key=' . $deletekey );
+					}
+					
 					$template->assign_block_vars('raidroles.signups', array(
 	       				'POST_TIME' 	=> $user->format_date($signup['signup_time'], $config['rp_date_time_format'], true),
 						'POST_TIMESTAMP' => $signup['signup_time'],
@@ -1300,17 +1313,20 @@ class rpraid
 						'POSTER' 		=> $signup['poster_name'], 
 						'POSTER_URL' 	=> get_username_string( 'full', $signup['poster_id'], $signup['poster_name'], $signup['poster_colour'] ),
 						'VALUE' 		=> $signup['signup_val'], 
-						'POST_TIME' 	=> $user->format_date($signup['signup_time']),
 						'COLOR' 		=> $signupcolor, 
 						'VALUE_TXT' 	=> $signuptext, 
 						'CHARNAME'      => $signup['dkpmembername'],
 						'LEVEL'         => $signup['level'],
 						'CLASS'         => $signup['classname'],
 						'COLORCODE'  	=> ($signup['colorcode'] == '') ? '#123456' : $signup['colorcode'],
-				        'CLASS_IMAGE' 	=> (strlen($signup['imagename']) > 1) ? $phpbb_root_path . "images/class_images/" . $signup['imagename'] . ".png" : '',  
+				        'CLASS_IMAGE' 	=> (strlen($signup['imagename']) > 1) ? $signup['imagename'] : '',  
 						'S_CLASS_IMAGE_EXISTS' => (strlen($signup['imagename']) > 1) ? true : false,
-				       	'RACE_IMAGE' 	=> (strlen($signup['raceimg']) > 1) ? $phpbb_root_path . "images/race_images/" . $signup['raceimg'] . ".png" : '',  
-						'S_RACE_IMAGE_EXISTS' => (strlen($signup['raceimg']) > 1) ? true : false, 			 				
+				       	'RACE_IMAGE' 	=> (strlen($signup['raceimg']) > 1) ? $signup['raceimg'] : '',  
+						'S_RACE_IMAGE_EXISTS' => (strlen($signup['raceimg']) > 1) ? true : false, 
+						'S_DELETE_SIGNUP'	=> 	$candeletesignup, 
+						'U_DELETE'		=> $deletesignupurl, 
+						'DELETEKEY' 	=> $deletekey, 
+								 				
 					));
 						
 				 }
@@ -1337,9 +1353,9 @@ class rpraid
 				'LEVEL'         => $signoff['level'],
 				'CLASS'         => $signoff['classname'],
 				'COLORCODE'  	=> ($signoff['colorcode'] == '') ? '#123456' : $signoff['colorcode'],
-		        'CLASS_IMAGE' 	=> (strlen($signoff['imagename']) > 1) ? $phpbb_root_path . "images/class_images/" . $signoff['imagename'] . ".png" : '',  
+		        'CLASS_IMAGE' 	=> (strlen($signoff['imagename']) > 1) ? $signoff['imagename']: '',  
 				'S_CLASS_IMAGE_EXISTS' => (strlen($signoff['imagename']) > 1) ? true : false,
-		       	'RACE_IMAGE' 	=> (strlen($signoff['raceimg']) > 1) ? $phpbb_root_path . "images/race_images/" . $signoff['raceimg'] . ".png" : '',  
+		       	'RACE_IMAGE' 	=> (strlen($signoff['raceimg']) > 1) ? $signoff['raceimg'] : '',  
 				'S_RACE_IMAGE_EXISTS' => (strlen($signoff['raceimg']) > 1) ? true : false, 			 				
 			));
 		}

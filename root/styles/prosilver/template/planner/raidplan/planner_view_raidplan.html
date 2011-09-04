@@ -5,8 +5,7 @@
 <!-- IF S_EVENT_IMAGE_EXISTS --><img src="{EVENT_IMAGE}" width="48" height="48" /><!-- ENDIF --> 
 </div>
 <div class="blockhead" style="width:60%; float: left;">
-<span style="color:<!-- IF EVENT_COLOR -->{EVENT_COLOR}<!--ELSE -->#dfc065<!-- ENDIF -->">
-<!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}<!-- ENDIF -->: <span style="color:#dfc065">{SUBJECT}</span></span>
+<h4 style="color:<!-- IF EVENT_COLOR -->{EVENT_COLOR}<!--ELSE -->#dfc065<!-- ENDIF -->"><!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}<!-- ENDIF --></h4>
 </div>
 <div style="width:30%; float: right;">
 <div class="buttons" style="float: right;"><!-- IF ADD_LINK -->
@@ -43,6 +42,7 @@
 <!-- raid message -->
 <div class="raidplanbody">
 <div class="content">
+<u>{SUBJECT}</u><br/>
 {MESSAGE}
 </div>
 </div>

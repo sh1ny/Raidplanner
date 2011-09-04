@@ -87,7 +87,7 @@ class rpsignup
 		$this->poster_name = $row['poster_name'];
 		$this->poster_colour = $row['poster_colour'];
 		$this->poster_ip = $row['poster_ip'];
-		$this->signup_time = $row['post_time'];
+		$this->signup_time = $row['post_time'];		
 		$this->signup_val = $row['signup_val'];
 		$this->signup_count = $row['signup_count'];
 		$this->comment = $row['signup_detail'];
@@ -238,7 +238,8 @@ class rpsignup
 		$this->poster_name = $user->data['username'];
 		$this->poster_colour = $user->data['user_colour'];
 		$this->poster_ip = $user->ip;
-		$this->signup_time = time();
+		$this->signup_time = time() - $user->timezone - $user->dst;
+		
 		// 0 unavailable 1 maybe 2 available 3 confirmed
 		$this->signup_val = request_var('signup_val'. $raidplan_id, 2);
 		$this->roleid = request_var('signuprole'. $raidplan_id, 0);   
@@ -355,6 +356,55 @@ class rpsignup
 		
 		$db->sql_transaction('commit');
 		return true;
+	}
+	
+	
+	/**
+	 * delete this signup and change to not available
+	 *
+	 */
+	public function deletesignup($signup_id)
+	{
+		global $db;
+		
+		//make object
+		$this->getSignup($signup_id);
+			
+		switch ( (int) $this->signup_val)
+		{
+			case 1:
+				// maybe
+				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_maybe = signup_maybe - 1 WHERE raidplan_id = " . $this->raidplan_id;
+				$db->sql_query($sql);
+				
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1 WHERE raidplan_id = " . $this->raidplan_id .  
+				" AND role_id = " . $this->roleid ;
+				$db->sql_query($sql);
+				
+				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 0 WHERE signup_id = ' . (int) $this->signup_id;
+				$db->sql_query($sql);
+				
+				return true;
+				break;
+			case 2:
+				//yes
+				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_yes = signup_yes - 1 WHERE raidplan_id = " . $this->raidplan_id;
+				$db->sql_query($sql);
+				
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1 WHERE raidplan_id = " . $this->raidplan_id .  
+				" AND role_id = " . $this->roleid ;
+				$db->sql_query($sql);
+				
+				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 0 WHERE signup_id = ' . (int) $this->signup_id;
+				$db->sql_query($sql);
+				
+				$db->sql_query($sql);
+				break; 
+				return true;
+		}
+		
+		// if already 0 then don't do anything
+		return false;
 	}
 	
 	

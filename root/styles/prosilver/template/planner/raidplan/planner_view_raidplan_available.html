@@ -23,8 +23,9 @@
 	<strong><span style="color:{raidroles.signups.COLORCODE}">{raidroles.signups.CHARNAME}</span></strong></span> <br />
 	{raidroles.signups.POST_TIME}<br />
 	{raidroles.signups.DETAILS}<br /> 
-	<!-- IF S_EDIT_SIGNUP -->
-		<a href="{raidroles.signups.U_EDIT}">{L_EDIT}</a>
+	<!-- IF raidroles.signups.S_DELETE_SIGNUP -->
+		<a href="{raidroles.signups.U_DELETE}"><img src="{T_IMAGESET_PATH}/planner/icon_cancel.png" alt="{L_NOTAVAILABLE}"></a>
+		<input type="hidden" name="keycheck" value="{raidroles.signups.DELETEKEY}">
 	<!-- ENDIF -->
 	
 	</td>
