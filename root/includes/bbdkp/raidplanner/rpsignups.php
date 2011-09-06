@@ -477,6 +477,22 @@ class rpsignup
 		
 	}
 	
+	public function editsignupcomment($signup_id)
+	{
+		global $db;
+		//make object
+		$this->getSignup($signup_id);
+		$this->comment = utf8_normalize_nfc(request_var('signup_detail_' . $this->raidplan_id . '_' . $this->signup_id , '', true));
+		if($this->comment != '')
+		{
+			$sql = 'UPDATE ' . RP_SIGNUPS . " SET signup_detail = '" .  $db->sql_escape($this->comment) . "' WHERE signup_id = " . (int) $this->signup_id;
+			$db->sql_query($sql);
+		}
+		
+		return false;
+
+	}
+	
 }
 
 ?>

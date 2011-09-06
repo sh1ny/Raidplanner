@@ -95,6 +95,18 @@ switch( $view_mode )
 				$raid = new rpraid($raidplan_id);
 				$raid->display();
 				break;
+			case 'editsign':
+				if (!class_exists('rpsignup', false))
+				{
+					include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
+				}
+				
+				$signup_id = request_var('signup_id', 0);
+				$signup = new rpsignup();
+				$signup->editsignupcomment($signup_id);
+				$raid = new rpraid($raidplan_id);
+				$raid->display();
+				break;				
 			case 'requeue':
 				if (!class_exists('rpsignup', false))
 				{
@@ -106,7 +118,8 @@ switch( $view_mode )
 				$signup->requeuesignup($signup_id);
 				$raid = new rpraid($raidplan_id);
 				$raid->display();
-				break;				
+				break;		
+						
 			case 'confirm':
 				if (!class_exists('rpsignup', false))
 				{

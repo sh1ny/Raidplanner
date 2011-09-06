@@ -1236,15 +1236,10 @@ class rpraid
 				$total_needed += $role['role_needed'];
 
 				// loop signups per role
-				$role_selected = '';
-			 	foreach($role['role_signups'] as $signup)
-				{
-					$role_selected = ($user->data['user_id'] == $signup['poster_id']) ? ' selected="selected"' : '';
-				}
-				 	
+				 
 				$template->assign_block_vars('raidroles', array(
 				        'ROLE_ID'        => $key,
-						'ROLE_SELECTED'  => $role_selected,
+						'ROLE_DISPLAY'   => (count($role['role_signups']) > 0 ? true : false),
 						'ROLE_NAME'      => $role['role_name'],
 				    	'ROLE_NEEDED'    => $role['role_needed'],
 				    	'ROLE_SIGNEDUP'  => $role['role_signedup'],
@@ -1288,6 +1283,7 @@ class rpraid
 					
 					// if user can delete other signups or if own signup
 					$candeletesignup= false;
+					$caneditsignup = false;
 					$deletesignupurl="";
 					$deletekey=0;
 					if( $auth->acl_get('m_raidplanner_edit_other_users_signups') || $signup['poster_id'] == $user->data['user_id']  )
@@ -1295,34 +1291,40 @@ class rpraid
 						// then if signup is not frozen then show deletion button
 						//@todo calculate frozen
 						$candeletesignup = true;
+						$caneditsignup = true;
+						$editsignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editsign&amp;calEid=". $this->id . "&amp;signup_id=" . $signup['signup_id']);
 						$deletekey = rand(1, 1000);
-						$deletesignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delsign&amp;calEid=". $this->id . "&amp;signup_id=" . $signup['signup_id'] . '&amp;key=' . $deletekey );
+						$deletesignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delsign&amp;calEid=". $this->id . "&amp;signup_id=" . $signup['signup_id']);
 					}
 					
 					$template->assign_block_vars('raidroles.signups', array(
-	       				'POST_TIME' 	=> $user->format_date($signup['signup_time'], $config['rp_date_time_format'], true),
-						'POST_TIMESTAMP' => $signup['signup_time'],
-						'DETAILS' 		=> generate_text_for_display($signup['comment'], $signup['bbcode']['uid'], $signup['bbcode']['bitfield'], 7),
-						'HEADCOUNT' 	=> $signup['signup_count'],
-						'U_EDIT' 		=> '',
-						'POSTER' 		=> $signup['poster_name'], 
-						'POSTER_URL' 	=> get_username_string( 'full', $signup['poster_id'], $signup['poster_name'], $signup['poster_colour'] ),
-						'VALUE' 		=> $signup['signup_val'], 
-						'COLOR' 		=> $signupcolor, 
-						'VALUE_TXT' 	=> $signuptext, 
-						'CHARNAME'      => $signup['dkpmembername'],
-						'LEVEL'         => $signup['level'],
-						'CLASS'         => $signup['classname'],
-						'COLORCODE'  	=> ($signup['colorcode'] == '') ? '#123456' : $signup['colorcode'],
-				        'CLASS_IMAGE' 	=> (strlen($signup['imagename']) > 1) ? $signup['imagename'] : '',  
+						'S_SIGNUP_EDIT_ACTION' => $editsignupurl, 
+	       				'SIGNUP_ID' 	 	=> $signup['signup_id'],
+						'RAIDPLAN_ID' 	 	=> $signup['raidplan_id'],
+	       				'POST_TIME' 	 	=> $user->format_date($signup['signup_time'], $config['rp_date_time_format'], true),
+						'POST_TIMESTAMP' 	=> $signup['signup_time'],
+						'DETAILS' 			=> generate_text_for_display($signup['comment'], $signup['bbcode']['uid'], $signup['bbcode']['bitfield'], 7),
+						'HEADCOUNT' 		=> $signup['signup_count'],
+						'U_EDIT' 			=> '',
+						'POSTER' 			=> $signup['poster_name'], 
+						'POSTER_URL' 		=> get_username_string( 'full', $signup['poster_id'], $signup['poster_name'], $signup['poster_colour'] ),
+						'VALUE' 			=> $signup['signup_val'], 
+						'COLOR' 			=> $signupcolor, 
+						'VALUE_TXT' 		=> $signuptext, 
+						'CHARNAME'      	=> $signup['dkpmembername'],
+						'LEVEL'         	=> $signup['level'],
+						'CLASS'         	=> $signup['classname'],
+						'COLORCODE'  		=> ($signup['colorcode'] == '') ? '#123456' : $signup['colorcode'],
+				        'CLASS_IMAGE' 		=> (strlen($signup['imagename']) > 1) ? $signup['imagename'] : '',  
 						'S_CLASS_IMAGE_EXISTS' => (strlen($signup['imagename']) > 1) ? true : false,
-				       	'RACE_IMAGE' 	=> (strlen($signup['raceimg']) > 1) ? $signup['raceimg'] : '',  
+				       	'RACE_IMAGE' 		=> (strlen($signup['raceimg']) > 1) ? $signup['raceimg'] : '',  
 						'S_RACE_IMAGE_EXISTS' => (strlen($signup['raceimg']) > 1) ? true : false, 
 						'S_DELETE_SIGNUP'	=> 	$candeletesignup, 
-						'U_DELETE'		=> $deletesignupurl, 
-						'DELETEKEY' 	=> $deletekey, 
-						'S_CANCONFIRM'	=> $canconfirmsignup, 
-						'U_CONFIRM'		=> $confirm_signup_url,
+						'S_EDIT_SIGNUP' 	=> $caneditsignup,
+						'U_DELETE'			=> $deletesignupurl, 
+						'DELETEKEY' 		=> $deletekey, 
+						'S_CANCONFIRM'		=> $canconfirmsignup, 
+						'U_CONFIRM'			=> $confirm_signup_url,
 								 				
 					));
 						
