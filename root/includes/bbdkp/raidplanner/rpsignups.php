@@ -476,7 +476,12 @@ class rpsignup
 		return false;
 		
 	}
-	
+	/**
+	 * save the edited comment
+	 *
+	 * @param int $signup_id
+	 * @return bool
+	 */
 	public function editsignupcomment($signup_id)
 	{
 		global $db;
