@@ -1,3 +1,4 @@
+<!-- [+] AVAILABLE SIGNUPS -->
 <h4><img src="{T_IMAGESET_PATH}/planner/icon_queue.png" alt="{L_AVAILABLE}"></img>&nbsp;{L_AVAILABLE}</h4>
 
 <div class="panel bg2" >
@@ -17,13 +18,14 @@
 
 <!-- BEGIN signups -->
 <tr style="background-color:{raidroles.ROLE_COLOR}; border-bottom:0px solid">
-	<td><strong><a>{raidroles.signups.POSTER_URL}</a></strong><br />
+	<td>
+	<strong><a>{raidroles.signups.POSTER_URL}</a></strong><br />
 	<span><!-- IF raidroles.signups.S_RACE_IMAGE_EXISTS --><img src="{raidroles.signups.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
 	<!-- IF raidroles.signups.S_CLASS_IMAGE_EXISTS --><img src="{raidroles.signups.CLASS_IMAGE}" alt="{raidroles.signups.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
 	<strong><span style="color:{raidroles.signups.COLORCODE}">{raidroles.signups.CHARNAME}</span></strong></span> <br />
 	{raidroles.signups.POST_TIME}<br />
 	<span class="modalinput">{raidroles.signups.DETAILS}</span><br /> 
-</td>
+	</td>
 </tr>
 <tr>
 <td style="text-align:right">
@@ -37,7 +39,6 @@
 	<!-- IF raidroles.signups.S_CANCONFIRM -->
 		<a href="{raidroles.signups.U_CONFIRM}"><img src="{T_IMAGESET_PATH}/planner/icon_signed_up.png" alt="{L_CONFIRMED}"></a>
 	<!-- ENDIF -->
-	</span>
 	</td>
 </tr>
 <!-- END signups -->
@@ -52,6 +53,7 @@
 </div>
 </div>
 
+<!-- [+] tooltip -->
 <!-- BEGIN raidroles -->
 <!-- BEGIN signups -->
 <div id="prompt_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}" class="bbtooltip">
@@ -99,3 +101,5 @@
 </script>
 <!-- END signups -->
 <!-- END raidroles -->
+<!-- [-] tooltip -->
+<!-- [-] AVAILABLE SIGNUPS -->
