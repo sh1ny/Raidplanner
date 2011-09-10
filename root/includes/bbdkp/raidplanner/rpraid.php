@@ -1337,11 +1337,23 @@ class rpraid
 				 	
 					$edit_text_array = generate_text_for_edit( $confirmation['comment'], $confirmation['bbcode']['uid'], 7);
 					
+				 	if( $auth->acl_get('m_raidplanner_edit_other_users_signups') || $signup['poster_id'] == $user->data['user_id']  )
+					{
+						// then if signup is not frozen then show deletion button
+						//@todo calculate frozen
+						$candeletesignup = true;
+						$caneditsignup = true;
+						$editsignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editsign&amp;calEid=". $this->id . "&amp;signup_id=" . $confirmation['signup_id']);
+						$deletekey = rand(1, 1000);
+						$deletesignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delsign&amp;calEid=". $this->id . "&amp;signup_id=" . $confirmation['signup_id']);
+					}
+					
 					$editcomment = $edit_text_array['text'];
 					$signupcolor = '#006B02';
 					$signuptext = $user->lang['CONFIRMED'];
 					
 					$template->assign_block_vars('raidroles.confirmations', array(
+						'S_SIGNUP_EDIT_ACTION' => $editsignupurl, 
 	       				'POST_TIME' 	=> $user->format_date($confirmation['signup_time'], $config['rp_date_time_format'], true),
 						'POST_TIMESTAMP' => $confirmation['signup_time'],
 						'DETAILS' 		=> generate_text_for_display($confirmation['comment'], $confirmation['bbcode']['uid'], $confirmation['bbcode']['bitfield'], 7),
@@ -1359,6 +1371,10 @@ class rpraid
 						'S_CLASS_IMAGE_EXISTS' => (strlen($confirmation['imagename']) > 1) ? true : false,
 				       	'RACE_IMAGE' 	=> (strlen($confirmation['raceimg']) > 1) ? $confirmation['raceimg'] : '',  
 						'S_RACE_IMAGE_EXISTS' => (strlen($confirmation['raceimg']) > 1) ? true : false, 
+						'S_DELETE_SIGNUP'	=> $candeletesignup, 
+						'S_EDIT_SIGNUP' 	=> $caneditsignup,
+						'U_DELETE'			=> $deletesignupurl, 
+						'DELETEKEY' 		=> $deletekey, 
 					));
 						
 				 }
@@ -2046,19 +2062,19 @@ class rpraid
 			
 				'CURR_CONFIRMED_COUNT'	 => $this->signups['confirmed'],
 				'S_CURR_CONFIRMED_COUNT' => ($this->signups['confirmed'] > 0) ? true: false,
-				'CURR_CONFIRMEDPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['confirmed']) /  $total_needed, 2) : 0)),
+				'CURR_CONFIRMEDPCT'		=> sprintf( "%.0f%%", ($total_needed > 0 ? round(($this->signups['confirmed']) /  $total_needed, 2) *100 : 0)),
 				
 				'CURR_YES_COUNT'		=> $this->signups['yes'],
 				'S_CURR_YES_COUNT'		=> ($this->signups['yes'] + $this->signups['maybe'] > 0) ? true: false,
-				'CURR_YESPCT'			=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['yes']) /  $total_needed, 2) : 0)),
+				'CURR_YESPCT'			=> sprintf( "%.0f%%", ($total_needed > 0 ? round(($this->signups['yes']) /  $total_needed, 2) *100 : 0)),
 			
 				'CURR_MAYBE_COUNT'		=> $this->signups['maybe'],
 				'S_CURR_MAYBE_COUNT' 	=> ($this->signups['maybe'] > 0) ? true: false,
-				'CURR_MAYBEPCT'			=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['maybe']) /  $total_needed, 2) : 0)), 
+				'CURR_MAYBEPCT'			=> sprintf( "%.0f%%", ($total_needed > 0 ? round(($this->signups['maybe']) /  $total_needed, 2) *100 : 0)), 
 				
 				'CURR_NO_COUNT'			=> $this->signups['no'],
 				'S_CURR_NO_COUNT'		=> ($this->signups['no'] > 0) ? true: false,
-				'CURR_NOPCT'			=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($this->signups['no']) /  $total_needed, 2) : 0)),
+				'CURR_NOPCT'			=> sprintf( "%.0f%%", ($total_needed > 0 ? round(($this->signups['no']) /  $total_needed, 2) *100 : 0)),
 			
 				'CURR_TOTAL_COUNT'  	=> $this->signups['yes'] + $this->signups['maybe'],
 				

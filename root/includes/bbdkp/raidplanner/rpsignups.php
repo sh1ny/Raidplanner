@@ -398,6 +398,18 @@ class rpsignup
 				
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 0 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);
+			case 3:
+				
+				//confirmed
+				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_confirmed = signup_confirmed - 1 WHERE raidplan_id = " . $this->raidplan_id;
+				$db->sql_query($sql);
+				
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_confirmed = role_confirmed - 1 WHERE raidplan_id = " . $this->raidplan_id .  
+				" AND role_id = " . $this->roleid ;
+				$db->sql_query($sql);
+				
+				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 0 WHERE signup_id = ' . (int) $this->signup_id;
+				$db->sql_query($sql);				
 				
 				$db->sql_query($sql);
 				break; 
@@ -456,12 +468,25 @@ class rpsignup
 		switch ( (int) $this->signup_val)
 		{
 			case 1:
-			case 2:	
 				// maybe
-				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_confirmed = signup_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id;
+				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_maybe = signup_maybe - 1, signup_confirmed = signup_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id;
 				$db->sql_query($sql);
 				
-				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_confirmed = role_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id .  
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1, role_confirmed = role_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id .  
+				" AND role_id = " . $this->roleid ;
+				$db->sql_query($sql);
+				
+				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 3, role_confirm = 1 WHERE signup_id = ' . (int) $this->signup_id;
+				$db->sql_query($sql);
+				
+				break;
+				
+			case 2:	
+				// yes
+				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_yes = signup_yes - 1, signup_confirmed = signup_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id;
+				$db->sql_query($sql);
+				
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1 , role_confirmed = role_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id .  
 				" AND role_id = " . $this->roleid ;
 				$db->sql_query($sql);
 				
@@ -476,12 +501,7 @@ class rpsignup
 		return false;
 		
 	}
-	/**
-	 * save the edited comment
-	 *
-	 * @param int $signup_id
-	 * @return bool
-	 */
+	
 	public function editsignupcomment($signup_id)
 	{
 		global $db;

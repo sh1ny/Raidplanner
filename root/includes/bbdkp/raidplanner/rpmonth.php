@@ -182,25 +182,29 @@ class rpmonth extends calendar
 					{
 						if($raidday['day'] == $j)
 						{
-							$raidplan_output = $rpraid->GetRaidinfo($this->date['month_no'], $j, $this->date['year'], $this->group_options, "month");
-							foreach($raidplan_output as $raid )
+							if (isset($rpraid))
 							{
-								$template->assign_block_vars('calendar_days.raidplans', $raid['raidinfo']);
-								foreach($raid['userchars'] as $key => $char)
+								$raidplan_output = $rpraid->GetRaidinfo($this->date['month_no'], $j, $this->date['year'], $this->group_options, "month");
+								foreach($raidplan_output as $raid )
 								{
-									$template->assign_block_vars('calendar_days.raidplans.userchars', $char);
+									$template->assign_block_vars('calendar_days.raidplans', $raid['raidinfo']);
+									foreach($raid['userchars'] as $key => $char)
+									{
+										$template->assign_block_vars('calendar_days.raidplans.userchars', $char);
+									}
+									unset($char);
+									unset($key);
+									foreach($raid['raidroles'] as $key => $raidrole)
+									{
+										$template->assign_block_vars('calendar_days.raidplans.raidroles', $raidrole);
+									}
+									unset($raidrole);
+									unset($key);
+									
 								}
-								unset($char);
-								unset($key);
-								foreach($raid['raidroles'] as $key => $raidrole)
-								{
-									$template->assign_block_vars('calendar_days.raidplans.raidroles', $raidrole);
-								}
-								unset($raidrole);
-								unset($key);
+								$hit= true;
 								
 							}
-							$hit= true;
 						}
 					}
 					

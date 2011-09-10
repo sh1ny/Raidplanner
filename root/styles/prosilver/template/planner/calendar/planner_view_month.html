@@ -93,10 +93,8 @@ $(document).ready( function()
 						<br />
 						<strong>{L_SIGNUPS}</strong>
 						<br />
-						<!--
 						{L_CONFIRMED}
-						{calendar_days.raidplans.CURR_INVITED_COUNT} / {calendar_days.raidplans.RAID_TOTAL}
-						 -->
+						{calendar_days.raidplans.CURR_CONFIRMED_COUNT}/{calendar_days.raidplans.RAID_TOTAL} ({calendar_days.raidplans.CURR_CONFIRMEDPCT})<br />
 						{L_AVAILABLE} : 
 						{calendar_days.raidplans.CURR_YES_COUNT}/{calendar_days.raidplans.RAID_TOTAL} ({calendar_days.raidplans.CURR_YESPCT})<br />
 						{L_MAYBE} :
@@ -104,7 +102,6 @@ $(document).ready( function()
 						{L_NOTAVAILABLE} :
 						{calendar_days.raidplans.CURR_NO_COUNT}/{calendar_days.raidplans.RAID_TOTAL} ({calendar_days.raidplans.CURR_NOPCT})<br />
 						<br />
-						
        					
        					<!-- IF calendar_days.raidplans.S_CANSIGNUP && calendar_days.raidplans.S_LEGITUSER -->
        					<hr />
