@@ -344,20 +344,59 @@ class rpsignup
 				trigger_error(sprintf($user->lang['USER_ALREADY_SIGNED_UP'], $this->dkpmembername));
 			}
 		}
-		else
-		{
-			// update
-			$sql = 'UPDATE ' . RP_SIGNUPS . ' SET ' . $db->sql_build_array('UPDATE', $sql_signup) . '
-		    WHERE signup_id = ' . (int) $this->signup_id;
-			$db->sql_query($sql);
-			
-		}
-		unset ($sql_raid);
+
+		unset ($sql_signup);
 		
 		$db->sql_transaction('commit');
 		return true;
 	}
 	
+	
+	/**
+	 * requeues a deleted signup
+	 *
+	 * @param int $signup_id
+	 */
+	public function requeuesignup($signup_id)
+	{
+		global $db;
+		//make object
+		$this->getSignup($signup_id);
+			
+		switch ( (int) $this->signup_val)
+		{
+			case 0:
+				$db->sql_transaction('begin');
+				// decrease signup_no, set as maybe
+				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no - 1, signup_maybe = signup_maybe + 1 WHERE raidplan_id = " . $this->raidplan_id;
+				$db->sql_query($sql);
+				
+				// set new role
+				$this->roleid = request_var('signuprole_' . $this->raidplan_id . '_' .  (int) $this->signup_id , 0);    
+				// assign new role
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup + 1 WHERE raidplan_id = " . $this->raidplan_id .  
+				" AND role_id = " . $this->roleid ;
+				$db->sql_query($sql);
+				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 1, role_id = ' . $this->roleid . ' WHERE signup_id = ' . (int) $this->signup_id;
+				$db->sql_query($sql);
+
+				//edit the comment
+				$this->comment = utf8_normalize_nfc(request_var('signup_detail_' . $this->raidplan_id . '_' . $this->signup_id , '', true));
+				if($this->comment != '')
+				{
+					$sql = 'UPDATE ' . RP_SIGNUPS . " SET signup_detail = '" .  $db->sql_escape($this->comment) . "' WHERE signup_id = " . (int) $this->signup_id;
+					$db->sql_query($sql);
+				}
+				$db->sql_transaction('commit');
+		
+				return true;
+				break;
+		}
+		
+		// if already >0 then don't do anything
+		return false;
+		
+	}
 	
 	/**
 	 * delete this signup and change to not available
@@ -375,6 +414,7 @@ class rpsignup
 		{
 			case 1:
 				// maybe
+				$db->sql_transaction('begin');
 				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_maybe = signup_maybe - 1 WHERE raidplan_id = " . $this->raidplan_id;
 				$db->sql_query($sql);
 				
@@ -384,11 +424,12 @@ class rpsignup
 				
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 0 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);
-				
+				$db->sql_transaction('commit');
 				return true;
 				break;
 			case 2:
 				//yes
+				$db->sql_transaction('begin');
 				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_yes = signup_yes - 1 WHERE raidplan_id = " . $this->raidplan_id;
 				$db->sql_query($sql);
 				
@@ -398,9 +439,13 @@ class rpsignup
 				
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 0 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);
+				$db->sql_transaction('commit');
+				return true;
+				break; 
 			case 3:
 				
 				//confirmed
+				$db->sql_transaction('begin');
 				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_confirmed = signup_confirmed - 1 WHERE raidplan_id = " . $this->raidplan_id;
 				$db->sql_query($sql);
 				
@@ -410,49 +455,15 @@ class rpsignup
 				
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 0 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);				
-				
-				$db->sql_query($sql);
-				break; 
+				$db->sql_transaction('commit');
 				return true;
+				break; 
 		}
 		
 		// if already 0 then don't do anything
 		return false;
 	}
-	
-	/**
-	 * requeues a deleted signup
-	 *
-	 * @param int $signup_id
-	 */
-	public function requeuesignup($signup_id)
-	{
-		global $db;
-		//make object
-		$this->getSignup($signup_id);
-			
-		switch ( (int) $this->signup_val)
-		{
-			case 0:
-				// maybe
-				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no - 1, signup_maybe = signup_maybe + 1 WHERE raidplan_id = " . $this->raidplan_id;
-				$db->sql_query($sql);
-				
-				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup + 1 WHERE raidplan_id = " . $this->raidplan_id .  
-				" AND role_id = " . $this->roleid ;
-				$db->sql_query($sql);
-				
-				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 1 WHERE signup_id = ' . (int) $this->signup_id;
-				$db->sql_query($sql);
-				
-				return true;
-				break;
-		}
-		
-		// if already >0 then don't do anything
-		return false;
-		
-	}
+
 	
 	/**
 	 * confirms a signup
@@ -469,6 +480,7 @@ class rpsignup
 		{
 			case 1:
 				// maybe
+				$db->sql_transaction('begin');
 				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_maybe = signup_maybe - 1, signup_confirmed = signup_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id;
 				$db->sql_query($sql);
 				
@@ -478,11 +490,13 @@ class rpsignup
 				
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 3, role_confirm = 1 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);
-				
+				$db->sql_transaction('commit');
+				return true;
 				break;
 				
 			case 2:	
 				// yes
+				$db->sql_transaction('begin');
 				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_yes = signup_yes - 1, signup_confirmed = signup_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id;
 				$db->sql_query($sql);
 				
@@ -492,7 +506,7 @@ class rpsignup
 				
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 3, role_confirm = 1 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);
-
+				$db->sql_transaction('commit');
 				return true;
 				break;
 		}
@@ -510,11 +524,13 @@ class rpsignup
 		$this->comment = utf8_normalize_nfc(request_var('signup_detail_' . $this->raidplan_id . '_' . $this->signup_id , '', true));
 		if($this->comment != '')
 		{
+			$db->sql_transaction('begin');
 			$sql = 'UPDATE ' . RP_SIGNUPS . " SET signup_detail = '" .  $db->sql_escape($this->comment) . "' WHERE signup_id = " . (int) $this->signup_id;
 			$db->sql_query($sql);
+			$db->sql_transaction('commit');
 		}
 		
-		return false;
+		return true;
 
 	}
 	

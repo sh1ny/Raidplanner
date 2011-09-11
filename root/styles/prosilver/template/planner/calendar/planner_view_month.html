@@ -108,6 +108,7 @@ $(document).ready( function()
       					<form method="post" action="{calendar_days.raidplans.S_SIGNUP_MODE_ACTION}" name="signup_form{calendar_days.raidplans.RAID_ID}" id="signup_form{calendar_days.raidplans.RAID_ID}">
        					<fieldset>
 						<dl>
+						
 						<dt>{L_RAIDCHARACTER}</dt>
 						<dd>
 						<select id="signupchar{calendar_days.raidplans.RAID_ID}" name="signupchar{calendar_days.raidplans.RAID_ID}">
@@ -136,6 +137,7 @@ $(document).ready( function()
 						<dt>&nbsp;<br />
 						{L_COMMENTS}</dt>
 						<dd><textarea name="signup_detail{calendar_days.raidplans.RAID_ID}" id="signup_detail{calendar_days.raidplans.RAID_ID}" rows="4" cols="25">{calendar_days.raidplans.CURR_SIGNUP_DETAIL}</textarea></dd>
+						
 						<dt>&nbsp;</dt>
 						<dd><input type="hidden" name="hidden_signup_id{calendar_days.raidplans.RAID_ID}" id="hidden_signup_id{calendar_days.raidplans.RAID_ID}" value="{calendar_days.raidplans.CURR_SIGNUP_ID}" />
 							<input type="submit" name="signmeup{calendar_days.raidplans.RAID_ID}" value="{L_SUBMIT}" class="button1" /></dd>

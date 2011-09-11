@@ -15,21 +15,17 @@
 <!-- BEGIN unavailable -->
 <tr style="background-color:{unavailable.ROLE_COLOR}; border-bottom:0px solid">
 	<td><strong><a>{unavailable.POSTER_URL}</a></strong><br />
-	
 	<span><!-- IF unavailable.S_RACE_IMAGE_EXISTS --><img src="{unavailable.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
 	<!-- IF unavailable.S_CLASS_IMAGE_EXISTS --><img src="{unavailable.CLASS_IMAGE}" alt="{unavailable.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
 	<strong><span style="color:{unavailable.COLORCODE}">{unavailable.CHARNAME}</span></strong></span> <br />
 	{unavailable.POST_TIME}<br />
 	{unavailable.DETAILS}<br />
-</td>
+	</td>
 </tr>
 <tr>
-<td style="text-align:right">	
+	<td style="text-align:right">	
 	<!-- IF unavailable.S_REQUEUE_SIGNUP -->
-		<a href="{unavailable.U_REQUEUE}"><img src="{T_IMAGESET_PATH}/planner/icon_queue.png" alt="{L_AVAILABLE}"></a>
-	<!-- ENDIF -->
-	<!-- IF unavailable.S_EDIT_SIGNUP -->
-	<img src="{T_IMAGESET_PATH}/planner/icon_edit.png" alt="{L_EDIT}" class="modalInput_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}"" rel="#prompt_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" />
+	<img src="{T_IMAGESET_PATH}/planner/icon_queue.png" alt="{L_AVAILABLE}" class="modalInput_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}"" rel="#prompt_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" />
 	<!-- ENDIF -->
 	</td>
 </tr>
@@ -49,17 +45,46 @@
 	<div class="bbinner">
 		<div class="t"></div>
 		<br />
-		<form id="editsignup_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" name="editsignup_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}"
-			  method="post" action="{unavailable.S_SIGNUP_EDIT_ACTION}">
-			<span><!-- IF unavailable.S_RACE_IMAGE_EXISTS --><img src="{unavailable.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
-				<!-- IF unavailableS_CLASS_IMAGE_EXISTS --><img src="{unavailable.CLASS_IMAGE}" alt="{unavailable.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
-				<strong><span style="color:{unavailable.COLORCODE}">{unavailable.CHARNAME}</span></strong>
-			</span><br />
-			<textarea class="commentedit" name="signup_detail_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" rows="4" cols="25">{unavailable.DETAILS}</textarea>
-			<br/><br />
-			<input type="submit" accesskey="s" name="signmeup{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" value="{L_SUBMIT}" class="button1" />
+		<form id="requeuesignup_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" name="requeuesignup_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}"
+			  method="post" action="{unavailable.S_REQUEUE_ACTION}">
+			<fieldset>
+				<dl>
+				<dt>
+				<span><!-- IF unavailable.S_RACE_IMAGE_EXISTS --><img src="{unavailable.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
+					<!-- IF unavailableS_CLASS_IMAGE_EXISTS --><img src="{unavailable.CLASS_IMAGE}" alt="{unavailable.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
+					<strong><span style="color:{unavailable.COLORCODE}">{unavailable.CHARNAME}</span></strong>
+				</span>
+				</dt>
+				<dd>&nbsp;
+				</dd>
+				<dt>&nbsp;</dt><dd>&nbsp;</dd>
+				<dt>{L_CALENDAR_WILL_ATTEND}</dt>
+				<dd>
+					<select name='signup_val_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}' id='signup_val_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}'>
+						<option value='2'>{L_AVAILABLE}</option>
+						<option value='1'>{L_MAYBE}</option>
+					</select>
+				</dd>
+				<dt>{L_RAIDROLE}</dt>
+					<dd>
+					<select id="signuprole_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" name="signuprole_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}">
+					<!-- BEGIN raidroles -->
+						<option value='{unavailable.raidroles.ROLE_ID}'>{unavailable.raidroles.ROLE_NAME}</option><!-- END raidroles -->
+					</select>
+				</dd>
+				<dt>&nbsp;<br />
+				{L_COMMENTS}</dt>
+				<dd>			
+					<textarea class="commentedit" name="signup_detail_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" rows="4" cols="25">{unavailable.DETAILS}</textarea>
+				</dd>
+				<dt>&nbsp;</dt>
+				<br/><br />
+				<dd>
+					<input type="submit" accesskey="s" name="signmeup{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" value="{L_SUBMIT}" class="button1" />
+				</dd>
+				</dl>
+			</fieldset>
 		</form>
-		<br />
 	</div>
 	<div class="b"><div></div></div> 
 </div>
@@ -78,15 +103,11 @@
 	$("#editsignup_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").submit(function(e)
 	{
 		var input = $("#signup_detail_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}", this).val();
-		$.post("{unavailable.S_SIGNUP_EDIT_ACTION}".serialize());
+		$.post("{unavailable.S_REQUEUE_ACTION}".serialize());
 		triggers_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}.eq(1).overlay().close();
 		return e.preventDefault();
-		
 	});
-	
 	});
-
-	
 </script>
 <!-- END unavailable -->
 <!-- [-] tooltip -->

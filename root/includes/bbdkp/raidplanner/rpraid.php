@@ -1393,19 +1393,14 @@ class rpraid
 		{
 			$requeue=false;
 			$requeueurl="";
-			$canedit = false;
-			$editurl=false; 
 			// allow requeueing your character
 			if( $auth->acl_get('m_acl_m_raidplanner_delete_other_users_raidplans') || $signoff['poster_id'] == $user->data['user_id']  )
 			{
 				$requeue = true;
 				$requeueurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=requeue&amp;calEid=". $this->id . "&amp;signup_id=" . $signoff['signup_id']);
-				$canedit = true;
-				$editurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editsign&amp;calEid=". $this->id . "&amp;signup_id=" . $signoff['signup_id']);
-				
-				
 			}
-			
+
+				
 			$template->assign_block_vars('unavailable', array(
 				'SIGNUP_ID' 	=> $signoff['signup_id'],
 				'RAIDPLAN_ID' 	=> $signoff['raidplan_id'], 
@@ -1425,12 +1420,22 @@ class rpraid
 				'S_CLASS_IMAGE_EXISTS' => (strlen($signoff['imagename']) > 1) ? true : false,
 		       	'RACE_IMAGE' 	=> (strlen($signoff['raceimg']) > 1) ? $signoff['raceimg'] : '',  
 				'S_RACE_IMAGE_EXISTS' => (strlen($signoff['raceimg']) > 1) ? true : false, 	
+				'S_REQUEUE_ACTION' => $requeueurl,
 				'S_REQUEUE_SIGNUP'	=> $requeue, 
-				'U_REQUEUE'		=> $requeueurl, 
-				'S_EDIT_SIGNUP' 	=> $canedit,	
-				'S_SIGNUP_EDIT_ACTION' => $editurl,
 			 				
 			));
+			
+			foreach($this->raidroles as $key => $role)
+			{
+				$template->assign_block_vars('unavailable.raidroles', array(
+					'ROLE_ID'        => $key,
+					'ROLE_NAME'      => $role['role_name'],
+				));
+				
+			}
+			
+				
+			
 		}
 
 		unset($key);
@@ -1479,9 +1484,7 @@ class rpraid
 			'POSTER'			=> $this->poster_url,
 			'INVITED'			=> $this->invite_list,
 			'U_EDIT'			=> $edit_url,
-			'U_EDIT_ALL'		=> $edit_all_url,
-			'U_DELETE'			=> $delete_url,
-			'U_DELETE_ALL'		=> $delete_all_url,
+			'U_DELETE'			=> $delete_url,		
 			'DAY_IMG'			=> $user->img('button_calendar_day', 'DAY'),
 			'WEEK_IMG'			=> $user->img('button_calendar_week', 'WEEK'),
 			'MONTH_IMG'			=> $user->img('button_calendar_month', 'MONTH'),
@@ -2038,8 +2041,6 @@ class rpraid
 					);
 					
 					$total_needed += $role['role_needed'];
-				
-				
 				}
 			}
 			
