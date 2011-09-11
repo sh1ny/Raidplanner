@@ -10,7 +10,6 @@
 *
 */
 
-
 /**
  * @ignore
  */
@@ -26,30 +25,9 @@ if ( !$auth->acl_get('u_raidplanner_view_raidplans') )
 {
 	trigger_error( 'USER_CANNOT_VIEW_RAIDPLAN' );
 }
-/*	
-if (!class_exists('calendar_watch'))
-{
-	include($phpbb_root_path . 'includes/bbdkp/raidplanner/calendar_watch.' . $phpEx);
-}
 
-if( !$user->data['is_bot'] && $user->data['user_id'] != ANONYMOUS )
-{
-	$calWatch = request_var( 'calWatch', 2 );
-
-	$watchclass = new calendar_watch();
-				
-	if( $calWatch < 2 )
-	{
-		$watchclass->calendar_watch_calendar( $calWatch );
-	}
-	else
-	{
-		$watchclass->calendar_mark_user_read_calendar( $user->data['user_id'] );
-	}
-}
-*/
 $view_mode = request_var('view', 'month');
-$mode=request_var('mode', 'show');
+$mode=request_var('mode', '');
 
 // display header
 include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpframe.' . $phpEx);
@@ -132,10 +110,11 @@ switch( $view_mode )
 				$raid->display();
 				break;	
 			case 'edit':
-				$raid->edit();
+				$raid = new rpraid($raidplan_id);
+				$raid->showadd($cal,$raidplan_id);
 				break;			
 			case 'showadd':
-				$raid->showadd($cal);
+				$raid->showadd($cal, 0);
 				break;	
 			case 'delete':
 				$raid->delete();
@@ -187,23 +166,6 @@ switch( $view_mode )
 		$cal->display();
 		break;
 }
-
-
-
-/*
-$watcher = new calendar_watch(); 
-
-$s_watching_calendar = array();
-$watcher->calendar_init_s_watching_calendar( $s_watching_calendar );
-
-
-$template->assign_vars(array(
-		'U_WATCH_CALENDAR' 		=> $s_watching_calendar['link'],
-		'L_WATCH_CALENDAR' 		=> $s_watching_calendar['title'],
-		'S_WATCHING_CALENDAR'	=> $s_watching_calendar['is_watching'],
-		)
-	);
-*/
 
 // Output the page
 page_header($user->lang['PAGE_TITLE']); 

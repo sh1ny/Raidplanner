@@ -494,18 +494,40 @@ class rpraid
 	/**
 	 * shows the form to add/edit raidplan
 	 */
-	public function showadd(calendar $cal)
+	public function showadd(calendar $cal, $raidplan_id)
 	{
 		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 		
-		$this->checkauth_canadd();
-		if(!$this->auth_canadd)
+		if($raidplan_id != 0)
 		{
-			trigger_error('USER_CANNOT_POST_RAIDPLAN');
+			$mode='edit';
+			// edit existing plan
+			$this->checkauth_canedit();
+			if(!$this->auth_canedit)
+			{
+				trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
+			}
+			
+			// action URL 
+			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id."&amp;mode=showadd", true, $user->session_id);
+			
+		}
+		else 
+		{
+			$mode='new';
+			// add new plan
+			$this->checkauth_canadd();
+			if(!$this->auth_canadd)
+			{
+				trigger_error('USER_CANNOT_POST_RAIDPLAN');
+			}
+			// action URL 
+			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd", true, $user->session_id);
 		}
 
-		$submit		= (isset($_POST['addraid'])) ? true : false;
+		$submit	= (isset($_POST['addraid'])) ? true : false;
+		
 		if($submit)
 		{
 			// collect data
@@ -529,21 +551,44 @@ class rpraid
 		$user->setup('posting');
 		$user->add_lang ( array ('posting', 'mods/dkp_common','mods/raidplanner'  ));
 
-		//test if user can add
-		$page_title = $user->lang['CALENDAR_POST_RAIDPLAN'];
-		
-		// action URL 
-		$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&mode=showadd", true, $user->session_id);
+		$page_title = ($mode=='new') ? $user->lang['CALENDAR_POST_RAIDPLAN'] : $user->lang['CALENDAR_EDIT_RAIDPLAN'];	
 
 		//count events from bbDKP, put them in a pulldown...
 		$e_type_sel_code  = "";
 		foreach( $this->eventlist->events as $eventid => $event)
 		{
-			$e_type_sel_code .= '<option value="' . $eventid . '">'. $event['event_name'].'</option>';
+			$selected = '';
+			
+			if($mode=='new')
+			{
+				$selected = '';
+			}
+			else
+			{
+				if($this->event_type == $eventid)
+				{
+					$selected = ' selected="selected" ';
+				}
+			}
+			
+			$e_type_sel_code .= '<option value="' . $eventid . '" ' . $selected. ' >'. $event['event_name'].'</option>';
 		}
 
-		// raidplan acces level
+		// populate raidplan acces level popups
 		$level_sel_code ="";
+		if( $auth->acl_get('u_raidplanner_create_public_raidplans') )
+		{
+			$level_sel_code .= '<option value="2">'.$user->lang['EVENT_ACCESS_LEVEL_PUBLIC'].'</option>';
+		}
+		if( $auth->acl_get('u_raidplanner_create_group_raidplans') )
+		{
+			$level_sel_code .= '<option value="1">'.$user->lang['EVENT_ACCESS_LEVEL_GROUP'].'</option>';
+		}
+		if( $auth->acl_get('u_raidplanner_create_private_raidplans') )
+		{
+			$level_sel_code .= '<option value="0">'.$user->lang['EVENT_ACCESS_LEVEL_PERSONAL'].'</option>';
+		}
+		
 		
 		// Find what groups this user is a member of and add them to the list of groups to invite
 		$disp_hidden_groups = $config['rp_display_hidden_groups'];
@@ -596,18 +641,7 @@ class rpraid
 		$db->sql_freeresult($result);
 		$group_sel_code .= "</select>\n";
 
-		if( $auth->acl_get('u_raidplanner_create_public_raidplans') )
-		{
-			$level_sel_code .= '<option value="2">'.$user->lang['EVENT_ACCESS_LEVEL_PUBLIC'].'</option>';
-		}
-		if( $auth->acl_get('u_raidplanner_create_group_raidplans') )
-		{
-			$level_sel_code .= '<option value="1">'.$user->lang['EVENT_ACCESS_LEVEL_GROUP'].'</option>';
-		}
-		if( $auth->acl_get('u_raidplanner_create_private_raidplans') )
-		{
-			$level_sel_code .= '<option value="0">'.$user->lang['EVENT_ACCESS_LEVEL_PERSONAL'].'</option>';
-		}
+
 				
 		/**
 		 *	populate Raid invite time select 
@@ -1108,28 +1142,6 @@ class rpraid
 		
 		
 	}
-	
-	/**
-	 * 
-	 *
-	 */
-	public function edit()
-	{
-		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
-		$user->add_lang ( array ('posting'));
-		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-		
-		//check if user can edit
-		$this->checkauth_canedit();
-		if($this->auth_canedit == false)
-		{
-			trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
-			
-		}
-		
-		trigger_error('NOT IMPLEMENTED');
-	}
-
 	
 	public function delete()
 	{
