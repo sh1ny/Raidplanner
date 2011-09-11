@@ -97,8 +97,8 @@ abstract class calendar
 		
 		//get the selected date and set it into an array
 		$this->date['day'] = request_var('calD', date("d", time()));
-		$this->date['month'] = $this->month_names[ request_var('calM', date("m", time()))] ;
-		$this->date['month_no'] = request_var('calM', date("m", time()) );
+		$this->date['month'] = $this->month_names[ request_var('calM', date("n", time()))] ;
+		$this->date['month_no'] = request_var('calM', date("n", time()) );
 		$this->date['year'] = request_var('calY', date("Y", time()) );
 		
 		$this->date['prev_month'] = $this->date['month'] - 1;
