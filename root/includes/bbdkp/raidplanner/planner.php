@@ -78,7 +78,6 @@ switch( $view_mode )
 					}
 					$signup = new rpsignup();
 					$signup->signup($raidplan_id);
-					
 					$raid = new rpraid($raidplan_id);
 					$raid->display();
 				}
@@ -141,9 +140,6 @@ switch( $view_mode )
 			case 'delete':
 				$raid->delete();
 				break;			
-			case 'deleteall':
-				$raid->deleteall();
-				break;
 			default:
 				$raid->display();
 				break;

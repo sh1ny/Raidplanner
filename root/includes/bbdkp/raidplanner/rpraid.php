@@ -1133,13 +1133,65 @@ class rpraid
 	
 	public function delete()
 	{
+		// recheck if user can delete
+		global $user, $db, $auth, $date, $phpbb_root_path, $phpEx;
+		
 		$this->checkauth_candelete();
-		if($this->auth_canedit == false)
+		if($this->auth_candelete == false)
 		{
 			trigger_error('USER_CANNOT_DELETE_RAIDPLAN');
 		}
+	
+		$s_hidden_fields = build_hidden_fields(array(
+				'raidplan_id'=> $this->id,
+				'page'	=> 'planner',
+				'view'	=> 'raidplan',
+				'mode'	=> 'delete')
+		);
+	
+		if (confirm_box(true))
+		{
+			//recall vars
+			
+			$raidplan_id = request_var('raidplan_id', 0);
+			
+			if($raidplan_id != 0)
+			{
+				$db->sql_transaction('begin');
+				
+				// delete all the signups for this raidplan before deleting the raidplan
+				$sql = 'DELETE FROM ' . RP_SIGNUPS . ' WHERE raidplan_id = ' . $db->sql_escape($raidplan_id);
+				$db->sql_query($sql);
 		
-		trigger_error('NOT IMPLEMENTED');
+				// Delete event
+				$sql = 'DELETE FROM ' . RP_RAIDS_TABLE . ' WHERE raidplan_id = '.$db->sql_escape($raidplan_id);
+				$db->sql_query($sql);
+				
+				$sql = 'DELETE FROM ' . RP_RAIDPLAN_ROLES . ' WHERE raidplan_id = '.$db->sql_escape($raidplan_id);
+				$db->sql_query($sql);
+				
+				$db->sql_transaction('commit');
+				
+				
+				$day = gmdate("d", $this->start_time);
+				$month = gmdate("n", $this->start_time);
+				$year =	gmdate('Y', $this->start_time);
+				unset($this);
+				
+				$meta_info = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calM=".$month."&amp;calY=".$year);
+				$message = $user->lang['EVENT_DELETED'];
+		
+				meta_refresh(3, $meta_info);
+				$message .= '<br /><br />' . sprintf($user->lang['RETURN_CALENDAR'], '<a href="' . $meta_info . '">', '</a>');
+				trigger_error($message);
+			}
+		
+		}
+		else
+		{
+			confirm_box(false, $user->lang['DELETE_RAIDPLAN_CONFIRM'], $s_hidden_fields);
+		}
+		
 		
 	}
 	
@@ -1191,11 +1243,7 @@ class rpraid
 		{
 			$delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delete&amp;calEid=".
 				$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
-			if( $this->recurr_id > 0 )
-			{
-				$delete_all_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=deleteall&amp;calEid=".
-				$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
-			}
+
 		}
 		
 		/* make url for signup action */
@@ -1484,7 +1532,8 @@ class rpraid
 			'POSTER'			=> $this->poster_url,
 			'INVITED'			=> $this->invite_list,
 			'U_EDIT'			=> $edit_url,
-			'U_DELETE'			=> $delete_url,		
+			'U_DELETE'			=> $delete_url,	
+			
 			'DAY_IMG'			=> $user->img('button_calendar_day', 'DAY'),
 			'WEEK_IMG'			=> $user->img('button_calendar_week', 'WEEK'),
 			'MONTH_IMG'			=> $user->img('button_calendar_month', 'MONTH'),
@@ -1689,13 +1738,14 @@ class rpraid
 			if($auth->acl_get('u_raidplanner_delete_raidplans'))
 			{
 				$this->auth_candelete = true;
+
+				// is raidleader trying to delete other raid ?
+				if ( !( ($user->data['user_id'] == $this->poster) && $auth->acl_get('m_raidplanner_delete_other_users_raidplans') ))
+				{
+					$this->auth_candelete = false;
+				}
 			}
 			
-			// is raidleader trying to delete other raid ?
-			if (($user->data['user_id'] != $this->poster) && !$auth->acl_get('m_raidplanner_delete_other_users_raidplans'))
-			{
-				$this->auth_candelete = false;
-			}
 		}
 		
 	}
@@ -1922,7 +1972,7 @@ class rpraid
 	 */
 	public function GetRaidinfo($month, $day, $year, $group_options, $mode)
 	{
-		global $db, $user, $template, $config, $phpbb_root_path, $auth, $phpEx;
+		global $db, $user, $config, $phpbb_root_path, $phpEx;
 		
 		$raidplan_output = array();
 		
@@ -2028,9 +2078,11 @@ class rpraid
 					}
 				}
 				
+				//if no chars the you cannot sign up !
 				if(count($userchars)==0)
 				{
 					$this->signups_allowed = false; 	
+					
 				}
 				
 				foreach($this->raidroles as $key => $role)
