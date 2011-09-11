@@ -1298,14 +1298,12 @@ class rpraid
 					}
 					
 					$template->assign_block_vars('raidroles.signups', array(
-						'S_SIGNUP_EDIT_ACTION' => $editsignupurl, 
 	       				'SIGNUP_ID' 	 	=> $signup['signup_id'],
 						'RAIDPLAN_ID' 	 	=> $signup['raidplan_id'],
 	       				'POST_TIME' 	 	=> $user->format_date($signup['signup_time'], $config['rp_date_time_format'], true),
 						'POST_TIMESTAMP' 	=> $signup['signup_time'],
 						'DETAILS' 			=> generate_text_for_display($signup['comment'], $signup['bbcode']['uid'], $signup['bbcode']['bitfield'], 7),
 						'HEADCOUNT' 		=> $signup['signup_count'],
-						'U_EDIT' 			=> '',
 						'POSTER' 			=> $signup['poster_name'], 
 						'POSTER_URL' 		=> get_username_string( 'full', $signup['poster_id'], $signup['poster_name'], $signup['poster_colour'] ),
 						'VALUE' 			=> $signup['signup_val'], 
@@ -1321,6 +1319,7 @@ class rpraid
 						'S_RACE_IMAGE_EXISTS' => (strlen($signup['raceimg']) > 1) ? true : false, 
 						'S_DELETE_SIGNUP'	=> 	$candeletesignup, 
 						'S_EDIT_SIGNUP' 	=> $caneditsignup,
+						'S_SIGNUP_EDIT_ACTION' => $editsignupurl, 
 						'U_DELETE'			=> $deletesignupurl, 
 						'DELETEKEY' 		=> $deletekey, 
 						'S_CANCONFIRM'		=> $canconfirmsignup, 
@@ -1336,24 +1335,27 @@ class rpraid
 				 {
 				 	
 					$edit_text_array = generate_text_for_edit( $confirmation['comment'], $confirmation['bbcode']['uid'], 7);
+					$candeleteconf = false;
+					$caneditconf = false;
+					$editconfurl = "";
+					$deleteconfurl = "";
 					
-				 	if( $auth->acl_get('m_raidplanner_edit_other_users_signups') || $signup['poster_id'] == $user->data['user_id']  )
+				 	if( $auth->acl_get('m_raidplanner_edit_other_users_signups') || $confirmation['poster_id'] == $user->data['user_id']  )
 					{
 						// then if signup is not frozen then show deletion button
 						//@todo calculate frozen
-						$candeletesignup = true;
-						$caneditsignup = true;
-						$editsignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editsign&amp;calEid=". $this->id . "&amp;signup_id=" . $confirmation['signup_id']);
-						$deletekey = rand(1, 1000);
-						$deletesignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delsign&amp;calEid=". $this->id . "&amp;signup_id=" . $confirmation['signup_id']);
+						$candeleteconf = true;
+						$caneditconf = true;
+						$editconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editsign&amp;calEid=". $this->id . "&amp;signup_id=" . $confirmation['signup_id']);
+						$deleteconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delsign&amp;calEid=". $this->id . "&amp;signup_id=" . $confirmation['signup_id']);
 					}
 					
-					$editcomment = $edit_text_array['text'];
 					$signupcolor = '#006B02';
 					$signuptext = $user->lang['CONFIRMED'];
 					
 					$template->assign_block_vars('raidroles.confirmations', array(
-						'S_SIGNUP_EDIT_ACTION' => $editsignupurl, 
+						'SIGNUP_ID' 	=> $confirmation['signup_id'],
+						'RAIDPLAN_ID' 	=> $confirmation['raidplan_id'],
 	       				'POST_TIME' 	=> $user->format_date($confirmation['signup_time'], $config['rp_date_time_format'], true),
 						'POST_TIMESTAMP' => $confirmation['signup_time'],
 						'DETAILS' 		=> generate_text_for_display($confirmation['comment'], $confirmation['bbcode']['uid'], $confirmation['bbcode']['bitfield'], 7),
@@ -1371,10 +1373,10 @@ class rpraid
 						'S_CLASS_IMAGE_EXISTS' => (strlen($confirmation['imagename']) > 1) ? true : false,
 				       	'RACE_IMAGE' 	=> (strlen($confirmation['raceimg']) > 1) ? $confirmation['raceimg'] : '',  
 						'S_RACE_IMAGE_EXISTS' => (strlen($confirmation['raceimg']) > 1) ? true : false, 
-						'S_DELETE_SIGNUP'	=> $candeletesignup, 
-						'S_EDIT_SIGNUP' 	=> $caneditsignup,
-						'U_DELETE'			=> $deletesignupurl, 
-						'DELETEKEY' 		=> $deletekey, 
+						'S_DELETE_SIGNUP'	=> $candeleteconf, 
+						'S_EDIT_SIGNUP' 	=> $caneditconf,
+						'S_SIGNUP_EDIT_ACTION' => $editconfurl, 
+						'U_DELETE'			=> $deleteconfurl, 
 					));
 						
 				 }
@@ -1391,15 +1393,22 @@ class rpraid
 		{
 			$requeue=false;
 			$requeueurl="";
+			$canedit = false;
+			$editurl=false; 
 			// allow requeueing your character
 			if( $auth->acl_get('m_acl_m_raidplanner_delete_other_users_raidplans') || $signoff['poster_id'] == $user->data['user_id']  )
 			{
 				$requeue = true;
 				$requeueurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=requeue&amp;calEid=". $this->id . "&amp;signup_id=" . $signoff['signup_id']);
+				$canedit = true;
+				$editurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editsign&amp;calEid=". $this->id . "&amp;signup_id=" . $signoff['signup_id']);
+				
 				
 			}
 			
 			$template->assign_block_vars('unavailable', array(
+				'SIGNUP_ID' 	=> $signoff['signup_id'],
+				'RAIDPLAN_ID' 	=> $signoff['raidplan_id'], 
     			'POST_TIME' 	=> $user->format_date($signoff['signup_time'], $config['rp_date_time_format'], true),
 				'POST_TIMESTAMP' => $signoff['signup_time'],
 				'DETAILS' 		=> generate_text_for_display($signoff['comment'], $signoff['bbcode']['uid'], $signoff['bbcode']['bitfield'], 7),
@@ -1417,7 +1426,9 @@ class rpraid
 		       	'RACE_IMAGE' 	=> (strlen($signoff['raceimg']) > 1) ? $signoff['raceimg'] : '',  
 				'S_RACE_IMAGE_EXISTS' => (strlen($signoff['raceimg']) > 1) ? true : false, 	
 				'S_REQUEUE_SIGNUP'	=> $requeue, 
-				'U_REQUEUE'		=> $requeueurl, 	
+				'U_REQUEUE'		=> $requeueurl, 
+				'S_EDIT_SIGNUP' 	=> $canedit,	
+				'S_SIGNUP_EDIT_ACTION' => $editurl,
 			 				
 			));
 		}
