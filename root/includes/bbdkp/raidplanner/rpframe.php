@@ -140,7 +140,15 @@ class rpframe extends calendar
 		$this->month_sel_code .= "</select>";
 	
 		$this->day_sel_code  = "<select name='calD' id='calD'>";
-		for( $i = 1; $i <= 31; $i++ )
+		
+		//if in raidplan mode let pulldown begin at today
+		$begin = 1;
+		if($view_mode === "raidplan")
+		{
+			$begin = date("d", time());			
+		}
+		
+		for( $i = $begin; $i <= $this->days_in_month; $i++ )
 		{
 			$selected = ( (int) $this->date['day'] == $i ) ? ' selected="selected"' : '';
 			$this->day_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';

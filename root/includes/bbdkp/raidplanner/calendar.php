@@ -45,6 +45,13 @@ abstract class calendar
 	 */
 	public $daynames = array();
 	
+	
+	/**
+	 * number of days in month
+	 *
+	 * @var int
+	 */public $days_in_month = 0;
+	
 	/**
 	 * selectors
 	 *
@@ -74,21 +81,6 @@ abstract class calendar
 		// always refresh the date...
 		$temp_now_time = time() + $user->timezone + $user->dst;
 		
-		//get the selected date and set it into an array
-		$this->date['day'] = request_var('calD', '');
-		$this->date['month'] = request_var('calM', '');
-		$this->date['month_no'] = request_var('calM', '');
-		$this->date['year'] = request_var('calY', '');
-		
-		if( $this->date['day'] == "" )
-		{
-			$this->date['day'] = gmdate("d", $temp_now_time);
-		}
-
-				
-		//set day names
-		$this->get_weekday_names();
-		
 		//set month names (common.php lang entry)
 		$this->month_names[1] = "January";
 		$this->month_names[2] = "February";
@@ -102,35 +94,26 @@ abstract class calendar
 		$this->month_names[10] = "October";
 		$this->month_names[11] = "November";
 		$this->month_names[12] = "December";
-			
-		if( $this->date['month'] == "" )
-		{
-			$this->date['month'] = gmdate("F", $temp_now_time);
-			$this->date['month_no'] = gmdate("n", $temp_now_time);
-			$this->date['prev_month'] = gmdate("n", $temp_now_time) - 1;
-			$this->date['next_month'] = gmdate("n", $temp_now_time) + 1;
-	
-		}
-		else
-		{
-
-			$this->date['month'] = $this->month_names[$this->date['month']];
-			$this->date['prev_month'] = $this->date['month'] - 1;
-			$this->date['next_month'] = $this->date['month'] + 1;
-		}
-	
-		if( $this->date['year'] == "" )
-		{
-			$this->date['year']	= gmdate('Y', $temp_now_time);
-		}
 		
-		// make sure this day exists - ie there is no February 31st.
-		$number_days = gmdate("t", gmmktime( 0,0,0,$this->date['month_no'], 1, $this->date['year']));
-		if( $number_days < $this->date['day'] )
+		//get the selected date and set it into an array
+		$this->date['day'] = request_var('calD', date("d", time()));
+		$this->date['month'] = $this->month_names[ request_var('calM', date("m", time()))] ;
+		$this->date['month_no'] = request_var('calM', date("m", time()) );
+		$this->date['year'] = request_var('calY', date("Y", time()) );
+		
+		$this->date['prev_month'] = $this->date['month'] - 1;
+		$this->date['next_month'] = $this->date['month'] + 1;
+		
+		$this->days_in_month = cal_days_in_month(CAL_GREGORIAN, $this->date['month_no'], $this->date['year']);
+		
+		if( $this->days_in_month < $this->date['day'] )
 		{
 		    $this->date['day'] = $number_days;
 		}
-
+		
+		//set day names
+		$this->get_weekday_names();
+		
 		$this->timestamp = 	mktime(0, 0, 0, $this->date['month_no'], $this->date['day'], $this->date['year']);
 				
 		$first_day_of_week = $config['rp_first_day_of_week'];
