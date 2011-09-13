@@ -30,7 +30,10 @@ $view_mode = request_var('view', 'month');
 $mode=request_var('mode', '');
 
 // display header
-include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpframe.' . $phpEx);
+if (!class_exists('rpframe', false))
+{
+	include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpframe.' . $phpEx);
+}
 $cal = new rpframe();
 $cal->display();
 
@@ -145,14 +148,20 @@ switch( $view_mode )
       break;
 	case "day":
 		// display all of the raidplans on this day
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpday.' . $phpEx);
+		if (!class_exists('rpday', false))
+		{
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpday.' . $phpEx);
+		}
 		$cal = new rpday();
 		// display calendar
 		$cal->display();		
 		break;
 	case "week":
 		// display the entire week
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
+		if (!class_exists('rpweek', false))
+		{
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
+		}
 		$cal = new rpweek();
 		// display calendar
 		$cal->display();
@@ -160,7 +169,10 @@ switch( $view_mode )
 	case "month":
 	default:	
 		//display the entire month
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpmonth.' . $phpEx);
+		if (!class_exists('rpmonth', false))
+		{
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpmonth.' . $phpEx);
+		}
 		$cal = new rpmonth();
 		// display calendar
 		$cal->display();
