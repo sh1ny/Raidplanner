@@ -105,11 +105,11 @@ class rpraid
 	private $poster;
 
 	/**
-	 * access level 0 = personal, 1 = groups, 3 = all 
-	 * raidplan_access_level  TINYINT
+	 * access level 0 = personal, 1 = groups, 2 = all 
+	 * default to 2
 	 * @var int
 	 */
-	private $accesslevel;
+	private $accesslevel = 2;
 	
 	
 	private $group_id;
@@ -510,40 +510,38 @@ class rpraid
 			}
 			
 			// action URL 
-			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id."&amp;mode=showadd", true, $user->session_id);
+			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id."&amp;mode=showadd");
 			
 		}
 		else 
 		{
 			$mode='new';
 			// add new plan
-			$this->checkauth_canadd();
-			if(!$this->auth_canadd)
+			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd");
+
+			$submit	= (isset($_POST['addraid'])) ? true : false;
+			if($submit)
 			{
-				trigger_error('USER_CANNOT_POST_RAIDPLAN');
+				// collect data
+				$this->addraidplan($cal);
+				// check access
+				$this->checkauth_canadd();
+				if(!$this->auth_canadd)
+				{	// gtfo
+					trigger_error('USER_CANNOT_POST_RAIDPLAN');
+				}
+ 				// store it
+				$this->storeplan(0);
+				// store the raid roles.
+				$this->store_raidroles(0);
+				//make object
+				$this->make_obj();
+				// display it
+				$this->display();
+				return 0;
 			}
-			// action URL 
-			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd", true, $user->session_id);
 		}
 
-		$submit	= (isset($_POST['addraid'])) ? true : false;
-		
-		if($submit)
-		{
-			// collect data
-			$this->addraidplan($cal);
-			// store it
-			$this->storeplan(0);
-			// store the raid roles.
-			$this->store_raidroles(0);
-			//make object
-			$this->make_obj();
-			// display it
-			$this->display();
-			return 0;
-		}
-		
-		
 		/*
 		 * fill template
 		 * 
@@ -570,7 +568,6 @@ class rpraid
 					$selected = ' selected="selected" ';
 				}
 			}
-			
 			$e_type_sel_code .= '<option value="' . $eventid . '" ' . $selected. ' >'. $event['event_name'].'</option>';
 		}
 
@@ -588,11 +585,14 @@ class rpraid
 		{
 			$level_sel_code .= '<option value="0">'.$user->lang['EVENT_ACCESS_LEVEL_PERSONAL'].'</option>';
 		}
+		// replace accesslevel by instance value
+		$temp_find_str = 'value="'.$this->accesslevel.'">';
+		$temp_replace_str = 'selected value="'.$this->accesslevel.'">';
+		$level_sel_code = str_replace( $temp_find_str, $temp_replace_str, $level_sel_code );
 		
 		
 		// Find what groups this user is a member of and add them to the list of groups to invite
 		$disp_hidden_groups = $config['rp_display_hidden_groups'];
-	
 		if ( $auth->acl_get('u_raidplanner_nonmember_groups') )
 		{
 			if( $disp_hidden_groups == 1 )
@@ -641,13 +641,17 @@ class rpraid
 		$db->sql_freeresult($result);
 		$group_sel_code .= "</select>\n";
 
-
 				
 		/**
 		 *	populate Raid invite time select 
 		 */ 
+		// format and translate to user timezone + dst
+		//$invite_date_txt = $user->format_date($this->invite_time, $config['rp_date_time_format'], true);
+		//$start_date_txt = $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+		//$end_date_txt = $user->format_date($this->end_time, $config['rp_date_time_format'], true);
+		
 		$hour_mode = $config['rp_hour_mode'];
-		$presetinvhour = intval($config['rp_default_invite_time'] / 60);
+		$presetinvhour = intval( ($this->invite_time > 0 ? $user->format_date($this->invite_time, 'G', true) * 60: $config['rp_default_invite_time']) / 60);
 		$hour_invite_selcode = "";
 		if( $hour_mode == 12 )
 		{
@@ -675,8 +679,18 @@ class rpraid
 				$hour_invite_selcode .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 			}
 		}
+		
+		// minute
 		$min_invite_sel_code = "";
-		$presetinvmin = (int) $config['rp_default_invite_time'] - ($presetinvhour * 60) ;
+		if ( $this->invite_time > 0 )
+		{
+			$presetinvmin = $user->format_date($this->invite_time, 'i', true);
+		}
+		else
+		{
+			$presetinvmin = (int) $config['rp_default_invite_time'] - ($presetinvhour * 60) ;
+		}
+		
 		for( $i = 0; $i < 59; $i++ )
 		{
 			$selected = ($i == $presetinvmin ) ? ' selected="selected"' : '';
@@ -687,7 +701,7 @@ class rpraid
 		 *	populate Raid start time pulldown
 		 */ 
 		$hour_start_selcode = "";
-		$presetstarthour = intval($config['rp_default_start_time'] / 60);
+		$presetstarthour = intval( ($this->start_time > 0 ? $user->format_date($this->start_time, 'G', true) * 60: $config['rp_default_invite_time']) / 60);
 		if( $hour_mode == 12 )
 		{
 			for( $i = 0; $i < 24; $i++ )
@@ -714,8 +728,19 @@ class rpraid
 				$hour_start_selcode .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 			}
 		}
+		
+		
 		$min_start_sel_code = "";
-		$presetstartmin = (int) $config['rp_default_start_time'] - ($presetstarthour * 60) ;
+		
+		if ( $this->start_time > 0 )
+		{
+			$presetstartmin = $user->format_date($this->start_time, 'i', true);
+		}
+		else
+		{
+			$presetstartmin = (int) $config['rp_default_start_time'] - ($presetstarthour * 60) ;
+		}
+		
 		for( $i = 0; $i < 59; $i++ )
 		{
 			$selected = ($i == $presetstartmin ) ? ' selected="selected"' : '';
@@ -727,7 +752,7 @@ class rpraid
 		 *	populate Raid END time pulldown 
 		 */ 
 		$hour_end_selcode = "";
-		$presetendhour = intval($config['rp_default_end_time'] / 60);
+		$presetendhour = intval( ($this->end_time > 0 ? $user->format_date($this->end_time, 'G', true) * 60: $config['rp_default_end_time']) / 60);
 		if( $hour_mode == 12 )
 		{
 			for( $i = 0; $i < 24; $i++ )
@@ -756,7 +781,15 @@ class rpraid
 		}
 		
 		$min_end_sel_code = "";
-		$presetendmin = (int) $config['rp_default_end_time'] - ($presetendhour * 60) ;
+		if ( $this->end_time > 0 )
+		{
+			$presetendmin = $user->format_date($this->end_time, 'i', true);
+		}
+		else
+		{
+			$presetendmin = (int) $config['rp_default_end_time'] - ($presetendhour * 60) ;
+		}
+		
 		for( $i = 0; $i < 59; $i++ )
 		{
 			$selected = ($i == $presetendmin ) ? ' selected="selected"' : '';
@@ -819,11 +852,6 @@ class rpraid
 		
 		//set rsvp flag to checked by default
 		$track_signups = 'checked="checked"';
-	
-		// format and translate to user timezone + dst
-		//$invite_date_txt = $user->format_date($this->invite_time, $config['rp_date_time_format'], true);
-		//$start_date_txt = $user->format_date($this->start_time, $config['rp_date_time_format'], true);
-		//$end_date_txt = $user->format_date($this->end_time, $config['rp_date_time_format'], true);
 		
 		$template->assign_vars(array(
 			'L_POST_A'					=> $page_title,
@@ -1658,7 +1686,6 @@ class rpraid
 	private function checkauth_canadd()
 	{
 		global $auth;
-		$this->accesslevel = request_var('calELevel', 0);
 		$this->auth_canadd = false;
 		switch ($this->accesslevel)
 		{

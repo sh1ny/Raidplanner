@@ -47,7 +47,6 @@ switch( $view_mode )
 		}
 		$raidplan_id = request_var('calEid', 0);
 		
-		$raid = new rpraid($raidplan_id);
 		switch($mode)
 		{
 			case 'signup':
@@ -117,12 +116,15 @@ switch( $view_mode )
 				$raid->showadd($cal,$raidplan_id);
 				break;			
 			case 'showadd':
+				$raid = new rpraid($raidplan_id);			
 				$raid->showadd($cal, 0);
 				break;	
 			case 'delete':
+				$raid = new rpraid($raidplan_id);
 				$raid->delete();
 				break;			
 			default:
+				$raid = new rpraid($raidplan_id);
 				$raid->display();
 				break;
 		}
