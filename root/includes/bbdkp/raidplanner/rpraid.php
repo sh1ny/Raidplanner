@@ -853,11 +853,14 @@ class rpraid
 		//set rsvp flag to checked by default
 		$track_signups = 'checked="checked"';
 		
+		$message = generate_text_for_edit($this->body, 
+											(isset($this->bbcode['uid']) ? $this->bbcode['uid'] : ''), 
+											(isset($this->bbcode['bitfield']) ? $this->bbcode['bitfield'] : '') , 7);
+		
 		$template->assign_vars(array(
 			'L_POST_A'					=> $page_title,
-			//'SUBJECT'					=> $raidplan_data['raidplan_subject'],
-			//'MESSAGE'					=> $raidplan_data['raidplan_body'],
-
+			'SUBJECT'					=> $this->subject,
+			'MESSAGE'					=> $message['text'],
 			'INVITE_HOUR_SEL'			=> $hour_invite_selcode, 
 			'INVITE_MIN_SEL'			=> $min_invite_sel_code, 
 		
