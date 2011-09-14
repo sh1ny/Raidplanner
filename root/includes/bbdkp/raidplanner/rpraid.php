@@ -499,6 +499,8 @@ class rpraid
 		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 		
+		$submit	= (isset($_POST['addraid'])) ? true : false;
+		
 		if($raidplan_id != 0)
 		{
 			$mode='edit';
@@ -511,7 +513,20 @@ class rpraid
 			
 			// action URL 
 			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id."&amp;mode=showadd");
-			
+			if($submit)
+			{
+				// collect data
+				$this->addraidplan($cal);
+ 				// store it
+				$this->storeplan($raidplan_id);
+				// store the raid roles.
+				$this->store_raidroles($raidplan_id);
+				//make object
+				$this->make_obj();
+				// display it
+				$this->display();
+				return 0;
+			}
 		}
 		else 
 		{
@@ -732,7 +747,7 @@ class rpraid
 		
 		$min_start_sel_code = "";
 		
-		if ( $this->start_time > 0 )
+		if($mode=='edit')
 		{
 			$presetstartmin = $user->format_date($this->start_time, 'i', true);
 		}
@@ -831,31 +846,50 @@ class rpraid
 		/*
 		 * make raid composition proposal, always choose primary role first
 		 */ 
-		$sql_array = array(
-		    'SELECT'    => 'r.role_id, r.role_name, role_needed1 ', 
-		    'FROM'      => array(
-		        RP_ROLES   => 'r'
-		    ),
-		    'ORDER_BY'  => 'r.role_id'
-		);
-		$sql = $db->sql_build_query('SELECT', $sql_array);
-		$result = $db->sql_query($sql);
-		while ($row = $db->sql_fetchrow($result))
+		
+		if($mode=='edit')
 		{
-		    $template->assign_block_vars('raidroles', array(
-		        'ROLE_ID'        => $row['role_id'],
-			    'ROLE_NAME'      => $row['role_name'],
-		    	'ROLE_NEEDED'    => $row['role_needed1'],
-		    ));
+			// get roles from instance
+			foreach($this->raidroles as $key => $role)
+			{
+				$template->assign_block_vars('raidroles', array(
+					'ROLE_ID'        => $key,
+					'ROLE_NAME'      => $role['role_name'],
+					'ROLE_NEEDED'    => $role['role_needed'],
+				));
+			}
+			
 		}
-		$db->sql_freeresult($result);
+		else
+		{
+			// make roles proposal
+			$sql_array = array(
+			    'SELECT'    => 'r.role_id, r.role_name, role_needed1 ', 
+			    'FROM'      => array(
+			        RP_ROLES   => 'r'
+			    ),
+			    'ORDER_BY'  => 'r.role_id'
+			);
+			$sql = $db->sql_build_query('SELECT', $sql_array);
+			$result = $db->sql_query($sql);
+			while ($row = $db->sql_fetchrow($result))
+			{
+			    $template->assign_block_vars('raidroles', array(
+			        'ROLE_ID'        => $row['role_id'],
+				    'ROLE_NAME'      => $row['role_name'],
+			    	'ROLE_NEEDED'    => $row['role_needed1'],
+			    ));
+			}
+			$db->sql_freeresult($result);
+		}
+		
 		
 		//set rsvp flag to checked by default
 		$track_signups = 'checked="checked"';
 		
 		$message = generate_text_for_edit($this->body, 
-											(isset($this->bbcode['uid']) ? $this->bbcode['uid'] : ''), 
-											(isset($this->bbcode['bitfield']) ? $this->bbcode['bitfield'] : '') , 7);
+		(isset($this->bbcode['uid']) ? $this->bbcode['uid'] : ''), 
+		(isset($this->bbcode['bitfield']) ? $this->bbcode['bitfield'] : '') , 7);
 		
 		$template->assign_vars(array(
 			'L_POST_A'					=> $page_title,
@@ -891,8 +925,7 @@ class rpraid
 			//'END_RECURR_YEAR_SEL'		=> $end_recurr_year_sel_code,
 		
 			'S_POST_ACTION'				=> $s_action,
-			//'S_HIDDEN_FIELDS'			=> $s_hidden_fields, 
-		
+			'RAIDPLAN_ID'				=> $this->id,
 			//javascript alerts
 			'LA_ALERT_OLDBROWSER' 		=> $user->lang['ALERT_OLDBROWSER'],
 			'UA_AJAXHANDLER1'		  	=> append_sid($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/planner/raidplan/ajax1.'. $phpEx),
@@ -923,7 +956,7 @@ class rpraid
 			'SMILIES_STATUS'			=> ($smilies_status) ? $user->lang['SMILIES_ARE_ON'] : $user->lang['SMILIES_ARE_OFF'],
 			'URL_STATUS'				=> ($bbcode_status && $url_status) ? $user->lang['URL_IS_ON'] : $user->lang['URL_IS_OFF'],
 		
-			//'S_DELETE_ALLOWED'			=> $allow_delete,
+			//'S_DELETE_ALLOWED'		=> $allow_delete,
 			'S_BBCODE_ALLOWED'			=> $bbcode_status,
 			'S_SMILIES_ALLOWED'			=> $smilies_status,
 			'S_LINKS_ALLOWED'			=> $url_status,
@@ -951,7 +984,10 @@ class rpraid
 		global $user;
 		
 		$error = array();
-
+		
+		// hidden ID
+		$this->id = request_var('calEid', 0);
+		
 		// raidmaster
 		$this->poster = $user->data['user_id']; 
 		
@@ -1060,7 +1096,7 @@ class rpraid
 	 *
 	 * @param int $raidplan_id
 	 */
-	private function storeplan($raidplan_id = 0)
+	private function storeplan($raidplan_id)
 	{
 		global $db;
 		
@@ -1121,9 +1157,9 @@ class rpraid
 	/**
 	 * inserts or updates raidroles
 	 *
-	 * @param int $mode (0 insert, 1 update)
+	 * @param int $raidplan_id
 	 */
-	private function store_raidroles($mode)
+	private function store_raidroles($raidplan_id)
 	{
 		global $db;
 		
@@ -1135,7 +1171,7 @@ class rpraid
 		foreach($this->raidroles as $role_id => $role)
 		{
 				
-			if($mode == 0)
+			if($raidplan_id == 0)
 			{
 				$sql_raidroles = array(
 					'raidplan_id'		=> $this->id,				
@@ -1148,7 +1184,7 @@ class rpraid
 				$db->sql_query($sql);	
 				
 			}
-			elseif($mode == 1)
+			else
 			{
 				// update
 				$sql_raidroles = array(
@@ -1167,7 +1203,7 @@ class rpraid
 						
 		$db->sql_transaction('commit');
 			
-		unset ($sql_raidroles);
+		unset($sql_raidroles);
 		unset($role_id);
 		unset($role);
 		
@@ -1177,7 +1213,7 @@ class rpraid
 	public function delete()
 	{
 		// recheck if user can delete
-		global $user, $db, $auth, $date, $phpbb_root_path, $phpEx;
+		global $user, $db, $phpbb_root_path, $phpEx;
 		
 		$this->checkauth_candelete();
 		if($this->auth_candelete == false)
@@ -1265,17 +1301,10 @@ class rpraid
 
 		/* make the url for the edit button */
 		$edit_url = "";
-		$edit_all_url = "";
 		if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_raidplans') &&
 		    (($user->data['user_id'] == $this->poster )|| $auth->acl_get('m_raidplanner_edit_other_users_raidplans')))
 			{
-				$edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=edit&amp;calEid=".
-					$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
-				if( $this->recurr_id > 0 )
-				{
-					$edit_all_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editall=1&amp;calEid=".
-					$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
-				}
+				$edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calEid=". $this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
 			}
 		
 		/* make the url for the delete button */
@@ -1286,7 +1315,6 @@ class rpraid
 		{
 			$delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delete&amp;calEid=".
 				$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
-
 		}
 		
 		/* make url for signup action */

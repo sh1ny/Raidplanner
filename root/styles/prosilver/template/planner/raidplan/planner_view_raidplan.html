@@ -1,4 +1,4 @@
-<!-- raidplan view start -->
+<!-- [+] raidplan view -->
 <div class="forabg">
 <span class="corners-inner-top"><span></span></span>
 <div style="width:10%; float: left;">
@@ -8,24 +8,17 @@
 <h4 style="color:<!-- IF EVENT_COLOR -->{EVENT_COLOR}<!--ELSE -->#dfc065<!-- ENDIF -->"><!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}<!-- ENDIF --></h4>
 </div>
 <div style="width:30%; float: right;">
-<div class="buttons" style="float: right;"><!-- IF ADD_LINK -->
+<div class="buttons" style="float: right;">
+<!-- IF ADD_LINK -->
 <div class="planner-new-icon"><a href="{ADD_LINK}"
 	title="{L_NEW_EVENT}"><span></span></a></div>
 <!-- ENDIF -->
 <!-- IF U_EDIT -->
 <div class="planner-edit-icon"><a href="{U_EDIT}" title="{L_EDIT_POST}"><span></span></a></div>
 <!-- ENDIF -->
-<!-- IF U_EDIT_ALL -->
-<div class="planner-edit-all-icon"><a href="{U_EDIT_ALL}"
-	title="{L_EDIT_ALL_EVENTS}"><span></span></a></div>
-<!-- ENDIF -->
 <!-- IF U_DELETE -->
 <div class="planner-delete-icon"><a href="{U_DELETE}"
 	title="{L_DELETE_POST}"><span></span></a></div>
-<!-- ENDIF -->
-<!-- IF U_DELETE_ALL -->
-<div class="planner-delete-all-icon"><a href="{U_DELETE_ALL}"
-	title="{L_DELETE_ALL_EVENTS}"><span></span></a></div>
 <!-- ENDIF -->
 <div class="planner-day-icon"><a href="{DAY_VIEW_URL}" title="{L_DAY}"><span></span></a></div>
 <div class="planner-week-icon"><a href="{WEEK_VIEW_URL}"  title="{L_WEEK}"><span></span></a></div>
@@ -118,11 +111,5 @@
 <!-- INCLUDE planner/raidplan/planner_view_raidplan_unavailable.html -->
 <br/>
 
-<!-- disabled
-IF S_CANSIGNUP && S_LEGITUSER 
-	<!-- INCLUDE planner/raidplan/planner_view_raidplan_signup.html -->
--->
-
-
 <hr />
-<!-- raidplan view end -->
+<!-- [-] raidplan view -->
