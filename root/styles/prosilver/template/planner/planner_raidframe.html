@@ -58,10 +58,6 @@
 <!-- IF S_PLANNER_WEEK_ON_INDEX -->
 	<!-- INCLUDE planner/calendar/planner_week_on_index.html -->
 <!-- ENDIF -->
-<!-- IF S_PLANNER_UPCOMING -->
-	<!-- INCLUDE planner/calendar/planner_next_events_on_index.html -->
-<!-- ENDIF -->
-
 
 <span class="corners-bottom"><span></span></span>
 </div>
@@ -71,14 +67,7 @@
 
 <!-- right sidebar -->
 <div style="float: right; width: 19%; margin-right:0.5%">
-
-<div class="panel">
-<div class="inner">
-<span class="corners-top"><span></span></span>
-<h3>{L_UPCOMING_RAIDS}</h3>
-<span class="corners-bottom"><span></span></span>
-</div>
-</div>
-  
-
+<!-- IF S_PLANNER_UPCOMING -->
+	<!-- INCLUDE planner/raidplan/planner_upcoming.html -->
+<!-- ENDIF -->
 </div>

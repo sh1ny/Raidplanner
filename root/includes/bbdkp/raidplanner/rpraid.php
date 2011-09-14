@@ -2049,6 +2049,7 @@ class rpraid
 		//find any raidplans on this day
 		$start_temp_date = gmmktime(0,0,0,$month, $day, $year)  - $user->timezone - $user->dst;
 		
+		
 		switch($mode)
 		{
 			case "up":
@@ -2066,8 +2067,7 @@ class rpraid
 				$x = 0;
 				break;
 			default:
-				$end_temp_date = $start_temp_date + 86399;
-				//return all rows
+				$end_temp_date = $start_temp_date + 86400;
 				$x = 0;
 		}
 		
@@ -2081,7 +2081,8 @@ class rpraid
 			'WHERE'		=>  '(raidplan_access_level = 2 
 					   OR (r.poster_id = '. $db->sql_escape($user->data['user_id']).' ) OR (r.raidplan_access_level = 1 AND ('. $group_options.')) )  
 					  AND (r.raidplan_start_time >= '. $db->sql_escape($start_temp_date).' AND r.raidplan_start_time <= '. $db->sql_escape($end_temp_date). " )",
-			'ORDER_BY'	=> 'r.raidplan_start_time ASC');
+			'ORDER_BY'	=> 'r.raidplan_start_time ASC'
+		);
 		
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		$result = $db->sql_query_limit($sql, $x, 0);
