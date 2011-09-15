@@ -1,29 +1,22 @@
 <div class="panel">
 <div class="inner">
 <span class="corners-top"><span></span></span>
-<h3>{L_UPCOMING_RAIDS}</h3>
+<h3><img width="16px" height="14px" alt="" src="{T_THEME_PATH}/images/icon_subscribe.gif">&nbsp;{L_UPCOMING_RAIDS}</h3>
 
-
-	<div class="forabg">
-		<div class="inner"><span class="corners-top"><span></span></span>
-		<ul class="topiclist forums">
-		<!-- BEGIN raidplans -->
-			<li class="row">
-				<dl class="icon"<!-- IF raidplans.IMAGE --> style="background-image: url({raidplans.IMAGE}); background-repeat: no-repeat;"<!-- ENDIF -->>
-					<dt><a href="{raidplans.EVENT_URL}" title="<!-- IF raidplans.ETYPE_DISPLAY_NAME -->{raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{raidplans.FULL_SUBJECT}">
-						<span style="<!-- IF raidplans.COLOR -->color:#{raidplans.COLOR};<!-- ENDIF --> font-weight: bold;">
-							<!-- IF raidplans.ETYPE_DISPLAY_NAME -->{raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{raidplans.SUBJECT}</span>
-							<br /><!-- IF raidplans.ALL_DAY -->{L_ALL_DAY} {raidplans.START_TIME}<!-- ELSE -->{raidplans.START_TIME} {L_TO_TIME} {raidplans.END_TIME}<!-- ENDIF --></a>
-					</dt>
-					<dd style="width:16%; padding-left:5px;" class="lastpost">{raidplans.INVITED}</dd>
-					<dd style="width:16%; padding-left:5px;" class="lastpost">{raidplans.POSTER}</dd>
-				</dl>
-			</li>
-		<!-- END raidplans -->
-		</ul>
-		<span class="corners-bottom"><span></span></span></div>
+<!-- BEGIN raidplans -->
+<div style= "clear: left; cursor:pointer;" onclick="location.href='{raidplans.EVENT_URL}'" title="{raidplans.EVENTNAME}">
+	<div style="float: left; margin: 0 5px; 0 0;">
+		<img src="{raidplans.IMAGE}" alt="{raidplans.EVENTNAME}" width="32px" height="32px"/>
 	</div>
-
+	<div style="float: left;">
+		<strong style="color:red;"><!-- IF raidplans.ALL_DAY -->{L_ALL_DAY} {raidplans.START_TIME}<!-- ELSE -->{raidplans.START_TIME}<!-- ENDIF --></strong><br/>
+		<span class="gensmall" 
+			<!-- IF raidplans.DISPLAY_BOLD --><strong><!-- ENDIF --><!-- IF raidplans.EVENTNAME -->{raidplans.EVENTNAME}<!-- ENDIF --><!-- IF raidplans.DISPLAY_BOLD --></strong><!-- ENDIF -->
+		</span>
+	</div>
+</div>
+<hr/>
+<!-- END raidplans -->
 
 <span class="corners-bottom"><span></span></span>
 </div>

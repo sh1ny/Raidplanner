@@ -39,7 +39,7 @@ class rpraid
 	 */
 	public $event_type; 
 	
-	private $eventlist;
+	public $eventlist;
 	
 	/**
 	 * Invite time timestamp
@@ -47,7 +47,7 @@ class rpraid
 	 *
 	 * @var int
 	 */
-	private $invite_time;
+	public $invite_time;
 	
 	/**
 	 * Start time timestamp
@@ -55,7 +55,7 @@ class rpraid
 	 *
 	 * @var int
 	 */
-	private $start_time;
+	public $start_time;
 	
 	/**
 	 * endtime timestamp
@@ -63,7 +63,7 @@ class rpraid
 	 *
 	 * @var int
 	 */
-	private $end_time;
+	public $end_time;
 	
 	/**
 	 * 1 if allday event, 0 if timed event
@@ -71,7 +71,7 @@ class rpraid
 	 *
 	 * @var int
 	 */
-	private $all_day;
+	public $all_day;
 	
 	/**
 	 * day of alldayevent (dd-mm-yyyy)
@@ -79,7 +79,7 @@ class rpraid
 	 *
 	 * @var string
 	 */
-	private $day;
+	public $day;
 
 	/**
 	 * one line subject
@@ -87,104 +87,104 @@ class rpraid
 	 *
 	 * @var string
 	 */
-	private $subject;
+	public $subject;
 	
 	/**
 	 * raidplan_body MEDIUMTEXT
 	 * 
 	 * @var unknown_type
 	 */
-	private $body;
-	private $bbcode = array();
+	public $body;
+	public $bbcode = array();
 	
 	/**
 	 * poster_id
 	 *
 	 * @var unknown_type
 	 */
-	private $poster;
+	public $poster;
 
 	/**
 	 * access level 0 = personal, 1 = groups, 2 = all 
 	 * default to 2
 	 * @var int
 	 */
-	private $accesslevel = 2;
+	public $accesslevel = 2;
 	
 	
-	private $group_id;
-	private $group_id_list;
+	public $group_id;
+	public $group_id_list;
 	
 	/**
 	 * array of possible roles
 	 *
 	 * @var array
 	 */
-	private $roles= array();
+	public $roles= array();
 
 	/**
 	 * array of signoffs
 	 *
 	 * @var array
 	 */
-	private $signoffs= array();
+	public $signoffs= array();
 
 	/**
 	 * array of raid roles, subarray of signups per role
 	 *
 	 * @var array
 	 */
-	private $raidroles= array();
+	public $raidroles= array();
 
 	/**
 	 * aray of signups
 	 *
 	 * @var array
 	 */
-	private $signups =array();
+	public $signups =array();
 	
 	/**
 	 * all my eligible chars
 	 *
 	 * @var array
 	 */
-	private $mychars = array();
+	public $mychars = array();
 	
 	/**
 	 * can user see raidplan ?
 	 *
 	 * @var boolean
 	 */
-	private $auth_cansee = false;
-	private $auth_canedit = false;
-	private $auth_candelete = false;
-	private $auth_canadd = false;
-	private $auth_canaddsignups = false;
-	private $auth_addrecurring = false;
+	public $auth_cansee = false;
+	public $auth_canedit = false;
+	public $auth_candelete = false;
+	public $auth_canadd = false;
+	public $auth_canaddsignups = false;
+	public $auth_addrecurring = false;
 
 	// if raidplan is recurring then id > 0
-	private $recurr_id = 0;
+	public $recurr_id = 0;
 	
 	/**
 	 * url of the poster
 	 *
 	 * @var string
 	 */
-	private $poster_url = '';
+	public $poster_url = '';
 	
 	/**
 	 * string representing invited groups
 	 *
 	 * @var string
 	 */
-	private $invite_list = '';
+	public $invite_list = '';
 		
 	/**
 	 * signups allowed ?
 	 *
 	 * @var boolean
 	 */
-	private $signups_allowed;
+	public $signups_allowed;
 	
 	/**
 	 * constructor
@@ -1561,7 +1561,16 @@ class rpraid
 		unset($signoff);
 			
 		// fixed content
-		
+		if(strlen( $this->eventlist->events[$this->event_type]['imagename'] ) > 1)
+		{
+			$eventimg = $phpbb_root_path . "images/event_images/" . $this->eventlist->events[$this->event_type]['imagename'] . ".png";
+			
+		}
+		else 
+		{
+			$eventimg = $phpbb_root_path . "images/event_images/dummy.png";
+		}
+			
 		$template->assign_vars( array(
 			'RAID_TOTAL'		=> $total_needed,
 			'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']], 
@@ -1586,8 +1595,8 @@ class rpraid
 
 			'ETYPE_DISPLAY_NAME'=> $this->eventlist->events[$this->event_type]['event_name'],
 			'EVENT_COLOR'		=> $this->eventlist->events[$this->event_type]['color'],
-			'EVENT_IMAGE' 		=> $phpbb_root_path . "images/event_images/" . $this->eventlist->events[$this->event_type]['imagename'] . ".png", 
-           	'S_EVENT_IMAGE_EXISTS' 	=> (strlen($this->eventlist->events[$this->event_type]['imagename']) > 1) ? true : false, 
+			'EVENT_IMAGE' 		=> $eventimg, 
+            
 			'SUBJECT'			=> $this->subject,
 			'MESSAGE'			=> $message,
 		
@@ -2059,11 +2068,11 @@ class rpraid
 				// don't list raidplans more than 2 months in the future
 				$end_temp_date = $start_temp_date + 31536000;
 				// show only this number of raids
-				$x = $config['rp_index_display_next_raidplans'];
+				$x = $config['rp_display_next_raidplans'];
 				break;
 			case "next":
 				// display the upcoming raidplans for the next x number of days
-				$end_temp_date = $start_temp_date + ( $config['rp_index_display_next_raidplans'] * 86400 );
+				$end_temp_date = $start_temp_date + ( $config['rp_display_next_raidplans'] * 86400 );
 				$x = 0;
 				break;
 			default:
@@ -2167,6 +2176,16 @@ class rpraid
 				}
 			}
 			
+			if(strlen( $this->eventlist->events[$this->event_type]['imagename'] ) > 1)
+			{
+				$eventimg = $phpbb_root_path . "images/event_images/" . $this->eventlist->events[$this->event_type]['imagename'] . ".png";
+				
+			}
+			else 
+			{
+				$eventimg = $phpbb_root_path . "images/event_images/dummy.png";
+			}
+			
 			$raidinfo = array(
 				'RAID_ID'				=> $this->id,
 				'PRE_PADDING'			=> $pre_padding,
@@ -2176,8 +2195,7 @@ class rpraid
 				'FULL_SUBJECT' 			=> $fsubj,
 				'EVENT_SUBJECT' 		=> $subj, 
 				'COLOR' 				=> $this->eventlist->events[$this->event_type]['color'],
-				'IMAGE' 				=> $phpbb_root_path . "images/event_images/" . $this->eventlist->events[$this->event_type]['imagename'] . ".png", 
-				'S_EVENT_IMAGE_EXISTS'  => (strlen( $this->eventlist->events[$this->event_type]['imagename'] ) > 1) ? true : false,
+				'IMAGE' 				=> $eventimg, 
 				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id), 
 				'EVENT_ID'  			=> $this->id,
 				 // for popup

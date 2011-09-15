@@ -212,7 +212,7 @@ $versions = array(
 		'config_add' => array(
 			array('rp_first_day_of_week', 0, true),
 			array('rp_index_display_week', 0, true),
-			array('rp_index_display_next_raidplans', 5),
+			array('rp_display_next_raidplans', 5),
 			array('rp_hour_mode', 24),
 			array('rp_display_truncated_name', 0, true),
 			array('rp_prune_frequency', 0, true),

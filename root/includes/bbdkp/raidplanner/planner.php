@@ -174,14 +174,13 @@ switch( $view_mode )
 		break;
 }
 
-if (!class_exists('rpup', false))
+if (!class_exists('rpblocks', false))
 {
-	//display the entire month
-	include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpup.' . $phpEx);
+	//display the blocks
+	include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpblocks.' . $phpEx);
 }
-$up = new rpup();
-// display calendar
-$up->display();
+$blocks = new rpblocks();
+$blocks->display($cal->group_options);
 
 // Output the page
 page_header($user->lang['PAGE_TITLE']); 
