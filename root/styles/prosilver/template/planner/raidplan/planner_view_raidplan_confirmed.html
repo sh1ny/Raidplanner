@@ -21,7 +21,8 @@
 	
 	<span><!-- IF raidroles.confirmations.S_RACE_IMAGE_EXISTS --><img src="{raidroles.confirmations.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
 	<!-- IF raidroles.confirmations.S_CLASS_IMAGE_EXISTS --><img src="{raidroles.confirmations.CLASS_IMAGE}" alt="{raidroles.confirmations.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
-	<strong><span style="color:{raidroles.confirmations.COLORCODE}">{raidroles.confirmations.CHARNAME}</span></strong></span> <br />
+	<strong><span style="color:{raidroles.confirmations.COLORCODE}"><a href={raidroles.confirmations.U_MEMBERDKP}>{raidroles.confirmations.CHARNAME}</a></span></strong></span> <br />
+	{L_DKP}: {raidroles.confirmations.DKP_CURRENT}, {L_ATTENDANCE}: {raidroles.confirmations.ATTENDANCEP1}<br />
 	{raidroles.confirmations.POST_TIME} <br />
 	<span class="modalinput">{raidroles.confirmations.DETAILS}</span> <br /> 
 	</td>

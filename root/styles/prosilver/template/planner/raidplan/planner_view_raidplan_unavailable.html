@@ -17,9 +17,10 @@
 	<td><strong><a>{unavailable.POSTER_URL}</a></strong><br />
 	<span><!-- IF unavailable.S_RACE_IMAGE_EXISTS --><img src="{unavailable.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
 	<!-- IF unavailable.S_CLASS_IMAGE_EXISTS --><img src="{unavailable.CLASS_IMAGE}" alt="{unavailable.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
-	<strong><span style="color:{unavailable.COLORCODE}">{unavailable.CHARNAME}</span></strong></span> <br />
+	<strong><span style="color:{unavailable.COLORCODE}"><a href={unavailable.U_MEMBERDKP}>{unavailable.CHARNAME}</a></span></strong></span> <br />
+	{L_DKP}: {unavailable.DKP_CURRENT}, {L_ATTENDANCE}: {unavailable.ATTENDANCEP1}<br />
 	{unavailable.POST_TIME}<br />
-	{unavailable.DETAILS}<br />
+	<span class="modalinput">{unavailable.DETAILS}</span> <br />
 	</td>
 </tr>
 <tr>

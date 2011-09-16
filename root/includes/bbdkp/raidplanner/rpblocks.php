@@ -162,7 +162,7 @@ class rpblocks
 				$eventimg = $phpbb_root_path . "images/event_images/dummy.png";
 			}
 			
-			$template->assign_block_vars('raidplans', array(
+			$template->assign_block_vars('upcoming', array(
 				'RAID_ID'				=> $rpraid->id,
 				'EVENTNAME'			 	=> $rpraid->eventlist->events[$rpraid->event_type]['event_name'], 
 				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$rpraid->id), 

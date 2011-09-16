@@ -3,21 +3,20 @@
 <span class="corners-top"><span></span></span>
 <h3><img width="16px" height="14px" alt="" src="{T_THEME_PATH}/images/icon_subscribe.gif">&nbsp;{L_UPCOMING_RAIDS}</h3>
 
-<!-- BEGIN raidplans -->
-<div style= "clear: left; cursor:pointer;" onclick="location.href='{raidplans.EVENT_URL}'" title="{raidplans.EVENTNAME}">
+<!-- BEGIN upcoming -->
+<div style= "clear: left; cursor:pointer;" onclick="location.href='{upcoming.EVENT_URL}'" title="{upcoming.EVENTNAME}">
 	<div style="float: left; margin: 0 5px; 0 0;">
-		<img src="{raidplans.IMAGE}" alt="{raidplans.EVENTNAME}" width="32px" height="32px"/>
+		<img src="{upcoming.IMAGE}" alt="{upcoming.EVENTNAME}" width="32px" height="32px"/>
 	</div>
 	<div style="float: left;">
-		<strong style="color:red;"><!-- IF raidplans.ALL_DAY -->{L_ALL_DAY} {raidplans.START_TIME}<!-- ELSE -->{raidplans.START_TIME}<!-- ENDIF --></strong><br/>
-		<span class="gensmall" 
-			<!-- IF raidplans.DISPLAY_BOLD --><strong><!-- ENDIF --><!-- IF raidplans.EVENTNAME -->{raidplans.EVENTNAME}<!-- ENDIF --><!-- IF raidplans.DISPLAY_BOLD --></strong><!-- ENDIF -->
+		<strong style="color:red;"><!-- IF upcoming.ALL_DAY -->{L_ALL_DAY} {upcoming.START_TIME}<!-- ELSE -->{upcoming.START_TIME}<!-- ENDIF --></strong><br/>
+		<span>
+			<!-- IF upcoming.EVENTNAME -->{upcoming.EVENTNAME}<!-- ENDIF -->
 		</span>
 	</div>
 </div>
 <hr/>
-<!-- END raidplans -->
-
+<!-- END upcoming -->
 <span class="corners-bottom"><span></span></span>
 </div>
 </div>

@@ -33,6 +33,7 @@ class rpevents
 			$this->events[$row['event_id']]['event_name'] = $row['event_name'];
 			$this->events[$row['event_id']]['color'] = $row['event_color'];
 			$this->events[$row['event_id']]['imagename'] = $row['event_imagename'];
+			$this->events[$row['event_id']]['dkpid'] = $row['event_dkpid'];
 		}
 		$db->sql_freeresult($result);
 		

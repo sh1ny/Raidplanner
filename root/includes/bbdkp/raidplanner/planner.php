@@ -37,7 +37,6 @@ if (!class_exists('rpframe', false))
 $cal = new rpframe();
 $cal->display();
 
-
 switch( $view_mode )
 {
 	case "raidplan":

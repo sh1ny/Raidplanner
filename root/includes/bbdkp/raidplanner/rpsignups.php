@@ -42,6 +42,7 @@ class rpsignup
 	
 	public $dkpmemberid;
 	public $dkpmembername;
+	public $dkmemberpurl;
 	public $classname;
 	public $imagename;
 	public $colorcode;
@@ -67,10 +68,10 @@ class rpsignup
 	 *
 	 * @param int $signup_id  
 	 */
-	public function getSignup($signup_id)
+	public function getSignup($signup_id, $dkpid=1)
 	{
 		
-		global $db, $config, $phpbb_root_path, $db;
+		global $db, $config, $phpbb_root_path, $phpEx, $db;
 		
 		$this->signup_id=$signup_id;
 		$sql = "select * from " . RP_SIGNUPS . " where signup_id = " . $this->signup_id;
@@ -134,6 +135,12 @@ class rpsignup
 		$this->raceimg = (strlen($race_image) > 1) ? $phpbb_root_path . "images/race_images/" . $race_image . ".png" : '';
 		$this->level =  $row['member_level'];
 		$this->genderid = $row['member_gender_id'];
+		$this->dkp_current = 0;
+		$this->priority_ratio = 0;
+		$this->lastraid = 0;
+		$this->attendanceP1 = 0;
+		$this->dkmemberpurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=viewmember&amp;" . URI_NAMEID . '=' . $this->dkpmemberid . '&amp;' . URI_DKPSYS . '=' . $dkpid );
+		unset ($row);
 		
 		/* get member dkp for the dkp pool to which the raid plan event belongs. */
 		$sql_array = array(
@@ -161,23 +168,26 @@ class rpsignup
 			CASE WHEN SUM(m.member_spent - m.member_item_decay) = 0 THEN ROUND((m.member_earned - m.member_raid_decay + m.member_adjustment) / ' . max(0, $config['bbdkp_basegp']) .', 2) 
 			ELSE ROUND(SUM(m.member_earned - m.member_raid_decay + m.member_adjustment) / SUM(' . max(0, $config['bbdkp_basegp']) .' + m.member_spent - m.member_item_decay),2) END AS pr ' ;
 		}
-					
+
 		$sql = $db->sql_build_query('SELECT_DISTINCT', $sql_array);
 		
 		if (($result = $db->sql_query ($sql)))
 		{
-			while ($row = $db->sql_fetchrow($result))
+			while ($row2 = $db->sql_fetchrow($result))
 			{
-				$this->dkp_current = $row ['member_current'];
+				$this->dkp_current = $row2 ['member_current'];
 				if($config['bbdkp_epgp'] == 1)
 				{
-					$this->priority_ratio = $row ['pr'];
+					$this->priority_ratio = $row2 ['pr'];
 				}
-				$this->lastraid = $row ['member_lastraid'];
+				$this->lastraid = $row2 ['member_lastraid'];
 				// fetch the 30 day 
-				$this->attendanceP1 = raidcount ( true, $row ['member_dkpid'], $config['bbdkp_list_p1'], $this->dkpmemberid ,2,false );
+				$this->attendanceP1 = raidcount ( true, $row2 ['member_dkpid'], $config['bbdkp_list_p1'], $this->dkpmemberid ,2,false );
 			}
 		}
+		unset ($row2);
+		$db->sql_freeresult($result);
+		
 			
 	}
 	
