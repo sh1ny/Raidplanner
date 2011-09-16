@@ -263,6 +263,7 @@ class rpweek extends calendar
 				'DAY_IMG'			=> $user->img('button_calendar_day', 'DAY'),
 				'MONTH_IMG'			=> $user->img('button_calendar_month', 'MONTH'),
 				'S_PLANNER_WEEK'	=> true,
+				'S_DISPLAY_NAME'	=> ($config['rp_show_name'] ==1 ? true : false) ,
 				'D0'				=> $this->daynames[0],
 				'D1'				=> $this->daynames[1],
 				'D2'				=> $this->daynames[2],

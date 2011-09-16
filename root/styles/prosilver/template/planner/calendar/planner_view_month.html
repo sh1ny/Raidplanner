@@ -64,9 +64,12 @@ $(document).ready( function()
 		<!-- BEGIN raidplans -->
 		<!-- IF calendar_days.raidplans.S_FIRST_ROW --><!-- IF calendar_days.BIRTHDAYS --><hr class="hrCal"><!-- ENDIF --><!-- ELSE --><hr class="hrCal"><!-- ENDIF -->
 		<a id="raid_id{calendar_days.raidplans.RAID_ID}" href="{calendar_days.raidplans.EVENT_URL}">
-		<!-- IF calendar_days.raidplans.COLOR --><span><!-- ENDIF -->
-			<!-- IF calendar_days.raidplans.DISPLAY_BOLD --><strong><!-- ENDIF -->
 			<img src="{calendar_days.raidplans.IMAGE}" alt="{calendar_days.raidplans.ETYPE_DISPLAY_NAME}" /> <br/>
+			<!-- IF S_DISPLAY_NAME -->
+			
+			<!-- IF calendar_days.raidplans.COLOR --><span><!-- ENDIF -->
+			<!-- IF calendar_days.raidplans.DISPLAY_BOLD --><strong><!-- ENDIF -->
+			
 			<!-- IF calendar_days.raidplans.ETYPE_DISPLAY_NAME -->{calendar_days.raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{calendar_days.raidplans.EVENT_SUBJECT}
 			<!-- IF calendar_days.raidplans.DISPLAY_BOLD --></strong><!-- ENDIF -->
 				<!-- IF calendar_days.raidplans.SHOW_TIME --><br /><span class="smCalText">
@@ -77,6 +80,10 @@ $(document).ready( function()
 					<!-- ENDIF --></span>
 				<!-- ENDIF -->
 			<!-- IF calendar_days.raidplans.COLOR --></span><!-- ENDIF -->
+			
+			<!-- ENDIF -->
+			
+			
 	  		</a>
 		<div class="bbtooltip">
 			<div class="bbinner">

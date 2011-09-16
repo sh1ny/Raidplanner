@@ -234,6 +234,8 @@ $versions = array(
 			array('rp_show_raidplanner', 60, true),
 			array('rp_show_welcomemsg', 1, true),
 			array('rp_welcomemessage', '', true),
+			array('rp_show_name', 0, true),
+			
 			),
         	 
 			//adding some tables

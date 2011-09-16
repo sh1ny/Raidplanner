@@ -52,18 +52,17 @@ $(document).ready( function()
 	      <td colspan="{raidplans.PADDING}" class="bg1_calDay" style="text-align: center;">
 	      		<!-- IF raidplans.EVENT_URL -->
           		<a id="raid_id{raidplans.RAID_ID}" href="{raidplans.EVENT_URL}">
-          			<span style="color:{raidplans.COLOR}">
-          			<!-- IF raidplans.DISPLAY_BOLD --><strong><!-- ENDIF -->
           			<img src="{raidplans.IMAGE}" alt="{raidplans.ETYPE_DISPLAY_NAME}" /> <br/>
+          			<!-- IF raidplans.DISPLAY_BOLD --><strong><!-- ENDIF -->
           			<!-- IF raidplans.ETYPE_DISPLAY_NAME -->{raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{raidplans.EVENT_SUBJECT}
-          			<!-- IF raidplans.DISPLAY_BOLD --></strong><!-- ENDIF --><br /><span class="smCalText">
-          					<!-- IF calendar_days.raidplans.SHOW_TIME -->
-          					<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}
-          					<!-- ELSE -->{L_INVITE}: {raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {raidplans.START_TIME}
-          					<br />{L_TO_TIME}: {raidplans.END_TIME}
-          					<!-- ENDIF --></span>
-          					<!-- ENDIF -->
-          			<!-- IF raidplans.COLOR --></span><!-- ENDIF -->
+          			<!-- IF raidplans.DISPLAY_BOLD --></strong><!-- ENDIF --><br />
+          			<span class="smCalText">
+          				<!-- IF calendar_days.raidplans.SHOW_TIME -->
+          				<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}
+          				<!-- ELSE -->{L_INVITE}: {raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {raidplans.START_TIME}
+          				<br />{L_TO_TIME}: {raidplans.END_TIME}
+          			<!-- ENDIF --></span>
+          			<!-- ENDIF -->
           		</a>
           		<div class="bbtooltip">
 			 	    <div class="bbinner">
