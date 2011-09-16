@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
-<!-- Raidplanner $Id $ -->
-<!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
-<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+	<!-- Raidplanner $Id $ -->
+	<!--
+		NOTICE: Please open this file in your web browser. If presented with a
+		security warning, you may safely tell it to allow the blocked content.
+	-->
+	<!--
+		For security purposes, please check: http://www.phpbb.com/mods/ for
+		the latest version of this MOD.\nAlthough MODs are checked before
+		being allowed in the MODs Database there is no guarantee that there
+		are no security problems within the MOD.\nNo support will be given for
+		MODs not found within the MODs Database which can be found at
+		http://www.phpbb.com/mods/
+	-->
 <mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
 	<header>
-		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
-		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
+		<meta name="generator"
+			content="MODX file generated with PP MODX Creator by tumba25 (online version)" />
+		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)" />
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[RaidPlanner 0.0.1]]></title>
-		<description lang="en"><![CDATA[Raidplanner Installer. The Raidplanner mod is based on Alightner's Calendar mod, and modified to work with bbDKP. It has an UMIL installer, Raid icons and links to the bbDKP event and members Table. If you have no bbDKP installation it can be used as a standalone Calendar.]]></description>
-		<author-notes lang="en"><![CDATA[We hope you get everything working. further developement requests, support questions are welcome at www.bbdkp.com]]></author-notes>
+		<title lang="en"><![CDATA[bbDKP Raidplanner 0.2.0]]></title>
+		<description lang="en"><![CDATA[Raidplanner Installer. 
+		see /docs/install.html and /docs/changelog.html
+]]></description>
+		<author-notes lang="en"><![CDATA[We hope you get everything working. further development requests, 
+		support questions are welcome at www.bbdkp.com]]></author-notes>
 		<author-group>
 			<author>
 				<realname><![CDATA[A. Vandenberghe]]></realname>
@@ -18,7 +32,8 @@
 				<homepage><![CDATA[http://www.bbdkp.com]]></homepage>
 				<email><![CDATA[sajaki9@gmail.com]]></email>
 				<contributions-group>
-					<contributions status="current" from="2010-09-30" position="Developer"/>
+					<contributions status="current" from="2010-09-30"
+						position="Developer" />
 				</contributions-group>
 			</author>
 			<author>
@@ -26,125 +41,144 @@
 				<username><![CDATA[alightner]]></username>
 				<homepage><![CDATA[http://www.phpbbcalendarmod.com]]></homepage>
 				<contributions-group>
-					<contributions status="past" from="2007-09-07" to="2010-09-30" position="Developer"/>
+					<contributions status="past" from="2007-09-07" to="2010-09-30"
+						position="Developer" />
 				</contributions-group>
 			</author>
 			<author>
 				<realname><![CDATA[T. Farmer]]></realname>
 				<username><![CDATA[SpaceDoG]]></username>
 				<contributions-group>
-					<contributions status="past" from="2007-09-06" to="2007-10-29" position="Developer"/>
+					<contributions status="past" from="2007-09-06" to="2007-10-29"
+						position="Developer" />
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>0.0.1</mod-version>
+		<mod-version>0.2.0</mod-version>
 		<installation>
 			<level>easy</level>
-			<time>300</time>
-			<target-version>3.0.8</target-version>
+			<time>600</time>
+			<target-version>3.0.9</target-version>
 		</installation>
-		<history>
-			<entry>
-				<date>2010-12-01</date>
-				<rev-version>0.0.1</rev-version>
-				<changelog lang="en">
-					<change><![CDATA[[CHG] split backend /includes code and refactored into php5 classes]]></change>
-					<change><![CDATA[[CHG] added UMIF installer script, removed sql portions from modx, changed tablenames]]></change>
-					<change><![CDATA[[CHG] split modx file into main and language]]></change>
-					<change><![CDATA[[CHG] new constants file]]></change>
-					<change><![CDATA[[CHG] mod renamed and version number back to 0.0.1]]></change>
-				</changelog>
-			</entry>
-		</history>
 		<link-group>
-			<link type="language" href="contrib/en.xml" lang="en">English</link>
-			<link type="template" href="contrib/prosilver.xml" lang="en">Prosilver</link>
+			<link type="dependency" href="http://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.2.4</link>
 		</link-group>
 	</header>
 	<action-group>
 		<copy>
-			<file from="root/*.*" to="*.*"/>
+			<file from="root/includes/ucp/info/ucp_planner.php" to="includes/ucp/info/ucp_planner.php" />
+			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php" />
+			<file from="root/includes/bbdkp/raidplanner/*.*" to="includes/bbdkp/raidplanner/*.*" />
+
+			<file from="root/images/raidrole_images/*.*" to="root/images/raidrole_images/*.*" />
+			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php" />
+			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php" />
+			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html" />
+			<file from="root/umil/*.*" to="umil/*.*" />
+			<file from="root/install/installrp.php" to="install/installrp.php" />
+
+			<file from="root/language/en/mods/info_ucp_planner.php" to="language/en/mods/info_ucp_planner.php" />
+			<file from="root/language/en/mods/permissions_raidplanner.php" to="language/en/mods/permissions_raidplanner.php" />
+			<file from="root/language/en/mods/raidplanner.php" to="language/en/mods/raidplanner.php" />
+			<file from="root/language/en/mods/info_acp_raidplanner.php" to="language/en/mods/info_acp_raidplanner.php" />
+			<file from="root/language/en/email/calendar_updated_reply.txt" to="language/en/email/calendar_updated_reply.txt" />
+			<file from="root/language/en/email/calendar_updated_event.txt" to="language/en/email/calendar_updated_event.txt" />
+			<file from="root/language/en/email/calendar_new_event.txt" to="language/en/email/calendar_new_event.txt" />
+			
+			<file from="root/styles/prosilver/imageset/en/planner/*.*" to="styles/prosilver/imageset/en/planner/*.*"/>
+			<file from="root/styles/prosilver/imageset/planner/*.*" to="styles/prosilver/imageset/planner/*.*"/>			
+			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
+			<file from="root/styles/prosilver/theme/dkp/*.*" to="styles/prosilver/theme/dkp/*.*"/>
+			<file from="root/styles/prosilver/theme/raidplanner.css" to="styles/prosilver/theme/raidplanner.css"/>
 		</copy>
-		<open src="common.php">
+		
+		<open src="includes/bbdkp/constants_bbdkp.php">
 			<edit>
-				<comment lang="en"><![CDATA[adding required classfiles for Raidplanner in common.php.]]></comment>
-				<comment lang="fr"><![CDATA[Ajout des classes requises Raidplanner dans common.php]]></comment>
-				<comment lang="de"><![CDATA[Zufügung Raidplanner im common.php]]></comment>
-				<find><![CDATA[require($phpbb_root_path . 'includes/constants.' . $phpEx);]]></find>
-				<action type="after-add"><![CDATA[// Raidplanner
-require($phpbb_root_path .  'includes/bbdkp/raidplanner/constants_rp.' . $phpEx);
+				<comment lang="en"><![CDATA[adding tablenames to constants file]]></comment>
+				<comment lang="fr"><![CDATA[Ajout noms des tables]]></comment>
+				<comment lang="de"><![CDATA[Zufügung Dateinamen]]></comment>
+				<find><![CDATA[// RAIDPLANNER]]></find>
+				<action type="after-add"><![CDATA[define('RP_RAIDS_TABLE',		$table_prefix . 'rp_raids');
+define('RP_RECURRING',		$table_prefix . 'rp_recurring');
+define('RP_SIGNUPS',		$table_prefix . 'rp_signups');
+define('RP_RAIDPLAN_WATCH',	$table_prefix . 'rp_raidplans_watch');
+define('RP_WATCH',			$table_prefix . 'rp_watch');
+define('RP_ROLES',			$table_prefix . 'rp_roles');
+define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
+define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');				
 ]]></action>
 			</edit>
 		</open>
-		<open src="includes/acp/acp_language.php">
+		
+		<open src="includes/functions.php">
 			<edit>
-				<comment lang="en"><![CDATA[Define raidplanner imageset keys for localised theme language]]></comment>
-				<find><![CDATA['icon_back_top', 'icon_contact_aim', 'icon_contact_email',]]></find>
-				<inline-edit>
-					<inline-find><![CDATA['icon_post_edit',]]></inline-find>
-					<inline-action type="after-add"><![CDATA[ 'icon_raidplanner_edit_all', 'icon_raidplanner_delete_all','button_raidplanner_new', 'button_raidplanner_day', 'button_raidplanner_week', 'button_raidplanner_month',]]></inline-action>
-				</inline-edit>
-			</edit>
-		</open>
-		<open src="includes/acp/acp_styles.php">
-			<edit>
-				<comment lang="en"><![CDATA[Define new localised raidplanner imageset keys for theme ]]></comment>
-				<find><![CDATA['icon_back_top', 'icon_contact_aim', 'icon_contact_email',]]></find>
-				<inline-edit>
-					<inline-find><![CDATA['icon_post_edit',]]></inline-find>
-					<inline-action type="after-add"><![CDATA[ 'button_raidplanner_new', 'button_raidplanner_day', 'button_raidplanner_week', 'button_raidplanner_month',]]></inline-action>
-				</inline-edit>
-			</edit>
-		</open>
-		<open src="includes/ucp/ucp_main.php">
-			<edit>
-				<comment lang="en"><![CDATA[Define Calendar modules actions]]></comment>
-				<find><![CDATA[case 'bookmarks':]]></find>
-				<action type="before-add"><![CDATA[			case 'raidplanner_registration':
-
-				$user->add_lang('mods/raidplanner');
-				if ( !class_exists('displayplanner')) 
-		        {
-					include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
-		        }
-		        $cal = new displayplanner;
-				$daycount = request_var('daycount', 7 );
-				$cal->display_users_next_events_for_x_days($daycount, $user->data['user_id'] );
-				$template->assign_vars(array(
-						'U_COUNT_ACTION'	=> $this->u_action,
-						'DAYCOUNT'			=> $daycount ));
-				unset($cal); 
-			break;
-
-			case 'raidplanner_myevents':
-
-				$user->add_lang('mods/raidplanner');
-				if ( !class_exists('displayplanner')) 
-		        {
-					include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_display.' . $phpEx);
-				}
-				$cal = new displayplanner;
-				$daycount = request_var('daycount', 7 );
-				$cal->display_posters_next_events_for_x_days($daycount, $user->data['user_id'] );
-				$template->assign_vars(array(
-						'U_COUNT_ACTION'	=> $this->u_action,
-						'DAYCOUNT'			=> $daycount ));
-				unset($cal);
-
-			break;
-]]></action>
-			</edit>
-		</open>
-		<open src="includes/ucp/info/ucp_main.php">
-			<edit>
-				<comment lang="en"><![CDATA[Define Raidplanner submodules in UCP]]></comment>
-				<find><![CDATA['subscribed'	=> array('title' => 'UCP_MAIN_SUBSCRIBED', 'auth' => '', 'cat' => array('UCP_MAIN')),
-				]]></find>
-				<action type="after-add"><![CDATA[				'raidplanner_registration'		=> array('title' => 'UCP_MAIN_RAIDPLANNER_REGISTRATION', 'auth' => '', 'cat' => array('UCP_MAIN')),
-				'raidplanner_myevents'		=> array('title' => 'UCP_MAIN_RAIDPLANNER_MYEVENTS', 'auth' => '', 'cat' => array('UCP_MAIN')),
+				<comment lang="en"><![CDATA[ adding Planner link in functions.php right after bbdkp]]></comment>
+				<find><![CDATA[		'SITENAME'						=> $config['sitename'],]]></find>
+				<action type="after-add"><![CDATA[        'U_PLANNER'            => append_sid("{$phpbb_root_path}dkp.$phpEx", 'page=planner'),
 				]]></action>
 			</edit>
 		</open>
+<open src="language/en/ucp.php">
+			<edit>
+				<comment lang="en"><![CDATA[Add Raidplanner UCP strings]]></comment>
+				<find><![CDATA['DISABLE_CENSORS'			=> 'Enable word censoring',
+		]]></find>
+				<action type="after-add"><![CDATA[	'DISPLAY_EVENTS_DAYCOUNT'	=> 'How many days into the future do you want to display?',
+		]]></action>
+			</edit>
+
+			<edit>
+				<comment lang="en"><![CDATA[Define Calendar UCP module name strings]]></comment>
+				<find><![CDATA['UCP_MAIN_ATTACHMENTS'		=> 'Manage attachments',]]></find>
+				<action type="after-add"><![CDATA[	'UCP_MAIN_RAIDPLANNER_MYEVENTS'	=> 'Manage my Raids',
+			'UCP_MAIN_RAIDPLANNER_REGISTRATION'=> 'Manage Raid registration',
+		]]></action>
+			</edit>
+		</open>
+
+		<open src="language/en/common.php">
+            <edit>
+                <comment lang="en"><![CDATA[Define Calendar string]]></comment>
+               <find><![CDATA[=> 'Bytes',]]></find>
+                <action type="after-add"><![CDATA[    'PLANNER'                => 'Raidplanner',
+]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/template/dkp/dkpmain.html">
+			<edit>
+				<comment lang="en"><![CDATA[Add calendar to DKP page]]></comment>
+				<find><![CDATA[<!-- [+] Raidplanner -->]]></find>
+				<action type="after-add"><![CDATA[
+<!-- IF S_PLANNER_RAIDFRAME -->
+	<!-- INCLUDE planner/planner_raidframe.html -->
+<!-- ENDIF -->
+]]></action>
+			</edit>
+		</open>		
+		
+		<open src="/styles/prosilver/template/dkp/module/menu.html">
+			<edit>
+				<comment lang="en"><![CDATA[raidplanner link]]></comment>
+				<comment lang="fr"><![CDATA[raidplanner link]]></comment>
+				<comment lang="de"><![CDATA[raidplanner link]]></comment>								
+				<find><![CDATA[  <!-- IF U_ACP -->&nbsp; &nbsp; <a href="{U_DKP_ACP}">{L_MENU_ADMIN_PANEL}</a> <!-- ENDIF -->]]></find>
+				<action type="before-add"><![CDATA[	&nbsp; &nbsp;<a href="{U_PLANNER}">{L_PLANNER}</a>
+]]></action>
+			</edit>
+		</open>
+				
+		<open src="/styles/prosilver/theme/stylesheet.css">
+			<edit>
+				<comment lang="en"><![CDATA[raidplanner css]]></comment>
+				<comment lang="fr"><![CDATA[raidplanner css]]></comment>
+				<comment lang="de"><![CDATA[raidplanner css]]></comment>								
+				<find><![CDATA[@import url("bbdkp.css");]]></find>
+				<action type="after-add"><![CDATA[@import url("raidplanner.css");
+]]></action>
+			</edit>
+		</open>
+
 		<php-installer><![CDATA[install/installrp.php]]></php-installer>
 		<diy-instructions lang="en"><![CDATA[Run database installer : Browse to install/installrp.php. This will install the Raidplanner database tables, the ACP and UCP modules, purge the cache and refresh the template, imagesets and themes. Note that if you run a Style other than Prosilver, you will need to apply the Prosilver changes to your style either manually - by following the edit instructions in prosilver.xml, or by automatically, by going into the "Detail" tab in Automod and applying the Prosilver changes to yur style. ]]></diy-instructions>
 	</action-group>

@@ -1,0 +1,21 @@
+<div class="panel">
+<div class="inner">
+<span class="corners-top"><span></span></span>
+<h3><img width="16px" height="14px" alt="" src="{T_THEME_PATH}/images/icon_bump.gif">&nbsp;{L_TOPSIGNUPS}</h3>
+
+<!-- BEGIN topsignups -->
+<div style="clear: left;">
+
+<div style="float: left; margin: 0 5px; 0 0;"><!-- IF topsignups.S_RACE_IMAGE_EXISTS --><img src="{topsignups.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
+	<!-- IF topsignups.S_CLASS_IMAGE_EXISTS --><img src="{topsignups.CLASS_IMAGE}" alt="{topsignups.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
+</div>
+<div style="float: left;">
+<strong><span style="color:{topsignups.COLORCODE}">{topsignups.CHARNAME} : {topsignups.COUNTSIGNUPS} </span></strong>
+</div>
+</div>
+<hr/>
+<!-- END topsignups -->
+
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>

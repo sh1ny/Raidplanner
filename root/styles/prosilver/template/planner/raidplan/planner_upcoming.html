@@ -1,0 +1,23 @@
+<div class="panel">
+<div class="inner">
+<span class="corners-top"><span></span></span>
+<h3><img width="16px" height="14px" alt="" src="{T_THEME_PATH}/images/icon_subscribe.gif">&nbsp;{L_UPCOMING_RAIDS}</h3>
+
+<!-- BEGIN upcoming -->
+<div style= "clear: left; cursor:pointer;" onclick="location.href='{upcoming.EVENT_URL}'" title="{upcoming.EVENTNAME}">
+	<div style="float: left; margin: 0 5px; 0 0;">
+		<img src="{upcoming.IMAGE}" alt="{upcoming.EVENTNAME}" width="32px" height="32px"/>
+	</div>
+	<div style="float: left;">
+		<strong style="color:red;"><!-- IF upcoming.ALL_DAY -->{L_ALL_DAY} {upcoming.START_TIME}<!-- ELSE -->{upcoming.START_TIME}<!-- ENDIF --></strong><br/>
+		<span>
+			<!-- IF upcoming.EVENTNAME -->{upcoming.EVENTNAME}<!-- ENDIF -->
+		</span>
+	</div>
+</div>
+<hr/>
+<!-- END upcoming -->
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>
+

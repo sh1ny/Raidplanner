@@ -1,0 +1,77 @@
+<!-- IF S_SHOW_WELCOME_MSG -->
+<div class="panel">
+<div class="inner">
+<span class="corners-top"><span></span></span>
+{WELCOME_MSG}
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>
+<!-- ENDIF -->
+
+<!-- left sidebar -->
+<div style="float: left; width: 0%; margin-left:0.5%">
+
+</div>
+<!-- middle div -->
+
+<div style="float: left; width: 79%; margin-left:0.5%; margin-right:0.5%">
+
+<div class="panel">
+<div class="inner">
+<span class="corners-top"><span></span></span>
+
+<!-- IF S_PLANNER_ADD -->
+<h3>{L_NEWRAID}</h3>
+<!-- ELSE -->
+<h3>{L_RAIDPLANNER}</h3>
+<!-- ENDIF -->
+
+<!-- IF S_PLANNER_DAY || S_PLANNER_WEEK || S_PLANNER_MONTH -->
+<div class="navbar raidplanner_bg">
+	<div class="inner"><span class="corners-inner-top"><span></span></span>
+	      	<div style="float: left;"><a class="prev_planner" title="{L_SHOW_PREV}" type="button" href="{CALENDAR_PREV}"></a></div>
+			<form id="viewOpts" method="post" action="{S_POST_ACTION}">
+	      	<div style="float: left;"> {MODE_VIEW_OPTIONS} &nbsp; {CALENDAR_VIEW_OPTIONS}<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_GO}" class="button2" /></div>
+	    	</form>
+		    <div style="float: left;"><a class="next_planner" title="{L_SHOW_PREV}" type="button" href="{CALENDAR_NEXT}"></a></div>
+	    <span class="corners-inner-bottom"><span></span></span>
+    </div>
+</div>
+<!-- ENDIF -->
+
+<!-- IF S_PLANNER_DAY -->
+	<!-- INCLUDE planner/calendar/planner_view_day.html -->
+<!-- ENDIF -->
+<!-- IF S_PLANNER_WEEK -->
+	<!-- INCLUDE planner/calendar/planner_view_month.html -->
+<!-- ENDIF -->
+<!-- IF S_PLANNER_MONTH -->
+	<!-- INCLUDE planner/calendar/planner_view_month.html -->
+<!-- ENDIF -->
+
+<!-- IF S_PLANNER_RAIDPLAN -->
+	<!-- INCLUDE planner/raidplan/planner_view_raidplan.html -->
+<!-- ENDIF -->
+<!-- IF S_PLANNER_ADD -->
+	<!-- INCLUDE planner/raidplan/planner_post_body.html -->
+<!-- ENDIF -->
+<!-- IF S_PLANNER_WEEK_ON_INDEX -->
+	<!-- INCLUDE planner/calendar/planner_week_on_index.html -->
+<!-- ENDIF -->
+
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>
+
+</div>
+
+<!-- right sidebar -->
+<div style="float: right; width: 19%; margin-right:0.5%">
+<!-- IF S_PLANNER_UPCOMING -->
+	<!-- INCLUDE planner/raidplan/planner_upcoming.html -->
+<!-- ENDIF -->
+<!-- IF S_PLANNER_TOPSIGNUPS -->
+	<!-- INCLUDE planner/raidplan/planner_topsignups.html -->
+<!-- ENDIF -->
+
+</div>

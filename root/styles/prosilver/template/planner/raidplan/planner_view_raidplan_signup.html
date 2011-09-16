@@ -1,0 +1,55 @@
+<fieldset>
+<div id="rpsignup">
+<!-- IF S_CANSIGNUP -->
+	<form method="post" action="{U_SIGNUP_MODE_ACTION}" name="signup_form{RAID_ID}" id="signup_form{RAID_ID}">
+	<div class="panel bg2">
+	<div class="inner"><span class="corners-top"><span></span></span>
+	
+	<fieldset>
+	<dl>
+		<dt>{L_CALENDAR_WILL_ATTEND}</dt>
+		<dd>
+		<select name='signup_val{RAID_ID}' id='signup_val{RAID_ID}'>
+		<option value='2'>{L_AVAILABLE}</option>
+		<option value='1'>{L_MAYBE}</option>
+		<option value='0'>{L_NOTAVAILABLE}</option>
+		</select>
+		</dd>
+	
+		<dt>{L_RAIDROLE}</dt>
+		<dd>
+		<select id="signuprole{RAID_ID}" name="signuprole{RAID_ID}">
+		<!-- BEGIN raidroles -->
+		<option value='{raidroles.ROLE_ID}' {raidroles.ROLE_SELECTED}>{raidroles.ROLE_NAME}</option><!-- END raidroles -->
+		</select>
+		</dd>
+		
+		<dt>{L_RAIDCHARACTER}</dt>
+		<dd>
+		<select id="signupchar{RAID_ID}" name="signupchar{RAID_ID}">
+		<!-- BEGIN mychars -->
+		<option value='{mychars.MEMBER_ID}' {mychars.MEMBER_SELECTED}>{mychars.MEMBER_NAME}</option><!-- END mychars -->
+		</select>
+		</dd>
+	
+		<dt>&nbsp;<br />
+		{L_COMMENTS}</dt>
+		<dd><textarea name="signup_detail{RAID_ID}" id="signup_detail{RAID_ID}" rows="4" cols="25">{CURR_SIGNUP_DETAIL}</textarea></dd>
+		<dt>&nbsp;</dt>
+		<dd><input type="hidden" name="hidden_signup_id{RAID_ID}" id="hidden_signup_id{RAID_ID}" value="{CURR_SIGNUP_ID}" />
+			<input type="submit" name="signmeup{RAID_ID}" value="{L_SUBMIT}" class="button1" /></dd>
+	</dl>
+	</fieldset>
+	<span class="corners-bottom"><span></span></span></div>
+	</div>
+	</form>
+<!-- ELSE -->
+	<div class="panel bg2">
+	<div class="inner"><span class="corners-top"><span></span></span>
+		<p class="error">{L_CANNOTSIGNUP}</p>
+	<span class="corners-bottom"><span></span></span></div>
+	</div>
+<!-- ENDIF -->
+</div>
+</fieldset>
+

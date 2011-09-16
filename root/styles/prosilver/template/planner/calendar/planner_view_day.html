@@ -1,0 +1,166 @@
+<script type="text/javascript"> 
+/* jqt tooltips */
+<!-- IF EVENT_COUNT -->
+$(document).ready( function() 
+{
+<!-- BEGIN raidplans -->
+	$("#raid_id{raidplans.RAID_ID}").tooltip(
+			{ offset: [10, 60],  
+			  effect: 'slide',  
+			  onShow: function() {this.getTrigger().fadeTo("slow", 0.25);},
+			  onHide: function() {this.getTrigger().fadeTo(300,1);}
+			}).dynamic({
+					 bottom: 
+						 { direction: 'down', bounce: true } 
+				 		});
+<!-- END raidplans -->
+}
+);
+<!-- ENDIF -->
+</script>
+
+
+<div class="forumbg">
+  	<div class="inner">
+  	<span class="corners-inner-top"><span></span></span>
+	 <ul class="topiclist">
+    	<li class= "header">
+    	<h1 style="color:#dfc065; white-space:nowrap;">{CALENDAR_HEADER}</h1>
+    	</li>
+    </ul>
+
+  <table style="width: 100%; text-align: center"><tr><td style="width: 100%; text-align: center; margin-left: auto; margin-right: auto;">
+  <table class="table1" style="width: 100%" cellspacing="0" cellpadding="0" border="0">
+    <!-- IF .time_headers -->
+    <tr>
+      <!-- BEGIN time_headers -->
+      <td style="width: 4.166%; text-align: center" colspan="4" class="bg3">{time_headers.TIME} {time_headers.AM_PM}</td>
+      <!-- END time_headers -->
+    </tr>
+    <!-- ENDIF -->
+    
+    <!-- IF BIRTHDAYS -->
+    <tr>
+      <td colspan="96" class="bg3_calDay" style="text-align: center;">
+    	{BIRTHDAYS}
+   	</td>
+   	</tr>
+    <!-- ENDIF -->
+    <!-- IF EVENT_COUNT -->
+	    <!-- BEGIN raidplans -->
+	      <!-- IF raidplans.PRE_PADDING --><td colspan="{raidplans.PRE_PADDING}" class="bg3_calDay">&nbsp;</td><!-- ENDIF -->
+	      <td colspan="{raidplans.PADDING}" class="bg1_calDay" style="text-align: center;">
+	      		<!-- IF raidplans.EVENT_URL -->
+          		<a id="raid_id{raidplans.RAID_ID}" href="{raidplans.EVENT_URL}">
+          			<img src="{raidplans.IMAGE}" alt="{raidplans.ETYPE_DISPLAY_NAME}" /> <br/>
+          			<!-- IF raidplans.DISPLAY_BOLD --><strong><!-- ENDIF -->
+          			<!-- IF raidplans.ETYPE_DISPLAY_NAME -->{raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{raidplans.EVENT_SUBJECT}
+          			<!-- IF raidplans.DISPLAY_BOLD --></strong><!-- ENDIF --><br />
+          			<span class="smCalText">
+          				<!-- IF calendar_days.raidplans.SHOW_TIME -->
+          				<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}
+          				<!-- ELSE -->{L_INVITE}: {raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {raidplans.START_TIME}
+          				<br />{L_TO_TIME}: {raidplans.END_TIME}
+          			<!-- ENDIF --></span>
+          			<!-- ENDIF -->
+          		</a>
+          		<div class="bbtooltip">
+			 	    <div class="bbinner">
+					    <div class="t"></div>
+					    	<div style="text-align: left">
+					    	<img src="{raidplans.IMAGE}" alt="{raidplans.ETYPE_DISPLAY_NAME}" /> <br/>
+							<br/><h4>{calendar_days.raidplans.EVENT_SUBJECT}</h4>
+							<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}
+          					<!-- ELSE -->
+							{L_INVITE}: {raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {raidplans.START_TIME}
+          					<br />{L_TO_TIME}: {raidplans.END_TIME}
+          					<!-- ENDIF -->
+          					<br />
+							<br />
+							<strong>{L_SIGNUPS}</strong>
+							<br />
+							{L_CONFIRMED}
+							{raidplans.CURR_CONFIRMED_COUNT}/{raidplans.RAID_TOTAL} ({raidplans.CURR_CONFIRMEDPCT})<br />
+							{L_AVAILABLE} : 
+							{raidplans.CURR_YES_COUNT}/{raidplans.RAID_TOTAL} ({raidplans.CURR_YESPCT})<br />
+							{L_MAYBE} :
+							{raidplans.CURR_MAYBE_COUNT}/{raidplans.RAID_TOTAL} ({raidplans.CURR_MAYBEPCT})<br />
+							{L_NOTAVAILABLE} :
+							{raidplans.CURR_NO_COUNT}/{raidplans.RAID_TOTAL} ({raidplans.CURR_NOPCT})<br />
+							<br />
+							
+          					<!-- IF raidplans.S_CANSIGNUP && raidplans.S_LEGITUSER -->
+          					<hr />
+         						<form method="post" action="{raidplans.S_SIGNUP_MODE_ACTION}" name="signup_form{raidplans.RAID_ID}" id="signup_form{raidplans.RAID_ID}">
+          						<fieldset>
+								<dl>
+									<dt>{L_RAIDCHARACTER}</dt>
+									<dd>
+									<select id="signupchar{raidplans.RAID_ID}" name="signupchar{raidplans.RAID_ID}">
+									<!-- BEGIN userchars -->
+										<option value='{raidplans.userchars.MEMBER_ID}' {raidplans.userchars.MEMBER_SELECTED}>{raidplans.userchars.MEMBER_NAME}</option>
+									<!-- END userchars -->
+									</select>
+									</dd>
+									
+									<dt>{L_CALENDAR_WILL_ATTEND}</dt>
+									<dd>
+									<select name='signup_val{raidplans.RAID_ID}' id='signup_val{raidplans.RAID_ID}'>
+									<option value='2'>{L_AVAILABLE}</option>
+									<option value='1'>{L_MAYBE}</option>
+									<option value='0'>{L_NOTAVAILABLE}</option>
+									</select>
+									</dd>
+									
+									<dt>{L_RAIDROLE}</dt>
+									<dd>
+									<select id="signuprole{raidplans.RAID_ID}" name="signuprole{raidplans.RAID_ID}">
+									<!-- BEGIN raidroles -->
+										<option value='{raidplans.raidroles.ROLE_ID}' {raidplans.raidroles.ROLE_SELECTED}>{raidplans.raidroles.ROLE_NAME}</option>
+									<!-- END raidroles -->
+									</select>
+									</dd>
+									
+								
+									<dt>&nbsp;<br />
+									{L_COMMENTS}</dt>
+									<dd><textarea name="signup_detail{raidplans.RAID_ID}" id="signup_detail{raidplans.RAID_ID}" rows="4" cols="25">{raidplans.CURR_SIGNUP_DETAIL}</textarea></dd>
+									<dt>&nbsp;</dt>
+									<dd><input type="hidden" name="hidden_signup_id{raidplans.RAID_ID}" id="hidden_signup_id{raidplans.RAID_ID}" value="{raidplans.CURR_SIGNUP_ID}" />
+										<input type="submit" name="signmeup{raidplans.RAID_ID}" value="{L_SUBMIT}" class="button1" /></dd>
+								</dl>
+								</fieldset>
+								</form>
+								<!-- ENDIF -->
+							</div>
+				    </div>
+		     		<div class="b">
+		     			<div></div>
+		     		</div> 
+		     	</div>
+          		<!-- ELSE -->
+          		{raidplans.DATA}
+          		<!-- ENDIF -->
+	      </td>
+	      <!-- IF raidplans.POST_PADDING --><td colspan="{raidplans.POST_PADDING}" class="bg3_calDay">&nbsp;</td><!-- ENDIF -->
+	    </tr>
+	    <!-- END raidplans -->
+    <!-- ELSE -->
+    	<tr>
+	      <td colspan="96" class="bg1_calDay" style="text-align: center">&nbsp;<br />{L_NO_EVENTS_TODAY}<br />&nbsp;</td>
+	    </tr>
+    <!-- ENDIF -->
+  
+  </table>
+  </td></tr></table>
+
+<span class="corners-inner-bottom"><span></span></span>
+</div>
+</div>
+
+<div class="buttons">
+<!-- IF S_ADD_LINK --><div class="planner-new-icon"><a href="{ADD_LINK}" title="{L_NEW_EVENT}"><span></span></a></div><!-- ENDIF -->
+<div class="planner-week-icon"><a href="{WEEK_VIEW_URL}" title="{L_WEEK}"><span></span></a></div>
+<div class="planner-month-icon"><a href="{MONTH_VIEW_URL}" title="{L_MONTH}"><span></span></a></div>
+</div>
+

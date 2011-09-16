@@ -1,0 +1,52 @@
+<!-- INCLUDE overall_header.html -->
+	<!-- IF .raidplans -->
+		<div class="forabg">
+			<div class="inner"><span class="corners-top"><span></span></span>
+			<ul class="topiclist">
+				<li class="header">
+					<dl class="icon">
+						<dt>{L_UPCOMING_EVENTS}</dt>
+						<!-- IF S_SIGNUP_COLUMN -->
+							<dd style="width:16%">{L_COL_WILL_ATTEND}</dd>
+							<dd style="width:16%">{L_INVITE_INFO}</dd>
+						<!-- ELSE -->
+							<dd style="width:16%">{L_INVITE_INFO}</dd>
+							<dd style="width:16%">{L_EVENT_CREATED_BY}</dd>
+						<!-- ENDIF -->
+					</dl>
+				</li>
+			</ul>
+			<ul class="topiclist forums">
+			<!-- BEGIN raidplans -->
+				<!-- IF S_SIGNUP_COLUMN -->
+					<!-- IF raidplans.VALUE != 1 -->
+						<li class="row">
+							<dl class="icon"<!-- IF raidplans.IMAGE --> style="background-image: url({raidplans.IMAGE}); background-repeat: no-repeat;"<!-- ENDIF -->>
+								<dt><a href="{raidplans.EVENT_URL}" title="<!-- IF raidplans.ETYPE_DISPLAY_NAME -->{raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{raidplans.FULL_SUBJECT}">
+									<span style="<!-- IF raidplans.COLOR -->color:#{raidplans.COLOR};<!-- ENDIF --> font-weight: bold;">
+										<!-- IF raidplans.ETYPE_DISPLAY_NAME -->{raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{raidplans.SUBJECT}</span><br /><!-- IF raidplans.ALL_DAY -->{L_ALL_DAY} {raidplans.START_TIME}<!-- ELSE -->{raidplans.START_TIME} {L_TO_TIME} {raidplans.END_TIME}<!-- ENDIF --></a>
+										<br />{raidplans.POSTER}
+								</dt>
+								<dd style="width:16%; padding-left:5px;" class="lastpost">{raidplans.VALUE_TXT}<!-- IF raidplans.HEADCOUNT > 1 --> ({raidplans.HEADCOUNT})<!-- ENDIF --></dd>
+								<dd style="width:16%; padding-left:5px;" class="lastpost">{raidplans.INVITED}</dd>
+							</dl>
+						</li>
+					<!-- ENDIF -->
+				<!-- ELSE -->
+					<li class="row">
+						<dl class="icon"<!-- IF raidplans.IMAGE --> style="background-image: url({raidplans.IMAGE}); background-repeat: no-repeat;"<!-- ENDIF -->>
+							<dt><a href="{raidplans.EVENT_URL}" title="<!-- IF raidplans.ETYPE_DISPLAY_NAME -->{raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{raidplans.FULL_SUBJECT}">
+								<span style="<!-- IF raidplans.COLOR -->color:#{raidplans.COLOR};<!-- ENDIF --> font-weight: bold;">
+									<!-- IF raidplans.ETYPE_DISPLAY_NAME -->{raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{raidplans.SUBJECT}</span><br /><!-- IF raidplans.ALL_DAY -->{L_ALL_DAY} {raidplans.START_TIME}<!-- ELSE -->{raidplans.START_TIME} {L_TO_TIME} {raidplans.END_TIME}<!-- ENDIF --></a>
+							</dt>
+							<dd style="width:16%; padding-left:5px;" class="lastpost">{raidplans.INVITED}</dd>
+							<dd style="width:16%; padding-left:5px;" class="lastpost">{raidplans.POSTER}</dd>
+						</dl>
+					</li>
+				<!-- ENDIF -->
+			<!-- END raidplans -->
+			</ul>
+			<span class="corners-bottom"><span></span></span></div>
+		</div>
+	<!-- ENDIF -->
+<!-- INCLUDE overall_footer.html -->

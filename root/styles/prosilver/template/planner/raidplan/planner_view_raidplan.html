@@ -1,0 +1,115 @@
+<!-- [+] raidplan view -->
+<div class="forabg">
+<span class="corners-inner-top"><span></span></span>
+<div style="width:10%; float: left;">
+<img src="{EVENT_IMAGE}" width="48" height="48" /> 
+</div>
+<div class="blockhead" style="width:60%; float: left;">
+<h4 style="color:<!-- IF EVENT_COLOR -->{EVENT_COLOR}<!--ELSE -->#dfc065<!-- ENDIF -->"><!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}<!-- ENDIF --></h4>
+</div>
+<div style="width:30%; float: right;">
+<div class="buttons" style="float: right;">
+<!-- IF ADD_LINK -->
+<div class="planner-new-icon"><a href="{ADD_LINK}"
+	title="{L_NEW_EVENT}"><span></span></a></div>
+<!-- ENDIF -->
+<!-- IF U_EDIT -->
+<div class="planner-edit-icon"><a href="{U_EDIT}" title="{L_EDIT_POST}"><span></span></a></div>
+<!-- ENDIF -->
+<!-- IF U_DELETE -->
+<div class="planner-delete-icon"><a href="{U_DELETE}"
+	title="{L_DELETE_POST}"><span></span></a></div>
+<!-- ENDIF -->
+<div class="planner-day-icon"><a href="{DAY_VIEW_URL}" title="{L_DAY}"><span></span></a></div>
+<div class="planner-week-icon"><a href="{WEEK_VIEW_URL}"  title="{L_WEEK}"><span></span></a></div>
+<div class="planner-month-icon"><a href="{MONTH_VIEW_URL}" 	title="{L_MONTH}"><span></span></a></div>
+</div>
+</div>
+<span class="corners-inner-bottom"><span></span></span>
+</div>
+
+<div class="panel bg2">
+<div class="inner">
+<span class="corners-top"><span></span></span>
+
+<!-- raid message -->
+<div class="raidplanbody">
+<div class="content">
+<u>{SUBJECT}</u><br/>
+{MESSAGE}
+</div>
+</div>
+<hr />
+<div style="clear: both"></div>
+
+<div style="width:45%; float: left;">
+<fieldset class="rpfields">
+<dl>
+<dt><strong>{L_EVENT_CREATED_BY}</strong></dt>
+<dd>{POSTER}</dd>
+</dl>
+<dl>
+<dt><strong>{L_INVITE_TIME}</strong></dt>
+<dd>{INVITE_TIME}</dd>
+</dl>
+<dl>
+<dt><strong>{L_START_TIME}</strong></dt>
+<dd>{START_TIME}</dd>
+</dl>
+<dl>
+<dt><strong>{L_END_TIME}</strong></dt>
+<dd>{END_TIME}</dd>
+</dl>
+<em>{L_TIME_ZONE} {TZ}</em>
+<!-- IF IS_RECURRING -->
+<dl>
+<dt><strong>{L_OCCURS_EVERY}:</strong></dt>
+<dd>{RECURRING_TXT}</dd>
+</dl>
+<!-- ENDIF -->
+</fieldset>
+</div>
+
+<div style="width:48%; float: left;">
+
+<fieldset class="rpfields">
+
+<dl>
+<dt><strong>{L_CONFIRMED}</strong></dt>
+<dd>{CURR_CONFIRMED_COUNT}/{RAID_TOTAL} ({CURR_CONFIRMEDPCT})</dd>
+</dl>
+ 
+<dl>
+<dt><strong>{L_AVAILABLE}</strong></dt>
+<dd>{CURR_YES_COUNT}/{RAID_TOTAL} ({CURR_YESPCT})</dd>
+</dl>
+<dl>
+<dt><strong>{L_MAYBE}</strong></dt>
+<dd>{CURR_MAYBE_COUNT}/{RAID_TOTAL} ({CURR_MAYBEPCT})</dd>
+</dl>
+<dl>
+<dt><strong>{L_NOTAVAILABLE}</strong></dt>
+<dd>{CURR_NO_COUNT}/{RAID_TOTAL} ({CURR_NOPCT})</dd>
+</dl>
+
+<!-- IF IS_RECURRING -->
+<dl>
+<dt><strong>{L_OCCURS_EVERY}:</strong></dt>
+<dd>{RECURRING_TXT}</dd>
+</dl>
+<!-- ENDIF -->
+</fieldset>
+</div>
+
+<span class="corners-bottom"><span></span></span></div>
+</div>
+<br/>
+<!-- INCLUDE planner/raidplan/planner_view_raidplan_confirmed.html -->
+<br/>
+<!-- INCLUDE planner/raidplan/planner_view_raidplan_available.html -->
+<br/>
+<!-- INCLUDE planner/raidplan/planner_view_raidplan_unavailable.html -->
+<br/>
+
+<hr />
+<!-- [-] raidplan view -->

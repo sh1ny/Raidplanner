@@ -1,0 +1,478 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-language" content="en" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="copyright" content="2009 bbdkp" />
+<meta name="keywords" content="" />
+<meta name="description" content="Raidplanner Installation information" />
+<title>Raid planner &bull; Install Readme</title>
+
+<link href="stylesheet.css" rel="stylesheet" type="text/css" media="screen, projection" />
+
+</head>
+
+<body id="phpbb" class="section-docs">
+
+<div id="wrap">
+	<a id="top" name="top" accesskey="t"></a>
+	<div id="page-header">
+		<div class="headerbar">
+			<div class="inner"><span class="corners-top"><span></span></span>
+
+			<div id="doc-description">
+				<img src="logo.png" alt="" />
+				
+				<p style="display: none;"><a href="#start_here">Skip</a></p>
+			</div>
+
+			<span class="corners-bottom"><span></span></span></div>
+		</div>
+	</div>
+
+	<a name="start_here"></a>
+
+	<div id="page-body">
+
+<h1>Raid planner 0.2.0</h1>
+	<hr />
+
+	<div class="paragraph">
+		<div class="inner"><span class="corners-top"><span></span></span></div>
+		
+		<div class="content">
+		<p>What is it ? it's a Calendar and Raidplanner for your phpBB3/bbDKP forum, allowing your members to make and sign up to Events you have set up in bbDKP.</p>
+		<p> repository : <a href="https://github.com/bbDKP/Raidplanner">https://github.com/bbDKP/Raidplanner</a> </p>
+		
+		<p>Forked from Alightner's Calendar mod, modified to work with bbDKP. the base code was refactored into functional classes. Hooks into the bbDKP event and guildmembers Table, so bbDKP 1.2.3 must be installed before.</p>
+		<p>It has an MODX & UMIL Database installer. No manual installation necessary.</p>
+		
+		<p>this release 0.2.0 is still a work in progress, alot of features still need to be added. (Raid confirmations, Subsilver2, recurring raids, ...)</p>
+		
+		<h2>Raid Feature list</h2>
+		<ul>
+		<li>Raid Events pick up new Raid icons from DKP event. </li>
+		<li>Sign up with your Guild characters to raids</li>
+		<li>Follow up to which raid(s) you signed up in UCP.</li>
+		<li>3 Event types exist : Public events (no signup), Raid events (Signup), and personal events.</li>
+		</ul>
+
+		<h2>Calendar Feature list</h2>
+		<ul>
+		<li>Event View - filled with all event details (who's invited, who created the event, BBCode, Smilies, start and end times, edit & delete buttons if applicable etc) </li>
+		<li>Month View - can jump to any month via next and prev links, or jump randomly via pulldown menus. Lists birthdays, event types and event names only. Click on the day's number to add a new event on that day</li>
+		<li>Week View - can jump to any week via next and prev links, or jump randomly via pulldown menus. Lists birthdays, event types, names, and times. Click on the day's number to add a new event on that day.</li>
+		<li>Day View - can jump to any day via next and prev links, or jump randomly via pulldown menus. Includes a Graphical display of events on a timeline - lets you quickly see schedule conflicts etc. Lists birthdays, event types, names, and times. Click on the day's number to add a new event on that day.</li>
+		</ul>
+		</li>
+		<ul>
+		<li>Support for BBCode and Smilies </li>
+		<li>Make events bold if you are event creator - Let's you quickly see events most important to you.</li>
+		<li>List of Upcoming Events on index - in the ACP you can specify whether or not you want to display the upcoming events on the index (and if so how many events to list). You also have the option to list the current week view on the index.</li>
+		<li>Detailed Permissions - You can control who has permission to view, create, edit, delete, and moderate events. </li>
+		<li>Auto pruning of past events - From the ACP you control how often events are pruned, and how old they have to be before they are added to the delete list.</li>
+		</li>
+		
+		<li>Ability to invite multiple groups to an event</li>
+		
+		<li>Custom date/time formatting controlled in calendar ACP - this overwrites the user's preferred
+		 date/time format, so you can display just the time in hours where it makes sense (like in the week view) 
+		 or the whole date+time (like in the display event)</li>		
+		 
+		<li>Ability to display events only on their start date - obviously the day view is a graphical display of 
+		 all things going on, and events will display in the day view even if not on the start date with this
+		  setting turned on. However it's great for things like a week view with an event that starts at
+		   10pm and ends at 2am the next day, because it will only display on the first day.</li>																			
+		
+		<li>New permission option to invite groups you're not a member of - if this is turned on, you'll be able to create events for groups 
+		you don't belong to, but the author of the event will always be able to see their own events - even if they don't belong to the invite list.</li>
+		
+		<li>Detailed permissions for ability to create private, group, or public events - now you can give some users the power to
+		 create public events, and others only permission to create private events, or whatever combination makes sense for your forum.</li>
+		
+		<li>Utility in ACP to move all events +/- one hour (helps when changing forum's dst setting). When you create an event 
+		it's stored in an absolute time, and if the forum (and/or users) change their dst settings they may suddenly
+		 see all the events appear off by one hour, now there's a utility to move ALL events in the calendar forward or
+		  back by one hour to help correct things when you change your DST.</li>
+		
+		<li>UCP module that displays upcoming events (that the user has registered for) for the next X days.</li>
+
+		</div>
+		
+		<div class="back2top"><a href="#wrap" class="top">Back to Top</a></div>
+		<div class="inner"><span class="corners-bottom"><span></span></span></div>
+		
+	</div>	
+	
+<h1>Requirements</h1>
+	<hr />
+
+	<div class="paragraph">
+		<div class="inner"><span class="corners-top"><span></span></span></div>
+		
+		<div class="content">
+			<ol>
+			<li>bbdkp 1.2.3 or higher</li>
+			<li>phpbb3.0.7-PL1 or higher</li>
+			<li>ftp and founder admin access on your phpbb installation. </li>
+			</ol>
+		</div>
+		<div class="back2top"><a href="#wrap" class="top">Back to Top</a></div>
+		<div class="inner"><span class="corners-bottom"><span></span></span></div>
+	</div>	
+
+<h1>Installation</h1>
+	<hr />
+
+	<div class="paragraph">
+		<div class="inner"><span class="corners-top"><span></span></span></div>
+		<div class="content">
+			<h2>Quick install guide</h2>
+			<ol>
+			<li>Unzip the zip file into /store/mods/</li>
+			<li>Launch automod, choose the install link. this will copy all the files, perform the necessary edits. </li>
+			<li>Then surf to /install/installbbtips.php, and you will see the database installer. This will install the acp module, and clear the caches (template, theme, imagesets)</li>
+			<li>Once installed, you will find the ACP tab added next to the bbdkp Tab </li>
+			</ol>
+			
+		</div>
+		
+		<div class="back2top"><a href="#wrap" class="top">Back to Top</a></div>
+		<div class="inner"><span class="corners-bottom"><span></span></span></div>
+		
+	</div>	
+
+<h1>Support</h1>
+	<hr />
+
+	<div class="paragraph">
+		<div class="inner"><span class="corners-top"><span></span></span></div>
+		
+		<div class="content">
+			<ol>
+			<li><a href="http://www.bbdkp.com/viewforum.php?f=8">Plugin support</a></li>
+			<li><a href="http://www.bbdkp.com/tracker.php">Bug reports</a></li>
+			<li>IRC channel : visit #bbdkp on Freenode. <a href="http://webchat.freenode.net">webchat</a><br/> </li>
+			</ol>
+		</div>
+		
+		<div class="back2top"><a href="#wrap" class="top">Back to Top</a></div>
+		<div class="inner"><span class="corners-bottom"><span></span></span></div>
+	</div>	
+
+<h1>Raidplanner Changelog</h1>
+<hr />
+<div class="paragraph">
+<div class="inner"><span class="corners-top"><span></span></span></div>
+<div class="content">
+<ul>
+	<li>0.2.0 2011-12-20</li>
+	<ul>
+		<li>[NEW] delivered with two css files (dark or light)</li>
+		<li>[NEW] split html in files, using inclusion to integrate them with IFs</li>
+		<li>[NEW] uses jqueryTools tooltip, changes behaviour depending on raidplan state (signup or raidplan view</li>
+		<li>[CHG] removed event registration, Raid Events now picked up from bbDKP.</li>
+		<li>[CHG] removed unnecessary code</li>		
+		<li>[CHG] UCP module with available raids</li>
+		<li>[CHG] changed tablenames, appends table constants to bbDKP constants file</li>
+		<li>[CHG] is plugin for bbDKP 1.2.4</li>		
+		<li>[CHG] split backend /includes code and recoded/refactored into php5 classes using factory/strategy pattern. </li>
+		<li>[CHG] added UMIF installer script, removed sql portions from modx</li>
+		<li>[CHG] Removed config table, now uses phpbb config table.</li>		
+		<li>[CHG] split modx file into main, template and language</li>
+		<li>[CHG] forked from Calendar mod. renamed Raidplanner</li>
+	</ul>
+	<br />	
+	<br />
+
+	<li>0.1.0 2009-07-24</li>
+	<ul>
+		<li>Add Recurring events</li>
+		<li>Add Event Registration</li>
+		<li>Add Ability to invite multiple groups to an event</li>
+		<li>Add Custom date/time formatting controlled in calendar ACP</li>
+		<li>Add Ability to display events only on their start date</li>
+		<li>Add Ability to display a list of upcoming events for the next
+		X days</li>
+		<li>Add Ability to display a list of upcoming events (that the
+		user has registered for) for the next X days</li>
+		<li>Add Detailed display for calendar on who is online page</li>
+		<li>Add New permission option to invite groups you're not a
+		member of</li>
+		<li>Add Detailed permissions for ability to create private,
+		group, or public events</li>
+		<li>Add Utility in ACP to move all events +/- one hour (helps
+		when changing forum's dst setting).</li>
+		<li>Add Ability to filter the calendar for events of a specific
+		type</li>
+		<li>Add UCP module to "Manage my events"</li>
+		<li>Add UCP module to "Manage event registration"</li>
+		<li>Add Ability to "watch" the calendar</li>
+		<li>Add Ability to "watch" specific events</li>
+		<li>Fix end of year bug (phpversion specific) use Y not o!</li>
+		<li>Moved public events to default position</li>
+		<li>Fix bug with hidden groups</li>
+		<li>Provide contrib file to clean up birthdays without leading
+		whitespace</li>
+	</ul>
+	<br />
+	<br />
+	<li>2008-07-03 0.0.8</li>
+	<ul>
+		
+		<li>Update server name and version number
+		(adm/mods/phpbb_calendar_version.php)</li>
+		<li>Add option to allow everyday users to see hidden groups on
+		invite list (adm/style/acp_calendar.html,
+		includes/acp/acp_calendar.php, includes/functions_calendar.php,
+		language/en/mods/calendar.php)</li>
+		<li>Remove bogus warning when deleting an event type that was not
+		referenced by any events (adm/style/acp_calendar_event_types.html,
+		includes/acp/acp_calendar.php)</li>
+		<li>Added color swatch to edit event type in ACP
+		(adm/style/acp_calendar_event_types.html,
+		includes/acp/acp_calendar.php)</li>
+		<li>Correct calls to request_var with integer type values
+		(includes/acp/acp_calendar.php, includes/functions_calendar.php,
+		calendarpost.php)</li>
+		<li>Remove alternate cron text - firefox bug unrelated to this
+		mod, but many users complained about it so the fix is here if you want
+		it (includes/functions.php)</li>
+		<li>Display full event subject text on mouseover tooltip
+		(includes/functions_calendar.php,
+		styles/prosilver/template/calendar.html,
+		styles/prosilver/template/calendar_next_events_on_index.html,
+		styles/prosilver/template/calendar_view_day.html,
+		styles/prosilver/template/calendar_week_on_index.html)</li>
+		<li>Relocate the calendar on the index page
+		(styles/prosilver/template/index_body.html)</li>
+		<li>Prevent display of invalid days like February 31st - even if
+		the user selected that option from the pulldown menu on purpose
+		(includes/functions_calendar.php)</li>
+		<li>Fix bug with displaying extra smilies when posting events
+		(includes/functions_calendar.php)</li>
+		<li>Remove ALL_DAY_STARTING - no longer used
+		(language/en/calendar.php, language/en/calendarpost.php)</li>
+		<li>On new event confirmation page, add link to view the newly
+		created event (calendarpost.php)</li>
+	</ul>
+	<br />
+	<br />
+<li>2008-03-02 0.0.7</li>
+	<ul>
+		
+		<li>Fix uninitialized variable subject_limit
+		(includes/functions_calendar.php)</li>
+		<li>There were several bugs related to timezone and DST settings
+		of the server hosting the forum. In particular forums hosted in the
+		southern hemisphere were seeing the most problems because their DST
+		schedule is opposite GMT's DST schedule. Hopefully this is the last of
+		the timezone/DST bug fixes ;) (calendarpost.php,
+		includes/functions_calendar.php)</li>
+		<li>Update check mod version file
+		(adm/mods/phpbb_calendar_version.php)</li>
+	</ul>
+	<br />
+	<br />
+	<li>2008-02-24 0.0.6</li>
+	<ul>
+		
+		<li>Add support for Auto-pruning events (SQL insert new entries
+		in calendar_config table, cron.php, adm/style/acp_calendar.html,
+		includes/functions.php, includes/functions_calendar.php,
+		includes/acp/acp_calendar.php, language/en/mods/calendar.php)</li>
+		<li>Redesigned style to look more pro-silver like and added more
+		comments to changed style files. (includes/functions_calendar.php,
+		styles/prosilver/template/calendar.html,
+		styles/prosilver/template/calendar_view_day.html,
+		styles/prosilver/template/calendar_view_week_on_index.html,
+		styles/prosilver/theme/buttons.css,
+		styles/prosilver/theme/colours.css)</li>
+		<li>Fixed bug where event subjects were displaying censored words
+		in the calendar (includes/functions_calendar.php)</li>
+		<li>Add Mod Version Check support.
+		(adm/mods/phpbb_calendar_version.php)</li>
+		<li>Hide birthdays in calendar, unless user has permission to
+		view profiles (includes/functions_calendar.php)</li>
+		<li>When errors are encountered during event creation, store
+		re-use the input date/time info - don't force the user to start from
+		scratch (calendarpost.php)</li>
+	</ul>
+	<br />
+	<br />
+	<li>2008-02-15 0.0.5</li>
+	<ul>
+		
+		<li>Fix bugs in xhtml changes from 0.0.4 - things stopped working
+		in firefox (styles/prosilver/template/calendar_post_body.html,
+		styles/prosilver/template/calendar_post_editor.html, calendarpost.php,
+		adm/style/acp_calendar.html, adm/style/acp_calendar_event_types.html)</li>
+		<li>Add a few more xhtml compliant changes
+		(adm/style/acp_calendar_event_types.html)</li>
+		<li>Fix another DST bug in the week and month views.
+		(includes/functions_calendar.php)</li>
+		<li>Fixed incompatability issue with Arcade mod. Renamed
+		generate_smilies function to generate_calendar_smilies
+		(calendarpost.php, includes/functions_calendar.php)</li>
+		<li>Fix style issue with location of submit button during event
+		posting (styles/prosilver/template/calendar_post_body.html,
+		styles/prosilver/template/calendar_post_editor.html)</li>
+		<li>Fix tranlation bug with calendar title on view event page
+		(includes/functions_calendar.php,
+		styles/prosilver/template/calendar_view_event.html)</li>
+		<li>Fix uninitialized variable $event_counter
+		(includes/functions_calendar.php)</li>
+		<li>Allow calendar header date to be localized to different
+		formats. (language/en/calendar.php, includes/functions_calendar.php)</li>
+		<li>Fix partial icon display bug. Add text-align: left; in hand
+		edits for buttons.css (styles/prosilver/theme/buttons.css)</li>
+		<li>Fix encoding of special html characters in event subject
+		(calendarpost.php)</li>
+		<li>Fix session logout (when cookies disabled) when entering
+		calendar (includes/functions.php,
+		styles/prosilver/template/overall_header.html)</li>
+		<li>Add "..." to end of truncated subject strings
+		(includes/functions_calendar.php)</li>
+	</ul>
+	<br />
+	<br />
+	<li>2008-01-13 0.0.3</li>
+	<ul>
+		
+		<li>Update SQL commands</li>
+		<li>Fix pass by reference bug (includes\functions_calendar.php)</li>
+		<li>Fix pass by reference bug (calendarpost.php)</li>
+	</ul>
+	<br />
+	<br />
+	<li>2008-01-25 0.0.4</li>
+	<ul>
+		
+		<li>Update SQL commands for the phpbb_calendar_config table
+		(added support for 12/24 hour display and truncated names)</li>
+		<li>Make things xhtml compliant (special thanks to ncc50446 for
+		cleaning this up) (adm/style/acp_calendar.html,
+		adm/style/acp_calendar_event_types.html,
+		includes/acp/acp_calendar.php, includes/functions_calendar.php,
+		styles/prosilver/template/calendar.html,
+		styles/prosilver/template/calendar_next_events_on_index.html,
+		styles/prosilver/template/calendar_post_body.html,
+		styles/prosilver/template/calendar_post_editor.html,
+		styles/prosilver/template/calendar_post_preview.html,
+		styles/prosilver/template/calendar_view_day.html,
+		styles/prosilver/template/calendar_view_event.html,
+		styles/prosilver/template/calendar_week_on_index.html,
+		calendarpost.php)</li>
+		<li>Add support for 12 hour vs 24 hour display.
+		(adm/style/acp_calendar.html, includes/acp/acp_calendar.php,
+		includes/functions_calendar.php, language/en/mods/calendar.php,
+		language/en/calendar.php, language/en/calendarpost.php,
+		styles/prosilver/template/calendar_view_day.html, calendarpost.php)</li>
+		<li>Add support for truncating the event subject in the calendar
+		display. (adm/style/acp_calendar.html, includes/acp/acp_calendar.php,
+		includes/functions_calendar.php, language/en/mods/calendar.php)</li>
+		<li>Fix DST bug. (includes/functions_calendar.php,
+		calendarpost.php)</li>
+		<li>Fix bug where late at night the "next week display on index"
+		showed the previous week (includes/functions_calendar.php)</li>
+		<li>Fix bug where some events didn't show up on the "upcoming
+		events list on index" the day of the event.
+		(includes/functions_calendar.php)</li>
+		<li>Fix bug where previous years weren't available on the view
+		date pulldown menu after jumping forward a few years
+		(includes/functions_calendar.php)</li>
+		<li>Fixed bug where the next events on index caused the colors to
+		change in the online list and statistics sections
+		(includes/functions_calendar.php)</li>
+	</ul>
+	<br />
+	<br />
+	<li>2008-01-09 0.0.2</li>
+	<ul>
+		
+		<li>Allow foreign characters in event_types names
+		(includes\acp\acp_calendar.php)</li>
+		<li>Fix bug in which only one birthday is displayed per day
+		(includes\functions_calendar.php)</li>
+		<li>Fix translation bug with month selection pulldown menu
+		(calendarpost.php)</li>
+	</ul>
+
+	<br />
+	<br />
+	<li>2008-01-07 0.0.1</li>
+	<ul>
+		
+		<li>Fixed bug when editing from all day event to timed event in
+		calendarpost.php</li>
+	</ul>
+
+	<li>2008-01-06 0.0.0a</li>
+	<ul>
+		<li>Fixed bugs in calendarpost.php:<br />
+		<ol>
+			<li>defined error variable</li>
+			<li>added check for NULL mode to prevent triggering
+			USER_CANNOT__EVENT error.</li>
+			<li>removed event_level initialization on new events.</li>
+		</ol>
+		
+		<li>Fixed bugs in includes\functions_calendar.php:
+		<ol>
+			<li>added check for invalid event in calendar_display_event.</li>
+			<li>removed check for sizeof($error) in calendar_display_event.</li>
+			<li>changed $poster_data['username_colour'] to
+			$poster_data['user_colour']</li>
+			<li>changed if( $month_names[1] !== "January" ) to if(
+			count($month_names) == 0 )</li>
+			<li>add $date as global variable in handle_event_delete.</li>
+			<li>fixed first sql query inside handle_event_delete.</li>
+			<li>Added 'INVALID_EVENT' string to language\en\calendar.php.</li>
+		</ol>
+	</ul>
+
+
+	<br />
+</div>
+
+<h1>Copyright and disclaimer</h1>
+	<hr />
+
+	<div class="paragraph">
+		<div class="inner"><span class="corners-top"><span></span></span></div>
+		
+		<div class="content">
+			<p>This application is opensource software released under the <a href="http://opensource.org/licenses/gpl-license.php">GPL</a>. Please see source code and the docs directory for more details. 	
+			<br/>
+			 
+			 If you use this software and find it to be useful, we ask that you retain the copyright notice below. <br/>
+			 
+
+			<br/>
+			 (c) 2011 <a href="http://www.bbdkp.com/">bbDKP</a> Project Team <br/>
+			 (c) 2008 PhpbbCalendar by Alightner, Spacedog <br/>
+			 			 
+			
+
+		</div>
+			
+		<div class="back2top"><a href="#wrap" class="top">Back to Top</a></div>
+		<div class="inner"><span class="corners-bottom"><span></span></span></div>
+    </div>
+
+	<div id="page-footer">
+		<div class="version">&nbsp;</div>
+	</div>
+</div></div>
+
+<div>
+	<a id="bottom" name="bottom" accesskey="z"></a>
+</div>
+
+</body>
+</html>

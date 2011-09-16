@@ -1,8 +1,8 @@
-Subject: A new event has been added to the calendar
+Subject: A new event was added to the Raidplanner
 
 Dear {USERNAME},
 
-The event "{EVENT_SUBJECT}" has been added in the calendar.
+The event "{EVENT_SUBJECT}" has been added in the Raidplanner.
 
 To view the calendar please visit the following link:
 {U_CALENDAR}
@@ -10,7 +10,7 @@ To view the calendar please visit the following link:
 To view the event please visit the following link:
 {U_EVENT}
 
-If you no longer wish to recieve emails about new calendar events click here:
+If you no longer wish to recieve emails about new Raidplanner events click here:
 {U_UNWATCH_CALENDAR}
 
 {EMAIL_SIG}
