@@ -2,6 +2,7 @@
 <div class="inner">
 <span class="corners-top"><span></span></span>
 <h3><img width="16px" height="14px" alt="" src="{T_THEME_PATH}/images/icon_subscribe.gif">&nbsp;{L_UPCOMING_RAIDS}</h3>
+<!-- IF .upcoming -->
 
 <!-- BEGIN upcoming -->
 <div style= "clear: left; cursor:pointer;" onclick="location.href='{upcoming.EVENT_URL}'" title="{upcoming.EVENTNAME}">
@@ -17,6 +18,9 @@
 </div>
 <hr/>
 <!-- END upcoming -->
+<!-- ELSE -->
+<br /><p class="error">{L_NO_RAIDS_SCHEDULED}</p><p><br /></p>
+<!-- ENDIF -->	
 <span class="corners-bottom"><span></span></span>
 </div>
 </div>
