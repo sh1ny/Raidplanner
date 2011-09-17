@@ -168,7 +168,7 @@ class acp_raidplanner
 					set_config  ( 'rp_index_display_week',  $disp_week,0);  
 					
 					$disp_upcoming	= request_var('disp_next_raidplans', 0);
-					set_config  ( 'rp_index_display_next_raidplans',  $disp_upcoming,0);  
+					set_config  ( 'rp_display_next_raidplans',  $disp_upcoming,0);  
 					
 					$message="";
 					$message .= '<br />' . sprintf( $user->lang['RPSETTINGS_UPDATED'], E_USER_NOTICE);
@@ -203,6 +203,9 @@ class acp_raidplanner
 
 					$date_format = request_var('date_format', 'M d, Y');
 					set_config  ( 'rp_date_format',  $date_format,0);
+					
+					$show_name = request_var('show_name', 0);
+					set_config  ( 'rp_show_name',  $show_name,0);
 					
 					$date_time_format = request_var('date_time_format', 'M d, Y h:i a');
 					set_config  ( 'rp_date_time_format',  $date_time_format,0);
@@ -381,10 +384,11 @@ class acp_raidplanner
 					'SEL_SATURDAY'		=> $sel_saturday,
 					'SEL_SUNDAY'		=> $sel_sunday,
 					'WELCOME_MESSAGE' 	=> $textarr['text'],
+					'SHOW_NAME'			=> ((int) $config ['rp_show_name'] == 1) ? 'checked="checked"' : "",
 					'SHOW_WELCOME'		=> ((int) $config ['rp_show_welcomemsg'] == 1) ? 'checked="checked"' : "",
 					'DISP_WEEK_CHECKED'	=> ( $config['rp_index_display_week'] == 1 ) ? "checked='checked'" : '',
 					'DISP_NEXT_EVENTS_DISABLED'	=> ( $config['rp_index_display_week'] == 1 ) ? "disabled='disabled'" : '',
-					'DISP_NEXT_EVENTS'	=> $config['rp_index_display_next_raidplans'],
+					'DISP_NEXT_EVENTS'	=> $config['rp_display_next_raidplans'],
 					'SEL_12_HOURS'		=> ($config['rp_hour_mode'] == 12) ? "selected='selected'" :'',
 					'SEL_24_HOURS'		=> ($config['rp_hour_mode'] != 12) ? "selected='selected'" :'' ,
 					'DISP_TRUNCATED'	=> $config['rp_display_truncated_name'],

@@ -198,6 +198,7 @@ $lang = array_merge($lang, array(
 	'RAIDINFO'				=> 'Raid Info' ,
 	'RAIDWHEN'				=> 'When ?' ,
 	'RAIDREPEAT'			=> 'Repeat ?' ,
+	'RAIDLEADER'			=> 'Raidleader' ,
 
 	'RECURRING_RAIDPLAN'			=> 'Recurring raid',
 	'RECURRING_EVENT_TYPE'			=> 'Recurrence Type: ',
