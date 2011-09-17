@@ -1,0 +1,76 @@
+<!-- INCLUDE ucp_header.html -->
+<h2>{L_UPCOMING_RAIDS}</h2>
+<div class="panel">
+	<div class="inner"><span class="corners-top"><span></span></span>
+	<!-- IF .raids -->	
+			<ul class="topiclist">
+				<li class="header">
+					<dl class="icon">
+						<dt style="color: #115098; width:40%"">{L_UPCOMING_RAIDS}</dt>
+						<dd style="color: #115098; width:20%">{L_RAIDLEADER}</dd>
+						<dd style="color: #115098; width:20%">{L_COL_WILL_ATTEND}</dd>
+						<dd style="color: #115098; width:10%">{L_INVITE_INFO}</dd>
+					</dl>
+				</li>
+			</ul>
+			
+			<ul class="topiclist cplist">
+			<!-- BEGIN raids -->
+				<li class="row">
+					<dl>
+						<dt>
+							<div style= "clear: left; cursor:pointer;" onclick="location.href='{raids.EVENT_URL}'" title="{raids.ETYPE_DISPLAY_NAME}">
+								<div style="float: left; margin: 0 5px; 0 0;">
+									<img src="{raids.IMAGE}" alt="{raids.ETYPE_DISPLAY_NAME}" width="64px" height="64px"/>
+								</div>
+								<div style="float: left;">
+									<strong style="color:red;">{raids.START_TIME}</strong><br/>
+									<span style="<!-- IF raids.COLOR -->color:#{raids.COLOR};<!-- ENDIF --> font-weight: bold;">
+										{raids.ETYPE_DISPLAY_NAME}:
+										{raids.SUBJECT}
+										<br />
+									</span>
+								</div>
+								<!-- IF raids.U_DELETE or raids.U_EDIT --><br />
+								<div style="float: left;">
+									<div class="postbody">
+									<ul class="profile-icons">
+										<!-- IF raids.U_EDIT -->
+										<li class="edit-icon"><a href="{raids.U_EDIT}"
+											title="{L_EDIT_POST}"><span>{L_EDIT_POST}</span></a></li>
+										<!-- ENDIF -->
+										<!-- IF raids.U_EDIT_ALL -->
+										<li class="edit-all-icon"><a href="{raids.U_EDIT_ALL}"
+											title="{L_EDIT_ALL_EVENTS}"><span>{L_EDIT_ALL_EVENTS}</span></a></li>
+										<!-- ENDIF -->
+										<!-- IF raids.U_DELETE -->
+										<li class="delete-icon"><a href="{raids.U_DELETE}"
+											title="{L_DELETE_POST}"><span>{L_DELETE_POST}</span></a></li>
+										<!-- ENDIF -->
+										<!-- IF raids.U_DELETE_ALL -->
+										<li class="delete-all-icon"><a href="{raids.U_DELETE_ALL}"
+											title="{L_DELETE_ALL_EVENTS}"><span>{L_DELETE_ALL_EVENTS}</span></a></li>
+										<!-- ENDIF -->
+									</ul>
+									</div>
+								</div>
+								<!-- ENDIF -->
+							</div>
+						</dt>
+						<dd style="width:16%; padding-left:5px;" class="lastpost">
+						{raids.POSTER}
+						</dd>
+						<dd style="width:16%; padding-left:5px;" class="lastpost">
+						<!-- BEGIN signups --><span style="font-weight: bold; color:{raids.signups.COLORCODE}">{raids.signups.CHARNAME}</span>{raids.VALUE_TXT}<!-- END signups -->		
+						</dd>
+						<dd style="width:16%; padding-left:5px;" class="lastpost">{raids.INVITED}</dd>
+					</dl>
+				</li>
+			<!-- END raids -->
+			</ul>
+	<!-- ELSE -->	
+			<p class="error">{L_NO_RAIDS_SCHEDULED}</p><p><br /></p>
+	<!-- ENDIF -->
+	<span class="corners-bottom"><span></span></span></div>
+</div>
+<!-- INCLUDE ucp_footer.html -->
