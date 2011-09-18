@@ -36,10 +36,6 @@ class ucp_planner
 		{
 			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
 		}
-		if (!class_exists('rpsignups'))
-		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
-		}	    
 	
 	    // get the groups of which this user is part of. 
 	    $groups = group_memberships(false,$user->data['user_id']);
@@ -53,36 +49,8 @@ class ucp_planner
 			}
 			$group_options .= "group_id = ".$grouprec['group_id']. " OR group_id_list LIKE '%,".$grouprec['group_id']. ",%'";
 	    }  
-		
-		$submit = (isset($_POST['submit'])) ? true : false;
-		if ($submit)
-		{
-			// user pressed submit
-			// Verify the form key is unchanged
-			if (!check_form_key('digests'))
-			{
-				trigger_error('FORM_INVALID');
-			}
-			
-			switch ($mode)
-			{
-				case 'raidplanner_registration':
-				
-					
-				break;
-			}
-			
-			// Generate confirmation page. It will redirect back to the calling page
-			meta_refresh(3, $this->u_action);
-			$message = $user->lang['CHARACTERS_UPDATED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');
-			trigger_error($message);
-		}
-
+	    
 		// build template
-		
-		add_form_key('digests');
-		// GET processing logic
-		
 		$daycount = request_var('daycount', 7 );
 		$disp_date_format = $config['rp_date_format'];
 	    $disp_date_time_format = $config['rp_date_time_format'];
@@ -204,27 +172,20 @@ class ucp_planner
 				
 			$db->sql_freeresult($result);
 				
-			switch ($mode)
-			{
-				case 'raidplanner_myraidplans':
-				$this->tpl_name 	= 'planner/ucp_planner_myraidplans';
-				$template->assign_vars(array(
-						'U_COUNT_ACTION'	=> $this->u_action,
-						'DAYCOUNT'			=> $daycount ));
-				break;
-						
-			case 'raidplanner_registration' :
-				$this->tpl_name 	= 'planner/ucp_planner';
-				$template->assign_vars(array(
-						'U_COUNT_ACTION'	=> $this->u_action,
-						'DAYCOUNT'			=> $daycount ));
-				break;
-			
-			}	
 		}
 				
 		$db->sql_freeresult($result);
-			
+
+		switch ($mode)
+		{
+			case 'raidplanner_registration' :
+					$this->tpl_name 	= 'planner/ucp_planner';
+					$template->assign_vars(array(
+							'U_COUNT_ACTION'	=> $this->u_action,
+							'DAYCOUNT'			=> $daycount ));
+			break;
+		
+		}			
 		
 	}
 }

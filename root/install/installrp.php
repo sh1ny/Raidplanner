@@ -267,6 +267,7 @@ $versions = array(
 					   'signup_yes' 		=> array('UINT', 0),
 					   'signup_no' 			=> array('UINT', 0),
 					   'signup_maybe' 		=> array('UINT', 0),
+					   'signup_confirmed'	=> array('UINT', 0),
 					   'recurr_id' 			=> array('UINT', 0),
 					),
                     'PRIMARY_KEY'	=> array('raidplan_id')), 
