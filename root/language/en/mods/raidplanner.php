@@ -222,7 +222,8 @@ $lang = array_merge($lang, array(
 	'RP_WELCOME'				=> 'Welcome message',
 	'RP_WELCOME_EXPLAIN'		=> 'Message shown on top of planner. supports bbcodes. ', 
 	'RP_WELCOME_DEFAULT'		=> '[b]Welcome to our Raid Scheduler[/b]! All raids will be planned here. You do not need to make a new account as long as you have signed up on the forums.', 
-	
+	'SHOW_PREV'					=> 'Show previous', 
+	'SHOW_NEXT'					=> 'Show next', 
 	'SIGNUPS'					=> 'Signups', 
 	'START_DATE'				=> 'Start Date',
 	'START_TIME'				=> 'Start Time',
