@@ -426,6 +426,10 @@ $versions = array(
         'custom' => array('purgecaches'),
         
         ),
+        
+        '0.2.1' => array(
+        	// php fixes
+        ),
      
 );
 
