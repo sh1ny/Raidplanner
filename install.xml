@@ -54,7 +54,7 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>0.2.0</mod-version>
+		<mod-version>0.2.1</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>600</time>
@@ -70,7 +70,8 @@
 			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php" />
 			<file from="root/includes/bbdkp/raidplanner/*.*" to="includes/bbdkp/raidplanner/*.*" />
 
-			<file from="root/images/raidrole_images/*.*" to="root/images/raidrole_images/*.*" />
+			<file from="root/images/raidrole_images/*.*" to="images/raidrole_images/*.*" />
+			<file from="root/images/event_images/*.*" to="images/event_images/*.*" />			
 			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php" />
 			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php" />
 			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html" />
@@ -88,7 +89,7 @@
 			<file from="root/styles/prosilver/imageset/en/planner/*.*" to="styles/prosilver/imageset/en/planner/*.*"/>
 			<file from="root/styles/prosilver/imageset/planner/*.*" to="styles/prosilver/imageset/planner/*.*"/>			
 			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
-			<file from="root/styles/prosilver/theme/dkp/*.*" to="styles/prosilver/theme/dkp/*.*"/>
+			<file from="root/styles/prosilver/theme/images/dkp/*.*" to="styles/prosilver/theme/images/dkp/*.*"/>
 			<file from="root/styles/prosilver/theme/raidplanner.css" to="styles/prosilver/theme/raidplanner.css"/>
 		</copy>
 		

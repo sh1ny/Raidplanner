@@ -98,7 +98,7 @@ $lang = array_merge($lang, array(
 	'ALLOW_GUESTS_OFF'			=> 'Members are not allowed to bring guests to this raid.',
 	'AM'						=> 'AM',
 	'AVAILABLE'					=> 'Available',
-
+	'ATTENDANCE'        		=> 'Attendance', 
 	'CALENDAR_POST_RAIDPLAN'	=> 'Create New Raid',
 	'CALENDAR_EDIT_RAIDPLAN'	=> 'Edit Raid',
 	'CALENDAR_TITLE'			=> 'Planner',
