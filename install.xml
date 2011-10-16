@@ -19,7 +19,7 @@
 			content="MODX file generated with PP MODX Creator by tumba25 (online version)" />
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)" />
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[bbDKP Raidplanner 0.2.2]]></title>
+		<title lang="en"><![CDATA[bbDKP Raidplanner 0.2.3]]></title>
 		<description lang="en"><![CDATA[Raidplanner Installer. 
 		see /docs/install.html and /docs/changelog.html
 ]]></description>
@@ -54,7 +54,7 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>0.2.2</mod-version>
+		<mod-version>0.2.3</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>600</time>
@@ -180,7 +180,7 @@ define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');
 			</edit>
 		</open>
 
-		<php-installer><![CDATA[install/installrp.php]]></php-installer>
-		<diy-instructions lang="en"><![CDATA[Run database installer : Browse to install/installrp.php. This will install the Raidplanner database tables, the ACP and UCP modules, purge the cache and refresh the template, imagesets and themes. Note that if you run a Style other than Prosilver, you will need to apply the Prosilver changes to your style either manually - by following the edit instructions in prosilver.xml, or by automatically, by going into the "Detail" tab in Automod and applying the Prosilver changes to yur style. ]]></diy-instructions>
+		<php-installer><![CDATA[install/index.php]]></php-installer>
+		<diy-instructions lang="en"><![CDATA[Run database installer : Browse to install/index.php. This will install the Raidplanner database tables, the ACP and UCP modules, purge the cache and refresh the template, imagesets and themes. Note that if you run a Style other than Prosilver, you will need to apply the Prosilver changes to your style either manually - by following the edit instructions in prosilver.xml, or by automatically, by going into the "Detail" tab in Automod and applying the Prosilver changes to yur style. ]]></diy-instructions>
 	</action-group>
 </mod>

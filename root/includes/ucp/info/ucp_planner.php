@@ -22,7 +22,7 @@ class ucp_planner_info
 		return array(
 			'filename'	=> 'ucp_planner',
 			'title'		=> 'UCP_DKP',
-			'version'	=> '0.2.0',
+			'version'	=> '0.2.3',
 			'modes'		=> array(
 				'raidplanner_registration'	=> array(
 					'title' => 'UCP_MAIN_RAIDPLANNER_REGISTRATION', 
