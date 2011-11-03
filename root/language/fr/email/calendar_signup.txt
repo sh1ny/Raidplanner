@@ -1,0 +1,14 @@
+Subject: A new or updated calendar reply has been made
+
+Dear {USERNAME},
+
+A new or updated reply has been made to the Raid event "{EVENT_SUBJECT}"
+
+To view this event please visit the following link:
+{U_EVENT}
+
+If you no longer wish to receive emails about this event click here:
+{U_UNWATCH_EVENT}
+
+
+{EMAIL_SIG}

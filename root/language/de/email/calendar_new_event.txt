@@ -1,0 +1,16 @@
+Betrifft: Ein neues Ereignis wurde im Raidplaner angelegd. 
+
+Gruss {USERNAME},
+
+Das Ereignis "{EVENT_SUBJECT}" ist neu entstanden im Planer.
+
+Um den Planer zu sehen bitten folge diesen Link: 
+{U_CALENDAR}
+
+Um das Ereignis zu sehen bitte folge diesen Link:
+{U_EVENT}
+
+Falls du nicht mehr auf den laufenden gehalten werden willst über Planerereignisse dann clicke hier:
+{U_UNWATCH_CALENDAR}
+
+{EMAIL_SIG}

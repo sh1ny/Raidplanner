@@ -1,0 +1,16 @@
+Sujet: Un nouveau rendez-vous a été ajouté au calendrier.
+
+Cher {USERNAME},
+
+L'évènement "{EVENT_SUBJECT}" a été ajouté au Calendrier des Raids.
+
+Pour consulter le calendrier veuillez suivre ce lien:
+{U_CALENDAR}
+
+Pour consulter l'évènement veuillez suivre ce lien:
+{U_EVENT}
+
+Si vous ne voulez plus être informés sur de nouveaux évènements Raidplanner suivez ce lien:
+{U_UNWATCH_CALENDAR}
+
+{EMAIL_SIG}
