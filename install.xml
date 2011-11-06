@@ -82,12 +82,12 @@
 			<file from="root/includes/bbdkp/raidplanner/*.*" to="includes/bbdkp/raidplanner/*.*" />
 			<file from="root/includes/ucp/info/ucp_planner.php" to="includes/ucp/info/ucp_planner.php" />
 			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php" />
-			<file from="root/install/installrp.php" to="install/installrp.php" />
+			<file from="root/install/*.*" to="install/*.*" />
 			<file from="root/language/en/mods/info_ucp_planner.php" to="language/en/mods/info_ucp_planner.php" />
 			<file from="root/language/en/mods/permissions_raidplanner.php" to="language/en/mods/permissions_raidplanner.php" />
 			<file from="root/language/en/mods/raidplanner.php" to="language/en/mods/raidplanner.php" />
 			<file from="root/language/en/mods/info_acp_raidplanner.php" to="language/en/mods/info_acp_raidplanner.php" />
-			<file from="root/language/en/email/calendar_updated_reply.txt" to="language/en/email/calendar_updated_reply.txt" />
+			<file from="root/language/en/email/calendar_updated_event.txt" to="language/en/email/calendar_updated_event.txt" />
 			<file from="root/language/en/email/calendar_signup.txt" to="language/en/email/calendar_signup.txt" />
 			<file from="root/language/en/email/calendar_new_event.txt" to="language/en/email/calendar_new_event.txt" />
 			<file from="root/styles/prosilver/imageset/en/planner/*.*" to="styles/prosilver/imageset/en/planner/*.*"/>
