@@ -61,38 +61,42 @@
 			<target-version>3.0.9</target-version>
 		</installation>
 		<link-group>
-			<link type="dependency" href="http://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.2.4</link>
+			<link type="dependency" href="http://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.2.5</link>
 		</link-group>
 	</header>
+	<link-group>
+			<link type="language" lang="en" href="contrib/fr.xml">French</link>
+			<link type="language" lang="fr" href="contrib/fr.xml">Français</link>
+			<link type="language" lang="de" href="contrib/fr.xml">Franzözisch</link>
+			<link type="language" lang="en" href="contrib/de.xml">German</link>
+			<link type="language" lang="fr" href="contrib/de.xml">Allemand</link>
+			<link type="language" lang="de" href="contrib/de.xml">Deutsch</link>	
+	</link-group>	
 	<action-group>
 		<copy>
-			<file from="root/includes/ucp/info/ucp_planner.php" to="includes/ucp/info/ucp_planner.php" />
-			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php" />
-			<file from="root/includes/bbdkp/raidplanner/*.*" to="includes/bbdkp/raidplanner/*.*" />
-
+			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html" />
 			<file from="root/images/raidrole_images/*.*" to="images/raidrole_images/*.*" />
 			<file from="root/images/event_images/*.*" to="images/event_images/*.*" />			
 			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php" />
 			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php" />
-			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html" />
-			<file from="root/umil/*.*" to="umil/*.*" />
+			<file from="root/includes/bbdkp/raidplanner/*.*" to="includes/bbdkp/raidplanner/*.*" />
+			<file from="root/includes/ucp/info/ucp_planner.php" to="includes/ucp/info/ucp_planner.php" />
+			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php" />
 			<file from="root/install/installrp.php" to="install/installrp.php" />
-
 			<file from="root/language/en/mods/info_ucp_planner.php" to="language/en/mods/info_ucp_planner.php" />
 			<file from="root/language/en/mods/permissions_raidplanner.php" to="language/en/mods/permissions_raidplanner.php" />
 			<file from="root/language/en/mods/raidplanner.php" to="language/en/mods/raidplanner.php" />
 			<file from="root/language/en/mods/info_acp_raidplanner.php" to="language/en/mods/info_acp_raidplanner.php" />
 			<file from="root/language/en/email/calendar_updated_reply.txt" to="language/en/email/calendar_updated_reply.txt" />
-			<file from="root/language/en/email/calendar_updated_event.txt" to="language/en/email/calendar_updated_event.txt" />
+			<file from="root/language/en/email/calendar_signup.txt" to="language/en/email/calendar_signup.txt" />
 			<file from="root/language/en/email/calendar_new_event.txt" to="language/en/email/calendar_new_event.txt" />
-			
 			<file from="root/styles/prosilver/imageset/en/planner/*.*" to="styles/prosilver/imageset/en/planner/*.*"/>
 			<file from="root/styles/prosilver/imageset/planner/*.*" to="styles/prosilver/imageset/planner/*.*"/>			
 			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
 			<file from="root/styles/prosilver/theme/images/dkp/*.*" to="styles/prosilver/theme/images/dkp/*.*"/>
 			<file from="root/styles/prosilver/theme/raidplanner.css" to="styles/prosilver/theme/raidplanner.css"/>
+			<file from="root/umil/*.*" to="umil/*.*" />
 		</copy>
-		
 		<open src="includes/bbdkp/constants_bbdkp.php">
 			<edit>
 				<comment lang="en"><![CDATA[adding tablenames to constants file]]></comment>
@@ -127,7 +131,6 @@ define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');
 				<action type="after-add"><![CDATA[	'DISPLAY_EVENTS_DAYCOUNT'	=> 'How many days into the future do you want to display?',
 		]]></action>
 			</edit>
-
 			<edit>
 				<comment lang="en"><![CDATA[Define Calendar UCP module name strings]]></comment>
 				<find><![CDATA['UCP_MAIN_ATTACHMENTS'		=> 'Manage attachments',]]></find>

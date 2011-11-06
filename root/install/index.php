@@ -433,6 +433,9 @@ $versions = array(
         '0.2.2' => array(
         	// php fixes
         ),     
+        '0.2.3' => array(
+        	// php fixes
+        ),     
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.

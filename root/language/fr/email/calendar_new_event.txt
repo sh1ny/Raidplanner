@@ -1,4 +1,4 @@
-Sujet: Un nouveau rendez-vous a été ajouté au calendrier.
+Sujet: Un nouveau rendez-vous a �t� ajouté au calendrier.
 
 Cher {USERNAME},
 
