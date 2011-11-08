@@ -47,8 +47,7 @@ table.table1 tbody tr.daynames {
     font-weight: bold;
 }
 
-table.table1 tbody td.bg1_calMon {
-	background-color: #ECF3F7;
+table.table1 tbody td.bg1.calMon {
 	padding-top: 2px;
 	padding-bottom: 5px;
 	padding-left: 4px;
@@ -56,16 +55,53 @@ table.table1 tbody td.bg1_calMon {
 }
 
 /* today and highlighted day */
-table.table1 tbody td.bg2_calMon {
-	background-color: #e1ebf2;
+table.table1 tbody td.bg2.calMon {
 	padding-top: 2px;
 	padding-bottom: 5px;
 	padding-left: 4px;
 	padding-right: 4px;
 }
 
+/* hover over highlighted day */
+td.bg2.calMon a:hover {
+	text-decoration: none;
+}
 
+td.bg1.calMon a:hover {
+	text-decoration: none;
+}
 
+/* filler headers */
+table tbody td.bg3.calMonH {
+	font-size: 85%
+}
+
+td.bg3.calMonH a:hover {
+	text-decoration: none;
+}
+
+/* filler day */
+table.table1 tbody td.bg3.calMon {
+	padding-top: 2px;
+	padding-bottom: 5px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+td.bg3.calMon a:hover {
+	text-decoration: none;
+}
+
+/* highlight header */
+table tbody td.bg4.calMonH {
+	font-size: 85%
+}
+
+td.bg4.calMonH a:hover {
+	text-decoration: none;
+}
+
+/*    day css   */
 table.table1 tbody td.bg1_calDay {
 	background-color: #ECF3F7;
 	border-top-color: #12A3EB;
@@ -76,20 +112,6 @@ table.table1 tbody td.bg1_calDay {
 }
 
 
-/* hovering over day */
-table.table1 tbody td.bg1_calMon:hover {
-	background-color: #ECF3E1;
-}
-
-td.bg1_calMon a:hover {
-	text-decoration: none;
-}
-
-/* hover over highlighted day */
-td.bg2_calMon a:hover {
-	text-decoration: none;
-}
-
 table.table1 tbody td.bg1_calDay:hover {
 	background-color: #cadceb;
 	border-top-color: #12A3EB;
@@ -99,28 +121,6 @@ td.bg1_calDay a:hover {
 	text-decoration: none;
 }
 
-/* filler headers */
-table tbody td.bg3_calMonH {
-	background-color: #cadceb;
-	font-size: 85%
-}
-
-td.bg3_calMonH a:hover {
-	text-decoration: none;
-}
-
-/* filler day */
-table.table1 tbody td.bg3_calMon {
-	background-color: #cadceb;
-	padding-top: 2px;
-	padding-bottom: 5px;
-	padding-left: 4px;
-	padding-right: 4px;
-}
-
-td.bg3_calMon a:hover {
-	text-decoration: none;
-}
 
 table.table1 tbody td.bg3_calDay {
 	background-color: #cadceb;
@@ -131,15 +131,6 @@ td.bg3_calDay a:hover {
 	text-decoration: none;
 }
 
-/* highlight header */
-table tbody td.bg4_calMonH {
-	background-color: #8DB8DE;
-	font-size: 85%
-}
-
-td.bg4_calMonH a:hover {
-	text-decoration: none;
-}
 
 /* raid view pane: less space in datalist */
 fieldset.rpfields dl {

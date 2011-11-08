@@ -5,7 +5,7 @@ $(document).ready( function()
 <!-- BEGIN calendar_days -->
 <!-- BEGIN raidplans -->
 	$("#raid_id{calendar_days.raidplans.RAID_ID}").tooltip(
-			{ offset: [10, 60],  
+			{ offset: [-20, 110],  
 				  effect: 'slide',  
 				  onShow: function() {this.getTrigger().fadeTo("slow", 0.25);},
 				  onHide: function() {this.getTrigger().fadeTo(300,1);}
@@ -41,13 +41,13 @@ $(document).ready( function()
     <!-- BEGIN calendar_days -->
     <!-- IF calendar_days.START_WEEK --><tr style="height: 100px"><!-- ENDIF -->
       <!-- IF calendar_days.DUMMY_DAY -->
-      	<td  valign="top" class="bg3_calMon">&nbsp;</td>
+      	<td  valign="top" class="bg3 calMon">&nbsp;</td>
       <!-- ELSE -->
       	<td valign="top" class="
-	    <!-- IF calendar_days.DAY_CLASS eq 'highlight' -->bg2_calMon<!-- ELSE -->bg1_calMon<!-- ENDIF -->">
+	    <!-- IF calendar_days.DAY_CLASS eq 'highlight' -->bg2 calMon<!-- ELSE -->bg1 calMon<!-- ENDIF -->">
 		<table style="width: 100%" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-			<td class="<!-- IF calendar_days.HEADER_CLASS eq 'highlight' -->bg4_calMonH<!-- ELSE -->bg3_calMonH<!-- ENDIF -->">
+			<td class="<!-- IF calendar_days.HEADER_CLASS eq 'highlight' -->bg4 calMonH<!-- ELSE -->bg3 calMonH<!-- ENDIF -->">
 			<!-- IF calendar_days.ADD_LINK --><a href="{calendar_days.ADD_LINK}"><strong>{calendar_days.NUMBER}</strong></a>
 			<!-- ELSE --><strong>{calendar_days.NUMBER}</strong>
 			<!-- ENDIF -->
