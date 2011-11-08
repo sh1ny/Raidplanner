@@ -120,7 +120,6 @@ class rpframe extends calendar
 		
 		// create RP_VIEW_OPTIONS
 		$view_mode=request_var('view', 'month');
-		
 		$this->mode_sel_code = "<select name='view' id='view'>";
 		$this->mode_sel_code .= "<option value='month'>".$user->lang['MONTH']."</option>";
 		$this->mode_sel_code .= "<option value='week'>".$user->lang['WEEK']."</option>";
@@ -143,11 +142,6 @@ class rpframe extends calendar
 		
 		//if in raidplan mode let pulldown begin at today
 		$begin = 1;
-		if($view_mode === "raidplan")
-		{
-			$begin = date("d", time());			
-		}
-		
 		for( $i = $begin; $i <= $this->days_in_month; $i++ )
 		{
 			$selected = ( (int) $this->date['day'] == $i ) ? ' selected="selected"' : '';
@@ -163,63 +157,58 @@ class rpframe extends calendar
 			$this->year_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 		}
 		$this->year_sel_code .= "</select>";
-		
-		
-		//create next and prev links
-		if( $view_mode === "month" )
+
+		// make url of buttons
+		if($view_mode === "week")
 		{
-			$this->date['prev_year'] = $this->date['year'];
-			$this->date['next_year'] = $this->date['year'];
-			$this->date['prev_month'] = $this->date['month_no'] - 1;
-			$this->date['next_month'] = $this->date['month_no'] + 1;
-			if( $this->date['prev_month'] == 0 )
-			{
-				$this->date['prev_month'] = 12;
-				$this->date['prev_year']--;
-			}
-			if( $this->date['next_month'] == 13 )
-			{
-				$this->date['next_month'] = 1;
-				$this->date['next_year']++;
-			}
-
-
+			$this->date['prev_day'] = gmdate("d", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']-7, $this->date['year'] ));
+			$this->date['next_day'] = gmdate("d", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']+7, $this->date['year'] ));
+			$this->date['prev_month'] = gmdate("n", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']-7, $this->date['year']));
+			$this->date['next_month'] = gmdate("n", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']+7, $this->date['year']));
+			$this->date['prev_year']  = gmdate("Y", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']-7, $this->date['year']));
+			$this->date['next_year']  = gmdate("Y", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']+7, $this->date['year']));
+			
+			// set previous & next links
+			$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year']);
+			$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']);
+		}
+		elseif($view_mode === "day")
+		{
+		
+			$this->date['prev_day'] = gmdate("d", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']-1, $this->date['year'] ));
+			$this->date['next_day'] = gmdate("d", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']+1, $this->date['year'] ));
+			$this->date['prev_month'] = gmdate("n", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']-1, $this->date['year']));
+			$this->date['next_month'] = gmdate("n", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']+1, $this->date['year']));
+			$this->date['prev_year']  = gmdate("Y", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']-1, $this->date['year']));
+			$this->date['next_year']  = gmdate("Y", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']+1, $this->date['year']));
+			
+			$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year']);
+			$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']);
+		}
+		elseif($view_mode === "raidplan" )
+		{
+		
+			$this->date['prev_day'] = gmdate("d", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']-1, $this->date['year'] ));
+			$this->date['next_day'] = gmdate("d", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']+1, $this->date['year'] ));
+			$this->date['prev_month'] = gmdate("n", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']-1, $this->date['year']));
+			$this->date['next_month'] = gmdate("n", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']+1, $this->date['year']));
+			$this->date['prev_year']  = gmdate("Y", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']-1, $this->date['year']));
+			$this->date['next_year']  = gmdate("Y", gmmktime(0,0,0, $this->date['month_no'], $this->date['day']+1, $this->date['year']));
+			
+			$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year']);
+			$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']);
+		}		
+		elseif($view_mode === "month")
+		{
+			$this->date['prev_day'] = gmdate("d", gmmktime(0,0,0, $this->date['month_no']-1, $this->date['day'], $this->date['year'] ));
+			$this->date['next_day'] = gmdate("d", gmmktime(0,0,0, $this->date['month_no']+1, $this->date['day'], $this->date['year'] ));
+			$this->date['prev_month'] = gmdate("n", gmmktime(0,0,0, $this->date['month_no'] -1, $this->date['day'], $this->date['year']));
+			$this->date['next_month'] = gmdate("n", gmmktime(0,0,0, $this->date['month_no'] +1, $this->date['day'], $this->date['year']));
+			$this->date['prev_year']  = gmdate("Y", gmmktime(0,0,0, $this->date['month_no'] -1, $this->date['day'], $this->date['year']));
+			$this->date['next_year']  = gmdate("Y", gmmktime(0,0,0, $this->date['month_no'] +1, $this->date['day'], $this->date['year']));
+			
 			$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year']);
 			$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']);
-		}
-		else
-		{
-			// get timestamp of current view date:
-			$display_day = gmmktime(0,0,0, $this->date['month_no'], $this->date['day'], $this->date['year']);
-			$prev_day = $display_day - (($view_mode === "week") ? 604800 : 86400 ) ;
-			$next_day = $display_day + (($view_mode === "week") ? 604800 : 86400 ) ;
-	
-			$this->date['prev_day'] = gmdate("d", $prev_day);
-			$this->date['next_day'] = gmdate("d", $next_day);
-			$this->date['prev_month'] = gmdate("n", $prev_day);
-			$this->date['next_month'] = gmdate("n", $next_day);
-	
-			$this->date['prev_year'] = gmdate("Y", $prev_day);
-			$this->date['next_year'] = gmdate("Y", $next_day);
-			
-			if($view_mode === "week")
-			{
-				// set previous & next links
-				$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year']);
-				$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']);
-			}
-			elseif($view_mode === "day")
-			{
-				$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year']);
-				$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']);
-			}
-			elseif($view_mode === "raidplan")
-			{
-				$mode=request_var('mode', 'showadd');
-				$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=$mode&amp;calD=".$this->date['prev_day']."&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year']);
-				$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=$mode&amp;calD=".$this->date['next_day']."&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']);
-			}
-			
 		}
 		
 		$template->assign_vars(array(
