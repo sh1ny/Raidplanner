@@ -111,7 +111,7 @@ $lang = array_merge($lang, array(
 	'CALENDAR_WILL_ATTEND'	=> 'Signup as',
 
 	'CANNOTSIGNUP'			=> 'you cannot sign up because you have no DKP characters linked to your account.',
-	
+	'CLOCK'					=> 'Time',	
 	'RAIDCHARACTER'			=> 'Raidcharacter', 
 	'COL_HEADCOUNT'			=> 'Count',
 	'COL_WILL_ATTEND'		=> 'Will Attend?',
@@ -265,9 +265,10 @@ $lang = array_merge($lang, array(
 	'WEEK'						=> 'Week',
 	'WEEK_OF'					=> 'Week of ',
 	
-	'ZERO_LENGTH_RAIDPLAN'			=> 'The raid cannot end at the same time it starts.',
-	'ERROR_RAIDSTARTBEFORENOW'			=> 'Cannot add raids in the past.',
-
+	'ZERO_LENGTH_RAIDPLAN'		=> 'The raid cannot end at the same time it starts.',
+	'ERROR_RAIDSTARTBEFORENOW'	=> 'Cannot add raids in the past.',
+	'ERROR_NOCANVAS'			=> 'Your browser does not support Canvas/HTML5.', 
+	
 	'ZEROTH_FROM'				=> '0th from ',
 	'numbertext'			=> array(
 		'0'		=> '0th',
@@ -303,6 +304,7 @@ $lang = array_merge($lang, array(
 		'30'	=> '30th',
 		'31'	=> '31st',
 		'n'		=> 'nth' ),
+		
 
 ));
 
