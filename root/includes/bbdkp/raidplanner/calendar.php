@@ -71,12 +71,13 @@ abstract class calendar
 	public $period_end;
 	public $timestamp;
 	
+	public $timezone;
 	/**
 	 * 
 	 */
 	function __construct($arg)
 	{
-		global $config; 
+		global $user, $config; 
 		
 		//set month names (common.php lang entry)
 		$this->month_names[1] = "January";
@@ -108,6 +109,19 @@ abstract class calendar
 		
 		//get utc date
 		$this->timestamp = 	gmmktime(0, 0, 0, $this->date['month_no'], $this->date['day'], $this->date['year']);
+		
+		// we need to find out the time zone to display
+		if ($user->data['user_id'] == ANONYMOUS)
+		{
+		 	//grab board default
+		 	$tz = $config['board_timezone'];  
+		}
+		else
+		{
+			// get user setting
+			$tz = (int) $user->data['user_timezone'];
+		}
+		$this->timezone = $user->lang['tz'][$tz]; 
 		
 		$this->group_options = $this->get_sql_group_options();
 	}
@@ -208,17 +222,19 @@ abstract class calendar
 		$birthday_list = "";
 		if ($config['load_birthdays'] && $config['allow_birthdays'])
 		{
-			
 			$day1= gmdate("j", $from);
+			$month1= gmdate("n", $from);
+			$year1= gmdate("Y", $from);
+			
 			$day2= gmdate("j", $end);
-			$month= gmdate("n", $from);
-			$year= gmdate("Y", $from);
+			$month2= gmdate("n", $end);
+			$year2= gmdate("Y", $end);
 			
 			$sql = 'SELECT user_id, username, user_colour, user_birthday
 					FROM ' . USERS_TABLE . "
-					WHERE (( user_birthday >= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day1, $month,$year )) . "'
-					AND user_birthday <= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day2, $month,$year )) . "')
-					OR user_birthday " . $db->sql_like_expression($db->any_char . '-' . sprintf( '%s', $month)  .'-' . $db->any_char) . ' ) 
+					WHERE (( user_birthday >= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day1, $month1, $year1 )) . "'
+					AND user_birthday <= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day2, $month2, $year2 )) . "')
+					AND user_birthday " . $db->sql_like_expression($db->any_char . '-' . sprintf( '%2d', $month2)  .'-' . $db->any_char) . ' ) 
 					AND user_type IN (' . USER_NORMAL . ', ' . USER_FOUNDER . ')
 					ORDER BY user_birthday ASC';
 			$result = $db->sql_query($sql);
@@ -227,7 +243,7 @@ abstract class calendar
 			{
 				$birthday_str = get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']);
 				$age = (int) substr($row['user_birthday'], -4);
-				$birthday_str .= ' (' . ($year - $age) . ')';
+				$birthday_str .= ' (' . ($year2 - $age) . ')';
 				
 				$newday = trim(substr($row['user_birthday'],0, 2));
 				

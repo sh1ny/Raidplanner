@@ -213,6 +213,8 @@ class rpframe extends calendar
 		}
 		
 		$template->assign_vars(array(
+			'CURRENT_TIME'			=> sprintf($user->lang['CURRENT_TIME'], $user->format_date(time(), false, true)), 
+			'TZ'					=> $this->timezone,
 			'S_PLANNER_RAIDFRAME'	=> true,
 			'S_SHOW_WELCOME_MSG'	=> ($config ['rp_show_welcomemsg'] == 1) ? true : false,
 			'MODE_VIEW_OPTIONS' 	=> $this->mode_sel_code, 

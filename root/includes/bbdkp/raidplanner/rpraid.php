@@ -1584,9 +1584,21 @@ class rpraid
 			$eventimg = $phpbb_root_path . "images/event_images/dummy.png";
 		}
 			
+		// we need to find out the time zone to display
+		if ($user->data['user_id'] == ANONYMOUS)
+		{
+		 	//grab board default
+		 	$tz = $config['board_timezone'];  
+		}
+		else
+		{
+			// get user setting
+			$tz = (int) $user->data['user_timezone'];
+		}
+
 		$template->assign_vars( array(
 			'RAID_TOTAL'		=> $total_needed,
-			'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']], 
+			'TZ'				=> $user->lang['tz'][$tz], 
 		
 			'CURR_CONFIRMED_COUNT'	 => $this->signups['confirmed'],
 			'S_CURR_CONFIRMED_COUNT' => ($this->signups['confirmed'] > 0) ? true: false,
@@ -2099,9 +2111,20 @@ class rpraid
 				$x = 0;
 		}
 		
+		// we need to find out the time zone to display
+		if ($user->data['user_id'] == ANONYMOUS)
+		{
+		 	//grab board default
+		 	$tz = $config['board_timezone'];  
+		}
+		else
+		{
+			// get user setting
+			$tz = (int) $user->data['user_timezone'];
+		}
+		$timezone = $user->lang['tz'][$tz]; 
 		
 		$raidplan_counter = 0;
-
 		// build sql 
 		$sql_array = array(
    			'SELECT'    => 'r.raidplan_id ',   
@@ -2206,6 +2229,7 @@ class rpraid
 			}
 			
 			$raidinfo = array(
+				'TZ'					=> $timezone, 
 				'RAID_ID'				=> $this->id,
 				'PRE_PADDING'			=> $pre_padding,
 				'POST_PADDING'			=> $post_padding,
