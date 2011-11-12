@@ -15,10 +15,11 @@ $(document).ready( function()
 					 		});  
 <!-- END raidplans -->
 <!-- END calendar_days -->
-}
+
+} 
 );
 </script>
-				
+
 <div class="forumbg">
   	<div class="inner">
   	<span class="corners-inner-top"><span></span></span>
@@ -93,8 +94,10 @@ $(document).ready( function()
 				<br/><h4>{calendar_days.raidplans.EVENT_SUBJECT}</h4>
 				<!-- IF calendar_days.raidplans.ALL_DAY -->{L_ALL_DAY}
        					<!-- ELSE -->
-				{L_INVITE}: {calendar_days.raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {calendar_days.raidplans.START_TIME}
-       					<br />{L_TO_TIME}: {calendar_days.raidplans.END_TIME}
+						{L_INVITE}: {calendar_days.raidplans.INVITE_TIME}  <br />
+						{L_FROM_TIME}: {calendar_days.raidplans.START_TIME} <br />
+						{L_TO_TIME}: {calendar_days.raidplans.END_TIME} <br />
+						{calendar_days.raidplans.TZ}
        					<!-- ENDIF -->
 						<br />
 						<br />
