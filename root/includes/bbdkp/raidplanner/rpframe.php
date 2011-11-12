@@ -130,6 +130,7 @@ class rpframe extends calendar
 		$temp_replace_str = "value='".$view_mode."' selected='selected'>";
 		$this->mode_sel_code = str_replace( $temp_find_str, $temp_replace_str, $this->mode_sel_code );
 		
+		// month dropdown
 		$this->month_sel_code  = "<select name='calM' id='calM'>\n";
 		for( $i = 1; $i <= 12; $i++ )
 		{
@@ -137,10 +138,9 @@ class rpframe extends calendar
 			$this->month_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$user->lang['datetime'][$this->month_names[$i]].'</option>';
 		}
 		$this->month_sel_code .= "</select>";
-	
+
+		//day dropdown
 		$this->day_sel_code  = "<select name='calD' id='calD'>";
-		
-		//if in raidplan mode let pulldown begin at today
 		$begin = 1;
 		for( $i = $begin; $i <= $this->days_in_month; $i++ )
 		{
@@ -148,7 +148,8 @@ class rpframe extends calendar
 			$this->day_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 		}
 		$this->day_sel_code .= "</select>";
-	
+		
+		//year dropdown
 		$temp_year	=	gmdate('Y');
 		$this->year_sel_code  = "<select name='calY' id='calY'>";
 		for( $i = $temp_year-1; $i < ($temp_year+5); $i++ )

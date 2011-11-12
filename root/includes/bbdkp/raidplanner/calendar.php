@@ -76,10 +76,7 @@ abstract class calendar
 	 */
 	function __construct($arg)
 	{
-		global $auth, $db, $user, $config; 
-		
-		// always refresh the date...
-		$temp_now_time = time() + $user->timezone + $user->dst;
+		global $config; 
 		
 		//set month names (common.php lang entry)
 		$this->month_names[1] = "January";
@@ -106,37 +103,53 @@ abstract class calendar
 		
 		$this->days_in_month = cal_days_in_month(CAL_GREGORIAN, $this->date['month_no'], $this->date['year']);
 		
-		if( $this->days_in_month < $this->date['day'] )
-		{
-		    $this->date['day'] = $number_days;
-		}
-		
 		//set day names
 		$this->get_weekday_names();
 		
-		$this->timestamp = 	mktime(0, 0, 0, $this->date['month_no'], $this->date['day'], $this->date['year']);
-				
-		$first_day_of_week = $config['rp_first_day_of_week'];
-		$sunday= $monday= $tuesday= $wednesday= $thursday= $friday= $saturday='';
+		//get utc date
+		$this->timestamp = 	gmmktime(0, 0, 0, $this->date['month_no'], $this->date['day'], $this->date['year']);
 		
 		$this->group_options = $this->get_sql_group_options();
 	}
 	
+	/**
+	 * get gmt timestamp for first day for current (gmt) timestamp
+	 *
+	 * @param int $inDate
+	 * @return int
+	 */
 	protected function Get1DoM($inDate) 
 	{
+		//in  1321056000
+		//GMT: Sat, 12 Nov 2011 00:00:00 GMT
+		//Your time zone: Sat Nov 12 01:00:00 2011 GMT+1
 		global $user;
-		//$debug1 = $user->format_date($inDate, 'd.m.y h:i', false);
-		$xdate = mktime(0,0,0, date('m',$inDate), 01, date('Y',$inDate));
-		//$debug = $user->format_date($xdate, 'd.m.y h:i', false);
+		$xdate = gmmktime(0,0,0, gmdate('m',$inDate), 01, gmdate('Y',$inDate)) ;
+		//GMT: Tue, 01 Nov 2011 00:00:00 GMT
+		// Your time zone: Tue Nov 1 01:00:00 2011 GMT+1
 		return $xdate;
 	}
 	
+	/**
+	 * get gmt timestamp for last day for current gmt timestamp
+	 *
+	 * @param int $inDate
+	 * @return int
+	 */
 	protected function GetLDoM($inDate) 
 	{
+		//in  1321056000
+		//GMT: Sat, 12 Nov 2011 00:00:00 GMT
+		//Your time zone: Sat Nov 12 01:00:00 2011 GMT+1		
 		global $user;
-		$dateBegin = $this->Get1DoM($inDate);
-		$dateEnd = strtotime('+1 month',$dateBegin);
-		//$debug = $user->format_date($dateEnd, 'd.m.y h:i', false);
+		$month = gmdate('m', $inDate);
+		$year = gmdate('Y', $inDate);
+		date_default_timezone_set('UTC');
+		$result = strtotime("{$year}-{$month}-01");
+		//go back 1 second
+		$dateEnd = strtotime('-1 second',strtotime('+1 month', $result ));
+		//GMT: Wed, 30 Nov 2011 23:59:59 GMT
+		//Your time zone: Thu Dec 1 00:59:59 2011 GMT+1
 		return $dateEnd;
 	}
 	
@@ -156,8 +169,10 @@ abstract class calendar
 	 * @param int $first_day_of_week
 	 * @return int
 	 */
-	protected function get_fday($day, $month, $year, $first_day_of_week)
+	protected function get_fday($day, $month, $year)
 	{
+		global $config;
+		
 		/**
 		 * 0=mon
 		 * 1=tue
@@ -170,7 +185,7 @@ abstract class calendar
 		$fday = gmdate("N",gmmktime(0,0,0, $month, $day, $year)) - 1;
 		
 		// first day 0 being monday in acp, 
-		$fday = $fday - $first_day_of_week;
+		$fday = $fday -  (int) $config['rp_first_day_of_week'];
 		if( $fday < 0 )
 		{
 			$fday = $fday + 7;
@@ -179,7 +194,7 @@ abstract class calendar
 	}
 	
 	/**
-	 * Generates array of birthdays for the given range for users/founders
+	 * Generates array of birthdays for the given UTC range for users/founders
 	 *
 	 * @param int $day
 	 * @param int $month
@@ -194,16 +209,16 @@ abstract class calendar
 		if ($config['load_birthdays'] && $config['allow_birthdays'])
 		{
 			
-			$day1= date("j", $from);
-			$day2= date("j", $end);
-			$month= date("n", $from);
-			$year= date("Y", $from);
+			$day1= gmdate("j", $from);
+			$day2= gmdate("j", $end);
+			$month= gmdate("n", $from);
+			$year= gmdate("Y", $from);
 			
 			$sql = 'SELECT user_id, username, user_colour, user_birthday
 					FROM ' . USERS_TABLE . "
 					WHERE (( user_birthday >= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day1, $month,$year )) . "'
 					AND user_birthday <= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day2, $month,$year )) . "')
-					OR user_birthday " . $db->sql_like_expression($db->any_char . '-' . sprintf( ' %s', $month)  .'-' . $db->any_char) . ' ) 
+					OR user_birthday " . $db->sql_like_expression($db->any_char . '-' . sprintf( '%s', $month)  .'-' . $db->any_char) . ' ) 
 					AND user_type IN (' . USER_NORMAL . ', ' . USER_FOUNDER . ')
 					ORDER BY user_birthday ASC';
 			$result = $db->sql_query($sql);

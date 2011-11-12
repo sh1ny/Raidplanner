@@ -2023,6 +2023,7 @@ class rpraid
 	 */
 	public function GetRaiddaylist($from, $end)
 	{
+		//GMT: Tue, 01 Nov 2011 00:00:00 GMT
 		global $user, $db;
 		
 		// build sql 
@@ -2069,8 +2070,11 @@ class rpraid
 		$raidplan_output = array();
 		
 		//find any raidplans on this day
-		$start_temp_date = gmmktime(0,0,0,$month, $day, $year)  - $user->timezone - $user->dst;
-		
+		$start_temp_date = gmmktime(0,0,0,$month, $day, $year);
+		/* 
+			GMT: Fri, 11 Nov 2011 00:00:00 GMT
+			Your time zone: Fri Nov 11 01:00:00 2011 GMT+1
+		*/
 		
 		switch($mode)
 		{
@@ -2090,6 +2094,8 @@ class rpraid
 				break;
 			default:
 				$end_temp_date = $start_temp_date + 86400;
+				//GMT: Sat, 12 Nov 2011 00:00:00 GMT
+				//Your time zone: Sat Nov 12 01:00:00 2011 GMT+1
 				$x = 0;
 		}
 		
