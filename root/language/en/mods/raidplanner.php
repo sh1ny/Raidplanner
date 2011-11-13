@@ -154,6 +154,9 @@ $lang = array_merge($lang, array(
 	'FREQUENCEY_LESS_THAN_1'	=> 'Recurring raids must have a frequency greater than or equal to 1',
 	'FROZEN_TIME'			=> 'Freeze Raid time.',
 	'FROZEN_EXPLAIN'		=> 'Freeze the raid x hours before Start time. Permissions differ per role',
+
+	'FROZEN'				=> 'Frozen',
+
 	'EXPIRE_TIME'			=> 'Expire Raid Time',
 	'EXPIRE_EXPLAIN'		=> 'Expire raids x hours after Raid start time. Permissions differ per role. ',
  
@@ -171,6 +174,7 @@ $lang = array_merge($lang, array(
 	'MONTH'					=> 'Month',
 	'MONTH_OF'				=> 'Month of ',
 	'MY_EVENTS'				=> 'My Raids',
+	'LOCKED'				=> 'Locked', 
 
 	'LOCAL_DATE_FORMAT'		=> '%1$s %2$s, %3$s',
 	'LOGIN_EXPLAIN_POST_RAIDPLAN'	=> 'You need to login in order to add/edit/delete raids.',
