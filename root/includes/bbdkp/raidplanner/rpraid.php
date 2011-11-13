@@ -415,6 +415,7 @@ class rpraid
 			$this->get_unavailable();
 			unset ($row);
 			
+			// lock signup pane if your char is already registered for a role
 			foreach($this->raidroles as $rid => $myrole)
 			{
 				if(is_array($myrole['role_signups']))
@@ -432,6 +433,25 @@ class rpraid
 							}
 											
 						}
+					}
+				}
+			}
+			
+			// lock signup pane if your char is already registerd as signed off
+			if(is_array($this->signoffs))
+			{
+				foreach($this->signoffs as $signoffid => $asignoff)
+				{
+					if(isset($this->mychars))
+					{
+						foreach($this->mychars as $chid => $mychar)
+						{
+							if($mychar['id'] == $asignoff['dkpmemberid'])
+							{
+								$this->locked = true;
+							}
+						}
+										
 					}
 				}
 			}
