@@ -34,12 +34,65 @@ hr.hrCal {
 	font-size: 85%
 }
 
-/* signup th */
-table.table1 thead th.rolesignup {
+/* Raidplan */
+.raidplanbody {
+    clear: both;
+    color: #333333;
+    line-height: 1.48em;
+    padding: 0;
+}
+
+.raidplanbody .content {
+    font-size: 1.3em;
+}
+
+.rolesignupheader {
+	padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    margin: 1%;
+    
 	border-top: medium;
 	border-top-color: #12A3EB;
+	border-bottom:0px solid;
 	font-weight: bold;
+	text-transform:uppercase;
 }
+
+.rolesignupheader:hover {
+    opacity:0.75; // css standard
+}
+
+    
+.rolesignupbody {
+	margin: 1%;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+}
+
+
+.rolesignupbody:hover {
+    opacity:0.75; // css standard
+
+}
+
+   
+.roleunavailable {
+	background-color:#FFFFFF;
+	width:160px; 
+	float:left; 
+	margin: 1%;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+}
+
+
+/* Calendar view */
 
 /* display days in calendar day/month/week view) */
 table.table1 tbody tr.daynames {
@@ -138,16 +191,6 @@ fieldset.rpfields dl {
 }
 
 
-.raidplanbody {
-    clear: both;
-    color: #333333;
-    line-height: 1.48em;
-    padding: 0;
-}
-
-.raidplanbody .content {
-    font-size: 1.3em;
-}
 
 
 
