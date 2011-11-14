@@ -79,7 +79,6 @@ hr.hrCal {
 
 }
 
-   
 .roleunavailable {
 	background-color:#FFFFFF;
 	width:160px; 
@@ -90,6 +89,12 @@ hr.hrCal {
     padding-bottom: 2px;
     padding-left: 2px;
 }
+
+.roleunavailable:hover {
+    opacity:0.75; // css standard
+
+}
+
 
 
 /* Calendar view */
