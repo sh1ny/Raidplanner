@@ -150,7 +150,9 @@ class rpmonth extends calendar
 			
 			// user cannot add raid/appointments in the past
 			$calendar_days['ADD_RAID_ICON'] = false;
-			if( (int) $this->date['month_no'] > (int) date('m') || ( (int) $this->date['month_no']  == (int) date('m')  && $j >= (int) date('d') ) )
+			if( (int) $this->date['month_no'] > (int) date('m') || 
+				( (int) $this->date['month_no']  == (int) date('m') && $j >= (int) date('d') )  || 
+				(int) $this->date['year'] > (int) date('Y') )
 			{
 				$calendar_days['ADD_RAID_ICON'] = true;
 			}

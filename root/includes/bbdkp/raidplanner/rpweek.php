@@ -183,7 +183,11 @@ class rpweek extends calendar
 			
 			// user cannot add raid/appointments in the past
 			$calendar_days['ADD_RAID_ICON'] = false;
-			if( $true_m > date('m') || ($true_m == date('m')  && $true_j >= date('d') ) )
+			if( 
+				$true_m > date('m') || 
+				($true_m == date('m')  && $true_j >= date('d') ) || 
+				(int) $this->date['year'] > (int) date('Y') 
+			)
 			{
 				$calendar_days['ADD_RAID_ICON'] = true;
 			}
