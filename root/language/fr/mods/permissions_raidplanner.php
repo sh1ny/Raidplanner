@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* permissions_calendar [English]
+* permissions_calendar [Français]
 *
 * @author alightner
 *
@@ -72,43 +72,40 @@ if (empty($lang) || !is_array($lang))
 $lang['permission_cat']['raidplanner'] = 'Raidplanner';
 
 // Adding new permission set
-$lang['permission_type']['raidplanner_'] = 'Raidplanner Permissions';
+$lang['permission_type']['raidplanner_'] = 'Permissions Raidplanner';
 
 $lang = array_merge($lang, array(
 	
 	/* Admin Permissions */
-	'acl_a_raid_config'		=> array('lang' => 'Can manage ACP Raidplanner settings and raidplan types', 'cat' => 'raidplanner'),
+	'acl_a_raid_config'		=> array('lang' => 'Peut adapter les paramètres Raidplanner en PCA', 'cat' => 'raidplanner'),
 	
 	
 	/* moderator permissions */
-	'acl_m_raidplanner_edit_other_users_raidplans'	=> array('lang' => 'Can edit raidplans created by other users', 'cat' => 'raidplanner'),
-	'acl_m_raidplanner_delete_other_users_raidplans'	=> array('lang' => 'Can delete raidplans created by other users', 'cat' => 'raidplanner'),
-	'acl_m_raidplanner_edit_other_users_signups'	=> array('lang' => 'Can edit responses created by other users', 'cat' => 'raidplanner'),
-	
+	'acl_m_raidplanner_edit_other_users_raidplans'	=> array('lang' => 'Peut éditer les Rendez-vous d’autres', 'cat' => 'raidplanner'),
+	'acl_m_raidplanner_delete_other_users_raidplans'	=> array('lang' => 'Peut supprimer les Rendez-vous d’autres', 'cat' => 'raidplanner'),
+	'acl_m_raidplanner_edit_other_users_signups'	=> array('lang' => 'Peut éditer les inscriptions d’autres', 'cat' => 'raidplanner'),
 	
 	/* User Permissions */
 	// allows creating raids
-	'acl_u_raidplanner_create_raidplans'			=> array('lang' => 'Can create raidplans', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_create_raidplans'			=> array('lang' => 'Peut créer des rendez-vous', 'cat' => 'raidplanner'),
 	// allows group raidplans where only usergroups can subscribe
-	'acl_u_raidplanner_create_group_raidplans'	=> array('lang' => 'Can create group raidplans', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_create_group_raidplans'	=> array('lang' => 'Peut créer des rendez-vous groupe', 'cat' => 'raidplanner'),
 	// allows public raidplans where every member can subscribe 
-	'acl_u_raidplanner_create_public_raidplans'	=> array('lang' => 'Can create public raidplans', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_create_public_raidplans'	=> array('lang' => 'Peut créer des rendez-vous publiques', 'cat' => 'raidplanner'),
 	// allows private raidplans - only for you - eg hairdresser
-	'acl_u_raidplanner_create_private_raidplans'	=> array('lang' => 'Can create private raidplans', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_create_private_raidplans'	=> array('lang' => 'Peut créer des rendez-vous privés', 'cat' => 'raidplanner'),
 	// can create raidplans that recur
-	'acl_u_raidplanner_create_recurring_raidplans' => array('lang' => 'Can create recurring raidplans', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_create_recurring_raidplans' => array('lang' => 'Peut créer des rendez-vous récurrents', 'cat' => 'raidplanner'),
 	// allows deleting raids
-	'acl_u_raidplanner_delete_raidplans'			=> array('lang' => 'Can delete raidplans', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_delete_raidplans'			=> array('lang' => 'Peut supprimer des rendez-vous', 'cat' => 'raidplanner'),
 	// allows editing raids that you created
-	'acl_u_raidplanner_edit_raidplans'			=> array('lang' => 'Can edit raidplans', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_edit_raidplans'			=> array('lang' => 'Peut éditer des rendez-vous', 'cat' => 'raidplanner'),
 	// allows signing up to raids
-	'acl_u_raidplanner_signup_raidplans'			=> array('lang' => 'Can sign up to raidplans', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_signup_raidplans'			=> array('lang' => 'Peut s’inscrire', 'cat' => 'raidplanner'),
 	// allows viewing raids
-	'acl_u_raidplanner_view_raidplans'			=> array('lang' => 'Can view raidplans', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_view_raidplans'			=> array('lang' => 'Peut voir des rendez-vous', 'cat' => 'raidplanner'),
 	// view raid participation
-	'acl_u_raidplanner_view_headcount'			=> array('lang' => 'Can view the headcount for raidplans created by other users', 'cat' => 'raidplanner'),
-
-
+	'acl_u_raidplanner_view_headcount'			=> array('lang' => 'Peut voir des rendez-vous', 'cat' => 'raidplanner'),
 ));
 
 ?>
