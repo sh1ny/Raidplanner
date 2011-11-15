@@ -262,6 +262,7 @@ $lang = array_merge($lang, array(
 	
 	'ZERO_LENGTH_RAIDPLAN'			=> 'Ce raid ne peut pas terminer avant son commencement.',
 	'ERROR_RAIDSTARTBEFORENOW'			=> 'On ne peut pas ajouter des raids dans le passé.',
+	'ERROR_NOCANVAS'			=> 'Canvas/HTML5 n’est pas supporté par votre navigateur', 
 
 	'ZEROTH_FROM'				=> '0ième de ',
 	'numbertext'			=> array(

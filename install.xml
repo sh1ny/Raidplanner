@@ -1,28 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
-	<!-- Raidplanner $Id $ -->
-	<!--
-		NOTICE: Please open this file in your web browser. If presented with a
-		security warning, you may safely tell it to allow the blocked content.
-	-->
-	<!--
-		For security purposes, please check: http://www.phpbb.com/mods/ for
-		the latest version of this MOD.\nAlthough MODs are checked before
-		being allowed in the MODs Database there is no guarantee that there
-		are no security problems within the MOD.\nNo support will be given for
-		MODs not found within the MODs Database which can be found at
-		http://www.phpbb.com/mods/
-	-->
+<!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
 <mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
 	<header>
-		<meta name="generator"
-			content="MODX file generated with PP MODX Creator by tumba25 (online version)" />
-		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)" />
+		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
+		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[bbDKP Raidplanner 0.3.0]]></title>
 		<description lang="en"><![CDATA[Raidplanner Installer. 
-		see /docs/install.html and /docs/changelog.html
-]]></description>
+		see /docs/install.html and /docs/changelog.html]]></description>
 		<author-notes lang="en"><![CDATA[We hope you get everything working. further development requests, 
 		support questions are welcome at www.bbdkp.com]]></author-notes>
 		<author-group>
@@ -32,8 +19,7 @@
 				<homepage><![CDATA[http://www.bbdkp.com]]></homepage>
 				<email><![CDATA[sajaki9@gmail.com]]></email>
 				<contributions-group>
-					<contributions status="current" from="2010-09-30"
-						position="Developer" />
+					<contributions status="current" from="2010-09-30" position="Developer"/>
 				</contributions-group>
 			</author>
 			<author>
@@ -41,16 +27,14 @@
 				<username><![CDATA[alightner]]></username>
 				<homepage><![CDATA[http://www.phpbbcalendarmod.com]]></homepage>
 				<contributions-group>
-					<contributions status="past" from="2007-09-07" to="2010-09-30"
-						position="Developer" />
+					<contributions status="past" from="2007-09-07" to="2010-09-30" position="Developer"/>
 				</contributions-group>
 			</author>
 			<author>
 				<realname><![CDATA[T. Farmer]]></realname>
 				<username><![CDATA[SpaceDoG]]></username>
 				<contributions-group>
-					<contributions status="past" from="2007-09-06" to="2007-10-29"
-						position="Developer" />
+					<contributions status="past" from="2007-09-06" to="2007-10-29" position="Developer"/>
 				</contributions-group>
 			</author>
 		</author-group>
@@ -62,41 +46,67 @@
 		</installation>
 		<link-group>
 			<link type="dependency" href="http://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.2.5</link>
+			<link type="language" href="contrib/fr.xml" lang="en">French</link>
+			<link type="language" href="contrib/fr.xml" lang="fr">Français</link>
+			<link type="language" href="contrib/fr.xml" lang="de">Franzözisch</link>
+			<link type="language" href="contrib/de.xml" lang="en">German</link>
+			<link type="language" href="contrib/de.xml" lang="fr">Allemand</link>
+			<link type="language" href="contrib/de.xml" lang="de">Deutsch</link>
 		</link-group>
 	</header>
-	<link-group>
-			<link type="language" lang="en" href="contrib/fr.xml">French</link>
-			<link type="language" lang="fr" href="contrib/fr.xml">Français</link>
-			<link type="language" lang="de" href="contrib/fr.xml">Franzözisch</link>
-			<link type="language" lang="en" href="contrib/de.xml">German</link>
-			<link type="language" lang="fr" href="contrib/de.xml">Allemand</link>
-			<link type="language" lang="de" href="contrib/de.xml">Deutsch</link>	
-	</link-group>	
 	<action-group>
 		<copy>
-			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html" />
-			<file from="root/images/raidrole_images/*.*" to="images/raidrole_images/*.*" />
-			<file from="root/images/event_images/*.*" to="images/event_images/*.*" />			
-			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php" />
-			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php" />
-			<file from="root/includes/bbdkp/raidplanner/*.*" to="includes/bbdkp/raidplanner/*.*" />
-			<file from="root/includes/ucp/info/ucp_planner.php" to="includes/ucp/info/ucp_planner.php" />
-			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php" />
-			<file from="root/install/*.*" to="install/*.*" />
-			<file from="root/language/en/mods/info_ucp_planner.php" to="language/en/mods/info_ucp_planner.php" />
-			<file from="root/language/en/mods/permissions_raidplanner.php" to="language/en/mods/permissions_raidplanner.php" />
-			<file from="root/language/en/mods/raidplanner.php" to="language/en/mods/raidplanner.php" />
-			<file from="root/language/en/mods/info_acp_raidplanner.php" to="language/en/mods/info_acp_raidplanner.php" />
-			<file from="root/language/en/email/calendar_updated_event.txt" to="language/en/email/calendar_updated_event.txt" />
-			<file from="root/language/en/email/calendar_signup.txt" to="language/en/email/calendar_signup.txt" />
-			<file from="root/language/en/email/calendar_new_event.txt" to="language/en/email/calendar_new_event.txt" />
+			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html"/>
+			<file from="root/images/raidrole_images/*.*" to="images/raidrole_images/*.*"/>
+			<file from="root/images/event_images/*.*" to="images/event_images/*.*"/>
+			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php"/>
+			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php"/>
+			<file from="root/includes/bbdkp/raidplanner/*.*" to="includes/bbdkp/raidplanner/*.*"/>
+			<file from="root/includes/ucp/info/ucp_planner.php" to="includes/ucp/info/ucp_planner.php"/>
+			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php"/>
+			<file from="root/install/*.*" to="install/*.*"/>
+			<file from="root/language/en/mods/info_ucp_planner.php" to="language/en/mods/info_ucp_planner.php"/>
+			<file from="root/language/en/mods/permissions_raidplanner.php" to="language/en/mods/permissions_raidplanner.php"/>
+			<file from="root/language/en/mods/raidplanner.php" to="language/en/mods/raidplanner.php"/>
+			<file from="root/language/en/mods/info_acp_raidplanner.php" to="language/en/mods/info_acp_raidplanner.php"/>
+			<file from="root/language/en/email/calendar_updated_event.txt" to="language/en/email/calendar_updated_event.txt"/>
+			<file from="root/language/en/email/calendar_signup.txt" to="language/en/email/calendar_signup.txt"/>
+			<file from="root/language/en/email/calendar_new_event.txt" to="language/en/email/calendar_new_event.txt"/>
 			<file from="root/styles/prosilver/imageset/en/planner/*.*" to="styles/prosilver/imageset/en/planner/*.*"/>
-			<file from="root/styles/prosilver/imageset/planner/*.*" to="styles/prosilver/imageset/planner/*.*"/>			
+			<file from="root/styles/prosilver/imageset/planner/*.*" to="styles/prosilver/imageset/planner/*.*"/>
 			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
 			<file from="root/styles/prosilver/theme/images/dkp/*.*" to="styles/prosilver/theme/images/dkp/*.*"/>
-			<file from="root/styles/prosilver/theme/*.*" to="styles/prosilver/theme/*.*"/>	
-			<file from="root/umil/*.*" to="umil/*.*" />
+			<file from="root/styles/prosilver/theme/*.*" to="styles/prosilver/theme/*.*"/>
+			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
+		<open src="/styles/prosilver/template/dkp/module/menu.html">
+			<edit>
+				<comment lang="en"><![CDATA[raidplanner link]]></comment>
+				<comment lang="fr"><![CDATA[raidplanner link]]></comment>
+				<comment lang="de"><![CDATA[raidplanner link]]></comment>
+				<find><![CDATA[  <!-- IF U_ACP -->&nbsp; &nbsp; <a href="{U_DKP_ACP}">{L_MENU_ADMIN_PANEL}</a> <!-- ENDIF -->]]></find>
+				<action type="before-add"><![CDATA[	&nbsp; &nbsp;<a href="{U_PLANNER}">{L_PLANNER}</a>
+]]></action>
+			</edit>
+		</open>
+		<open src="/styles/prosilver/theme/stylesheet.css">
+			<edit>
+				<comment lang="en"><![CDATA[raidplanner css]]></comment>
+				<comment lang="fr"><![CDATA[raidplanner css]]></comment>
+				<comment lang="de"><![CDATA[raidplanner css]]></comment>
+				<find><![CDATA[@import url("bbdkp.css");]]></find>
+				<action type="after-add"><![CDATA[@import url("raidplanner.css");
+]]></action>
+			</edit>
+		</open>
+		<open src="includes/functions.php">
+			<edit>
+				<comment lang="en"><![CDATA[ adding Planner link in functions.php right after bbdkp]]></comment>
+				<find><![CDATA[		'SITENAME'						=> $config['sitename'],]]></find>
+				<action type="after-add"><![CDATA[        'U_PLANNER'            => append_sid("{$phpbb_root_path}dkp.$phpEx", 'page=planner'),
+				]]></action>
+			</edit>
+		</open>
 		<open src="includes/bbdkp/constants_bbdkp.php">
 			<edit>
 				<comment lang="en"><![CDATA[adding tablenames to constants file]]></comment>
@@ -114,16 +124,15 @@ define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');
 ]]></action>
 			</edit>
 		</open>
-		
-		<open src="includes/functions.php">
+		<open src="language/en/common.php">
 			<edit>
-				<comment lang="en"><![CDATA[ adding Planner link in functions.php right after bbdkp]]></comment>
-				<find><![CDATA[		'SITENAME'						=> $config['sitename'],]]></find>
-				<action type="after-add"><![CDATA[        'U_PLANNER'            => append_sid("{$phpbb_root_path}dkp.$phpEx", 'page=planner'),
-				]]></action>
+				<comment lang="en"><![CDATA[Define Calendar string]]></comment>
+				<find><![CDATA[=> 'Bytes',]]></find>
+				<action type="after-add"><![CDATA[    'PLANNER'                => 'Raidplanner',
+]]></action>
 			</edit>
 		</open>
-<open src="language/en/ucp.php">
+		<open src="language/en/ucp.php">
 			<edit>
 				<comment lang="en"><![CDATA[Add Raidplanner UCP strings]]></comment>
 				<find><![CDATA['DISABLE_CENSORS'			=> 'Enable word censoring',
@@ -139,51 +148,17 @@ define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');
 		]]></action>
 			</edit>
 		</open>
-
-		<open src="language/en/common.php">
-            <edit>
-                <comment lang="en"><![CDATA[Define Calendar string]]></comment>
-               <find><![CDATA[=> 'Bytes',]]></find>
-                <action type="after-add"><![CDATA[    'PLANNER'                => 'Raidplanner',
-]]></action>
-			</edit>
-		</open>
-
 		<open src="styles/prosilver/template/dkp/dkpmain.html">
 			<edit>
 				<comment lang="en"><![CDATA[Add calendar to DKP page]]></comment>
 				<find><![CDATA[<!-- [+] Raidplanner -->]]></find>
-				<action type="after-add"><![CDATA[
-<!-- IF S_PLANNER_RAIDFRAME -->
+				<action type="after-add"><![CDATA[<!-- IF S_PLANNER_RAIDFRAME -->
 	<!-- INCLUDE planner/planner_raidframe.html -->
 <!-- ENDIF -->
 ]]></action>
 			</edit>
-		</open>		
-		
-		<open src="/styles/prosilver/template/dkp/module/menu.html">
-			<edit>
-				<comment lang="en"><![CDATA[raidplanner link]]></comment>
-				<comment lang="fr"><![CDATA[raidplanner link]]></comment>
-				<comment lang="de"><![CDATA[raidplanner link]]></comment>								
-				<find><![CDATA[  <!-- IF U_ACP -->&nbsp; &nbsp; <a href="{U_DKP_ACP}">{L_MENU_ADMIN_PANEL}</a> <!-- ENDIF -->]]></find>
-				<action type="before-add"><![CDATA[	&nbsp; &nbsp;<a href="{U_PLANNER}">{L_PLANNER}</a>
-]]></action>
-			</edit>
 		</open>
-				
-		<open src="/styles/prosilver/theme/stylesheet.css">
-			<edit>
-				<comment lang="en"><![CDATA[raidplanner css]]></comment>
-				<comment lang="fr"><![CDATA[raidplanner css]]></comment>
-				<comment lang="de"><![CDATA[raidplanner css]]></comment>								
-				<find><![CDATA[@import url("bbdkp.css");]]></find>
-				<action type="after-add"><![CDATA[@import url("raidplanner.css");
-]]></action>
-			</edit>
-		</open>
-
 		<php-installer><![CDATA[install/index.php]]></php-installer>
-		<diy-instructions lang="en"><![CDATA[Run database installer : Browse to install/index.php. This will install the Raidplanner database tables, the ACP and UCP modules, purge the cache and refresh the template, imagesets and themes. Note that if you run a Style other than Prosilver, you will need to apply the Prosilver changes to your style either manually - by following the edit instructions in prosilver.xml, or by automatically, by going into the "Detail" tab in Automod and applying the Prosilver changes to yur style. ]]></diy-instructions>
+		<diy-instructions lang="en"><![CDATA[Run database installer : Browse to install/index.php. This will install the Raidplanner database tables, the ACP and UCP modules, purge the cache and refresh the template, imagesets and themes. Note that if you run a Style other than Prosilver, you will need to apply the Prosilver changes to your style either manually - by following the edit instructions in prosilver.xml, or by automatically, by going into the "Detail" tab in Automod and applying the Prosilver changes to your style.]]></diy-instructions>
 	</action-group>
 </mod>
