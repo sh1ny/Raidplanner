@@ -2,12 +2,15 @@ Sujet: Un rendez-vous a été modifié dans le calendrier.
 
 Cher {USERNAME},
 
-The event "{EVENT_SUBJECT}" has been updated in the calendar.
+Le rendez-vous "{EVENT_SUBJECT}" a été modifié au Calendrier des Raids.
 
-To view this event please visit the following link:
+Pour consulter le calendrier veuillez suivre ce lien:
+{U_CALENDAR}
+
+Pour consulter le rendez-vous veuillez suivre ce lien:
 {U_EVENT}
 
-If you no longer wish to receive emails about this event click here:
-{U_UNWATCH_EVENT}
+Si vous ne voulez plus être informé sur de nouveaux rendez-vous Raidplanner suivez ce lien:
+{U_UNWATCH_CALENDAR}
 
 {EMAIL_SIG}

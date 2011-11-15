@@ -1,14 +1,13 @@
-Subject: A new or updated calendar reply has been made
+Sujet: Une nouvelle inscription.
 
-Dear {USERNAME},
+Cher {USERNAME},
 
-A new or updated reply has been made to the Raid event "{EVENT_SUBJECT}"
+Quelqu'un s'est inscrit au rendez-vous "{EVENT_SUBJECT}"
 
-To view this event please visit the following link:
-{U_EVENT}
+Pour consulter ce rendez-vous suivez ce lien : {U_EVENT}
 
-If you no longer wish to receive emails about this event click here:
+Si vous ne voulez plus être informé sur de nouvelles inscriptions de ce rendez-vous suivez ce lien:
+
 {U_UNWATCH_EVENT}
-
 
 {EMAIL_SIG}

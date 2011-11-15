@@ -433,7 +433,7 @@ $versions = array(
         '0.2.2' => array(
         	// php fixes
         ),     
-        '0.2.3' => array(
+        '0.3.0' => array(
         	// php fixes
         ),     
 );
