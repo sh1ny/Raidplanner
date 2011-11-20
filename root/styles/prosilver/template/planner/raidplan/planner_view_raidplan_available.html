@@ -7,31 +7,28 @@
 
 <!-- BEGIN raidroles -->
 <!-- IF raidroles.ROLE_DISPLAY -->
-<div style="width:160px; float:left ;">
-<table class="table1" style="width:100%; cellspacing:0; cellpadding:5">
-<thead>
-	<th class="rolesignup" style="background-color:{raidroles.ROLE_COLOR}; border-bottom:0px solid"> 
+<div id="raid_role{raidroles.ROLE_ID}" style="width:160px; float:left; " >
+
+<div id="raid_role_head{raidroles.ROLE_ID}" class="rolesignupheader" style="background-color:{raidroles.ROLE_COLOR};" >
 	<!-- IF raidroles.S_ROLE_ICON_EXISTS --><img src="{raidroles.ROLE_ICON}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
-	<strong>{raidroles.ROLE_NAME}</strong></th>
-</thead>
-<tbody>
+	<strong>{raidroles.ROLE_NAME}</strong>
+</div>
+<br />
 
 <!-- BEGIN signups -->
-<tr style="background-color:{raidroles.ROLE_COLOR}; border-bottom:0px solid">
-	<td>
-	<strong><a>{raidroles.signups.POSTER_URL}</a></strong><br />
-	<span><!-- IF raidroles.signups.S_RACE_IMAGE_EXISTS --><img src="{raidroles.signups.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
-	<!-- IF raidroles.signups.S_CLASS_IMAGE_EXISTS --><img src="{raidroles.signups.CLASS_IMAGE}" alt="{raidroles.signups.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
-	<strong><span style="color:{raidroles.signups.COLORCODE}"><a href={raidroles.signups.U_MEMBERDKP}>{raidroles.signups.CHARNAME}</a></span></strong></span> <br />
+<div id="signup{raidroles.signups.SIGNUP_ID}" class="rolesignupbody" style="background-color:{raidroles.ROLE_COLOR};">
+	<strong>{raidroles.signups.POSTER_URL}</strong><br />
+	<span><!-- IF raidroles.signups.S_RACE_IMAGE_EXISTS --><img src="{raidroles.signups.RACE_IMAGE}" alt="race_{raidroles.signups.CHARNAME}" />&nbsp;<!-- ELSE --><!-- ENDIF -->
+	<!-- IF raidroles.signups.S_CLASS_IMAGE_EXISTS --><img src="{raidroles.signups.CLASS_IMAGE}" alt="class_{raidroles.signups.CHARNAME}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
+	<strong><span style="color:{raidroles.signups.COLORCODE}"><a href="{raidroles.signups.U_MEMBERDKP}">{raidroles.signups.CHARNAME}</a></span></strong></span> <br />
 	{L_DKP} : {raidroles.signups.DKP_CURRENT}, {L_ATTENDANCE} : {raidroles.signups.ATTENDANCEP1}<br />
 	{raidroles.signups.POST_TIME}<br />
 	<span class="modalinput">{raidroles.signups.DETAILS}</span><br /> 
-	</td>
-</tr>
-<tr>
-<td style="text-align:right">
+</div>
+
+<div id="signupaction{raidroles.signups.SIGNUP_ID}" style="text-align:right; background-color:transparent;">
 	<!-- IF raidroles.signups.S_EDIT_SIGNUP -->
-	<img src="{T_IMAGESET_PATH}/planner/icon_edit.png" alt="{L_EDIT}" class="modalInput_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}"" rel="#prompt_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}" />
+	<img src="{T_IMAGESET_PATH}/planner/icon_edit.png" alt="{L_EDIT}" class="modalInput_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}"" class="#prompt_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}" />
 	<!-- ENDIF -->
 	<!-- IF raidroles.signups.S_DELETE_SIGNUP -->
 		<a href="{raidroles.signups.U_DELETE}"><img src="{T_IMAGESET_PATH}/planner/icon_cancel.png" alt="{L_NOTAVAILABLE}"></a>
@@ -40,12 +37,11 @@
 	<!-- IF raidroles.signups.S_CANCONFIRM -->
 		<a href="{raidroles.signups.U_CONFIRM}"><img src="{T_IMAGESET_PATH}/planner/icon_signed_up.png" alt="{L_CONFIRMED}"></a>
 	<!-- ENDIF -->
-	</td>
-</tr>
+</div>
+<br />
+
 <!-- END signups -->
 
-</tbody>
-</table>
 </div>
 <!-- ENDIF -->
 <!-- END raidroles -->
@@ -75,9 +71,10 @@
 	</div>
 	<div class="b"><div></div></div> 
 </div>
-<script>
+<script type="text/javascript">
 	$(document).ready(function() 
 	{
+
 	var triggers_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID} = $(".modalInput_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}").overlay({
 		mask: {
 			color: '#262626',

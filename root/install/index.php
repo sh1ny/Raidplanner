@@ -38,7 +38,7 @@ if (!file_exists($phpbb_root_path . 'umil/umil_auto.' . $phpEx))
     trigger_error('Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
 }
 
-if (!file_exists($phpbb_root_path . 'install/installrp.' . $phpEx))
+if (!file_exists($phpbb_root_path . 'install/index.' . $phpEx))
 {
     trigger_error('Warning! Install directory has wrong name. it must be \'install\'. Please rename it and launch again.', E_USER_WARNING);
 }
@@ -430,7 +430,12 @@ $versions = array(
         '0.2.1' => array(
         	// php fixes
         ),
-     
+        '0.2.2' => array(
+        	// php fixes
+        ),     
+        '0.3.0' => array(
+        	// php fixes
+        ),     
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.

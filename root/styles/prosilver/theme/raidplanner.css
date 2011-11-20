@@ -34,119 +34,7 @@ hr.hrCal {
 	font-size: 85%
 }
 
-/* signup th */
-table.table1 thead th.rolesignup {
-	border-top: medium;
-	border-top-color: #12A3EB;
-	font-weight: bold;
-}
-
-/* display days in calendar day/month/week view) */
-table.table1 tbody tr.daynames {
-    background-color: #BFC1CF;
-    font-weight: bold;
-}
-
-table.table1 tbody td.bg1_calMon {
-	background-color: #ECF3F7;
-	padding-top: 2px;
-	padding-bottom: 5px;
-	padding-left: 4px;
-	padding-right: 4px;
-}
-
-/* today and highlighted day */
-table.table1 tbody td.bg2_calMon {
-	background-color: #e1ebf2;
-	padding-top: 2px;
-	padding-bottom: 5px;
-	padding-left: 4px;
-	padding-right: 4px;
-}
-
-
-
-table.table1 tbody td.bg1_calDay {
-	background-color: #ECF3F7;
-	border-top-color: #12A3EB;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	padding-left: 3px;
-	padding-right: 3px;
-}
-
-
-/* hovering over day */
-table.table1 tbody td.bg1_calMon:hover {
-	background-color: #ECF3E1;
-}
-
-td.bg1_calMon a:hover {
-	text-decoration: none;
-}
-
-/* hover over highlighted day */
-td.bg2_calMon a:hover {
-	text-decoration: none;
-}
-
-table.table1 tbody td.bg1_calDay:hover {
-	background-color: #cadceb;
-	border-top-color: #12A3EB;
-}
-
-td.bg1_calDay a:hover {
-	text-decoration: none;
-}
-
-/* filler headers */
-table tbody td.bg3_calMonH {
-	background-color: #cadceb;
-	font-size: 85%
-}
-
-td.bg3_calMonH a:hover {
-	text-decoration: none;
-}
-
-/* filler day */
-table.table1 tbody td.bg3_calMon {
-	background-color: #cadceb;
-	padding-top: 2px;
-	padding-bottom: 5px;
-	padding-left: 4px;
-	padding-right: 4px;
-}
-
-td.bg3_calMon a:hover {
-	text-decoration: none;
-}
-
-table.table1 tbody td.bg3_calDay {
-	background-color: #cadceb;
-	border-top-color: #12A3EB;
-}
-
-td.bg3_calDay a:hover {
-	text-decoration: none;
-}
-
-/* highlight header */
-table tbody td.bg4_calMonH {
-	background-color: #8DB8DE;
-	font-size: 85%
-}
-
-td.bg4_calMonH a:hover {
-	text-decoration: none;
-}
-
-/* raid view pane: less space in datalist */
-fieldset.rpfields dl {
-	padding: 0.5px 0;
-}
-
-
+/* Raidplan */
 .raidplanbody {
     clear: both;
     color: #333333;
@@ -157,6 +45,157 @@ fieldset.rpfields dl {
 .raidplanbody .content {
     font-size: 1.3em;
 }
+
+.rolesignupheader {
+	padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    margin: 1%;
+    
+	border-top: medium;
+	border-top-color: #12A3EB;
+	border-bottom:0px solid;
+	font-weight: bold;
+	text-transform:uppercase;
+}
+
+.rolesignupheader:hover {
+    opacity:0.75; // css standard
+}
+
+    
+.rolesignupbody {
+	margin: 1%;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+}
+
+
+.rolesignupbody:hover {
+    opacity:0.75; // css standard
+
+}
+
+.roleunavailable {
+	background-color:#FFFFFF;
+	width:160px; 
+	float:left; 
+	margin: 1%;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+}
+
+.roleunavailable:hover {
+    opacity:0.75; // css standard
+
+}
+
+
+
+/* Calendar view */
+
+/* display days in calendar day/month/week view) */
+table.table1 tbody tr.daynames {
+    background-color: #BFC1CF;
+    font-weight: bold;
+}
+
+table.table1 tbody td.bg1.calMon {
+	padding-top: 2px;
+	padding-bottom: 5px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+/* today and highlighted day */
+table.table1 tbody td.bg2.calMon {
+	padding-top: 2px;
+	padding-bottom: 5px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+/* hover over highlighted day */
+td.bg2.calMon a:hover {
+	text-decoration: none;
+}
+
+td.bg1.calMon a:hover {
+	text-decoration: none;
+}
+
+/* filler headers */
+table tbody td.bg3.calMonH {
+	font-size: 85%
+}
+
+td.bg3.calMonH a:hover {
+	text-decoration: none;
+}
+
+/* filler day */
+table.table1 tbody td.bg3.calMon {
+	padding-top: 2px;
+	padding-bottom: 5px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+td.bg3.calMon a:hover {
+	text-decoration: none;
+}
+
+/* highlight header */
+table tbody td.bg4.calMonH {
+	font-size: 85%
+}
+
+td.bg4.calMonH a:hover {
+	text-decoration: none;
+}
+
+/*    day css   */
+table.table1 tbody td.bg1_calDay {
+	background-color: #ECF3F7;
+	border-top-color: #12A3EB;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 3px;
+	padding-right: 3px;
+}
+
+
+table.table1 tbody td.bg1_calDay:hover {
+	background-color: #cadceb;
+	border-top-color: #12A3EB;
+}
+
+td.bg1_calDay a:hover {
+	text-decoration: none;
+}
+
+
+table.table1 tbody td.bg3_calDay {
+	background-color: #cadceb;
+	border-top-color: #12A3EB;
+}
+
+td.bg3_calDay a:hover {
+	text-decoration: none;
+}
+
+
+/* raid view pane: less space in datalist */
+fieldset.rpfields dl {
+	padding: 0.5px 0;
+}
+
+
 
 
 

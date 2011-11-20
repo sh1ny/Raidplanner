@@ -1,10 +1,9 @@
 <fieldset>
 <div id="rpsignup">
-<!-- IF S_CANSIGNUP -->
+<!-- IF S_CANSIGNUP && ! S_LOCKED -->
 	<form method="post" action="{U_SIGNUP_MODE_ACTION}" name="signup_form{RAID_ID}" id="signup_form{RAID_ID}">
 	<div class="panel bg2">
 	<div class="inner"><span class="corners-top"><span></span></span>
-	
 	<fieldset>
 	<dl>
 		<dt>{L_CALENDAR_WILL_ATTEND}</dt>
@@ -43,7 +42,7 @@
 	<span class="corners-bottom"><span></span></span></div>
 	</div>
 	</form>
-<!-- ELSE -->
+<!-- ELSEIF !S_CANSIGNUP  -->
 	<div class="panel bg2">
 	<div class="inner"><span class="corners-top"><span></span></span>
 		<p class="error">{L_CANNOTSIGNUP}</p>
