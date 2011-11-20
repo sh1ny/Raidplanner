@@ -51,10 +51,9 @@ class rpweek extends calendar
 		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 	
 		// create next and prev links
-		$first_day_of_week = $config['rp_first_day_of_week'];
 		
 		// get date number 
-		$this->date['fday'] = $this->get_fday($this->date['day'], $this->date['month_no'], $this->date['year'], $first_day_of_week);
+		$this->date['fday'] = $this->get_fday($this->date['day'], $this->date['month_no'], $this->date['year']);
 	
 		$number_days = 7;
 		$calendar_header_txt = $user->lang['WEEK_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], 
@@ -184,7 +183,11 @@ class rpweek extends calendar
 			
 			// user cannot add raid/appointments in the past
 			$calendar_days['ADD_RAID_ICON'] = false;
-			if( $true_m > date('m') || ($true_m == date('m')  && $true_j >= date('d') ) )
+			if( 
+				$true_m > date('m') || 
+				($true_m == date('m')  && $true_j >= date('d') ) || 
+				(int) $this->date['year'] > (int) date('Y') 
+			)
 			{
 				$calendar_days['ADD_RAID_ICON'] = true;
 			}

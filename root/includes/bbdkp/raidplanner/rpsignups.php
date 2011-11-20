@@ -372,7 +372,7 @@ class rpsignup
 		global $db;
 		//make object
 		$this->getSignup($signup_id);
-			
+		$this->signup_sync();
 		switch ( (int) $this->signup_val)
 		{
 			case 0:
@@ -419,7 +419,8 @@ class rpsignup
 		
 		//make object
 		$this->getSignup($signup_id);
-			
+		$this->signup_sync();
+		
 		switch ( (int) $this->signup_val)
 		{
 			case 1:
@@ -473,6 +474,29 @@ class rpsignup
 		// if already 0 then don't do anything
 		return false;
 	}
+	
+	/**
+	 * synchronises raidplan stats 
+	 *
+	 */
+	private function signup_sync()
+	{
+		global $db;
+		$db->sql_transaction('begin');
+		$sql = "update " . RP_RAIDS_TABLE . " set signup_no = (select count(*) from " . RP_SIGNUPS . 
+			" where raidplan_id = " . (int) $this->raidplan_id. " and signup_val = 0) where raidplan_id = " . (int) $this->raidplan_id;
+		$db->sql_query($sql);
+		$sql = "update " . RP_RAIDS_TABLE . " set signup_maybe = (select count(*) from " . RP_SIGNUPS . 
+			" where raidplan_id = " . (int) $this->raidplan_id. " and signup_val = 1) where raidplan_id = " . (int) $this->raidplan_id;
+		$db->sql_query($sql);
+		$sql = "update " . RP_RAIDS_TABLE . " set signup_yes = (select count(*) from " . RP_SIGNUPS . 
+			" where raidplan_id = " . (int) $this->raidplan_id. " and signup_val = 2) where raidplan_id = " . (int) $this->raidplan_id;
+		$db->sql_query($sql);
+		$sql = "update " . RP_RAIDS_TABLE . " set signup_confirmed = (select count(*) from " . RP_SIGNUPS . 
+			" where raidplan_id = " . (int) $this->raidplan_id. " and signup_val = 3) where raidplan_id = " . (int) $this->raidplan_id;
+		$db->sql_query($sql);
+		$db->sql_transaction('commit');
+	}
 
 	
 	/**
@@ -485,7 +509,7 @@ class rpsignup
 		global $db;
 		//make object
 		$this->getSignup($signup_id);
-			
+		$this->signup_sync();
 		switch ( (int) $this->signup_val)
 		{
 			case 1:

@@ -94,7 +94,9 @@ class rpday extends calendar
 			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".
 			$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
 
-			if( (int) $this->date['month_no'] > (int) date('m') || ( (int) $this->date['month_no']  == (int) date('m')  && (int) $this->date['day'] >= (int) date('d') ) )
+			if( (int) $this->date['month_no'] > (int) date('m') || ( (int) $this->date['month_no']  == (int) date('m')  && (int) $this->date['day'] >= (int) date('d') )
+				|| (int) $this->date['year'] > (int) date('Y')
+			)
 			{
 				$addlink = true;
 			}

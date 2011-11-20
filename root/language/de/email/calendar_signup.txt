@@ -1,0 +1,13 @@
+Betrifft: Jemand hat sich angemeldet im Raidplaner. 
+
+Gruss {USERNAME},
+
+Das Ereignis "{EVENT_SUBJECT}" wurde aktualisiert.
+
+Um das Ereignis zu sehen bitte folge diesen Link:
+{U_EVENT}
+
+Falls du nicht mehr auf den laufenden gehalten werden willst über dieser Planerereignis dann clicke hier:
+{U_UNWATCH_EVENT}
+
+{EMAIL_SIG}

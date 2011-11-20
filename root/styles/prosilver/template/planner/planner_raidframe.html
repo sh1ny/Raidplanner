@@ -3,6 +3,7 @@
 <div class="inner">
 <span class="corners-top"><span></span></span>
 {WELCOME_MSG}
+<br />{CURRENT_TIME} {TZ}
 <span class="corners-bottom"><span></span></span>
 </div>
 </div>
@@ -33,7 +34,7 @@
 			<form id="viewOpts" method="post" action="{S_POST_ACTION}">
 	      	<div style="float: left;"> {MODE_VIEW_OPTIONS} &nbsp; {CALENDAR_VIEW_OPTIONS}<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_GO}" class="button2" /></div>
 	    	</form>
-		    <div style="float: left;"><a class="next_planner" title="{L_SHOW_PREV}" type="button" href="{CALENDAR_NEXT}"></a></div>
+		    <div style="float: left;"><a class="next_planner" title="{L_SHOW_NEXT}" type="button" href="{CALENDAR_NEXT}"></a></div>
 	    <span class="corners-inner-bottom"><span></span></span>
     </div>
 </div>
@@ -73,5 +74,7 @@
 <!-- IF S_PLANNER_TOPSIGNUPS -->
 	<!-- INCLUDE planner/raidplan/planner_topsignups.html -->
 <!-- ENDIF -->
+
+<!-- INCLUDE planner/calendar/clock.html -->
 
 </div>

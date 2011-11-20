@@ -5,7 +5,7 @@ $(document).ready( function()
 {
 <!-- BEGIN raidplans -->
 	$("#raid_id{raidplans.RAID_ID}").tooltip(
-			{ offset: [10, 60],  
+			{ offset: [5, 0],  
 			  effect: 'slide',  
 			  onShow: function() {this.getTrigger().fadeTo("slow", 0.25);},
 			  onHide: function() {this.getTrigger().fadeTo(300,1);}
@@ -51,6 +51,7 @@ $(document).ready( function()
 	      <!-- IF raidplans.PRE_PADDING --><td colspan="{raidplans.PRE_PADDING}" class="bg3_calDay">&nbsp;</td><!-- ENDIF -->
 	      <td colspan="{raidplans.PADDING}" class="bg1_calDay" style="text-align: center;">
 	      		<!-- IF raidplans.EVENT_URL -->
+          		
           		<a id="raid_id{raidplans.RAID_ID}" href="{raidplans.EVENT_URL}">
           			<img src="{raidplans.IMAGE}" alt="{raidplans.ETYPE_DISPLAY_NAME}" /> <br/>
           			<!-- IF raidplans.DISPLAY_BOLD --><strong><!-- ENDIF -->
@@ -59,37 +60,47 @@ $(document).ready( function()
           			<span class="smCalText">
           				<!-- IF calendar_days.raidplans.SHOW_TIME -->
           				<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}
-          				<!-- ELSE -->{L_INVITE}: {raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {raidplans.START_TIME}
-          				<br />{L_TO_TIME}: {raidplans.END_TIME}
-          			<!-- ENDIF --></span>
+          				<!-- ELSE -->{L_INVITE}: {raidplans.INVITE_TIME} <br />
+          				{L_FROM_TIME}: {raidplans.START_TIME} <br />
+          				{L_TO_TIME}: {raidplans.END_TIME} <br />
+          				{raidplans.TZ} <br />
+          			<!-- ENDIF -->
+          			</span>
           			<!-- ENDIF -->
           		</a>
           		<div class="bbtooltip">
 			 	    <div class="bbinner">
 					    <div class="t"></div>
 					    	<div style="text-align: left">
-					    	<img src="{raidplans.IMAGE}" alt="{raidplans.ETYPE_DISPLAY_NAME}" /> <br/>
-							<br/><h4>{calendar_days.raidplans.EVENT_SUBJECT}</h4>
-							<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}
-          					<!-- ELSE -->
+					    	<br />
+					    	<div style="float: left; width:30%;"><img src="{raidplans.IMAGE}" alt="{raidplans.ETYPE_DISPLAY_NAME}" /> <br/></div>
+							<div style="float: left; width:10%;">&nbsp;</div>
+							<div style="float: left; width:60%;"><h4>{calendar_days.raidplans.EVENT_SUBJECT}</h4>
+							<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}<!-- ELSE -->
 							{L_INVITE}: {raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {raidplans.START_TIME}
           					<br />{L_TO_TIME}: {raidplans.END_TIME}
           					<!-- ENDIF -->
           					<br />
+          					</div>
+          					<div style="clear: both"></div>
 							<br />
 							<strong>{L_SIGNUPS}</strong>
 							<br />
 							{L_CONFIRMED}
 							{raidplans.CURR_CONFIRMED_COUNT}/{raidplans.RAID_TOTAL} ({raidplans.CURR_CONFIRMEDPCT})<br />
 							{L_AVAILABLE} : 
-							{raidplans.CURR_YES_COUNT}/{raidplans.RAID_TOTAL} ({raidplans.CURR_YESPCT})<br />
+							{raidplans.CURR_YES_COUNT}/{raidplans.RAID_TOTAL} ({raidplans.CURR_YESPCT})&nbsp;
 							{L_MAYBE} :
 							{raidplans.CURR_MAYBE_COUNT}/{raidplans.RAID_TOTAL} ({raidplans.CURR_MAYBEPCT})<br />
 							{L_NOTAVAILABLE} :
 							{raidplans.CURR_NO_COUNT}/{raidplans.RAID_TOTAL} ({raidplans.CURR_NOPCT})<br />
 							<br />
 							
-          					<!-- IF raidplans.S_CANSIGNUP && raidplans.S_LEGITUSER -->
+							<!-- IF calendar_days.raidplans.S_LOCKED -->
+       						<p class="error">{L_LOCKED}</p>
+       						<!-- ENDIF  -->
+       					
+          					<!-- IF raidplans.S_CANSIGNUP && raidplans.S_LEGITUSER &&  ! calendar_days.raidplans.S_LOCKED -->
           					<hr />
          						<form method="post" action="{raidplans.S_SIGNUP_MODE_ACTION}" name="signup_form{raidplans.RAID_ID}" id="signup_form{raidplans.RAID_ID}">
           						<fieldset>

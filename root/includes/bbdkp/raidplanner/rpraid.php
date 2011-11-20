@@ -187,6 +187,13 @@ class rpraid
 	public $signups_allowed;
 	
 	/**
+	 * If raid is locked ?
+	 *
+	 * @var boolean
+	 */
+	public $locked;
+	
+	/**
 	 * constructor
 	 *
 	 * @param int $id
@@ -380,27 +387,26 @@ class rpraid
 			$this->bbcode['uid']= $row['bbcode_uid'];
 			//enable_bbcode & enable_smilies & enable_magic_url always 1
 			
-			//if signups are allowed if and only if raid is not expired
-			if ($row['track_signups'] == 1 &&
-				$this->invite_time > time())
-			{
-				//track
-				$this->signups_allowed = true;
-				$this->signups['no'] = $row['signup_no'];
-				$this->signups['maybe'] = $row['signup_maybe'];
-				$this->signups['yes'] = $row['signup_yes'];
-				$this->signups['confirmed'] = $row['signup_confirmed'];
+			//if signups are allowed 
+			$this->signups['no'] = $row['signup_no'];
+			$this->signups['maybe'] = $row['signup_maybe'];
+			$this->signups['yes'] = $row['signup_yes'];
+			$this->signups['confirmed'] = $row['signup_confirmed'];
 				
-			}
-			else 
+			$this->signups_allowed = true;
+			if ($row['track_signups'] == 0)
 			{
+				//no tracking
 				$this->signups_allowed = false;
-				$this->signups['yes'] = 0;
-				$this->signups['no'] = 0;
-				$this->signups['maybe'] = 0;
-				$this->signups['confirmed'] = 0;
 			}
-
+			
+			//if raid invite time is in the pas then raid is signups are locked.
+			$this->locked = false;
+			if($this->invite_time < time())
+			{
+				$this->locked = true;
+			}
+			
 			// get array of raid roles with signups and confirmations per role (available+confirmed)
 			$this->get_raid_roles();
 			// attach signups to roles (available+confirmed)
@@ -408,6 +414,47 @@ class rpraid
 			//get all that signed unavailable 
 			$this->get_unavailable();
 			unset ($row);
+			
+			// lock signup pane if your char is already registered for a role
+			foreach($this->raidroles as $rid => $myrole)
+			{
+				if(is_array($myrole['role_signups']))
+				{
+					foreach($myrole['role_signups'] as $signid => $asignup)
+					{
+						if(isset($this->mychars))
+						{
+							foreach($this->mychars as $chid => $mychar)
+							{
+								if($mychar['id'] == $asignup['dkpmemberid'])
+								{
+									$this->locked = true;
+								}
+							}
+											
+						}
+					}
+				}
+			}
+			
+			// lock signup pane if your char is already registerd as signed off
+			if(is_array($this->signoffs))
+			{
+				foreach($this->signoffs as $signoffid => $asignoff)
+				{
+					if(isset($this->mychars))
+					{
+						foreach($this->mychars as $chid => $mychar)
+						{
+							if($mychar['id'] == $asignoff['dkpmemberid'])
+							{
+								$this->locked = true;
+							}
+						}
+										
+					}
+				}
+			}
 			
 			$sql = 'SELECT user_id, username, user_colour FROM ' . USERS_TABLE . ' WHERE user_id = '.$db->sql_escape($this->poster);
 			$result = $db->sql_query($sql);
@@ -1250,7 +1297,6 @@ class rpraid
 				
 				$db->sql_transaction('commit');
 				
-				
 				$day = gmdate("d", $this->start_time);
 				$month = gmdate("n", $this->start_time);
 				$year =	gmdate('Y', $this->start_time);
@@ -1329,8 +1375,7 @@ class rpraid
 		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$day ."&amp;calM=".$month."&amp;calY=".$year);
 		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
 
-		$total_needed = 0;		
-
+		$total_needed = 0;
 		
 		//display signups only if this is not a personal appointment
 		if($this->accesslevel != 0)
@@ -1569,7 +1614,7 @@ class rpraid
 				
 			}
 		}
-
+		
 		unset($key);
 		unset($signoff);
 			
@@ -1584,9 +1629,22 @@ class rpraid
 			$eventimg = $phpbb_root_path . "images/event_images/dummy.png";
 		}
 			
+		// we need to find out the time zone to display
+		if ($user->data['user_id'] == ANONYMOUS)
+		{
+		 	//grab board default
+		 	$tz = $config['board_timezone'];  
+		}
+		else
+		{
+			// get user setting
+			$tz = (int) $user->data['user_timezone'];
+		}
+
 		$template->assign_vars( array(
+			'S_LOCKED'			=> $this->locked, 
 			'RAID_TOTAL'		=> $total_needed,
-			'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']], 
+			'TZ'				=> $user->lang['tz'][$tz], 
 		
 			'CURR_CONFIRMED_COUNT'	 => $this->signups['confirmed'],
 			'S_CURR_CONFIRMED_COUNT' => ($this->signups['confirmed'] > 0) ? true: false,
@@ -2023,6 +2081,7 @@ class rpraid
 	 */
 	public function GetRaiddaylist($from, $end)
 	{
+		//GMT: Tue, 01 Nov 2011 00:00:00 GMT
 		global $user, $db;
 		
 		// build sql 
@@ -2069,8 +2128,11 @@ class rpraid
 		$raidplan_output = array();
 		
 		//find any raidplans on this day
-		$start_temp_date = gmmktime(0,0,0,$month, $day, $year)  - $user->timezone - $user->dst;
-		
+		$start_temp_date = gmmktime(0,0,0,$month, $day, $year);
+		/* 
+			GMT: Fri, 11 Nov 2011 00:00:00 GMT
+			Your time zone: Fri Nov 11 01:00:00 2011 GMT+1
+		*/
 		
 		switch($mode)
 		{
@@ -2090,12 +2152,25 @@ class rpraid
 				break;
 			default:
 				$end_temp_date = $start_temp_date + 86400;
+				//GMT: Sat, 12 Nov 2011 00:00:00 GMT
+				//Your time zone: Sat Nov 12 01:00:00 2011 GMT+1
 				$x = 0;
 		}
 		
+		// we need to find out the time zone to display
+		if ($user->data['user_id'] == ANONYMOUS)
+		{
+		 	//grab board default
+		 	$tz = $config['board_timezone'];  
+		}
+		else
+		{
+			// get user setting
+			$tz = (int) $user->data['user_timezone'];
+		}
+		$timezone = $user->lang['tz'][$tz]; 
 		
 		$raidplan_counter = 0;
-
 		// build sql 
 		$sql_array = array(
    			'SELECT'    => 'r.raidplan_id ',   
@@ -2155,6 +2230,7 @@ class rpraid
 			$userchars = array();
 			$total_needed = 0;
 			if($this->signups_allowed == true 
+				&& $this->locked == false
 				&& $this->accesslevel != 0 
 				&& !$user->data['is_bot'] 
 				&& $user->data['user_id'] != ANONYMOUS)
@@ -2200,6 +2276,7 @@ class rpraid
 			}
 			
 			$raidinfo = array(
+				'TZ'					=> $timezone, 
 				'RAID_ID'				=> $this->id,
 				'PRE_PADDING'			=> $pre_padding,
 				'POST_PADDING'			=> $post_padding,
@@ -2211,6 +2288,8 @@ class rpraid
 				'IMAGE' 				=> $eventimg, 
 				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id), 
 				'EVENT_ID'  			=> $this->id,
+				'S_LOCKED'				=> $this->locked,
+				
 				 // for popup
 				'S_SIGNUP_MODE_ACTION' 	=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id. "&amp;mode=signup"), 
 				'INVITE_TIME'  			=> $user->format_date($this->invite_time, $correct_format, true), 

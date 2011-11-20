@@ -6,42 +6,40 @@
 <div style="width:95%; margin-left:auto;margin-right:auto;text-align:left" > 
 
 <!-- BEGIN raidroles -->
+<div id="raid_rolesignedup{raidroles.ROLE_ID}" style="width:160px; float:left; " >
 
-<div style="width:160px; float:left ;">
-<table class="table1" style="width:100%; cellspacing:0; cellpadding:5">
-<thead>
-	<th class="rolesignup" style="background-color:{raidroles.ROLE_COLOR}; border-bottom:0px solid"> 
-	<!-- IF raidroles.S_ROLE_ICON_EXISTS --><img src="{raidroles.ROLE_ICON}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
-	<strong>{raidroles.ROLE_NAME}: {raidroles.ROLE_CONFIRMED}/{raidroles.ROLE_NEEDED}</strong></th>
-</thead>
-<tbody>
+<div id="raid_rolesignedup_head{raidroles.ROLE_ID}" class="rolesignupheader" style="background-color:{raidroles.ROLE_COLOR};" > 
+	<!-- IF raidroles.S_ROLE_ICON_EXISTS --><img src="{raidroles.ROLE_ICON}" alt="{raidroles.ROLE_NAME}" />&nbsp;<!-- ELSE --><!-- ENDIF -->
+	<strong>{raidroles.ROLE_NAME}: {raidroles.ROLE_CONFIRMED}/{raidroles.ROLE_NEEDED}</strong>
+</div>
+
+<br />
 <!-- BEGIN confirmations -->
-<tr style="background-color:{raidroles.ROLE_COLOR}; border-bottom:0px solid">
-	<td> <strong><a>{raidroles.confirmations.POSTER_URL}</a></strong><br />
+
+<div id="raid_rolesignedup_body{raidroles.confirmations.SIGNUP_ID}" class="rolesignupbody" style="background-color:{raidroles.ROLE_COLOR};">
+
+	<strong>{raidroles.confirmations.POSTER_URL}</strong><br />
 	
-	<span><!-- IF raidroles.confirmations.S_RACE_IMAGE_EXISTS --><img src="{raidroles.confirmations.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
-	<!-- IF raidroles.confirmations.S_CLASS_IMAGE_EXISTS --><img src="{raidroles.confirmations.CLASS_IMAGE}" alt="{raidroles.confirmations.CLASS}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
-	<strong><span style="color:{raidroles.confirmations.COLORCODE}"><a href={raidroles.confirmations.U_MEMBERDKP}>{raidroles.confirmations.CHARNAME}</a></span></strong></span> <br />
+	<span><!-- IF raidroles.confirmations.S_RACE_IMAGE_EXISTS --><img src="{raidroles.confirmations.RACE_IMAGE}" alt="race_{raidroles.confirmations.CHARNAME}" />&nbsp;<!-- ELSE --><!-- ENDIF -->
+	<!-- IF raidroles.confirmations.S_CLASS_IMAGE_EXISTS --><img src="{raidroles.confirmations.CLASS_IMAGE}" alt="class_{raidroles.confirmations.CHARNAME}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
+	<strong><span style="color:{raidroles.confirmations.COLORCODE}"><a href="{raidroles.confirmations.U_MEMBERDKP}">{raidroles.confirmations.CHARNAME}</a></span></strong></span> <br />
 	{L_DKP}: {raidroles.confirmations.DKP_CURRENT}, {L_ATTENDANCE}: {raidroles.confirmations.ATTENDANCEP1}<br />
 	{raidroles.confirmations.POST_TIME} <br />
 	<span class="modalinput">{raidroles.confirmations.DETAILS}</span> <br /> 
-	</td>
-</tr>
-<tr>
-<td style="text-align:right">
+</div>
+
+<div id="confirmaction{raidroles.confirmations.SIGNUP_ID}" style="text-align:right; background-color:transparent;">
 	<!-- IF raidroles.confirmations.S_EDIT_SIGNUP -->
-	<img src="{T_IMAGESET_PATH}/planner/icon_edit.png" alt="{L_EDIT}" class="modalInput_{raidroles.confirmations.RAIDPLAN_ID}_{raidroles.confirmations.SIGNUP_ID}"" rel="#prompt_{raidroles.confirmations.RAIDPLAN_ID}_{raidroles.confirmations.SIGNUP_ID}" />
+	<img src="{T_IMAGESET_PATH}/planner/icon_edit.png" alt="{L_EDIT}" class="modalInput_{raidroles.confirmations.RAIDPLAN_ID}_{raidroles.confirmations.SIGNUP_ID}"" class="#prompt_{raidroles.confirmations.RAIDPLAN_ID}_{raidroles.confirmations.SIGNUP_ID}" />
 	<!-- ENDIF -->
 	<!-- IF raidroles.confirmations.S_DELETE_SIGNUP -->
 		<a href="{raidroles.confirmations.U_DELETE}"><img src="{T_IMAGESET_PATH}/planner/icon_cancel.png" alt="{L_NOTAVAILABLE}"></a>
 		<input type="hidden" name="keycheck" value="{raidroles.confirmations.DELETEKEY}">
 	<!-- ENDIF -->
-	</td>
-</tr>
+</div>
+<br />
 <!-- END confirmations -->
 
-</tbody>
-</table>
 </div>
 <!-- END raidroles -->
 </div>
@@ -71,9 +69,10 @@
 	</div>
 	<div class="b"><div></div></div> 
 </div>
-<script>
+<script type="text/javascript">
 	$(document).ready(function() 
 	{
+
 	var triggers_{raidroles.confirmations.RAIDPLAN_ID}_{raidroles.confirmations.SIGNUP_ID} = $(".modalInput_{raidroles.confirmations.RAIDPLAN_ID}_{raidroles.confirmations.SIGNUP_ID}").overlay({
 		mask: {
 			color: '#262626',

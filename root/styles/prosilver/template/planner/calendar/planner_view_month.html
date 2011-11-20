@@ -5,7 +5,7 @@ $(document).ready( function()
 <!-- BEGIN calendar_days -->
 <!-- BEGIN raidplans -->
 	$("#raid_id{calendar_days.raidplans.RAID_ID}").tooltip(
-			{ offset: [10, 60],  
+			{ offset: [5, 0],  
 				  effect: 'slide',  
 				  onShow: function() {this.getTrigger().fadeTo("slow", 0.25);},
 				  onHide: function() {this.getTrigger().fadeTo(300,1);}
@@ -15,10 +15,11 @@ $(document).ready( function()
 					 		});  
 <!-- END raidplans -->
 <!-- END calendar_days -->
-}
+
+} 
 );
 </script>
-				
+
 <div class="forumbg">
   	<div class="inner">
   	<span class="corners-inner-top"><span></span></span>
@@ -41,13 +42,13 @@ $(document).ready( function()
     <!-- BEGIN calendar_days -->
     <!-- IF calendar_days.START_WEEK --><tr style="height: 100px"><!-- ENDIF -->
       <!-- IF calendar_days.DUMMY_DAY -->
-      	<td  valign="top" class="bg3_calMon">&nbsp;</td>
+      	<td  valign="top" class="bg3 calMon">&nbsp;</td>
       <!-- ELSE -->
       	<td valign="top" class="
-	    <!-- IF calendar_days.DAY_CLASS eq 'highlight' -->bg2_calMon<!-- ELSE -->bg1_calMon<!-- ENDIF -->">
+	    <!-- IF calendar_days.DAY_CLASS eq 'highlight' -->bg2 calMon<!-- ELSE -->bg1 calMon<!-- ENDIF -->">
 		<table style="width: 100%" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-			<td class="<!-- IF calendar_days.HEADER_CLASS eq 'highlight' -->bg4_calMonH<!-- ELSE -->bg3_calMonH<!-- ENDIF -->">
+			<td class="<!-- IF calendar_days.HEADER_CLASS eq 'highlight' -->bg4 calMonH<!-- ELSE -->bg3 calMonH<!-- ENDIF -->">
 			<!-- IF calendar_days.ADD_LINK --><a href="{calendar_days.ADD_LINK}"><strong>{calendar_days.NUMBER}</strong></a>
 			<!-- ELSE --><strong>{calendar_days.NUMBER}</strong>
 			<!-- ENDIF -->
@@ -62,7 +63,7 @@ $(document).ready( function()
 		<br />
 		<!-- IF calendar_days.BIRTHDAYS -->{calendar_days.BIRTHDAYS}<!-- ENDIF -->
 		<!-- BEGIN raidplans -->
-		<!-- IF calendar_days.raidplans.S_FIRST_ROW --><!-- IF calendar_days.BIRTHDAYS --><hr class="hrCal"><!-- ENDIF --><!-- ELSE --><hr class="hrCal"><!-- ENDIF -->
+		<!-- IF calendar_days.raidplans.S_FIRST_ROW --><!-- IF calendar_days.BIRTHDAYS --><hr class="hrCal" /><!-- ENDIF --><!-- ELSE --><hr class="hrCal"><!-- ENDIF -->
 		<a id="raid_id{calendar_days.raidplans.RAID_ID}" href="{calendar_days.raidplans.EVENT_URL}">
 			<img src="{calendar_days.raidplans.IMAGE}" alt="{calendar_days.raidplans.ETYPE_DISPLAY_NAME}" /> <br/>
 			<!-- IF S_DISPLAY_NAME -->
@@ -89,28 +90,37 @@ $(document).ready( function()
 			<div class="bbinner">
 			<div class="t"></div>
 		    	<div style="text-align: left">
-		    	<img src="{calendar_days.raidplans.IMAGE}" alt="{calendar_days.raidplans.ETYPE_DISPLAY_NAME}" /> <br/>
-				<br/><h4>{calendar_days.raidplans.EVENT_SUBJECT}</h4>
+		    	<br />
+		    	<div style="float: left; width:30%;"><img src="{calendar_days.raidplans.IMAGE}" alt="{calendar_days.raidplans.ETYPE_DISPLAY_NAME}" /> <br/></div>
+		    	<div style="float: left; width:10%;">&nbsp;</div>
+		    	<div style="float: left; width:60%;">
+				<h4>{calendar_days.raidplans.EVENT_SUBJECT}</h4>
 				<!-- IF calendar_days.raidplans.ALL_DAY -->{L_ALL_DAY}
        					<!-- ELSE -->
-				{L_INVITE}: {calendar_days.raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {calendar_days.raidplans.START_TIME}
-       					<br />{L_TO_TIME}: {calendar_days.raidplans.END_TIME}
+						{L_INVITE}: {calendar_days.raidplans.INVITE_TIME}  <br />
+						{L_FROM_TIME}: {calendar_days.raidplans.START_TIME} <br />
+						{L_TO_TIME}: {calendar_days.raidplans.END_TIME} <br />
+						{calendar_days.raidplans.TZ}
        					<!-- ENDIF -->
 						<br />
+						</div>
 						<br />
 						<strong>{L_SIGNUPS}</strong>
 						<br />
 						{L_CONFIRMED}
 						{calendar_days.raidplans.CURR_CONFIRMED_COUNT}/{calendar_days.raidplans.RAID_TOTAL} ({calendar_days.raidplans.CURR_CONFIRMEDPCT})<br />
 						{L_AVAILABLE} : 
-						{calendar_days.raidplans.CURR_YES_COUNT}/{calendar_days.raidplans.RAID_TOTAL} ({calendar_days.raidplans.CURR_YESPCT})<br />
+						{calendar_days.raidplans.CURR_YES_COUNT}/{calendar_days.raidplans.RAID_TOTAL} ({calendar_days.raidplans.CURR_YESPCT})&nbsp;
 						{L_MAYBE} :
 						{calendar_days.raidplans.CURR_MAYBE_COUNT}/{calendar_days.raidplans.RAID_TOTAL} ({calendar_days.raidplans.CURR_MAYBEPCT})<br />
 						{L_NOTAVAILABLE} :
 						{calendar_days.raidplans.CURR_NO_COUNT}/{calendar_days.raidplans.RAID_TOTAL} ({calendar_days.raidplans.CURR_NOPCT})<br />
-						<br />
-       					
-       					<!-- IF calendar_days.raidplans.S_CANSIGNUP && calendar_days.raidplans.S_LEGITUSER -->
+						
+       					<!-- IF calendar_days.raidplans.S_LOCKED -->
+       					<br /><p class="error">{L_LOCKED}</p>
+       					<!-- ENDIF  -->
+       						
+       					<!-- IF calendar_days.raidplans.S_CANSIGNUP && calendar_days.raidplans.S_LEGITUSER  && ! calendar_days.raidplans.S_LOCKED -->
        					<hr />
       					<form method="post" action="{calendar_days.raidplans.S_SIGNUP_MODE_ACTION}" name="signup_form{calendar_days.raidplans.RAID_ID}" id="signup_form{calendar_days.raidplans.RAID_ID}">
        					<fieldset>
