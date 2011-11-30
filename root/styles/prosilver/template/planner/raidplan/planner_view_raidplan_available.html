@@ -72,7 +72,8 @@
 	<div class="b"><div></div></div> 
 </div>
 <script type="text/javascript">
-	$(document).ready(function() 
+	jQuery.noConflict();
+	jQuery(document).ready(function() 
 	{
 
 	var triggers_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID} = $(".modalInput_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}").overlay({
@@ -84,10 +85,10 @@
  		closeOnClick: true,
 	})
 	
-	$("#editsignup_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}").submit(function(e)
+	jQuery("#editsignup_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}").submit(function(e)
 	{
 		var input = $("#signup_detail_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}", this).val();
-		$.post("{raidroles.signups.S_SIGNUP_EDIT_ACTION}".serialize());
+		jQuery.post("{raidroles.signups.S_SIGNUP_EDIT_ACTION}".serialize());
 		triggers_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}.eq(1).overlay().close();
 		return e.preventDefault();
 		

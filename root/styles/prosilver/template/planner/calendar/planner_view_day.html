@@ -1,10 +1,11 @@
 <script type="text/javascript"> 
 /* jqt tooltips */
 <!-- IF EVENT_COUNT -->
-$(document).ready( function() 
+jQuery.noConflict();
+jQuery(document).ready( function() 
 {
 <!-- BEGIN raidplans -->
-	$("#raid_id{raidplans.RAID_ID}").tooltip(
+	jQuery("#raid_id{raidplans.RAID_ID}").tooltip(
 			{ offset: [5, 0],  
 			  effect: 'slide',  
 			  onShow: function() {this.getTrigger().fadeTo("slow", 0.25);},
