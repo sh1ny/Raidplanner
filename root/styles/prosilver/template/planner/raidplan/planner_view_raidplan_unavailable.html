@@ -80,7 +80,8 @@
 	<div class="b"><div></div></div> 
 </div>
 <script type="text/javascript">
-	$(document).ready(function() 
+	jQuery.noConflict();
+	jQuery(document).ready(function() 
 	{
 
 	var triggers_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID} = $(".modalInput_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").overlay({
@@ -92,10 +93,10 @@
  		closeOnClick: true,
 	})
 	
-	$("#editsignup_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").submit(function(e)
+	jQuery("#editsignup_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").submit(function(e)
 	{
 		var input = $("#signup_detail_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}", this).val();
-		$.post("{unavailable.S_REQUEUE_ACTION}".serialize());
+		jQuery.post("{unavailable.S_REQUEUE_ACTION}".serialize());
 		triggers_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}.eq(1).overlay().close();
 		return e.preventDefault();
 	});
