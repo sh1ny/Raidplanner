@@ -1,8 +1,16 @@
+<script type="text/javascript" src="{T_SUPER_TEMPLATE_PATH}/planner/calendar/clock.js"></script>
+<script type="text/javascript"> 
+jQuery.noConflict();
+jQuery(window).load( function() 
+{
+	 new jClock('{T_TEMPLATE_PATH}/planner/calendar/clock.png', jQuery('#clockCanvas').get(0));
+} 
+);
+</script>
 <div class="panel">
 <div class="inner">
 <span class="corners-top"><span></span></span>
 <h3><img width="16px" height="14px" alt="" src="{T_THEME_PATH}/images/icon_subscribe.gif" />&nbsp;{L_CLOCK}</h3>
-<script type="text/javascript" src="{T_SUPER_TEMPLATE_PATH}/planner/calendar/clock.js"></script>
 <div style="float: left; margin: 0 10px; 0 0;">
 <canvas id="clockCanvas" height="125" width="125">
 <p>{L_ERROR_NOCANVAS}</p>
@@ -11,5 +19,3 @@
 <span class="corners-bottom"><span></span></span>
 </div>
 </div>
-
-  
