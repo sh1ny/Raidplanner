@@ -33,7 +33,7 @@ class acp_raidplanner_info
 		return array(
 			'filename'	=> 'acp_raidplanner',
 			'title'		=> 'ACP_RAIDPLANNER',
-			'version'	=> '0.3.0',
+			'version'	=> '0.3.1',
 			'modes'		=> array(
 				'rp_settings'		=> array('title' => 'ACP_RAIDPLANNER_SETTINGS',  'display' => true, 
 									'auth' => 'acl_a_raid_config', 'cat' => array('ACP_DKP_RAIDS')),

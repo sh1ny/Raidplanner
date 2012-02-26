@@ -435,6 +435,10 @@ $versions = array(
         ),     
         '0.3.0' => array(
         	// php fixes
+        ),    
+         
+        '0.3.1' => array(
+        	// php fixes
         ),     
 );
 
